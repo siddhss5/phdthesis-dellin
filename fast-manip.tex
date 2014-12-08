@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 % simple paragraph stuff
 \parindent=0pt
@@ -29,9 +29,8 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 
-% tikz stuff
-%\usepackage{tikz}
-%\usetikzlibrary{backgrounds}
+\usepackage{tikz}
+\usetikzlibrary{arrows,backgrounds,positioning,shapes,decorations.pathmorphing}
 
 % plots
 \usepackage{pgfplots}
@@ -55,203 +54,1003 @@
 
 
 \newpage
-\section{Introduction}
+\chapter{Introduction}
 
-\subsection{Motivation}
+\section{Motivation}
 
-\subsubsection{DRC}
+\subsection{DRC}
 
 Cite ISER paper \cite{dellin2014drc}.
 
-\subsubsection{Speed! Minimize total task time}
+\subsection{Speed! Minimize total task time}
 
 How can we speed things up?
 
-\subsubsection{Multiple steps, don't get stuck}
+\subsection{Multiple steps, don't get stuck}
 
 How can we keep from getting stuck?
 
-\subsubsection{Changing environments}
+\subsection{Changing environments}
 
-\subsection{Approach}
+\section{Approach}
 
 Overview of approach.
 
 
 \newpage
-\section{Problem Description and Approach}
+\chapter{Problem Description and Approach}
+\label{chap:formulation}
 
-\subsection{Multiple steps}
+\section{Multiple steps}
 
-\subsubsection{steps from a human (drc) or symbolic planner}
-\subsubsection{some steps are constrained}
-\subsubsection{dual arm stuff}
-\subsubsection{Different spaces}
+\subsection{steps from a human (drc) or symbolic planner}
+\subsection{some steps are constrained}
+\subsection{dual arm stuff}
+\subsection{Different spaces}
 
 multi-step problem structure (lots of options at each step)
 
 decomposition into a bunch of "local planner" like things
 
-\subsection{Approach}
+\section{Approach}
 
 Decompose the problem into multiple steps.
 We'll build a meta-graph.
 
-\subsection{Expensive checking}
+\section{Expensive checking}
 
-\subsection{Dont't get stuck}
+\section{Dont't get stuck}
 
-\subsection{Most queries will be unexecuted (opt later)}
+\section{Most queries will be unexecuted (opt later)}
 
-\subsection{Approach}
+\section{Approach}
 
 Two complementary things:
-make each step fast (Section~\ref{sec:inflate}),
-and exploit structure between steps (Section~\ref{sec:multispace}).
+make each step fast (Chapter~\ref{chap:inflate}),
+and exploit structure between steps (Chapter~\ref{chap:multispace}).
 
 Then we talk about the full task planner later.
 
 
 \newpage
-\section{Fast Feasible Subproblem Paths}
-\label{sec:inflate}
+\chapter{Quickly Searching Manipulation Graphs}
+\label{chap:inflate}
 
-The problem structure and our decomposition approach
-strongly motivates fast feasible plans
-for each subproblem.
+In order for an articulated robot to perform manipulation tasks
+in changing, unstructured environments,
+it must be able to quickly solve motion planning queries in its
+configuration space.
+While there are many types of approaches for such queries
+which we discuss in Section~\ref{sec:related-work},
+one of the most common are graph search algorithms.
+In this chapter,
+we discuss the efficiency tradeoffs induced by formulating
+the articulated motion planning problem as best-first search,
+propose a general planning framework which accounts for these tradeoffs,
+and examine some empirical results.
 
-In this section, we'll talk about approaches for speeding up
-single subplans.
-See the next section (\ref{sec:multispace})
-for approaches that consider relationships between different spaces.
+\paragraph{Two Notions of Efficiency}
 
-Classical path planning / movers' problem in a continuous configuration space.
-Desire for a path from one (or many) start state to one (or many) goal state.
-Collision checking is expensive.
-There may be constraints, but they are holonomic.
-We are focused on configuration spaces (without dynamics).
+Throughout this chapter,
+we reference two different types of efficiency
+with regard to robotic tasks.
+First, once a planner has computed a solution path or trajectory,
+there is the cost incurred while executing that trajectory.
+This is the traditional cost optimized for by planners.
+Second, there is the cost incurred from actually computing the solution
+itself.
 
-We will optimize later, so no need for super-smooth paths.
+For the application of manipulation planning for articulated robots,
+in paricular,
+the costs associated with these two components tend to be of comparable
+magnitude.
+For example,
+when time is used as an efficency metric,
+both planning and execution times for household applications
+tend to be on the order of 1-2 seconds.
+Alternatively, given
+modern computational and actuator technologies for human-scale problems,
+both planning and execution tend to consume similar amounts of energy.
+Therefore,
+the manipulation problem demands that
+(a) the cost of plans and
+(b) the cost of planning both be considered.
 
-This section reviews existing approaches to this problem,
-discusses relationships between them,
-and then proposes a planner which explicitly prioritizes short planning times.
+\paragraph{General Problem Characterization}
 
-\subsection{Review of Approaches}
+We are motivated to solve motion planning problems for articulated robots.
+In the simplest version of this problem,
+the robot has a continuous configuration space $C$,
+with some subset $C_{obs}$ in collision.
+All feasible trajectories must then lie entirely in
+$C_{free} = C \setminus C_{obs}$.
+In general, testing some configuration $q$ for membership in $C_{free}$
+is an expensive operation.
+A typical query asks for a trajectory $t: [0,1] \rightarrow Q$ between
+a start set and a goal set (e.g. $t(0) \in Q_s$ and $t(1) \in Q_g$.
+We defer discussion constraints until Section~\ref{sec:constraints}.
+We are focused on configuration spaces without dynamics.
 
-In general, approaches approximate $C_{free}$ by constructing and/or
-searching a graph.
-The found path then consists of vertices and edges thereof that are collision
-checked.
-Here we review several different aspects and strategies used in related work.
-We focus on approaches that search over graphs.
+In this chapter,
+we'll primarly focus on single-query things,
+but we'll keep in mind that we want things that can enable reuse eventually.
 
-\subsubsection{Incremental Construction Algorithms}
+While we will primarily apply graph search techniques to this problem,
+we start by reviewing alternative approaches.
+
+\section{Review of Alternative Approaches}
+\label{sec:related-work}
+
+Since $C$ is continuous,
+all approaches must introduce some sort of discretization
+in order to compute solutions.
+We choose to build a graph consisting of vertices and edges in $C$,
+and then search that graph (Section~\ref{sec:best-first}).
+We do this because we can rely on existing techniques,
+and because an explicit graph can be more easily reused than other
+approaches.
+In this section, we discuss alternative approaches to solving
+the motion planning problem for articulated robots.
+
+\subsection{Trajectory Optimization}
+
+One approach is trajectory optimization.
+For example, there's CHOMP \cite{zucker2013chomp}
+and TrajOpt \cite{schulman2013trajopt}.
+Lots of other prior work here that is not manipulation-focused.
+
+Local minima problems.
+Difficult to cache / apply to similar problems.
+
+\subsection{Incremental Construction Algorithms}
 
 We could construct the graph incrementally and in response to the shape
 of $C_{free}$.
 RRTs behave well for quickly finding feasible paths.
-We'll compare against them at the end of this section.
+We'll compare against them at the end of this chapter.
 Also talk about ESTs.
+Difficult to cache things.
 
-\subsubsection{Multi-Query Approaches}
+%\subsection{Multi-Query Approaches}
+%
+%We could run a PRM \cite{kavrakietal1996prm}.
+%Commit to a fixed graph,
+%and determine the validity of each vertex and edge w.r.t. $C_{free}$.
+%Then, at query time,
+%run A* to find the shortest path (this is fast due to graph sparseness).
+%This is good because it reuses work.
+%Unfortunately,
+%(a) our $C_{free}$ is different for every subplan
+%(and for different options with each),
+%and (b) we don't want to determine validity over the entire graph
+%because it's costly.
 
-We could run a PRM \cite{kavrakietal1996prm}.
-Commit to a fixed graph,
-and determine the validity of each vertex and edge w.r.t. $C_{free}$.
-Then, at query time,
-run A* to find the shortest path (this is fast due to graph sparseness).
-This is good because it reuses work.
-Unfortunately,
-(a) our $C_{free}$ is different for every subplan
-(and for different options with each),
-and (b) we don't want to determine validity over the entire graph
-because it's costly.
-
-\subsubsection{Anytime algorithms}
+\subsection{Anytime algorithms}
 
 Compare to RRT*, FMT*, BIT*, etc.
 
-\subsubsection{Graph Search}
+\section{Best-First Graph Search}
+\label{sec:best-first}
 
-The rest of this section focuses on efficient searches over explicit graphs.
+In this section,
+we discuss general best-first search over explicit graphs.
 
-\subsection{Searches over Sparse Expensive Graphs}
+\subsection{Formulating Motion Planning as Graph Search}
 
 Continuous space, graph over it.
 We have a graph $G$ with vertices $V$ and edges $E$.
 We have some start set $V_s$ and some goal set $V_g$.
 We represent a path through the graph as
-$P = \{ v_0, v_1, v_2, \dots, v_n \}$;
-a candidate solution path then has $v_0 \in V_s$ and $v_g \in V_g$.
-
-We assume that the graph is endowed with an admissible heuristic function
-$h_s(v_a,v_b)$
-which produces lower bounds on any two vertices (cheap to compute).
-We assume that the graph is sparse (small number of vertices and edge),
-but getting actual edge costs,
-e.g. testing for membership in $C_{free}$,
-is expensive.
+$\pi = \{ v_0, v_1, v_2, \dots, v_n \}$;
+a candidate solution path then has $v_0 \in V_s$ and $v_n \in V_g$.
 We assume that only edges have costs,
 such that the cost of a path is the cost if its constituent edges.
+The cost of an edge is given by $c(v_a,v_b)$, and is always non-negative.
+We assume that the graph is endowed with an admissible heuristic edge cost
+function
+$\hat{c}(v_a,v_b)$
+which is inexpensive to compute.
 
-For now, we assume an fixed explicit graph (with unknown costs),
-though later we'll talk about if it's implicit graph (incrementally
-constructed/discovered).
+We observe that such graphs motion planning for articulated robots
+exhibit several properties that influence solution techniques.
 
-\subsubsection{Fast Optimistic Solver}
+\textbf{Sparsity.}
+The size of a graph necessary to solve common problems
+is relatively small.
+In particular, it is reasonable to store the entire graph explicitly in
+memory;
+techniques to incrementally build the graph
+are not necessary.
+Also,
+we are not restricted to only expanding successors of a vertex;
+we can simply make queries of the graph.
+[NOTE: sparsity is not a good word here, since it already has meaning
+for graphs.]
 
-For now, we assume that we have an algorithm $A_s$ which,
-given a graph $G$ (with its currently determined edge costs)
-and optimistic solution path objective
-\begin{equation}
-   c_s(path) = \sum_{i=1}^n \left\{
-   \begin{array}{cl}
-      c[e_i] & \mbox{if edge } e_i \mbox{ evaluated}  \\
-      h_s(e_i) & \mbox{otherwise} \\
-   \end{array}
-   \right.
-   ,
-\label{eqn:solution-cost-objective}
-\end{equation}
-finds the optimistically optimal path
-\begin{equation}
-   A_s: path^* = \arg \min_{path} c_s(path).
-\end{equation}
-Note that since $A_s$ never evaluates an edge
-(only using known edge costs or inexpensive heuristic calculations),
-we assume that executes quickly.
-We'll talk later about this assumption,
-and ways to implement it to be efficient.
+\textbf{Expensive Edge Evaluations.}
+Evaluating edge costs (e.g. testing for membership in $C_{free}$)
+is expensive.
 
-Also, we prescribe that $A_s$ breaks ties in favor of paths with less
-unevaluated (heuristic) cost.
+See Figure~\ref{fig:seg-intro} for an example.
 
-\subsubsection{Optimistic Edge Evaluating Algorithm}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\tikzstyle{vertex}=[circle,draw=black,inner sep=0pt,minimum size=5pt]
 
-Now we introduce some algorithms for finding solution paths through $G$.
-First, consider the forward-evaluating algorithm
-(Algorithm~\ref{alg:e-s-forward}).
+\node[vertex] (a) at (0,0) {};
+\node[vertex] (b) at (2,0) {};
+\node[vertex] (c) at (2.5,1) {};
+\node[vertex] (d) at (1,1) {};
+\node[vertex] (e) at (3,-0.5) {};
+\node[vertex] (f) at (4,0.5) {};
+\node[vertex] (g) at (4.5,-0.5) {};
+\node[vertex] (h) at (1.5,-1) {};
 
-\begin{algorithm}[h*]
-\caption{$E_s$: Optimistic Edge Evaluator (Forward)}
-\label{alg:e-s-forward}
+\draw[black,->,>=latex] (a) -- (b) node [midway, fill=white] {5};
+\draw[black,->,>=latex] (a) -- (h) node [midway, fill=white] {4};
+\draw[black,->,>=latex] (a) -- (d) node [midway, fill=white] {3};
+\draw[black,->,dashed,>=latex] (b) -- (c);
+\draw[black,->,dashed,>=latex] (d) -- (c);
+\draw[black,->,dashed,>=latex] (c) -- (e);
+\draw[black,->,dashed,>=latex] (c) -- (f);
+\draw[black,->,dashed,>=latex] (f) -- (g);
+\draw[black,->,dashed,>=latex] (e) -- (g);
+\draw[black,->,dashed,>=latex] (h) -- (e);
+
+\draw[black,->,>=latex] (6,0.2) -- (7,0.2);
+\node[anchor=west] at (7,0.2) {evaluated edge};
+\draw[black,->,dashed,>=latex] (6,-0.2) -- (7,-0.2);
+\node[anchor=west] at (7,-0.2) {unevaluated edge};
+
+\node[left=0pt of a] {$v_s$};
+\node[right=0pt of g] {$v_g$};
+
+\end{tikzpicture}
+\caption{A small explicit graph with some evaluated edges.}
+\label{fig:seg-intro}
+\end{figure}
+
+\subsection{Generic Best-First Search Algorithm over Paths}
+
+Best-first search [CITE] is a general class of search algorithms.
+We choose to express the general algorith
+over \emph{paths} instead of \emph{vertices}
+for clarity and generality
+because we are focused primarily on explicit graphs.
+However, Section~\ref{sec:implicit} shows
+how it reduces to traditional A* search
+for certain types of evaluation functions.
+
+\begin{algorithm}
+\caption{Generic Best-First Search Algorithm}
+\label{alg:generic-best-first}
 \begin{algorithmic}[1]
-\Procedure {$E_s$}{$G$} [forward]
+\Procedure {\textsc{GenericBestFirst}}{$G$}
 \Loop
-   \State $path^* = \arg \min\limits_{path} c_s(path)$ \Comment $A_s$
-   \label{line:e-s-forward-pathstar}
-   \State $e = \mbox{first unevaluated edge in } path^*$
-   \If {$e = \mbox{\textbf{nil}}$}
-      \State \Return $path^*$
+   \State $\pi^* = \arg \min\limits_{\Pi} f(\pi)$
+      \Comment{For some path cost function $f(\pi)$}
+      \label{line:select-optimistic-path}
+   \If {$\pi^*$ fully evaluated}
+      \State \Return $\pi^*$
    \EndIf
-   \State $c[e] = eval(e)$ \Comment evaluate edge cost
+   \State \textsc{Evaluate}$(\pi^*)$
+      \Comment{For some evaluate function}
 \EndLoop
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
-Let's prove some things about this algorithm.
+Consider the general best-first search algorithm
+(Algorithm~\ref{alg:generic-best-first}).
+It maintains some sort of data structure storing known data about the
+graph (e.g. tags on vertices or edges).
+It simply iterates over optimistically-optimal ``best'' paths,
+partially evaluating each.
+(Note especially the greedy nature of this search.)
+See Figure~\ref{fig:seg-edge-example} for a simple example.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\begin{tikzpicture}
+\tikzstyle{vertex}=[circle,draw=black,fill=white,inner sep=0pt,minimum size=5pt]
+
+\coordinate (a) at (0,0);
+\coordinate (b) at (2,0);
+\coordinate (c) at (2.5,1);
+\coordinate (d) at (1,1);
+\coordinate (e) at (3,-0.5);
+\coordinate (f) at (4,0.5);
+\coordinate (g) at (4.5,-0.5);
+\coordinate (h) at (1.5,-1);
+
+\draw[black!10,line width=5pt,line cap=round] (a) -- (d) -- (c) -- (f) -- (g);
+
+\node[vertex] (na) at (a) {};
+\node[vertex] (nb) at (b) {};
+\node[vertex] (nc) at (c) {};
+\node[vertex] (nd) at (d) {};
+\node[vertex] (ne) at (e) {};
+\node[vertex] (nf) at (f) {};
+\node[vertex] (ng) at (g) {};
+\node[vertex] (nh) at (h) {};
+
+\draw[black,->,>=latex] (na) -- (nb) node [circle,inner sep=2pt,midway,fill=white] {5};
+\draw[black,->,>=latex] (na) -- (nh) node [circle,inner sep=2pt,midway,fill=white] {4};
+\draw[black,->,>=latex] (na) -- (nd) node [circle,inner sep=2pt,midway,fill=white] {3};
+\draw[black,->,dashed,>=latex] (nd) -- (nb);
+\draw[black,->,dashed,>=latex] (nb) -- (nc);
+\draw[black,->,dashed,>=latex] (nd) -- (nc) node [circle,inner sep=2pt,midway,fill=white] {2?};
+\draw[black,->,dashed,>=latex] (nc) -- (ne);
+\draw[black,->,dashed,>=latex] (nc) -- (nf) node [circle,inner sep=2pt,midway,fill=white] {4?};
+\draw[black,->,dashed,>=latex] (nf) -- (ng) node [circle,inner sep=2pt,midway,fill=white] {3?};
+\draw[black,->,dashed,>=latex] (ne) -- (ng);
+\draw[black,->,dashed,>=latex] (nh) -- (ne);
+
+\node[left=0pt of a] {$v_s$};
+\node[right=0pt of g] {$v_g$};
+
+\end{tikzpicture}
+\caption{Select optimistic best path}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.45\textwidth}
+\begin{tikzpicture}
+\tikzstyle{vertex}=[circle,draw=black,fill=white,inner sep=0pt,minimum size=5pt]
+
+\coordinate (a) at (0,0);
+\coordinate (b) at (1.8,0);
+\coordinate (c) at (2.3,1);
+\coordinate (d) at (0.9,1);
+\coordinate (e) at (2.7,-0.5);
+\coordinate (f) at (3.6,0.5);
+\coordinate (g) at (4.1,-0.5);
+\coordinate (h) at (1.5,-1);
+
+\draw[black!10,line width=5pt,line cap=round] (d) -- (c);
+
+\node[vertex] (na) at (a) {};
+\node[vertex] (nb) at (b) {};
+\node[vertex] (nc) at (c) {};
+\node[vertex] (nd) at (d) {};
+\node[vertex] (ne) at (e) {};
+\node[vertex] (nf) at (f) {};
+\node[vertex] (ng) at (g) {};
+\node[vertex] (nh) at (h) {};
+
+\draw[black,->,>=latex] (na) -- (nb) node [circle,inner sep=2pt,midway,fill=white] {5};
+\draw[black,->,>=latex] (na) -- (nh) node [circle,inner sep=2pt,midway,fill=white] {4};
+\draw[black,->,>=latex] (na) -- (nd) node [circle,inner sep=2pt,midway,fill=white] {3};
+\draw[black,->,dashed,>=latex] (nd) -- (nb);
+\draw[black,->,dashed,>=latex] (nb) -- (nc);
+\draw[black,->,>=latex] (nd) -- (nc) node [circle,inner sep=2pt,midway,fill=white] {3};
+\draw[black,->,dashed,>=latex] (nc) -- (ne);
+\draw[black,->,dashed,>=latex] (nc) -- (nf);
+\draw[black,->,dashed,>=latex] (nf) -- (ng);
+\draw[black,->,dashed,>=latex] (ne) -- (ng);
+\draw[black,->,dashed,>=latex] (nh) -- (ne);
+
+\node[left=0pt of a] {$v_s$};
+\node[right=0pt of g] {$v_g$};
+
+\end{tikzpicture}
+\caption{Evaluate first unevaluated edge}
+\end{subfigure}%
+\caption{Generic best-first algorithm for an explicit graph,
+   with $f(\pi)$ best known cost-from-start,
+   and {\sc Eval} forward edge evaluations.
+   This algorithm is guaranteed to terminate with a feasible path
+   with mimimum path cost, if one exists.}
+\label{fig:seg-edge-example}
+\end{figure}
+
+There are two choices:
+
+\textbf{Cost Function $f(\pi)$.}
+What is the cost function $f(\pi)$ over paths used to select the
+path for evaluation at each iteration?
+For now, we will use the following path objective:
+\begin{equation}
+   f_x(\pi) = \mbox{\emph{optimistic path cost}}.
+\end{equation}
+In other worts, $f_x(\pi)$ gives a lower bound on the cost of executing
+path $p$.
+If the path consists of a mix of evaluated and unevaluated edges,
+we could write this as:
+\begin{equation}
+   f_x(\pi) = \sum_{e \in \pi} \left\{
+   \begin{array}{cl}
+      c[e] & \mbox{if edge } e \mbox{ evaluated}  \\
+      \hat{c}(e) & \mbox{otherwise} \\
+   \end{array}
+   \right.
+   .
+   \label{eqn:execution-cost-objective}
+\end{equation}
+
+\textbf{{\sc Evaluate} Procedure.}
+How is a potential path evaluated?
+
+The choice of these two components of the algorithm depend on what
+functions are defined over the graph.
+Likewise, the data structure is dependent on what is required
+for the choices.
+
+\subsection{Best-First Search on Implicit Graphs}
+\label{sec:implicit}
+
+Figure~\ref{fig:seg-edge-example} searches an explicit graph,
+in which the entire graph structure is represented in memory.
+Here, we briefly relate this path-oriented treatment of graph search
+to well-known existing algorithms.
+
+Often, due to resource constraints or convenience,
+the graph is instead expressed \emph{implicitly}
+with one or more operators which calculate the structure of the graph
+in the local vicinity of a given vertex.
+Initialized with one or more vertices (e.g. starts and/or goals),
+an algorithm can incrementally ``discover'' more of the implicit
+graph by repeatedly calling such function on discovered vertices.
+As a result of this representation,
+only a small portion of the graph might need to be explored
+during the search.
+
+Due to this implicit representation,
+it is clear that each candidate path in $\Pi$ to be considered
+(line \ref{line:select-optimistic-path})
+cannot generally exist of entirely known edges.
+When enumerating candidate paths to the goal,
+we must include potential ``virtual'' path segments
+through the as-yet undiscovered portion of the graph
+to approximate the path cost function $f(\pi)$.
+The behavior of the search depends on this approximation,
+as well as the nature of {\sc Evaluate} function induced by
+the implicit representation operator(s) available.
+Several variants are briefly discussed here.
+
+\subsubsection{Relation to A*}
+
+The most common implicit graph representation
+is the \emph{expansion} or \emph{successor} function {\sc Successors}$(v)$
+which yields all vertices reachable from the parent vertex $v$,
+along with the associated edge costs.
+
+Suppose, for now, that we only consider candidate paths that consist of:
+(a) a first segment consisting over zero or more evaluated edges,
+followed by
+(b) an unexpanded ``frontier'' vertex $v_f$, followed by
+(b) a second segment through the undiscovered portion of the graph.
+We can then express $f_x(\pi)$ as:
+\begin{equation}
+   f_x(\pi)
+   = \underbrace{f_{s \rightarrow v_f}(\pi)}_{g[v_f]}
+   + \underbrace{f_{v_f \rightarrow g}(\pi)}_{h(v_f)}.
+\end{equation}
+These components correspond to the best-known cost-to-come $g[v_f]$
+and the heuristic function $h(v_f)$ from A* search \cite{hart1968astar}.
+See Figure~\ref{fig:seg-implicit} for an example with $h(v_f)=0$.
+
+We can now produce a proof that as long as $h(v_f)$ is admissible,
+and we are restricted to an {\sc Eval}$(\pi)$ function which 
+expands the first unexpanded vertex,
+the optimistic-optimal path $\pi^*$ at each iteration
+follows the structure in the previous paragraph.
+See Appendix~\ref{appendix:gs-proofs}.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\begin{tikzpicture}
+\tikzstyle{vertex}=[circle,draw=black,fill=white,inner sep=0pt,minimum size=5pt]
+
+\coordinate (a) at (0,0);
+\coordinate (b) at (2,0);
+\coordinate (c) at (2.5,1);
+\coordinate (d) at (1,1);
+\coordinate (e) at (3,-0.5);
+\coordinate (f) at (4,0.5);
+\coordinate (g) at (4.5,-0.5);
+\coordinate (h) at (1.5,-1);
+
+\draw[black!10,line width=5pt,line cap=round] (a) -- (d);
+\draw[black!10,line width=5pt,line cap=round,
+   decorate,decoration=snake]
+   (d) -- (g) node [black,circle,inner sep=2pt,midway,fill=white] {0?};
+
+\node[vertex] (na) at (a) {};
+\node[vertex] (nb) at (b) {};
+%\node[vertex] (nc) at (c) {};
+\node[vertex] (nd) at (d) {};
+%\node[vertex] (ne) at (e) {};
+%\node[vertex] (nf) at (f) {};
+%\node[vertex] (ng) at (g) {};
+\node[vertex] (nh) at (h) {};
+
+\draw[black,->,>=latex] (na) -- (nb) node [circle,inner sep=2pt,midway,fill=white] {5};
+\draw[black,->,>=latex] (na) -- (nh) node [circle,inner sep=2pt,midway,fill=white] {4};
+\draw[black,->,>=latex] (na) -- (nd) node [circle,inner sep=2pt,midway,fill=white] {3};
+
+\node[left=0pt of a] {$v_s$};
+\node[right=0pt of g] {$v_g$};
+
+\end{tikzpicture}
+\caption{Select optimistic best path}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.45\textwidth}
+\begin{tikzpicture}
+\tikzstyle{vertex}=[circle,draw=black,fill=white,inner sep=0pt,minimum size=5pt]
+
+\coordinate (a) at (0,0);
+\coordinate (b) at (1.8,0);
+\coordinate (c) at (2.3,1);
+\coordinate (d) at (0.9,1);
+\coordinate (e) at (2.7,-0.5);
+\coordinate (f) at (3.6,0.5);
+\coordinate (g) at (4.1,-0.5);
+\coordinate (h) at (1.5,-1);
+
+\draw[black!10,line width=5pt,line cap=round] (d) -- (c);
+\draw[black!10,line width=5pt,line cap=round] (d) -- (b);
+
+\node[vertex] (na) at (a) {};
+\node[vertex] (nb) at (b) {};
+\node[vertex] (nc) at (c) {};
+\node[vertex] (nd) at (d) {};
+%\node[vertex] (ne) at (e) {};
+%\node[vertex] (nf) at (f) {};
+%\node[vertex] (ng) at (g) {};
+\node[vertex] (nh) at (h) {};
+
+\draw[black,->,>=latex] (na) -- (nb) node [circle,inner sep=2pt,midway,fill=white] {5};
+\draw[black,->,>=latex] (na) -- (nh) node [circle,inner sep=2pt,midway,fill=white] {4};
+\draw[black,->,>=latex] (na) -- (nd) node [circle,inner sep=2pt,midway,fill=white] {3};
+\draw[black,->,>=latex] (nd) -- (nb) node [circle,inner sep=2pt,midway,fill=white] {3};
+\draw[black,->,>=latex] (nd) -- (nc) node [circle,inner sep=2pt,midway,fill=white] {3};
+
+\node[left=0pt of a] {$v_s$};
+\node[right=0pt of g] {$v_g$};
+
+\end{tikzpicture}
+\caption{Expand first unexpanded vertex}
+\end{subfigure}%
+\caption{Best-first algorithm for an implicit graph,
+   with $f(\pi)$ best known cost-from-start,
+   and {\sc Eval} forward vertex expansions.
+   This is Dijkstra's algorithm \cite{dijkstra1959anote}.}
+\label{fig:seg-implicit}
+\end{figure}
+
+Takeaway: A* uses a general heuristic function $h_g(v)$
+because it doesn't have a representation of the full graph,
+so it can't compute an actual best optimistic path.
+I claim that for manipulation planning problems,
+we can indeed reason over explicit graphs.
+
+\subsubsection{Relation to BHFFA}
+
+Let's say that we also have a function which computes the predecessors
+of a vertex,
+and also an admissible heuristic function $h(v_a,v_b)$ which computes
+a lower-bound estimate of the optimal cost between two vertices.
+Then the best-first thing to do is equivalent to the
+Bidirectional Heuristic Front-to-Front Algorithm \cite{sint1977bhffa}.
+
+\subsection{Best-First Search with Edge Evaluation}
+
+What if, instead of operating over vertices (like A* and the like),
+we operate over edges?
+Figure~\ref{fig:seg-intro} illustrated the simplest such algorithm,
+which selects the optimistic-optimal path,
+and then evaluates the first as-yet unevaluated edge on the path.
+
+I think that the forward-evaluation version of this is the same as
+Optimal Generation A* (OPA*) and Simple Optimal Generation A* (SOGA*)
+\cite{goldenberg2013epeastar},
+which are modified versions of
+Enhanced Partial Expansion A* \cite{felner2012epastar}.
+
+\subsection{Bidirectional {\sc Eval} Procedures}
+
+In general, over explicit graphs,
+it usually makes sense to do bidirectional evaluations.
+I need some data to back this up for my problem.
+For example,
+the Lazy PRM algorithm \cite{bohlin2000lazyprm}
+is just best-first search
+applied to binary edge cost functions
+($c(e) \in \{ \hat{c}(e), \infty \}$)
+with bidirectional edge evaluations
+(although it actually uses a slightly fancier path evaluation function).
+
+\section{Penalizing Planning Effort}
+
+So far, we've been searching for a path which optimizes our solution
+cost objective (\ref{eqn:execution-cost-objective}).
+However, as we motivated in the introduction,
+we are actually also looking to minimize time to compute a solution.
+
+The first graph planner to explicitly include an estimate of remaining
+computational planning effort in a best-first search
+was A$_\epsilon^*$ \cite{pearl1982semiadmissible}.
+
+Therefore, we introduce a new planning-time objective $f_p$
+which penalizes time spent evaluating edges along a potential path:
+\begin{equation}
+   f_p(\pi) = \sum_{e \in \pi} \left\{
+   \begin{array}{cl}
+      0 & \mbox{if edge } e \mbox{ evaluated}  \\
+      \hat{p}(e) & \mbox{otherwise} \\
+   \end{array}
+   \right.
+   .
+\end{equation}
+This uses a new heuristic $\hat{p}(e)$ which estimates the cost
+associated with evaluating an edge.
+This could be planning time, computational energy required, etc.
+
+While the approach we take is different from that of
+\cite{pearl1982semiadmissible},
+a motivating quote from this paper is relevant:
+\begin{quote}
+``The heuristic [\,$\hat{c}$\,] ... is of an entirely
+different nature than the ... heuristic [\,$\hat{p}$\,] ... .
+The former anticipates the reduction in \emph{solution quality} due to the
+remaining part of the solution once it is found;
+the latter estimates the \emph{computational effort}
+required for completing the search.''
+\end{quote}
+
+Sidenote: RRT-Connect is sort of explicitly doing this
+(optimizing at each step only for planning time,
+but constrained to pass through the sampled point).
+
+\subsection{General Weighted Objective}
+
+In general, we might consider weighting each objective:
+\begin{equation}
+   f(\pi) = \lambda f_p(\pi) + (1 - \lambda) f_x(\pi) .
+   \label{eqn:general-objective}
+\end{equation}
+Note that with $\lambda=0$,
+we recover our old solution cost objective $f_x(\pi)$.
+Note that this objective is used in an optimistic, greedy fashion at each
+iteration of best-first search.
+
+This is the objective used by the Greedy PRM,
+described in Section~\ref{sec:greedy-prm}.
+
+When expanded,
+this can then be written:
+\begin{equation}
+   f(\pi) = \sum_{e \in \pi} \left\{
+   \begin{array}{cl}
+      (1 - \lambda) c[e] & \mbox{if edge } e \mbox{ evaluated}  \\
+      \lambda \hat{p}(e) + (1 - \lambda) \hat{c}(e) & \mbox{otherwise} \\
+   \end{array}
+   \right.
+   .
+   \label{eqn:general-objective-explicit}
+\end{equation}
+
+\subsection{Simplification with Propotional Heuristics}
+
+Suppose that our edge evaluation cost heuristic
+were proportional to our edge execution cost heuristic,
+\begin{equation}
+   \hat{p}(e) = \alpha \, \hat{c}(e) .
+\end{equation}
+This might happen if, for example, each were proportional to the edge's
+Euclidean distance (with longer paths taking longer to both collision check
+and execute at constant velocity).
+In this case, we can write:
+\begin{equation}
+   f(\pi) = (1-\lambda) \sum_{e \in \pi} \left\{
+   \begin{array}{cl}
+      c[e] & \mbox{if edge } e \mbox{ evaluated}  \\
+      \left[ 1 + \frac{\alpha\lambda}{1 - \lambda} \right] \hat{c}(e) & \mbox{otherwise} \\
+   \end{array}
+   \right.
+   .
+   \label{eqn:prop-heuristics}
+\end{equation}
+
+\subsection{Equivalence to Weighted A*}
+
+Consider the case where we're using forward vertex or edge evaluations
+(as is required with implicit graph representations),
+and $\lambda < 1$.
+In this case, we can rewrite (\ref{eqn:prop-heuristics})
+simply as:
+\begin{equation}
+   f(\pi) \propto
+   \underbrace{\sum_{e \; \mbox{\scriptsize evaled}} c[e]}_{g[v_f]}
+   +
+   \underbrace{\left[ 1 + \frac{\alpha \lambda}{1-\lambda} \right]}_{
+      \mbox{\scriptsize inflation factor } \epsilon}
+   \underbrace{\hat{c}(e_{last})}_{h(v_f)}
+   .
+\end{equation}
+
+In other words,
+\emph{weighted A* is simply best-first search whose objective
+   includes a planning effort term.}
+
+In particular, if planning effort is proportional to execution
+effort by a factor of $\alpha$,
+a weighted A* search with inflation factor $\epsilon$
+is the result of best-first search with
+$\lambda = \frac{\epsilon-1}{\alpha+\epsilon-1}$.
+
+\subsection{Relation to Experience Graphs}
+\label{sec:egraphs}
+
+Experience graphs \cite{phillips2012egraphs} are pretty sweet.
+E-graphs are applied to an implicit graph representation.
+(We don't do shortcuts or snap motions.)
+The equivalent E-graph edge weights are:
+\begin{equation}
+   f_{\mbox{\scriptsize E-graphs}}(\pi) \propto \sum_{e \in \pi} \left\{
+   \begin{array}{cl}
+      c[e] & \mbox{if edge } e \mbox{ evaluated, this search} \\
+      \epsilon \, c[e] & \mbox{if edge } e \mbox{ evaluated, previous search} \\
+     \epsilon \, \epsilon^E \, \hat{c}(e) & \mbox{otherwise} \\
+   \end{array}
+   \right.
+   \label{eqn:prop-heuristics}
+\end{equation}
+
+The Greedy PRM applied to a single $C_{free}$ as described in this chapter
+is equivalent to the E-Graph planner
+with $\epsilon=1$ and $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda}$.
+It's not immediately clear to me why one would choose $\epsilon \neq 1$.
+
+\section{Planner: Greedy PRM}
+\label{sec:greedy-prm}
+
+The Greedy PRM is the result of applying
+best-first search with the $\lambda$-mediated objective
+(\ref{eqn:general-objective})
+to a simple single-$C_{free}$ problem
+in batches of $N$ samples.
+Based on empirical results, we also use the bidirectional edge evaluation
+algorithn,
+since it tends to finish faster.
+
+\subsection{Implementation Details}
+
+Talk about how the algorithm actually functions
+(including all the speedups currently implemented,
+plus new ones based on LPA* etc).
+
+\subsection{Choosing $\lambda$}
+
+Minimizing total time in a greedy fashion implies $\lambda = 0.5$.
+For later steps in a multi-step plan,
+we might have an estimate of the probability $P_e$ that the given query will
+actually be executed.
+We can then pose our optimistic objective as total planning and execution
+time in expection;
+this induces the following parameter choice:
+\begin{equation}
+   \lambda = \frac{1}{1 + P_e} .
+\end{equation}
+For example, $P_e=1$ induces $\lambda = 0.5$;
+as $P_e \rightarrow 0$, $\lambda \rightarrow 1$.
+In other words,
+as the estimated probability of executing the path goes down,
+the planner becomes greedier w.r.t. planning effort at the expense of
+costlier solution paths.
+
+This is all one-step greedy;
+it returns the optimal path optimistically,
+assuming it will be collision-free.
+If we have some estimate of the proportion $P_u$ of evaluated edges
+which will be part of the final path,
+we can then choose a cost function which downweights the planning time.
+I need to work this out. 
+
+\subsection{Choosing Batch Size $N$}
+
+What graph are we searching over?
+If it's too sparse, we'll stop after knowing that no solution exists.
+If it's too dense, we'll spend too much time filling in parts of
+space.
+There's actually some spatial relationship in $C_{free}$ what we're not
+modeling.
+We get around this with artificial sparseness.
+There's definitely a paper's worth of work here too (Shushman's stuff).
+The easy version is with sequential batches of size $N$.
+
+Talk about how this is complementary to BIT* which acheive speedups
+by batching, not by inflating.
+
+\section{Results}
+
+Here are results.
+See Figure~\ref{fig:bean} and Figure~\ref{fig:herb-comparison-cdfs}.
+
+I hope to show that the Greedy PRM is competitive with RRT-Connect
+in terms of planning effort required to find a feasible path.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-00.png}
+\caption{Paths with $\lambda = 0$}
+\end{subfigure}%
+\quad
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-10.png}
+\caption{Paths with $\lambda = 1$}
+\end{subfigure}%
+\caption{Examples of paths for a 2d problems
+   for different values of $\lambda$.
+   As $\lambda$ is increased,
+   paths are longer, but are faster to find.}
+\label{fig:bean}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
+\caption{Comparison between different algorithms on a HERB problem.
+   Must add in ESTs.}
+\label{fig:herb-comparison-cdfs}
+\end{figure}
+
+\section{Repeated Queries}
+
+For multiple queries within the same $C_{free}$,
+the edge evaluations can be used in subsequent searches.
+This ends up behaving similarily to E-graphs \cite{phillips2012egraphs}
+with $\epsilon=1$
+as described in Section~\ref{sec:egraphs},
+with the exception that all evaluated edges are placed in the graph,
+not just the edges on the solution path.
+
+\section{Constraints}
+\label{sec:constraints}
+
+Here I talk about constrained planning.
+
+\section{Future Work}
+
+How to handle the narrow passage problem?
+Lots of literature on that, new sampling strategies, etc.
+(Toggle PRM, for instance.)
+
+
+
+\newpage
+\chapter{The Multi-Space Planning Problem}
+\label{chap:multispace}
+
+In the introduction to this chapter,
+I'll talk about how the multi-step planning problem decomposition
+discussed in Chapter~\ref{chap:formulation}
+consists of a bunch of different queries in different
+$C_{free}$s, but that are related.
+
+For example, say you're planning to move an object from an initial
+location to a goal location,
+and then move your manipulator back to the start pose.
+You have a single grasp for the object,
+and your manipulator has a single IK for the grasp (very simple problem).
+There are three $C_{free}$s here;
+a naive approach would plan separately in each.
+
+\section{Stuff to Integrate}
+
+\begin{itemize}
+\item comes from structure of multi-step problem
+\item different cfrees
+\item but they're very related!
+\item inclusions, intersections
+\item define multi-space planning problems
+\item motivates trajectory reuse
+\item examples:
+   \begin{itemize}
+   \item multi-step manipulation
+   \item cached self-checked prms
+   \item padded robots (reaching into checkers broad phase stuff)
+   \item changing worlds (only check against deltas)
+   \item conservative bounding boxes for different grabbed object poses
+   \item constantly hypothesizing different sized objects in your hand
+   \end{itemize}
+\item relation to occupancy grid representations of workspace
+   (for deltas, conservative approxs, etc)
+\item how is this related to dual-arm stuff?
+\item how to fit in CMR?
+\end{itemize}
+
+\section{Related Work}
+
+Jaillet and Simeon,
+\emph{A PRM-based motion planner for dynamically changing environments}
+\cite{jaillet2004dynamicprm}.
+Explicit dichotomy between static and dynamic parts of the world.
+Edges are checked when needed against moving obstacles;
+their free-ness with respect to each is cached for the last tested position
+for each obstacle.
+
+Gayle, Klingler, and Xavier,
+\emph{Lazy Reconfiguration Forest}
+\cite{gayle2007lazyreconfigforest}.
+
+Li and Shie,
+\emph{An incremental learning approach to motion planning with
+      roadmap management}
+\cite{li2002incrementalprmmanagement}.
+This is the Reconfigurable Random Forest (RRF).
+They do ``roadmap management'' to handle changing environments,
+and talk about doing some simple bounding-box stuff.
+
+Lien and Lu,
+\emph{Planning motion in environments with similar obstacles}
+\cite{lien2009similarobstacles}.
+This builds a PRM around obstacles in a database,
+and then reposes them in a new world.
+
+\section{Multiple sub-queries}
+
+\section{Shared C-space}
+
+\section{Each in a different C-free}
+
+\section{Relations between C-frees (inclusion, intersection)}
+
+
+\newpage
+\chapter{Applying GreedyPRM to MultiSpace: the GreedyMultiPRM}
+
+\begin{itemize}
+\item GreedyPRM and multi-space are complementary
+\item Apply greeydprm to multi-space problem
+\item one planner that learns, can answer arbitrary queries
+   in multiple related spaces faster and faster
+\end{itemize}
+
+
+\newpage
+\chapter{A simple task planner using the GreedyMultiPRM}
+
+\begin{itemize}
+\item with/without inter-step relations
+\item with/without padding
+\item with/without self-checked cache
+\item with/without relations for changing worlds
+\item with/without conservative boxes for grabbed objects
+\item constraints:
+   \begin{itemize}
+   \item handle with separate planner
+   \item handle with relaxed constraint, followed by local optimizer
+   \end{itemize}
+\item run optimizer on paths occasionally and/or before executing
+\end{itemize}
+
+Also, there are incremental E-graphs \cite{phillips2013anytimeegraphs}
+that we should relate the planner to and compare with.
+
+\newpage
+\chapter{Conclusion}
+
+meta-graph [future work: probabalistic models]
+
+
+{\small
+\bibliographystyle{abbrv}
+\bibliography{pr-refs,siddpubs/siddpubs-conf,siddpubs/siddpubs-journal,siddpubs/siddpubs-misc}
+}
+
+\appendix
+\chapter{Graph Search Proofs}
+\label{appendix:gs-proofs}
+
+This appendix presents some proofs relating the path-centric treatment
+of graph search from Chapter~\ref{chap:inflate}
+to traditional algorithms (e.g. A$^*$).
 
 \begin{invariant}
 The optimistically optimal path $path^* = A_s(G)$ can always be
@@ -292,303 +1091,5 @@ But our current $path^*$'s segment $(v_a, v_b)$ is un-evaluated!
 This contradiction shows that the invariant must hold throughout the
 algorithm.
 \end{proof}
-
-\subsubsection{Equivalence to A*}
-
-Due to Theorem~\ref{thm:seg-fwd},
-each potential optimistically-optimal path
-(Alg.~\ref{alg:e-s-forward}, line~\ref{line:e-s-forward-pathstar})
-is comprised of an evaluated part followed by an unevaluated part,
-separated by some vertex $v$.
-We can then rewrite our solution path optimistic cost function $c_s$ as
-\begin{equation}
-   c_s(path)
-      = \underbrace{\sum_{e \mbox{ \footnotesize before } v} c[e]}_{g[v]}
-      + \underbrace{\sum_{e \mbox{ \footnotesize after } v} h_s(e)}_{h_g(v)}
-   .
-\label{eqn:astar-equivalent}
-\end{equation}
-Therefore, when the forward edge evaluating algorithm
-(Alg.~\ref{alg:e-s-forward}) selects its optimistic optimal path,
-it is equivalently selecting the intermediate vertex $v$ which
-minimizes (\ref{eqn:astar-equivalent}),
-and evaluating (expanding) an edge from that vertex.
-
-Note that this is actually equivalent to edge A*.
-I need to compare with \cite{goldenberg2013epeastar}.
-There may also be a paper here, reformulating EPEA* more natually
-in terms of edge queues.
-
-\subsubsection{Backward and Bidirectional Variants}
-
-Besides the forward variant of the forward-evaluating edge algorithm
-(Alg.~\ref{alg:e-s-forward}),
-you can easily evaulate the edges in the optimistically-optimal path
-in other ways
-(e.g. backwards,
-or interleaving forward and backward checks,
-or starting from the middle, etc).
-This is important; there's probably at least a paper here!
-Also, this is basically the Lazy PRM \cite{bohlin2000lazyprm}.
-
-Also, I think the bidirectional variant is equivalent to a front-to-front
-traditional graph search.
-Must find a cite for that.
-
-\subsection{Penalizing Planning Time}
-
-So far, we've been searching for a path which optimizes our solution
-cost objective (\ref{eqn:solution-cost-objective}).
-However, as we motivated in the introduction,
-we are actually also looking to minimize time to compute a solution.
-Therefore, we introduce a new planning-time objective $c_t$
-which penalizes time spent evaluating edges along a potential path:
-\begin{equation}
-   c_t(path) = \sum_{i=1}^n \left\{
-   \begin{array}{cl}
-      0 & \mbox{if edge } e_i \mbox{ evaluated}  \\
-      h_t(e_i) & \mbox{otherwise} \\
-   \end{array}
-   \right.
-   .
-\end{equation}
-This new objective can be used directly in any of the edge evaluating
-algorithms described above (forward, backward, bidirectional, etc).
-
-Sidenote: RRT-Connect is sort of explicitly doing this
-(optimizing at each step only for planning time,
-but constrained to pass through the sampled point).
-
-In general, we might consider weighting each objective:
-\begin{equation}
-   c(path) = w_t c_t(path) + w_s c_s(path) .
-   \label{eqn:general-objective}
-\end{equation}
-
-\subsubsection{Minimizing Total Time}
-
-What if we want to minimize total planning + execution time,
-through a euclidean space with obstacles.
-Say we have a constant velocity $V$,
-so that our solution path heuristic is
-$h_s(v_a, v_b) = \frac{1}{V} ||v_a -v_b||$.
-Further, say that evaluating an edge for validity
-takes time proportional to its length
-$h_t(v_a, v_b) = \alpha ||v_a -v_b||$.
-Then we can write our objective (\ref{eqn:general-objective})
-as:
-\begin{equation}
-   c_t(path) = \sum_{i=1}^n \left\{
-   \begin{array}{cl}
-      \infty & \mbox{if edge } e_i \mbox{ evaluated invalid} \\
-      \frac{w_s}{V} ||v_a -v_b|| & \mbox{if edge } e_i \mbox{ evaluated valid} \\
-      (\frac{w_s}{V} + w_t \alpha) ||v_a -v_b|| & \mbox{otherwise} \\
-   \end{array}
-   \right.
-   .
-\end{equation}
-
-\subsubsection{Equivalence to Inflated (Weighted) Graph Search}
-
-Note that this is equivalent to using an inflated heuristic in traditional
-graph search,
-with the inflation factor $\epsilon = 1 + \frac{w_t}{w_s} \alpha V$.
-
-\subsection{Planner: Time-Greedy PRM}
-
-In our planner,
-our optimistic objective will be a weighted sum of planning time $\tau_p$
-and execution time $\tau_e$.
-For conveneince,
-we'll use a single parameter $\lambda$ as the trade-off value as follows:
-\begin{equation}
-   c(path) = \sin \left( \textstyle\frac{\pi}{2} \lambda \right) \tau_p(path)
-   + \cos \left( \textstyle\frac{\pi}{2} \lambda \right) \tau_e(path),
-   \;\; 0 \leq \lambda \leq 1.
-\end{equation}
-In this way,
-with $\lambda = 0$, this is equivalent to edge $A^*$,
-and with $\lambda = 1$, this is equivalent to very highly inflated edge $A^*$
-(with forward-only edge evaluations).
-Based on empirical results, we also use the bidirectional edge evaluation
-algorithn,
-since it tends to finish faster.
-
-\subsubsection{Choosing $\lambda$}
-
-Minimizing total time is equivalent to $\lambda = 0.5$.
-For later steps in a multi-step plan,
-we might have an estimate of the probability $P_e$ that the given query will
-actually be executed.
-We can then pose our optimistic objective as total planning and execution
-time in expection;
-this induces the following parameter choice:
-\begin{equation}
-   \lambda = \textstyle \frac{2}{\pi} \cot^{-1} (P_e) .
-\end{equation}
-In other words, $P_e=1$ induces $\lambda = 0.5$;
-as $P_e \rightarrow 0$, $\lambda \rightarrow 1$.
-
-This is all one-step greedy;
-it returns the optimal path optimistically,
-assuming it will be collision-free.
-If we have some estimate of the proportion $P_u$ of evaluated edges
-which will be part of the final path,
-we can then choose a cost function which downweights the planning time.
-I need to work this out. 
-
-\subsubsection{Choosing Batch Size $N$}
-
-What graph are we searching over?
-If it's too sparse, we'll stop after knowing that no solution exists.
-If it's too dense, we'll spend too much time filling in parts of
-space.
-There's actually some spatial relationship in $C_{free}$ what we're not
-modeling.
-We get around this with artificial sparseness.
-There's definitely a paper's worth of work here too (Shushman's stuff).
-The easy version is with sequential batches of size $N$.
-
-\subsection{Results}
-
-Here are results.
-See Figure~\ref{fig:bean} and Figure~\ref{fig:herb-comparison-cdfs}.
-
-\begin{figure}
-\centering
-\begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-00.png}
-\caption{Paths with $\lambda = 0$}
-\end{subfigure}%
-\quad
-\begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-10.png}
-\caption{Paths with $\lambda = 1$}
-\end{subfigure}%
-\caption{Examples of paths for a 2d problems
-   for different values of $\lambda$.
-   As $\lambda$ is increased,
-   paths are longer, but are faster to find.}
-\label{fig:bean}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
-\caption{Comparison between different algorithms on a HERB problem.
-   Must add in ESTs.}
-\label{fig:herb-comparison-cdfs}
-\end{figure}
-
-\subsection{Future Work}
-
-How to handle the narrow passage problem?
-Lots of literature on that, new sampling strategies, etc.
-(Toggle PRM, for instance.)
-
-
-
-\newpage
-\section{The Multi-Space Planning Problem}
-\label{sec:multispace}
-
-\begin{itemize}
-\item comes from structure of multi-step problem
-\item different cfrees
-\item but they're very related!
-\item inclusions, intersections
-\item define multi-space planning problems
-\item motivates trajectory reuse
-\item examples:
-   \begin{itemize}
-   \item multi-step manipulation
-   \item cached self-checked prms
-   \item padded robots (reaching into checkers broad phase stuff)
-   \item changing worlds (only check against deltas)
-   \item conservative bounding boxes for different grabbed object poses
-   \item constantly hypothesizing different sized objects in your hand
-   \end{itemize}
-\item relation to occupancy grid representations of workspace
-   (for deltas, conservative approxs, etc)
-\item how is this related to dual-arm stuff?
-\item how to fit in CMR?
-\end{itemize}
-
-\subsection{Related Work}
-
-Jaillet and Simeon,
-\emph{A PRM-based motion planner for dynamically changing environments}
-\cite{jaillet2004dynamicprm}.
-Explicit dichotomy between static and dynamic parts of the world.
-Edges are checked when needed against moving obstacles;
-their free-ness with respect to each is cached for the last tested position
-for each obstacle.
-
-Gayle, Klingler, and Xavier,
-\emph{Lazy Reconfiguration Forest}
-\cite{gayle2007lazyreconfigforest}.
-
-Li and Shie,
-\emph{An incremental learning approach to motion planning with
-      roadmap management}
-\cite{li2002incrementalprmmanagement}.
-This is the Reconfigurable Random Forest (RRF).
-They do ``roadmap management'' to handle changing environments,
-and talk about doing some simple bounding-box stuff.
-
-Lien and Lu,
-\emph{Planning motion in environments with similar obstacles}
-\cite{lien2009similarobstacles}.
-This builds a PRM around obstacles in a database,
-and then reposes them in a new world.
-
-\subsection{Multiple sub-queries}
-
-\subsection{Shared C-space}
-
-\subsection{Each in a different C-free}
-
-\subsection{Relations between C-frees (inclusion, intersection)}
-
-
-\newpage
-\section{Applying GreedyPRM to MultiSpace: the GreedyMultiPRM}
-
-\begin{itemize}
-\item GreedyPRM and multi-space are complementary
-\item Apply greeydprm to multi-space problem
-\item one planner that learns, can answer arbitrary queries
-   in multiple related spaces faster and faster
-\end{itemize}
-
-
-\newpage
-\section{A simple task planner using the GreedyMultiPRM}
-
-\begin{itemize}
-\item with/without inter-step relations
-\item with/without padding
-\item with/without self-checked cache
-\item with/without relations for changing worlds
-\item with/without conservative boxes for grabbed objects
-\item constraints:
-   \begin{itemize}
-   \item handle with separate planner
-   \item handle with relaxed constraint, followed by local optimizer
-   \end{itemize}
-\item run optimizer on paths occasionally and/or before executing
-\end{itemize}
-
-
-\newpage
-\section{Conclusion}
-
-meta-graph [future work: probabalistic models]
-
-
-{\small
-\bibliographystyle{abbrv}
-\bibliography{pr-refs,siddpubs/siddpubs-conf,siddpubs/siddpubs-journal,siddpubs/siddpubs-misc}
-}
 
 \end{document}
