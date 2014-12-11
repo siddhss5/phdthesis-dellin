@@ -43,12 +43,11 @@
 
 \maketitle
 
-%\begin{abstract}
-%  Driven by a symbolic task planner, plan a feasible or low-cost sequence of
-%  robot trajectory segments to solve a multi-step manipulation problem
-%  (e.g. move an object, turn a valve, etc).
-%\end{abstract}
-
+\begin{abstract}
+   Driven by a symbolic task planner, plan a feasible or low-cost sequence of
+   robot trajectory segments to solve a multi-step manipulation problem
+   (e.g. move an object, turn a valve, etc).
+\end{abstract}
 
 \tableofcontents
 
@@ -139,6 +138,19 @@ there is the cost incurred while executing that trajectory.
 This is the traditional cost optimized for by planners.
 Second, there is the cost incurred from actually computing the solution
 itself.
+
+This dichotomy of effort is, of course, not new.
+From Winston's \emph{Articifial Intelligence} \cite{winston1977ai},
+\begin{quote}
+   ``Properly speaking, the problem of determining a good path is a search
+   problem in which two kinds of effort are involved:
+   \begin{itemize}
+   \item First, there is the effort expended in \emph{finding} either
+      some path or the best path.
+   \item And, second, there is the effor actually expended in
+      \emph{traversing} the network.''
+   \end{itemize}
+\end{quote}
 
 For the application of manipulation planning for articulated robots,
 in paricular,
@@ -313,14 +325,16 @@ See Figure~\ref{fig:seg-intro} for an example.
 
 \subsection{Generic Best-First Search Algorithm over Paths}
 
-Best-first search [CITE] is a general class of search algorithms.
+Best-first search \cite{winston1977ai}
+is a general class of search algorithms.
 We choose to express the general algorith
 over \emph{paths} instead of \emph{vertices}
 for clarity and generality
 because we are focused primarily on explicit graphs.
 However, Section~\ref{sec:implicit} shows
 how it reduces to traditional A* search
-for certain types of evaluation functions.
+for certain types of evaluation functions,
+as is required when searching over implicit graphs.
 
 \begin{algorithm}
 \caption{Generic Best-First Search Algorithm}
@@ -452,7 +466,7 @@ What is the cost function $f(\pi)$ over paths used to select the
 path for evaluation at each iteration?
 For now, we will use the following path objective:
 \begin{equation}
-   f_x(\pi) = \mbox{\emph{optimistic path cost}}.
+   f_x(\pi) = \mbox{\emph{optimistic estimate of execution effort}}.
 \end{equation}
 In other worts, $f_x(\pi)$ gives a lower bound on the cost of executing
 path $p$.
@@ -669,10 +683,33 @@ with bidirectional edge evaluations
 So far, we've been searching for a path which optimizes our solution
 cost objective (\ref{eqn:execution-cost-objective}).
 However, as we motivated in the introduction,
-we are actually also looking to minimize time to compute a solution.
+there are two distint notions of efficency,
+and our objective so far (\ref{eqn:execution-cost-objective})
+has only captured one of the two.
+Here, we focus instead on \emph{planning efficiency},
+and attempt to define an objective which captures it.
+We hope that doing so will lead to searches which consume less 
+time or energy.
 
-Therefore, we introduce a new planning-time objective $f_p$
-which penalizes time spent evaluating edges along a potential path:
+\begin{equation}
+   f_p(\pi) = \mbox{\emph{optimistic estimate of planning effort}}.
+\end{equation}
+
+What type of metric should we use?
+
+\subsection{Metrics for Planning Effort}
+
+For problems over very large graphs,
+planning effort may be dominated by expanding vertices
+or maintaining priority queues.
+Therefore, traditional metrics for evaluating planning
+effort are \emph{vertices expanded}
+and \emph{heap percolates}.
+However, for many manipulation problems,
+search time is instead dominated by edge evaluations.
+
+Therefore, we introduce a new objective $f_p$
+which penalizes effort spent evaluating edges along a potential path:
 \begin{equation}
    f_p(\pi) = \sum_{e \in \pi} \left\{
    \begin{array}{cl}
@@ -686,7 +723,8 @@ This uses a new heuristic $\hat{p}(e)$ which estimates the cost
 associated with evaluating an edge.
 This could be planning time, computational energy required, etc.
 
-The first graph planner to explicitly include an estimate of remaining
+The first graph planner to explicitly include such a heuristic
+to estimate the remaining
 computational planning effort in a best-first search
 was A$_\epsilon^*$ \cite{pearl1982semiadmissible}.
 While the approach we take is different from that of
@@ -741,7 +779,7 @@ were proportional to our edge execution cost heuristic,
    \hat{p}(e) = \alpha \, \hat{c}(e) .
 \end{equation}
 This might happen if, for example, each were proportional to the edge's
-Euclidean distance (with longer paths taking longer to both collision check
+\emph{distance} (with longer paths taking longer to both collision check
 and execute at constant velocity).
 In this case, we can write:
 \begin{equation}
@@ -785,10 +823,14 @@ $\lambda = \frac{\epsilon-1}{\alpha+\epsilon-1}$.
 \subsection{Relation to Experience Graphs}
 \label{sec:egraphs}
 
-Experience graphs \cite{phillips2012egraphs} are pretty sweet.
-E-graphs are applied to an implicit graph representation.
-(We don't do shortcuts or snap motions.)
-The equivalent E-graph edge weights are:
+Experience graphs \cite{phillips2012egraphs}
+are a type of best-first search which
+are designed to find paths quickly by incentivizing the planner
+to rely on on edges from previous successful plans.
+
+While the E-graph planner is originally expressed over implicit graphs,
+we can instead express it as best-first search over paths
+with the following objective:
 \begin{equation}
    f_{\mbox{\scriptsize E-graphs}}(\pi) \propto \sum_{e \in \pi} \left\{
    \begin{array}{cl}
@@ -804,6 +846,7 @@ The Greedy PRM applied to a single $C_{free}$ as described in this chapter
 is equivalent to the E-Graph planner
 with $\epsilon=1$ and $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda}$.
 It's not immediately clear to me why one would choose $\epsilon \neq 1$.
+(Note: we don't do shortcuts or snap motions.)
 
 \section{Planner: Greedy PRM}
 \label{sec:greedy-prm}
@@ -994,7 +1037,7 @@ a naive approach would plan separately in each.
 
 \section{Motivation}
 
-Imagine a simple ``pick and place// manipulation planning scenario
+Imagine a simple ``pick and place'' manipulation planning scenario
 in which an articulated robot in a novel cluttered environment
 is tasked with moving a particular object from a start pose to a goal
 pose in the scene.
@@ -1108,10 +1151,38 @@ I think this is related.
 Also, there are incremental E-graphs \cite{phillips2013anytimeegraphs}
 that we should relate the planner to and compare with.
 
+
 \newpage
 \chapter{Conclusion}
 
 meta-graph [future work: probabalistic models]
+
+
+\newpage
+\chapter[Summary of Proposed Work]{Summary of\\Proposed Work}
+
+\section{Timeline}
+
+See Table~\ref{table:timeline} for the timeline.
+
+\begin{table}
+\centering
+\begin{tabular}{lll}
+\hline
+Topic & Section & Deadline \\
+\hline
+Proposal & & January 2015 \\
+Greedy PRM, Multi-Space & & January 2015 (RSS) \\
+Cached Self-Collision Checked Graphs & & March 2015 (IROS) \\
+?? & & June 2015 (Humanoids) \\
+?? & & October 2015 (ICRA) \\
+Writing & & November 2015 \\
+Defence & & December 2015 \\
+\hline
+\end{tabular}
+\caption{Proposed Timeline}
+\label{table:timeline}
+\end{table}
 
 
 {\small
