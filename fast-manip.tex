@@ -873,8 +873,6 @@ See Figure~\ref{fig:bean} and Figure~\ref{fig:herb-comparison-cdfs}.
 I hope to show that the Greedy PRM is competitive with RRT-Connect
 in terms of planning effort required to find a feasible path.
 
-
-
 \begin{figure}
 \centering
 \begin{subfigure}[b]{0.3\textwidth}
@@ -974,6 +972,12 @@ Lots of literature on that, new sampling strategies, etc.
 \chapter{The Multi-Space Planning Problem}
 \label{chap:multispace}
 
+The purpose of this chapter is to introduce the multi-space planning
+problem,
+talk about its structure in general,
+and show how about how a bunch of different problems in manipulation
+are instances of this type of problem.
+
 In the introduction to this chapter,
 I'll talk about how the multi-step planning problem decomposition
 discussed in Chapter~\ref{chap:formulation}
@@ -988,29 +992,27 @@ and your manipulator has a single IK for the grasp (very simple problem).
 There are three $C_{free}$s here;
 a naive approach would plan separately in each.
 
-\section{Stuff to Integrate}
+\section{Motivation}
+
+Imagine a simple ``pick and place// manipulation planning scenario
+in which an articulated robot in a novel cluttered environment
+is tasked with moving a particular object from a start pose to a goal
+pose in the scene.
 
 \begin{itemize}
 \item comes from structure of multi-step problem
 \item different cfrees
 \item but they're very related!
 \item inclusions, intersections
-\item define multi-space planning problems
-\item motivates trajectory reuse
-\item examples:
-   \begin{itemize}
-   \item multi-step manipulation
-   \item cached self-checked prms
-   \item padded robots (reaching into checkers broad phase stuff)
-   \item changing worlds (only check against deltas)
-   \item conservative bounding boxes for different grabbed object poses
-   \item constantly hypothesizing different sized objects in your hand
-   \end{itemize}
-\item relation to occupancy grid representations of workspace
-   (for deltas, conservative approxs, etc)
-\item how is this related to dual-arm stuff?
-\item how to fit in CMR?
 \end{itemize}
+
+\subsection{Multiple sub-queries}
+
+\subsection{Shared C-space}
+
+\subsection{Each in a different C-free}
+
+\subsection{Relations between C-frees (inclusion, intersection)}
 
 \section{Related Work}
 
@@ -1040,13 +1042,39 @@ Lien and Lu,
 This builds a PRM around obstacles in a database,
 and then reposes them in a new world.
 
-\section{Multiple sub-queries}
+\section{Multi-Space Problem Definition}
 
-\section{Shared C-space}
+Define the general problem.
+Several spaces, each with a different checker.
+Each checker has a different cost.
 
-\section{Each in a different C-free}
+\section{Manipulation Examples of Multi-Space Problems}
 
-\section{Relations between C-frees (inclusion, intersection)}
+\subsection{Multi-Step Problems (Moveable Obstacles)}
+
+For segmented/labeled objects, we can automatically discover
+different $C_{free}$s.
+For example, we have an OpenRAVE module
+which auto-discovers stuff.
+
+Special case of this is if objects are disappearing.
+
+\subsection{Changing Worlds (Broad-Phase Integration)}
+
+relation to occupancy grid representations of workspace
+(for deltas, conservative approxs, etc)
+
+\subsection{Cached Self-Collision Checked Graphs}
+
+\subsection{Padded Robots (Broad-Phase Integration)}
+
+\subsection{Conservative Bounding Volumes for Different Grasps}
+
+\subsection{Conservative Bounding Volumes for Hypothesized Objects}
+
+\subsection{Dual Arm Stuff}
+
+I think this is related.
 
 
 \newpage
