@@ -60,6 +60,7 @@
 \subsection{DRC}
 
 Cite ISER paper \cite{dellin2014drc}.
+Also the journal paper \cite{stentz2014chimp}.
 
 \subsection{Speed! Minimize total task time}
 
@@ -1042,12 +1043,175 @@ in which an articulated robot in a novel cluttered environment
 is tasked with moving a particular object from a start pose to a goal
 pose in the scene.
 
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=1.2]
+% bounding rect
+\draw[color=black!50, thin] (-1.5,-1.5) rectangle (1.5,1.5);
+\tikzstyle{dstyle}=[draw=black,fill=black!50]
+\input{figs/coll2d/tex-start-w}
+\tikzstyle{dstyle}=[draw=black,fill=black]
+\input{figs/coll2d/tex-start-r-valid}
+%\tikzstyle{dstyle}=[draw=black!50]
+%\input{figs/coll2d/tex-start-r-invalid}
+\end{scope}
+\end{tikzpicture}
+\caption{Valid configuration}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=1.2]
+% bounding rect
+\draw[color=black!50, thin] (-1.5,-1.5) rectangle (1.5,1.5);
+\tikzstyle{dstyle}=[draw=black,fill=black!50]
+\input{figs/coll2d/tex-start-w}
+\tikzstyle{dstyle}=[draw=black,fill=white]
+\input{figs/coll2d/tex-start-r-invalid}
+\end{scope}
+\end{tikzpicture}
+\caption{Invalid configuration}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=0.35]
+
+\tikzstyle{every node}=[font=\scriptsize]
+
+% x,y axes
+\draw[->] (-3.14,-3.14) -- (4,-3.14) node[anchor=west] {$\theta_1$};
+\draw[->] (-3.14,-3.14) -- (-3.14,4) node[anchor=south] {$\theta_2$};
+
+% x tick marks with labels
+\draw[-] (-3.14,-3.4) -- (-3.14,-3.14);
+\draw[-] (    0,-3.4) -- (    0,-3.14);
+\draw[-] ( 3.14,-3.4) -- ( 3.14,-3.14);
+\draw	(-3.14,-3.4) node[anchor=north] {$-\pi$};
+\draw	(    0,-3.4) node[anchor=north] {$0$};
+\draw	( 3.14,-3.4) node[anchor=north] {$\pi$};
+
+% y tick marks with labels
+\draw[-] (-3.4,-3.14) -- (-3.14,-3.14);
+\draw[-] (-3.4,    0) -- (-3.14,    0);
+\draw[-] (-3.4, 3.14) -- (-3.14, 3.14);
+\draw	(-3.4,-3.14) node[anchor=east] {$-\pi$};
+\draw	(-3.4,    0) node[anchor=east] {$0$};
+\draw	(-3.4, 3.14) node[anchor=east] {$\pi$};
+
+% points
+\draw[-,style=dotted] (0.2,-3.14) -- (0.2,0.4) -- (-3.14,0.4);
+\draw[fill=black] (0.2,0.4) circle (0.15);
+\draw[-,style=dotted] (2.1,-3.14) -- (2.1,-2.1) -- (-3.14,-2.1);
+\draw[draw=black,fill=white] (2.1,-2.1) circle (0.15);
+
+% legend
+\draw[fill=black] (1,3.2) circle (0.15);
+\draw	(1,3.2) node[anchor=west] {valid};
+\draw[draw=black,fill=white] (1,2.3) circle (0.15);
+\draw	(1,2.3) node[anchor=west] {invalid};
+
+\end{scope}
+\end{tikzpicture}
+\caption{Configuration space}
+\end{subfigure}
+\caption{A simple planar 2-link manipulator problem.}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=1.2]
+% bounding rect
+\draw[color=black!50, thin] (-1.5,-1.5) rectangle (1.5,1.5);
+\tikzstyle{dstyle}=[draw=black,fill=black!50]
+\input{figs/coll2d/tex-start-w}
+\tikzstyle{dstyle}=[draw=black,fill=black]
+\input{figs/coll2d/tex-start-r-start}
+%\tikzstyle{dstyle}=[draw=black!50]
+%\input{figs/coll2d/tex-start-r-invalid}
+\end{scope}
+\end{tikzpicture}
+\caption{Valid configuration}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=0.35]
+
+\tikzstyle{every node}=[font=\scriptsize]
+
+% x,y axes
+\draw[->] (-3.14,-3.14) -- (4,-3.14) node[anchor=west] {$\theta_1$};
+\draw[->] (-3.14,-3.14) -- (-3.14,4) node[anchor=south] {$\theta_2$};
+
+% x tick marks with labels
+\draw[-] (-3.14,-3.4) -- (-3.14,-3.14);
+\draw[-] (    0,-3.4) -- (    0,-3.14);
+\draw[-] ( 3.14,-3.4) -- ( 3.14,-3.14);
+\draw	(-3.14,-3.4) node[anchor=north] {$-\pi$};
+\draw	(    0,-3.4) node[anchor=north] {$0$};
+\draw	( 3.14,-3.4) node[anchor=north] {$\pi$};
+
+% y tick marks with labels
+\draw[-] (-3.4,-3.14) -- (-3.14,-3.14);
+\draw[-] (-3.4,    0) -- (-3.14,    0);
+\draw[-] (-3.4, 3.14) -- (-3.14, 3.14);
+\draw	(-3.4,-3.14) node[anchor=east] {$-\pi$};
+\draw	(-3.4,    0) node[anchor=east] {$0$};
+\draw	(-3.4, 3.14) node[anchor=east] {$\pi$};
+
+\begin{scope}[shift={(-3.14,-3.14)},scale=6.28]
+\tikzstyle{fdstyle}=[color=black!40, fill=black!20, thin]
+\input{figs/coll2d/space-s}
+\end{scope}
+
+\end{scope}
+\end{tikzpicture}
+\caption{Configuration space}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{0.3\textwidth}
+\begin{tikzpicture}
+\begin{scope}[scale=1.2]
+% bounding rect
+\draw[color=black!50, thin] (-1.5,-1.5) rectangle (1.5,1.5);
+\tikzstyle{dstyle}=[draw=black,fill=black!50]
+\input{figs/coll2d/tex-start-w}
+\tikzstyle{dstyle}=[draw=black,fill=white]
+\input{figs/coll2d/tex-start-r-invalid}
+\end{scope}
+\end{tikzpicture}
+\caption{Invalid configuration}
+\end{subfigure}%
+\caption{Illustration of solution.}
+\end{figure}
+
+If we put some text in here, it shows up in the right place.
+
 \begin{itemize}
 \item comes from structure of multi-step problem
 \item different cfrees
 \item but they're very related!
 \item inclusions, intersections
 \end{itemize}
+
+See Figure~\ref{fig:multi-space-example} for a simple motivating example.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+
+\node (a) at (0,0) {woo};
+
+\end{tikzpicture}
+\caption{An example of different $C_{free}$s}
+\label{fig:multi-space-example}
+\end{figure}
 
 \subsection{Multiple sub-queries}
 
