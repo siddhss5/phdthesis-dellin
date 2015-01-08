@@ -1,7 +1,3 @@
-PERLINDIR = ~/svn/pr/etc/people/cdellin/code/perlin
-OMPL2DTESTERDIR = ~/svn/pr/etc/people/cdellin/code/ompl_2d_tester
-MULTIRRTCOMPARE = ~/svn/pr/etc/people/cdellin/code/multi-rrt-compare
-
 PAPERS = fast-manip
 
 all: $(foreach p,$(PAPERS),$p.pdf)
