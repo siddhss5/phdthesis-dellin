@@ -12,6 +12,9 @@
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb} % for \square
 
+% from http://tex.stackexchange.com/a/5255
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 % algorithm stuff
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
@@ -30,23 +33,110 @@
 \usepackage{subcaption}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows,backgrounds,positioning,shapes,decorations.pathmorphing}
+\usetikzlibrary{arrows,backgrounds,calc,positioning,shapes,decorations.pathmorphing}
 
 % plots
 \usepackage{pgfplots}
 
+% tables
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\usepackage{titling}
+
+\usepackage{changepage} % for adjustwidth
+
+%\def\hidenotes{}
+% list of commenters
+\newcommand{\ssnote}[1]{{\xxnote{SS}{red}{#1}}}
+\newcommand{\cdnote}[1]{{\xxnote{CD}{blue}{#1}}}
+\newcommand{\mknote}[1]{{\xxnote{MK}{green}{#1}}}
+% implement conditional notes (turn on/off with \hidenotes above)
+\newcommand{\xxnote}[3]{}
+\ifx\hidenotes\undefined
+  \usepackage{color}
+  \renewcommand{\xxnote}[3]{\color{#2}{#1: #3}}
+\fi
+
+% wide page for side by side figures, tables, etc
+% see http://tex.stackexchange.com/a/154766
+\newlength{\offsetpage}
+\setlength{\offsetpage}{1.5in}
+\newenvironment{widepage}{\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
+    \addtolength{\textwidth}{2\offsetpage}}%
+{\end{adjustwidth}}
+
 \title{Fast Manipulation\\Task Planning}
 \author{Christopher M. Dellin}
-\date{\today} 
+\date{\today}
+
+\renewcommand{\maketitlehookd}{
+\begin{center}
+\vspace{0.7in}
+The Robotics Institute\\
+Carnegie Mellon University\\
+Pittsburgh, PA 15213\\
+\vspace{0.7in}
+\textbf{Thesis Committee:}\\
+Siddhartha Srinivasa, CMU RI (Chair)\\
+Anthony Stentz, CMU RI\\
+Maxim Likhachev, CMU RI\\
+Lydia Kavraki, Rice University\\
+\vspace{0.7in}
+\emph{Submitted in partial fulfillment of the requirements\\
+for the degree of Doctor of Philosophy.}
+\end{center}
+}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-   Driven by a symbolic task planner, plan a feasible or low-cost sequence of
-   robot trajectory segments to solve a multi-step manipulation problem
-   (e.g. move an object, turn a valve, etc).
+Driven by a symbolic task planner, plan a feasible or low-cost sequence of
+robot trajectory segments to solve a multi-step manipulation problem
+(e.g. move an object, turn a valve, etc).
+
+\textbf{From RSS paper:}
+Motion planning approaches that build graphs
+in the collision-free subset of configuration space
+have proven promising
+for high-dimensional articulated robotics problems
+in unstructured environments.
+However, many complex tasks (e.g. manipulation)
+present two primary challenges.
+First, the subset of collision-free configurations changes each time
+the robot, objects, or people move, items are grasped or released,
+or the fidelity of the robot's models changes.
+This makes it difficult not only to apply the results of prior
+planning computation to the current problem,
+but also to efficiently consider planned or hypothesized motions,
+especially in multi-step tasks.
+Second, human-scale tasks are time-sensitive,
+and these approaches incur significant planning cost
+(comparable to execution cost)
+which is dominated by collision checking.
+To address these challenges,
+we make two principal contributions.
+First, we introduce \emph{multi-set planning},
+a formulation which explicitly represents structure
+between similar problems in C-space
+using set-theoretic relations
+and a cost model incorporating both planning and execution costs.
+Second, we present the \emph{Multi-Set PRM} algorithm
+which exploits this representation
+by applying best-first search over roadmaps
+with an objective which optimistically minimizes these costs.
+We show that this approach automatically reuses planning computation
+from similar problems when useful,
+naturally replicating diverse behavior from prior
+manipulation work designed to improve planner efficiency,
+such as cached graphs, conservative bounding volumes,
+and handling of dynamic environments.
+We detail experimental results on a multi-step
+manipulation task which show greater than a 3x improvement
+in planning costs,
+and provide an open-source implementation of our planner.
 \end{abstract}
 
 \tableofcontents
@@ -107,7 +197,7 @@ We'll build a meta-graph.
 
 Two complementary things:
 make each step fast (Chapter~\ref{chap:inflate}),
-and exploit structure between steps (Chapter~\ref{chap:multispace}).
+and exploit structure between steps (Chapter~\ref{chap:multi-set}).
 
 Then we talk about the full task planner later.
 
@@ -215,6 +305,10 @@ Lots of other prior work here that is not manipulation-focused.
 Local minima problems.
 Difficult to cache / apply to similar problems.
 
+This is largely complementary.
+Use sampling-based planning to quickly find feasible solutions,
+and then optimize them.
+
 \subsection{Incremental Construction Algorithms}
 
 We could construct the graph incrementally and in response to the shape
@@ -241,6 +335,11 @@ Difficult to cache things.
 \subsection{Anytime algorithms}
 
 Compare to RRT*, FMT*, BIT*, etc.
+
+\subsection{Other}
+
+Need to look into the SBL planner \cite{sanchezante2001sbl}
+(Single Query BiDirectional Lazy PRM).
 
 \section{Best-First Graph Search}
 \label{sec:best-first}
@@ -861,11 +960,184 @@ Based on empirical results, we also use the bidirectional edge evaluation
 algorithn,
 since it tends to finish faster.
 
-\subsection{Implementation Details}
+The Mult-Set PRM is the result of applying
+best-first graph search to
+a probabilistic roadmap \cite{kavrakietal1996prm}
+embedded in $\mathcal{C}$,
+where the cost of each edge captures an optimistic estimate of
+the execution cost and the current planning cost remaining.
+The planner effectively exploits the multi-set structure
+from Section~\ref{subsec:problem-definition},
+guided by the cost model from Section~\ref{subsec:cost-model}
+to minimize total task cost.
 
-Talk about how the algorithm actually functions
-(including all the speedups currently implemented,
-plus new ones based on LPA* etc).
+The Multi-Set PRM is \emph{multi-query},
+in that the same graph
+structure $G$ is maintained within the configuration space
+$\mathcal{C}$.
+
+The algorithm is also \emph{lazy},
+in that edge evaluations are deferred until they are needed.
+In fact, it can be seen as a generalization of the
+LazyPRM \cite{bohlin2000lazyprm}
+which also considers planning cost in its objective.
+Further,
+the algorithm is heuristic-focused,
+and its behavior mimics that of an inflated heuristic planner
+depending on the selection of the planning/execution cost
+tradeoff parameter $\lambda$
+as described in Section~\ref{subsec:alg-opt-path-cost}.
+
+\subsection{Best-First Search over Paths on Explicit Graphs}
+\label{subsec:alg-greedy-prm}
+
+\begin{algorithm}
+\caption{Greedy PRM}
+\label{alg:greedy-prm}
+\begin{algorithmic}[1]
+\Procedure {\textsc{MultiSetPRM}}{$G, \mathcal{Q}, N, \lambda$}
+%\State $G.V \leftarrow \emptyset$
+%\State $G.E \leftarrow \emptyset$
+\Loop
+   \State \textsc{PrmAddSamples}($G, \mathcal{Q}, N$)
+      \Comment See Sec.~\ref{subsec:alg-greedy-prm}
+   \Loop
+         \label{line:best-first-start}
+      \State $\pi^* = \argmin\limits_{\pi \in \Pi(G,\mathcal{Q})}
+         \big[ \lambda \, f_p[\pi] + (1 - \lambda) \, f_e[\pi] \big]$
+         \label{line:select-optimistic-path}
+      \If {$\pi^* = \mbox{\textbf{nil}}$}
+        \State \textbf{break}
+      \EndIf
+      \If {\textsc{EvalPath}$(\pi^*)$}
+         \State \Return $\pi^*$
+            \Comment Success
+      \EndIf
+   \EndLoop
+      \label{line:best-first-end}
+\EndLoop
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+The Greedy PRM (Alg.~\ref{alg:greedy-prm})
+operates on an initially empty persistent roadmap graph $G$.
+Each vertex represents a configuration $x \in \mathcal{C}$,
+and each edge represents a path $x(t)$ planned by a local planner.
+Similarly to the LazyPRM,
+edges are not evaluated until necessary.
+
+The algorithm proceeds in \emph{batches};
+at the start of each batch,
+the \textsc{PrmAddSamples} procedure adds
+$N$ additional vertices to the graph sampled from $\mathcal{C}$
+(including sampled start and goal configurations from $\mathcal{Q}$
+if not yet present),
+and edges are generated according to the PRM construction method.
+The Multi-Set PRM does not commit to any particular such method
+(e.g. r-disk, K-nearest-neighbors).
+
+The remainder of the algorithm
+(lines \ref{line:best-first-start} - \ref{line:best-first-end})
+proceeds as a best-first search over paths.
+At each iteration,
+we select the potentially feasible path $\pi^*$
+which minimizes the optimistic
+planning/execution cost function.
+If no such path exists
+(all paths have been shown to be infeasible),
+we introduce a new batch.
+Otherwise, we evaluate the current path with
+\textsc{EvalPath}
+(Section~\ref{subsec:alg-path-evaluation}),
+returning the path on success.
+
+Note that while
+algorithm~\ref{alg:greedy-prm} supposes that you completely solve
+one query before moving on to the next,
+the planner can be interrupted at any point,
+allowing for interleaving queries.
+
+Line~\ref{line:select-optimistic-path}
+implements the Greedy PRM's objective
+which trades off between planning and execution cost,
+mediated by the parameter $\lambda \in [0,1]$.
+Adjusting $\lambda$ varies the behavior between feasible and optimal.
+With $\lambda = 0$,
+only execution cost is considered,
+and the algorithm reduces to the LazyPRM
+(assuming it's applied to a simple, single-set problem).
+
+The execution cost component is given by $f_e[x(t)]$
+as defined in the cost model $\mathcal{M}$
+(Section~\ref{subsec:cost-model}).
+The optimistic estimate of the remaining planning cost for the path
+is computed by determining the cost of the optimistic plan for each
+edge using the \textsc{OptEdgePlan} function
+(Section~\ref{subsec:alg-opt-edge-plan}).
+
+\subsection{Path Evaluation}
+\label{subsec:alg-path-evaluation}
+
+\begin{algorithm}
+\caption{Partial Path Evaluation}
+\label{alg:path-evaluation}
+\begin{algorithmic}[1]
+\Function {\textsc{EvalPath}}{$\pi$}
+   \ForAll {$e \in \pi$}
+         \label{line:edge-evaluation-order}
+      \State $(S_{plan}, b_{plan}, c_{plan})
+         = \mbox{\textsc{OptEdgePlan}}(e)$
+      \ForAll {$X \in S_{plan}$}
+         \State $b_{act} = \mathbf{1}_X[e]$
+         \State $\arraycolsep=2pt
+            e.P \leftarrow e.P \cup
+            \left\{\left( \begin{array}{rl}
+            \mathbf{1}_X & \mbox{if } b_{act} \\
+            \lnot \mathbf{1}_X & \mbox{otherwise} \\
+            \end{array} \right)
+            \right\}$
+         \If {$b_{act} \neq b_{plan}(X)$}
+            \State \Return False
+         \EndIf
+      \EndFor
+   \EndFor
+   \State \Return True
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Once a candidate path is selected,
+it is evaluated by the \textsc{EvalPath} function
+(Alg.~\ref{alg:path-evaluation}).
+Line~\ref{line:edge-evaluation-order} iterates over edges in
+the path,
+which can be done in any order;
+see Section~\ref{subsec:implementation-details} for details.
+For each edge $e$,
+the planned indicator evaluations are actually performed
+(this tends to dominate planning costs).
+The evaluation proceeds until an evaluation does not succeed.
+
+\subsection{Implementation Details}
+\label{subsec:implementation-details}
+
+We provide an implementation of the Multi-Set PRM
+as a plugin for the Open Motion Planning Library \cite{sucan2012ompl}.%
+\footnote{Not available during the anonymous review process.}
+Here, we discuss a few relevant details of the implementation.
+
+We implement the algorithm's best-first search 
+(line~\ref{line:best-first-start} of Alg.~\ref{alg:greedy-prm})
+using a bidirectional variant of Dijkstra's algorithm
+\cite{dijkstra1959anote}.
+This requires that the execution cost functional $f_e[x(t)]$
+be additive.
+Efficiency could be further increased by applying incremental
+graph search algorithms \cite{koenig2004lpastar} to the problem.
+We implement the indicator functionals $\mathbf{1}_X[x(t)]$
+approximately by evaluating the corresponding indicator functions
+$\mathbf{1}_X(x)$ at a fixed resolution along the path.
 
 \subsection{Choosing $\lambda$}
 
@@ -1010,13 +1282,16 @@ How to handle the narrow passage problem?
 Lots of literature on that, new sampling strategies, etc.
 (Toggle PRM, for instance.)
 
+\section{Stuff to Integrate}
+
+Relation of batchiness to probabalistic model of C-space.
 
 
 \newpage
-\chapter{The Multi-Space Planning Problem}
-\label{chap:multispace}
+\chapter{The Multi-Set Planning Problem}
+\label{chap:multi-set}
 
-The purpose of this chapter is to introduce the multi-space planning
+The purpose of this chapter is to introduce the multi-set planning
 problem,
 talk about its structure in general,
 and show how about how a bunch of different problems in manipulation
@@ -1031,10 +1306,82 @@ $C_{free}$s, but that are related.
 For example, say you're planning to move an object from an initial
 location to a goal location,
 and then move your manipulator back to the start pose.
+See Figure~\ref{fig:manip-example}.
 You have a single grasp for the object,
 and your manipulator has a single IK for the grasp (very simple problem).
 There are three $C_{free}$s here;
 a naive approach would plan separately in each.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.45\linewidth}
+\includegraphics[width=\columnwidth]{figs/simple-table-clearing-task.png}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[b]{.45\linewidth}
+\input{figs/multiple-sets}
+\end{subfigure}
+\caption{
+  The set of valid configurations for an articulated robot (left)
+  changes often,
+  especially in dynamic environments
+  and multi-step manipulation problems.
+  By describing this structure explicitly as set relations (right)
+  and performing best-first search
+  minimizing both planning and execution cost,
+  we effectively reuse computation between similar
+  problems.}
+\label{fig:manip-example}
+\end{figure}
+
+\section{From RSS Intro}
+
+Motion planning approaches that build graphs
+in the collision-free subset of
+\emph{configuration space} \cite{lozanoperez1983cspace},
+e.g. the
+PRM \cite{kavrakietal1996prm}
+and RRT \cite{lavallekuffner1999rrt},
+have proven promising
+for high-dimensional articulated robotics problems
+in unstructured environments.
+These approaches devote a large amount of computational effort
+testing configurations and paths for collision,
+and the resulting graph can then be reused
+for other queries in the same collision-free subset.
+
+However,
+for manipuation problems,
+this subset of the robot's configuration space
+is sensitive to the locations and shapes of
+both people and objects in the environment,
+as well as the robot itself.
+In addition, it depends on the shape and pose of any object
+grasped by the robot.
+This makes it difficult not only to apply the results of prior
+planning computation to the current problem,
+but also to efficiently consider planned or hypothesized motions,
+since we must reconstruct our graph from scratch whenever
+the environment changes.
+This is especially the case for
+multi-step manipulation tasks that must be planned into the future.
+%We want to continuously update our representation for detours.
+
+A large body of prior work has focused on methods to
+improve planning efficiency on manipulation problems,
+which we review in Section~\ref{sec:related-work}.
+Our first key insight is that many of these approaches are
+in fact special instances of a more general structure,
+which we formulate as the \emph{multi-set planning problem}
+in Section~\ref{sec:multi-set}.
+
+The Multi-Set PRM,
+when applied to manipulation problems,
+naturally produces an array of efficient behavior.
+Section~\ref{sec:in-manipulation} outlines several such instances,
+and also provides selected experimental results
+on a multi-step manipulation task.
+We also provide an open-source implementation of our algorithm.
 
 \section{Motivation}
 
@@ -1200,7 +1547,7 @@ If we put some text in here, it shows up in the right place.
 \item inclusions, intersections
 \end{itemize}
 
-See Figure~\ref{fig:multi-space-example} for a simple motivating example.
+See Figure~\ref{fig:multi-set-example} for a simple motivating example.
 
 \begin{figure}
 \centering
@@ -1210,7 +1557,7 @@ See Figure~\ref{fig:multi-space-example} for a simple motivating example.
 
 \end{tikzpicture}
 \caption{An example of different $C_{free}$s}
-\label{fig:multi-space-example}
+\label{fig:multi-set-example}
 \end{figure}
 
 \subsection{Multiple sub-queries}
@@ -1222,6 +1569,139 @@ See Figure~\ref{fig:multi-space-example} for a simple motivating example.
 \subsection{Relations between C-frees (inclusion, intersection)}
 
 \section{Related Work}
+
+The topic of reusing planning computation
+between similar motion planning problems
+has been extensively studied in different domains.
+
+\subsection{Explicit Configuration Spaces}
+
+Early planning methods constructed explicit obstacles
+directly in the configuration space.
+This allows reuse via precomputed bitmaps
+for translating robots \cite{kavraki1995cspacefft}
+or via workspace primitives \cite{newmanbranicky1991cspacetransforms}.
+One form of reuse is to precompute these for primitives.
+More recently,
+Lien and Lu \cite{lien2009similarobstacles} describe a method to
+build a PRM around obstacles in a database,
+and then reposes them in a new world.
+The approach is not easily applicable to articulated robots
+with complex mappings from workspace to C-space.
+
+\subsection{Changing Free $\mathcal{C}$-Subsets}
+
+Other approaches attempt to prune and grow graphs
+within dynamically changing collision-free subsets,
+e.g. the Dynamic RRT \cite{ferguson2006drrt},
+the Reconfigurable Random Forest (RRF)
+\cite{li2002incrementalprmmanagement},
+and the Lazy Reconfiguration Forest
+\cite{gayle2007lazyreconfigforest}.
+%We do the lazy thing as well (built into our planner).
+%None of these reason about the structure of the configuration space.
+However, these approaches do not reason explicitly about the
+structure of the configuration space.
+
+\subsection{Static vs Dynamic Components of $\mathcal{C}_{free}$}
+
+Some approaches do take advantage of such structure
+through a two-level dichotomy between
+permanent and non-permanent parts of $\mathcal{C}_{free}$.
+Leven and Hutchinson \cite{leven2000changing}
+and similar work \cite{kallman2004dynamicroadmaps}
+handle changing environments by
+precomputing a self-collision-free roadmap,
+and then pruning it at query time
+using a mapping from workspace cells to roadmap edges.
+%This can also be viewed through the multi-space lens
+%-- I think this is just an instantiation of a bunch of sets.
+%They're very focused on the precomputation stuff.
+%However, this approach this can't directly handle grasped objects.
+Other methods \cite{jaillet2004dynamicprm}
+exploit the dichotomy between static and dynamic parts of
+the world online.
+
+\subsection{Task and Motion Planning}
+
+The structure in manipulation tasks that our approach leverages
+is similar to the \emph{conditional reachability graph} which is
+part of the recent \textsc{FFRob} heuristic task planning framework.
+However, the framework is not incentivized to explore
+areas of the configuration space that have already been explored.
+
+\subsection{Fast Collision Checking}
+
+Broad-phase collision checking.
+See Section~\ref{subsec:broad-phase} for more on this.
+I need cites!
+
+\subsection{Sampling Strategies}
+
+Also Kurniawati and Hsu's
+\emph{Workspace-based Connectivity Oracle}
+\cite{kurniawati2008workconnoracle}
+which is a smart sampling strategy which considers workspace
+geometry to inform PRM sampling.
+Kurniawati has a bunch of other work on PRM fundamentals and sampling.
+I think our approach is complementary to a PRM sampling strategy.
+Or, you could do deterministic sampling
+\cite{lavalle2002gridprms} \cite{geraerts2002prmcomparison}.
+
+\subsection{Multi-Resolution Planning}
+
+\noindent
+\begin{itemize}
+\item S. Kambhampati 1986
+\item R. Steffens 2010
+\item S. Zickler 2010
+\item K. Gochev 2013
+\end{itemize}
+
+\subsection{Graph Search}
+
+Many graph-search approaches are relevant to planning in similar
+environments.
+Algorithms such as
+D* \cite{stentz1994dstar}
+or LPA* \cite{koenig2004lpastar}
+handle dynamically changing (or incrementally discovered) worlds.
+Experience graphs \cite{phillips2012egraphs} are a method to apply
+computation from previous graph-search planning queries
+to the current problem.
+The \textsc{BUGSY} algorithm \cite{ruml2007bugsy}
+is most similar to our approach in the way that it explicitly
+trades off between planning and execution (solution) cost.
+
+\subsection{Other Related Work to Integrate}
+
+Symbolic planning frameworks.
+
+Newman and Branicky,
+\emph{Real-Time Configuration Space Transforms for Obstacle Avoidance}
+\cite{newmanbranicky1991cspacetransforms}
+is a way to reuse stuff in related worlds.
+From Sidd:
+\begin{quote}
+i know i've told you this before,
+but it reminds me of how back in the day
+people used to construct cobs
+by stamping together cobs for primitives;
+it's a form of reuse;
+caching old cobs and transforming them for new problems
+
+Here's a paper that talks about approximating C-obstacles.
+They have a nice [obvious] theorem in 5.2. Set Containment Property.
+\end{quote}
+
+Also \cite{kavraki1995cspacefft}?
+
+Also Kurniawati and Hsu's
+\emph{Workspace-based Connectivity Oracle}
+\cite{kurniawati2008workconnoracle}
+which is a smart sampling strategy which considers workspace
+geometry to inform PRM sampling.
+Kurniawati has a bunch of other work on PRM fundamentals and sampling.
 
 Jaillet and Simeon,
 \emph{A PRM-based motion planner for dynamically changing environments}
@@ -1249,54 +1729,962 @@ Lien and Lu,
 This builds a PRM around obstacles in a database,
 and then reposes them in a new world.
 
-\section{Multi-Space Problem Definition}
+This is very similar to the \emph{conditional reachability graph}
+presented by Garrett, Lozano-Perez, and Kaelbling
+\cite{garrett2014ffrob}
+as part of their task and motion symbolic planning mumbo-jumbo!
 
-Define the general problem.
-Several spaces, each with a different checker.
-Each checker has a different cost.
+Also similar to the way changing environments are handled in PRMs
+from Leven and Hutchinson \cite{leven2002changing}.
 
-\section{Manipulation Examples of Multi-Space Problems}
+\section{Multi-Set Problem Formulation}
+\label{sec:multi-set}
 
-\subsection{Multi-Step Problems (Moveable Obstacles)}
+\begin{figure*}
+\begin{widepage}
+\centering
 
-For segmented/labeled objects, we can automatically discover
-different $C_{free}$s.
-For example, we have an OpenRAVE module
-which auto-discovers stuff.
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/figstar-a}
+\caption{A two-part multi-set problem in $\mathcal{C}$,
+  first between $x_1$ and $x_2$ through $X_{12}$,
+  then between $x_2$ and $x_3$ through $X_{23}$.
+  The two free sets $X_{12}$ and $X_{23}$ are distinct
+  but related.}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/figstar-b}
+\caption{The free sets are related via other underlying
+  subsets of $\mathcal{C}$, with $X_{12}=A \cap B$
+  and $X_{23}=A \cap C$.
+  A planner solving the first part (from $x_1$ to $x_2$)
+  has found paths within $X_{12}$.}
+\label{subfig:figstar-intersections}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/figstar-c}
+\caption{Due to the set relations,
+  a planner solving the second part
+  (from $x_2$ to $x_3$ in $X_{23}$)
+  can reuse any segment known to be in $X_{12}$
+  by checking only for its membership in $C$.}
+\end{subfigure}
+
+\vspace{0.1in}
+
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/example-2d-a}
+\input{figs/example-2d-b}
+\input{figs/example-2d-c}
+\caption{A forklift in a parking lot ($x_1$)
+  must retrieve an object ($x_2$)
+  and reverse park ($x_3$).
+  This two-part problem
+  requires plans in distinct collision-free
+  $\mathcal{C}$-subsets
+  $X_{12}$ and $X_{23}$.}
+\label{subfig:figstar-manip-probdef}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/example-2d-d}
+\input{figs/example-2d-e}
+\input{figs/example-2d-f}
+\caption{Sets $X_{12}$ and $X_{23}$ are subsets of
+  the configuration space of the robot $\mathcal{C}=\mbox{SE}(2)$,
+  and can be represented as intersections
+  of underlying subsets $A$, $B$, and $C$
+  as in Fig.~\ref{subfig:figstar-intersections}.}
+\label{subfig:figstar-manip-spaces}
+\end{subfigure}%
+\quad%
+\begin{subfigure}[t]{.32\linewidth}
+\centering
+\input{figs/example-2d-g}
+\input{figs/example-2d-h}
+\input{figs/example-2d-i}
+\caption{After planning a path from $x_1$ to $x_2$ (top),
+  a planner can reuse a configuration in $X_{12}$ (middle)
+  by checking only for its membership in subset $C$,
+  resulting in plan reuse (bottom).}
+\end{subfigure}
+
+\caption{An illustration of a multi-set planning
+  problem in a common configuration space $\mathcal{C}$.
+  The problem definition generalizes to an artibrary number of
+  configuration space subsets and set relations between them.
+  When two queries in different subests are solved sequentially,
+  a multi-set planner can reuse path segments less expensively.
+  See Section~\ref{sec:in-manipulation} for examples in
+  manipulation.}
+\label{fig:multi-set}
+\end{widepage}
+\end{figure*}
+
+Here we define the multi-set planning problem,
+a generalization of both the movers' problem
+and the multi-query planning problem
+\cite{kavrakietal1996prm}.
+The reader is referred to
+Fig.~\ref{fig:multi-set}
+for a general example,
+as well as a simple instantiation in a 2D manipulation task.
+%which is discussed in more detail in
+%Section~\ref{subsec:multi-prm-example}.
+The multi-set problem formulation
+explicitly captures both planning and
+solution (execution) cost.
+
+\subsection{Formal Multi-Set Problem Definition}
+\label{subsec:problem-definition}
+
+The multi-set planning problem is multi-query in
+a fixed configuration space $\mathcal{C}$.
+However, unlike related problems in which all
+queries demand solution paths contained within a single common subset of
+$\mathcal{C}$
+(usually the set of collision-free configurations, denoted
+$\mathcal{C}_{free}$),
+the multi-set problem allows for the specification of
+\emph{multiple} such $\mathcal{C}$-subsets
+$\mathcal{S} = \{ A, B, \dots \}$.
+Like $\mathcal{C}_{free}$,
+each member of $\mathcal{S}$
+is a subset of the common configuration space
+(that is,
+$X \subseteq \mathcal{C} \;\forall\; X \in \mathcal{S}$).
+For example, in Fig.~\ref{subfig:figstar-manip-spaces},
+$\mathcal{C}$-subset $B$
+consists of configurations
+free of collision between the robot and
+the initial object pose.
+
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\input{figs/query-to-subset-a}
+\caption{Multi-query planning}
+\end{subfigure}%
+\quad\quad%
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\input{figs/query-to-subset-b}
+\caption{Multi-set planning}
+\end{subfigure}
+\caption{While queries in multi-query planning reference
+  the same subset of $\mathcal{C}$,
+  each multi-set query references one of a number of such sets.}
+\label{fig:query-to-subset}
+\end{figure}
+
+The problem supports an arbitrary number of queries $\mathcal{Q}$.
+Each query $q$ references a \emph{single}
+$\mathcal{C}$-subset $X_q \in \mathcal{S}$
+(see Fig~\ref{fig:query-to-subset}):
+\begin{equation}
+  q : ( x_{start},\; x_{goal},\; X_q ) .
+  \label{eqn:q}
+\end{equation}
+A continuous feasible solution path $x(t)$ must then satisfy
+\begin{equation}
+  \begin{array}{c}
+  x(t) \in X_q \;\forall\; t \in [0,1] \\
+  x(0) = x_{start},\; x(1) = x_{goal} . \\
+  \end{array}
+  \label{eqn:solution}
+\end{equation}
+Eqns. (\ref{eqn:q}), (\ref{eqn:solution})
+specify single configurations
+$x_{start}$ and $x_{goal}$,
+but the formulation is trivially extended to start/goal sets.
+
+While simple problems may admit explicit representations of
+subsets of $\mathcal{C}$,
+recent approaches to complex problems
+(e.g. sampling-based planners)
+instead reason implicitly via test function(s)
+\cite{lavalle2006planningbook}.
+To capture this,
+we endow each $\mathcal{C}$-subset $X \in \mathcal{S}$ with an
+\emph{indicator function} $\mathbf{1}_X(x)$:
+\begin{equation}
+  \mathbf{1}_X(x) =
+    \left\{ \begin{array}{ll}
+      \mbox{True} & \mbox{if } x \in X \\
+      \mbox{False} & \mbox{otherwise}.
+    \end{array} \right.
+  \label{eqn:indicator-function}
+\end{equation}
+Equivalently, the set itself can be defined w.r.t. its indicator:
+\begin{equation}
+  X = \{ x \in \mathcal{C} \;|\; \mathbf{1}_X(x) = \mbox{True} \} .
+\end{equation}
+Excusing the abuse of notation,
+we define an analogous indicator functional $\mathbf{1}_X[\cdot]$
+which operates on path segments $x(t)$.
+We use parentheses for functions and brackets for functionals.
+\begin{equation}
+  \mathbf{1}_X[x(t)] =
+    \left\{ \begin{array}{ll}
+      \mbox{True} & \mbox{if } x(t) \in X \;\forall\; t \in [0,1] \\
+      \mbox{False} & \mbox{otherwise}.
+    \end{array} \right.
+  \label{eqn:indicator-functional}
+\end{equation}
+Common examples of such indicators
+(\ref{eqn:indicator-function}) or (\ref{eqn:indicator-functional})
+include validity checkers for
+geometric (workspace) collision,
+stability, and visibility constraints.
+Note that for complex problems,
+evaluation of these indicators 
+tends to dominate planning cost.
+
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\input{figs/relations-inclusion} \\
+$A \subseteq B$ \\
+$\mathbf{1}_A \Rightarrow \mathbf{1}_B$
+\caption{Containment relation}
+\end{subfigure}%
+\quad\quad%
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\input{figs/relations-intersection} \\
+$A = B \cap C$ \\
+$\mathbf{1}_B \wedge \mathbf{1}_C \Rightarrow \mathbf{1}_A$
+\caption{Intersection relation}
+\end{subfigure}
+\caption{Types of relations used in the paper.
+  Each relation can be expressed directly as set relations
+  or equivalently as logical statements
+  on the corresponding indicator functions
+  $\mathbf{1}_X(\cdot)$.}
+\label{fig:relations}
+\end{figure}
+
+Finally, the multi-set problem incudes a list of set relations
+$\mathcal{R}$
+between the $\mathcal{C}$-subsets in $\mathcal{S}$.
+These can be expressed directly using set theoretic relations,
+or equivalently as logical statements
+on the corresponding indicator functions.
+The two types of relations we use in this paper
+(containment and intersection)
+are described in Fig.~\ref{fig:relations}.
+Fig.~\ref{fig:multi-set} gives an example of intersection relations;
+an example of containment is a padded (conservative)
+robot model (see Section~\ref{subsec:broad-phase}).
+
+Together, these four elements
+(a configuration space $\mathcal{C}$,
+subsets $\mathcal{S}$ each with endowed indicators,
+a set of queries $\mathcal{Q}$,
+and a list of subset relations $\mathcal{R}$)
+comprise a multi-set planning problem.
+
+\subsection{Cost Model}
+\label{subsec:cost-model}
+
+While the indicators
+(\ref{eqn:indicator-function}) and (\ref{eqn:indicator-functional})
+are binary,
+we are often interested not only in solution feasibility,
+but also minimizing a measure of \emph{execution cost}
+on the solution path.
+Furthermore,
+\emph{planning cost} is often also an important consideration.
+Here,
+we define a cost model $\mathcal{M}$
+for multi-set problems
+which allows these costs to be captured.
+
+\subsubsection{Execution Cost}
+We capture the expected execution cost of a candidate path
+$x(t)$ in the space of $\mathcal{C}$-space paths $H$
+via a simple functional
+\begin{equation}
+  f_e : H \rightarrow \mathbb{R}_0^+ .
+\end{equation}
+We assume that $f_e[x(t)]$ is known and inexpensive to compute.
+Common metrics include
+execution time (s) or energy (J).
+
+\subsubsection{Planning Cost}
+Since indicator evaluation tends to dominate planning costs
+in sampling-based planners,
+we choose to explicitly penalize such evaluations.
+In particular,
+each call to indicator functional $\mathbf{1}_X[\cdot]$
+incurs a cost given by $f_X[\cdot]$:
+\begin{equation}
+  f_X : H \rightarrow \mathbb{R}_0^+ .
+\end{equation}
+We assume that $f_X[\cdot]$ itself is inexpensive to compute.
+Common estimates include expected collision checking time (s)
+or computational energy required (J).
+Often, $f_X[x(t)]$ is proportional to both
+the length of the path $x(t)$
+and a fixed estimate of the complexity of $\mathcal{C}$-subset $X$.
+
+Together, the execution cost functional $f_e$
+and the planning cost functionals $f_X \;\forall\; X \in \mathcal{S}$
+comprise the multi-set cost model $\mathcal{M}$.
+Note that representing all functionals in common units
+(e.g. seconds or Joules) allows a planners
+(e.g. the Multi-Set PRM in Section~\ref{chap:multi-set-prm})
+to effectively trade off between planning and execution cost.
+
+\subsection{Example Problem}
+\label{subsec:multi-prm-example}
+
+Consider the diagram from Fig.~\ref{fig:multi-set}.
+$\mathcal{S}$ consists of five $\mathcal{C}$-subsets labeled
+$A$, $B$, $C$, $X_{12}$, and $X_{23}$,
+and we have two queries,
+$q_{12}: (x_1, x_2, X_{12})$
+and
+$q_{23}: (x_2, x_3, X_{23})$.
+$\mathcal{R}$ consists of the two relations
+$X_{12} = A \cap B$ and $X_{23} = A \cap C$.
+Suppose a cost model $\mathcal{M}$
+wherein evaluating the indicator
+$\mathbf{1}_A$ incurs cost 4,
+evaluating $\mathbf{1}_B$ and $\mathbf{1}_C$ incurs cost 2,
+and evaluating $\mathbf{1}_{X_{12}}$ and $\mathbf{1}_{X_{23}}$
+incurs cost 6.
+In the manipulation example in
+Fig.~\ref{subfig:figstar-manip-probdef},
+this would be the case if each
+pairwise outlined shape collision check incurs unit cost.
+
+Suppose a graph structure within ${X_{12}}$ has been grown to solve
+the first query $q_{12}$.
+During the subsequent solve of query $q_{23}$,
+an existing path segment known to be in ${X_{12}}$ can be shown to
+also be contained within ${X_{23}}$ by only evaluating $\mathbf{1}_C$.
+In the manipulation example,
+reusing an a configuration from the previous search
+would require only a check of cost 2,
+instead of cost 6 for a new configuration.
+Thus, we might hope that a planner may be biased towards reusing
+said edges in this case.
+
+For a list of example multi-set problems which arise in manipulation
+tasks,
+see Section~\ref{sec:in-manipulation}.
+
+\section{Multi-Set Problems in Manipulation Tasks}
+\label{sec:in-manipulation}
+
+Instances of multi-set problems are especially prevalent when
+planning for manipulation tasks with articulated robots.
+This section details several such instances.
+While these instances are discussed separately here,
+they are often present simultaneously.
+See Section~\ref{subsec:herb-experiment}
+for experimental results for a problem
+which includes several of the multi-set problem instances
+described below.
+
+We also provide an implementation for the
+OpenRAVE\cite{diankov2010openrave}
+virtual kinematic planning environment
+which automatically discovers $\mathcal{C}$-subsets
+in manipulation tasks.
+
+\subsection{Dynamic Environments}
+\label{subsec:dynamic-environments}
+
+\begin{figure}
+\centering
+
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}
+\tikzset{>=latex} % arrow heads
+\node[anchor=south west,inner sep=0] at (0,0)
+  {\includegraphics[width=0.56\columnwidth]{figs/chimp-voxels-delta.png}};
+
+\node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+  (debrislab) at (-0.7,3.5) {Debris object\\removed};
+\node[circle,inner sep=2,draw,fill=white] (debris) at (2.0,2.9) {};
+\draw[draw=black, double=white, double distance=1pt, line width=1pt]
+  (debrislab.east) -- (debris);
+  
+\node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+  (debrislab) at (5.8,5.2) {Additional\\voxels seen};
+\node[circle,inner sep=2,draw,fill=white] (debris) at (4.2,5.0) {};
+\draw[draw=black, double=white, double distance=1pt, line width=1pt]
+  (debrislab.west) -- (debris);
+  
+\end{tikzpicture}
+\caption{A disaster response robot maintains a
+  dynamic unstructured environment model
+  using coarse voxels
+  (scene data from a debris-clearing task at a
+  recent disaster response competition).
+  Since the last planning query,
+  voxels have been added (green) and removed (red).}
+\label{fig:chimp-voxels-delta}
+\end{subfigure}
+
+\vspace{0.1in}
+
+\begin{subfigure}[b]{\linewidth}
+\centering
+\input{figs/retroactive-a}
+\input{figs/retroactive-b}
+\caption{
+  $\mathcal{C}$-subsets and relations
+  can be added retroactively.
+  Here, the graph for an initial query is checked w.r.t $X_1$.
+  After environment changes,
+  $X_1$ is redefined in terms of the $\mathcal{C}$-subsets
+  derived from the set of common, added, and removed elements,
+  allowing for reuse on a query in $X_2$.
+  Here,
+  the planner need only check existing path segments
+  against added voxels in order to reuse them for the current query.}
+\label{fig:retroactive}
+\end{subfigure}
+
+\caption{
+  Structured or unstructured dynamic environments
+  can be represented as a multi-set problem
+  (see Section~\ref{subsec:dynamic-environments}).}
+\label{fig:dynamic-environments}
+\end{figure}
+
+The sensors on most articulated robots allow them to maintain
+dynamic environment models to track changing collision geometry
+(see Fig.~\ref{fig:chimp-voxels-delta}).
+These models might be
+structured (e.g. recognizing objects with known models)
+or unstructured (e.g. occupancy models).
+In both cases,
+even in a changing world,
+there are often areas that are fixed between planning queries.
+
+Prior work (e.g. \cite{jaillet2004dynamicprm})
+leverages this by imposing a dichotomy between
+\emph{fixed} and \emph{moving} components of $\mathcal{C}$.
+Our formulation extends this to an arbitrary number of such labels,
+including ones defined retroactively (i.e. during planning;
+see Fig.~\ref{fig:retroactive}).
+By explicitly labeling such areas in workspace
+(and leveraging the \emph{set containment} property
+\cite{newmanbranicky1991cspacetransforms}),
+we can represent this structure as a multi-set planning problem.
 
 Special case of this is if objects are disappearing.
 
-\subsection{Changing Worlds (Broad-Phase Integration)}
+Relation to occupancy grid representations of workspace
+(for deltas, conservative approxs, etc).
 
-relation to occupancy grid representations of workspace
-(for deltas, conservative approxs, etc)
+\subsection{Grasped Objects}
+\label{subsec:grasped-objects}
 
-\subsection{Cached Self-Collision Checked Graphs}
+One instance specific to manipulation problems is the handling of
+grasped objects.
+For example, 
+consider a manipulator which grasps a geometric object.
+This affects the set of collision-free configurations
+across a large section of $\mathcal{C}$
+relative to the old set of valid configurations $X_{old}$.
+However,
+the resulting $\mathcal{C}$-subset $X_{new}$
+can be represented simply as
+$X_{new} = X_{old} \cap G$,
+with $G$ the set of robot configurations in which
+the \emph{grasped object} (only)
+is deemed free of collision with the robot and environment.
+This structure is discussed in the context of the
+\emph{conditional reachability graph},
+part of the \textsc{FFRob} heuristic framework
+\cite{garrett2014ffrob}.
 
-\subsection{Padded Robots (Broad-Phase Integration)}
+For example,
+consider the manipulation problem in
+Figure~\ref{fig:testherb-problem}.
+The robot must find a path which moves its arm to grasp the cup.
+After the cup is grasped,
+the robot can reuse any edge in the existing roadmap
+but simply checking the grasped cup
+against the remainder of the environment.
+This structure,
+together with the approach to dynamic environments,
+are included together in the experimental results
+(Section~\ref{subsec:herb-experiment}).
+
+\begin{figure}
+\centering
+\input{figs/self-collision}
+\caption{A roadmap is pre-computed in $R$,
+  the subset of $\mathcal{C}$ consisting of configurations free
+  of robot self-collision.
+  Online, the planner must find a path that's also within $E$,
+  the subset free of environment collision.
+  When solving this query in $X = R \cap E$,
+  the Multi-Set PRM automatically prefers potential paths with
+  pre-computed edges (e.g. shown in grey)
+  due to lower planning costs over alternatives with lower
+  execution costs.}
+\label{fig:self-collision-example}
+\end{figure}
+
+\subsection{Cached Self-Collision-Checked Roadmaps}
+\label{subsec:cached-self-valid}
+
+Self-collision checking is a potentially expensive component to
+articulated motion planning;
+in contrast to environment checking,
+it is fundamentally quadratic in the number of moving links.
+Further, pairs of links to be checked
+tend to be relatively close to each other,
+reducing the effeciveness of broad-phase approaches.
+
+Leven and Hutchinson \cite{leven2000changing}
+introduced the concept of a pre-cached roadmap consisting of
+configurations and paths already known to be valid w.r.t.
+self-collision.
+As a type of invariant in $\mathcal{C}$,
+this can be seen as a particular instance of multi-set planning.
+See Fig.~\ref{fig:self-collision-example}.
+
+\begin{figure}
+\centering
+
+\begin{subfigure}[t]{\linewidth}
+\centering
+\input{figs/broadphase-single}
+\caption{A single-set planner testing simply for membership in
+  $\mathcal{C}_{free}$ treats a collision validity checker as a
+  ``black box.''
+  Internally,
+  modern checkers first employ an inexpensive broad-phase check
+  using a low-dimensional conservative representation
+  to quickly identify non-colliding bodies before
+  resorting to an expensive narrow-phase check.}
+\end{subfigure}
+
+\vspace{0.2in}
+
+\begin{subfigure}[t]{\linewidth}
+\centering
+\input{figs/broadphase-multi}
+\caption{A multi-set planner can explicitly reason about the
+  conservative nature of the broad-phase check.
+  This allows it to defer some narrow phase checks
+  (often indefinitely)
+  and instead prefer paths that require fewer expensive checks.}
+\end{subfigure}
+
+\caption{Collision validity checking is a commonly used
+  indicator function.
+  The multi-set formulation allows an intelligent planner to
+  reach inside the checker's ``black box'' and reduce the number
+  of costly narrow-phase checks.
+  Resulting paths tend to be cheaper to compute and
+  stay further from obstacles.}
+\label{fig:broad-phase}
+\end{figure}
+
+\subsection{Integration with Broad-Phase Collision Checking}
+\label{subsec:broad-phase}
+
+\begin{figure}
+\centering
+
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/paths-lambda0-norel.png}
+\caption{
+  $\lambda=0$, no broad phase.\\
+  Median planning cost: 6650}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/paths-lambda1-norel.png}
+\caption{
+  $\lambda=1$, no broad phase.\\
+  Median planning cost: 4530}
+\end{subfigure}
+
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/paths-lambda0-wrel.png}
+\caption{
+  $\lambda=0$, with broad phase.\\
+  Median planning cost: 2122}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/paths-lambda1-wrel.png}
+\caption{
+  $\lambda=1$, with broad phase.\\
+  Median planning cost: 737}
+\end{subfigure}
+
+\caption{A simple 2D example of the Multi-Set PRM using
+  a broad-phase check.
+  Checking for collision with the grey box is 10x less expensive
+  than with the actual black obstacle.
+  \cdnote{I need to talk about this in the text.}}
+\label{fig:broad-phase-2d}
+\end{figure}
+
+The multi-set formulation also enables motion planners to
+reason directly about different robot or environment models.
+For example, consider two geometric robot models,
+one with high quality (e.g. from a CAD program),
+and one hand-tuned ``padded'' model consisting of 
+a small number of simple conservative bounding volumes.
+The $\mathcal{C}$-subsets derived from these models,
+are related by $R_{padded} \subseteq R_{CAD}$.
+Collision checkers currently use a similar approach internally
+to speed up collision checks (see Fig.~\ref{fig:broad-phase}.
+and Fig~\ref{fig:broad-phase-2d}).
 
 \subsection{Conservative Bounding Volumes for Different Grasps}
 
 \subsection{Conservative Bounding Volumes for Hypothesized Objects}
 
+There's a sweet ICRA paper here.
+
 \subsection{Dual Arm Stuff}
 
 I think this is related.
 
+Check right arm against gian left side box, etc.
+
+\subsection{Dimensionality Reduction}
+
+The Handey \cite{lozanoperez1987handey} robot
+assumed a box that contained the wrist links at a range of DOF values.
+
 
 \newpage
-\chapter{Applying GreedyPRM to MultiSpace: the GreedyMultiPRM}
+\chapter{Applying Greedy PRM to Multi-Set: the Multi-Set Greedy PRM}
+\label{chap:multi-set-prm}
 
 \begin{itemize}
-\item GreedyPRM and multi-space are complementary
-\item Apply greeydprm to multi-space problem
+\item GreedyPRM and multi-set are complementary
+\item Apply greeydprm to multi-set problem
 \item one planner that learns, can answer arbitrary queries
    in multiple related spaces faster and faster
 \end{itemize}
 
+\section{From RSS Intro}
 
-\newpage
-\chapter{A simple task planner using the GreedyMultiPRM}
+This computational burden is especially troublesome
+in time-sensitive human-scale manipulation tasks
+(e.g. from household or disaster response domains).
+The costs incurred by the planner
+(computation time / electrical energy)
+and the robot's motor controllers
+(execution time / mechanical energy)
+tend to be of comparable magnitude in such domains.
+As a result,
+we'd like an approach which can reason about both
+planning \emph{and} execution costs,
+striving for a balance between feasibility and optimality.
+
+Our second key insight
+is to apply the principle of best-first search over roadmaps
+using an objective which explicitly considers both planning and
+execution costs.
+The result is the Multi-Set PRM (Section~\ref{chap:multi-set-prm}).
+This approach allows the planner to exploit the multi-set structure
+inherent in these problems.
+%We show the relation of this approach to inflated heuristics
+%when applied to traditional graph search over implicit graphs.
+
+\section{Related Work}
+
+Also, there are incremental E-graphs \cite{phillips2013anytimeegraphs}
+that we should relate the planner to and compare with.
+
+\section{Implementation Details}
+
+\subsection{Calculating the Optimistic Path Cost}
+\label{subsec:alg-opt-path-cost}
+
+The execution cost component is given by $f_e[x(t)]$
+as defined in the cost model $\mathcal{M}$
+(Section~\ref{subsec:cost-model}).
+The optimistic estimate of the remaining planning cost for the path
+is computed by determining the cost of the optimistic plan for each
+edge using the \textsc{OptEdgePlan} function
+(Section~\ref{subsec:alg-opt-edge-plan}).
+
+\begin{algorithm}
+\caption{Calculating the Optimistic Edge Plan}
+\label{alg:opt-edge-plan}
+\begin{algorithmic}[1]
+\Function {$\mbox{\textsc{OptEdgePlan}}$}{$e$}
+   \State $(S_{best}, b_{best}, c_{best})
+      \leftarrow (\mbox{\textbf{nil}}, \mbox{\textbf{nil}}, \infty)$
+   \ForAll {$S \in \mathcal{P}(\mathcal{S})$}
+         \label{line:power-set}
+      \State $c = \sum_{X \in S} f_X[e]$
+      \ForAll {$b \mbox{ \textbf{s.t.} }
+            b : S \rightarrow \{\mbox{True},\mbox{False}\}$}
+            \label{line:all-binary-functions}
+         \State $\arraycolsep=2pt
+            P_{new} =
+            \left\{\left.\left( \begin{array}{rl}
+            \mathbf{1}_X & \mbox{if } b(X) \\
+            \lnot \mathbf{1}_X & \mbox{otherwise} \\
+            \end{array} \right)
+            \right|
+            X \in S
+            \right\}$
+         \If {$P_{rels} \cup e.P \cup P_{new}
+               \Rightarrow \mathbf{1}_{X_g}$ is valid}
+            \If {$c < c_{best}$}
+               \State $(S_{best}, b_{best}, c_{best})
+                  \leftarrow (S, b, c)$
+            \EndIf
+         \EndIf
+      \EndFor
+   \EndFor
+   \State \Return $(S_{best}, b_{best}, c_{best})$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Calculating the Optimistic Edge Plan}
+\label{subsec:alg-opt-edge-plan}
+
+The \textsc{OptEdgePlan} function (Alg.~\ref{alg:opt-edge-plan})
+performs the core reasoning which exploits the relations in
+the multi-set problem.
+Before discussing its implementation,
+we first briefly discuss the propositional logic approach
+used to reason about the state of each edge.
+
+The planner represents the list of set relations $\mathcal{R}$
+(Section~\ref{subsec:problem-definition})
+specified in the multi-set problem formulation
+as a set of \emph{logical propositions} $P_{rels}$
+which are considered globally applicable.
+For example,
+the proposition $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
+follows from the relation $A \subseteq B$
+(see Fig.~\ref{fig:relations}).
+In addition,
+each edge $e$ in the roadmap is augmented with an initially empty
+set $e.P$ containing all additional edge-specific propositions
+known to be true as a result of any indicator functions evaluated
+over that edge.
+For example,
+if planner evaluated the indicator $\mathbf{1}_B[e]$
+and it returned False,
+the proposition $\lnot\mathbf{1}_B$ would be added to $e.P$.
+Together, such sets of propositions can be used as \emph{premises}
+as part of an \emph{argument} to demonstrate a \emph{conclusion};
+a logical solver can then be used validate or invalidate the argument.
+For example, an argument with these premises and conclusion
+$\{ (\mathbf{1}_A \Rightarrow \mathbf{1}_B), (\lnot\mathbf{1}_B) \}
+\Rightarrow (\lnot\mathbf{1}_A)$
+can be shown to be valid.
+
+The \textsc{OptEdgePlan} function (Alg.~\ref{alg:opt-edge-plan})
+is tasked with computing
+the optimistically optimal set of indicator evaluations to perform
+for the edge in order to validate its membership in the query
+$\mathcal{C}$-subset $X_g$.
+The function returns three elements:
+(a) the set of $\mathcal{C}$-subsets $S \subseteq \mathcal{S}$
+whose indicators are to be evaluated,
+(b) a binary function $b$
+which provides the desired indicator result for each evaluation,
+and (c) the total evaluation cost $c$
+given by the cost model $\mathcal{M}$'s $f_X[\cdot]$ functionals
+(Section~\ref{subsec:cost-model}).
+
+The function proceeds by considering all combinations of
+available $\mathcal{C}$-subset indicators $S$ (line~\ref{line:power-set}).
+For each set of evaluations,
+we compute the planning cost $c$ which would be required.
+We then consider all possible outcomes for each indicator
+by iterating over all functions $b$ mapping
+from $\mathcal{C}$-subset $X$ to binary values
+(line~\ref{line:all-binary-functions}).
+For each potential outcome $b$,
+we form the set of additional propositions $P_{new}$,
+and then use a logic solver to determine whether the aggregate
+premises imply membership in the query $\mathcal{C}$-subset $X_g$.
+If so (and the required cost is the best so far),
+we save and return it.
+
+\subsection{Home Robot Manipulation Task}
+\label{subsec:herb-experiment}
+
+\begin{figure*}
+\begin{widepage}
+\centering
+
+\begin{subfigure}[t]{0.185\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-a.png}
+\caption{Starting Configuration}
+\end{subfigure}
+\begin{subfigure}[t]{0.185\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-b.png}
+\caption{Step 1, in $X_1$}
+\end{subfigure}
+\begin{subfigure}[t]{0.185\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-c.png}
+\caption{Step 2, in $X_2$}
+\end{subfigure}
+\begin{subfigure}[t]{0.185\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-d.png}
+\caption{Step 3, in $X_3$}
+\end{subfigure}
+\begin{subfigure}[t]{0.185\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-e.png}
+\caption{Ending Configuration.}
+\end{subfigure}
+
+\caption{
+  A home robot performing a three-step manipulation task.
+  It must move from its home configuration
+  to grasp the cup,
+  transfer it to a drop location above the bin,
+  and return home.
+  Experimental results for the Multi-Set PRM
+  are shown in Table~\ref{tab:testherb}}
+\label{fig:testherb-problem}
+\end{widepage}
+\end{figure*}
+
+\begin{table*}
+\begin{widepage}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|cc|r@{ }lr@{ }lr@{ }lr@{ }l|r@{ }lr@{ }lr@{ }lr@{ }l|r@{ }lr@{ }lr@{ }lr@{ }l|}
+\toprule
+\multirow{2}{*}{Relations} & \multirow{2}{*}{Cost}
+  & \multicolumn{8}{c|}{$\lambda = 0$}
+  & \multicolumn{8}{c|}{$\lambda = 0.5$}
+  & \multicolumn{8}{c|}{$\lambda = 1$}
+\\
+  &
+  & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
+  & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
+  & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
+\\ \midrule
+\multirow{2}{*}{None} & Plan
+  &  6.16&s &  3.72&s &  2.38&s & 12.25&s
+  &  5.52&s &  2.89&s &  2.12&s & 10.53&s
+  &  3.39&s &  2.25&s &  2.12&s &  7.76&s
+\\
+  & Exec
+  & 14.22&rad &  8.51&rad &  4.23&rad & 26.97&rad
+  & 15.07&rad & 10.60&rad &  4.23&rad & 29.89&rad
+  & 15.07&rad & 10.60&rad &  4.23&rad & 29.89&rad
+\\ [1ex]
+Inter-Step & Plan
+  &  6.40&s &  2.33&s &  0.86&s &  9.59&s
+  &  5.40&s &  1.55&s &  0.91&s &  7.86&s
+  &  3.38&s &  0.91&s &  0.30&s &  4.59&s
+\\
+(Sec.~\ref{subsec:dynamic-environments},~\ref{subsec:grasped-objects})
+  & Exec
+  & 14.22&rad &  8.51&rad &  4.23&rad & 26.97&rad
+  & 15.07&rad & 12.21&rad &  4.23&rad & 31.51&rad
+  & 15.07&rad & 12.21&rad &  7.11&rad & 34.40&rad
+\\ [1ex]
+Self-Checked & Plan*
+  &  3.54&s &  2.23&s &  1.17&s & 6.94&s
+  &  2.99&s &  1.77&s &  1.16&s & 5.92&s
+  &  1.47&s &  1.22&s &  1.16&s & 3.85&s
+\\
+(Sec.~\ref{subsec:cached-self-valid}) & Exec
+  & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
+  & 14.22&rad & 10.06&rad &  4.23&rad & 28.51&rad
+  & 14.22&rad & 10.60&rad &  4.23&rad & 29.05&rad
+\\ [1ex]
+\multirow{2}{*}{Both} & Plan*
+  &  3.25&s &  1.79&s &  0.90&s & 5.94&s
+  &  2.88&s &  1.55&s &  0.92&s & 5.35&s
+  &  1.47&s &  1.88&s &  0.31&s & 3.66&s
+\\
+  & Exec
+  & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
+  & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
+  & 14.22&rad &  9.64&rad &  6.36&rad & 30.22&rad
+\\ 
+\bottomrule
+\end{tabular}
+\caption{Home robot manipulation task results.
+  The entry with no relations and $\lambda=0$ is equivalent
+  to the LazyPRM.}
+\label{tab:testherb}
+\end{widepage}
+\end{table*}
+
+We tested the Multi-Set PRM on the manipulation task
+described in Fig.~\ref{fig:testherb-problem}.
+We used the $r$-disk PRM construction rule with $r=2.0$ rad,
+and a batch size of $N=1000$.
+Planning times are measured on a Lenovo T430 laptop.
+The planner was asked to solve each of the steps of the plan
+sequentially.
+
+We varied
+(a) the planning vs. execution parameter $\lambda$
+(see Section~\ref{subsec:alg-opt-path-cost}), and
+(b) the subset relations provided to the planner
+as described in Sections
+\ref{subsec:dynamic-environments},
+\ref{subsec:grasped-objects},
+and \ref{subsec:cached-self-valid}.
+We measured the time required for planning (s)
+and the length of the resulting solution resulting path (rad)
+for each step of the task.
+
+Note that the Multi-Set PRM,
+with no relations specified and $\lambda=0$
+reduces to the Lazy PRM.
+As expected,
+increasing $\lambda$ resulted in decreased planning times
+but yielded longer paths.
+Including more $\mathcal{C}$-subset relations
+also significantly reduced planning times,
+and had little effect on path lengths on this problem.
+Note that the planning time results when using
+the cached self-collision-checked roadmap, denoted by (*),
+do not include the pre-computation time.
+
+Note that including inter-step relations drastically
+reduces planning times for subsequent steps.
+We expect this trend would continue as more steps are included.
+Also, note that when $\lambda=0$,
+path length is unchanged as the number of set relations is
+changed
+-- this is because the paths that are selected for evaluation
+by the algorithm are a function only of their (constant) lengths.
+
+\section{Other Experiments to Run}
 
 \begin{itemize}
 \item with/without inter-step relations
@@ -1312,9 +2700,6 @@ I think this is related.
 \item run optimizer on paths occasionally and/or before executing
 \end{itemize}
 
-Also, there are incremental E-graphs \cite{phillips2013anytimeegraphs}
-that we should relate the planner to and compare with.
-
 
 \newpage
 \chapter{Conclusion}
@@ -1325,6 +2710,14 @@ meta-graph [future work: probabalistic models]
 \newpage
 \chapter[Summary of Proposed Work]{Summary of\\Proposed Work}
 
+\section{Open-Source Software}
+
+\begin{itemize}
+\item Release implementation of checkmask PRM (OMPL)
+\item Release implementation of multi-set decomposer (OpenRAVE+OMPL)
+\item Re-release orcdchomp with permissive license?
+\end{itemize}
+
 \section{Timeline}
 
 See Table~\ref{table:timeline} for the timeline.
@@ -1333,13 +2726,14 @@ See Table~\ref{table:timeline} for the timeline.
 \centering
 \begin{tabular}{lll}
 \hline
-Topic & Section & Deadline \\
+Topic & Sec. & Deadline \\
 \hline
-Proposal & & January 2015 \\
-Greedy PRM, Multi-Space & & January 2015 (RSS) \\
-Cached Self-Collision Checked Graphs & & March 2015 (IROS) \\
-?? & & June 2015 (Humanoids) \\
-?? & & October 2015 (ICRA) \\
+Greedy PRM, Multi-Set Planning & & January 2015 (RSS) (completed) \\
+Proposal & & February 2015 \\
+The Greedy PRM: Optimizing Total Task Cost & & March 2015 (IROS) \\
+DRC Integration & & April-May 2015 \\
+Multi-Set Planning at the DRC & & June 2015 (Humanoids) \\
+Bored Robots: Hypothesized Conservative Volumes & & October 2015 (ICRA) \\
 Writing & & November 2015 \\
 Defence & & December 2015 \\
 \hline
@@ -1351,7 +2745,8 @@ Defence & & December 2015 \\
 
 {\small
 \bibliographystyle{abbrv}
-\bibliography{pr-refs,siddpubs/siddpubs-conf,siddpubs/siddpubs-journal,siddpubs/siddpubs-misc}
+%\bibliography{pr-refs,siddpubs/siddpubs-conf,siddpubs/siddpubs-journal,siddpubs/siddpubs-misc}
+\bibliography{pr-refs}
 }
 
 \appendix
@@ -1373,7 +2768,7 @@ followed by
 
 \begin{theorem}
 Invariant~\ref{inv:path-segmentation} holds throughout the course of
-$E_s$ [forward] (Algorithm~\ref{alg:e-s-forward}).
+$E_s$ [forward] (Algorithm~WHAT?).
 \label{thm:seg-fwd}
 \end{theorem}
 
