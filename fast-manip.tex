@@ -355,12 +355,11 @@ For example, see the manipulation task in
 Figure~\ref{fig:intro-multi-step}.
 
 We could do na\"{\i}ve planning, like in the
-DRC Trials \cite{dellin2014drc}.
-No reuse.
-We could call a single-query planner for each step.
+DRC Trials \cite{dellin2014drc},
+with no reuse.
+We call a single-query planner for each step.
 Either we generate roots at the start,
 or we let each sub-planner pick a root it can get to, and commit.
-First, this is too slow.
 First, we can get stuck,
 comitting to something that either is infeasible, or takes too long.
 Second, this is too slow --
@@ -378,7 +377,7 @@ they are related in a structured way.
 In fact, we show how lots of different prior ideas for planner
 efficiency are unified by this formalism.
 
-Second, Chapter~\ref{chap:multi-set-prm})
+Second, Chapter~\ref{chap:multi-set-prm}
 uses the multi-set formalism as a planning cost model
 for use by the Greedy PRM.
 The resulting algorithm,
