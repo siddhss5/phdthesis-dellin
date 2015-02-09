@@ -8,6 +8,8 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
+\usepackage[bookmarks=true]{hyperref}
+
 % symbols
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb} % for \square
@@ -62,7 +64,8 @@
 % see http://tex.stackexchange.com/a/154766
 \newlength{\offsetpage}
 \setlength{\offsetpage}{1.5in}
-\newenvironment{widepage}{\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
+\newenvironment{widepage}
+   {\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
     \addtolength{\textwidth}{2\offsetpage}}%
 {\end{adjustwidth}}
 
@@ -82,9 +85,9 @@ Siddhartha Srinivasa, CMU RI (Chair)\\
 Anthony Stentz, CMU RI\\
 Maxim Likhachev, CMU RI\\
 Lydia Kavraki, Rice University\\
-\vspace{0.7in}
-\emph{Submitted in partial fulfillment of the requirements\\
-for the degree of Doctor of Philosophy.}
+%\vspace{0.7in}
+%\emph{Submitted in partial fulfillment of the requirements\\
+%for the degree of Doctor of Philosophy.}
 \end{center}
 }
 
@@ -142,64 +145,506 @@ and provide an open-source implementation of our planner.
 \tableofcontents
 
 
+%\begin{figure}
+%\begin{widepage}
+%   \centering
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/switchboard.jpg}
+%      
+%      \includegraphics[width=\textwidth]{figs/mech-switches.jpg}
+%      \end{center}
+%      \caption{Something}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/assembly-line.jpg}
+%      
+%      \includegraphics[width=\textwidth]{figs/car-robots.jpg}
+%      \end{center}
+%      \caption{Something}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/table-clearing.jpg}
+%      
+%      \includegraphics[height=2in]{figs/herb-fuze.jpg}
+%      \end{center}
+%      \caption{HERB Robot}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/chernobyl.jpg}
+%      
+%      \includegraphics[height=2in]{figs/chimp-debris.jpg}
+%      \end{center}
+%      \caption{CHIMP Robot}
+%   \end{subfigure}
+%   \caption{Manipulation problems.}
+%\end{widepage}
+%\end{figure}
+
+
 \newpage
 \chapter{Introduction}
 
-\section{Motivation}
+The steady advancement of technology
+has automated an increasing variety of menial or dangerous tasks
+previously performed by humans.
+Computer algorithms now trade our stocks,
+route our telephone calls and packages,
+and fly our planes,
+and simple machines clean our clothes and wash our dishes.
 
-\subsection{DRC}
+More complex tasks require complex robots with many
+degrees of freedom.
+Manipulation tasks, in particular,
+present challenges in many areas including
+perception, symbolic reasoning, and motion planning.
+Successful applications have so far been largely
+confined to large-scale manufacturing domains,
+whose prescribed and structured environments
+allow these challenges to be overcome.
 
-Cite ISER paper \cite{dellin2014drc}.
-Also the journal paper \cite{stentz2014chimp}.
+However,
+manipulation tasks such as clearing a kitchen table
+or moving debris in a dangerous disaster scenario
+can not yet be planned for quickly and reliably.
+\begin{quote}
+\emph{%
+This thesis proposes an
+efficient and robust motion planning approach
+well-suited
+to articulated robots
+performing recurring manipulation tasks
+in dynamic, unstructured environments.
+}
+\end{quote}
 
-\subsection{Speed! Minimize total task time}
+We outline the general structure of multi-step manipulation planning
+in Chapter~\ref{chap:formulation}.
+There are two principal challenges inherent in
+human-scale manipulation tasks
+that must be addressed by such approaches,
+which we review here.
 
-How can we speed things up?
+\textbf{Challenge 1: Task Efficiency.}
 
-\subsection{Multiple steps, don't get stuck}
+Autonomous systems performing manipulation tasks are
+resource-constrained.
+If a home robot takes thirty minutes to clear a table,
+or a disaster response robot exhausts its battery ten minutes
+into its mission,
+these robots will not see widespread use.
+These metrics are only meaningful
+when applied across the entire task,
+from the point it is assigned to the robot
+to the point it is complete.
 
-How can we keep from getting stuck?
+In order to accomplish such a manipulation task,
+an autonomous robot must expend two types of effort.
+First, it must allocate computation to \emph{plan}
+a sequence of motions that will acheive the task.
+Second, it must \emph{execute} these plans using its actuators.
+Generally, there is a tradeoff between these two;
+spending more effort during planning produces paths that are
+cheaper to execute.
+Planning costs are dominated by \emph{validity checking} --
+e.g. checking whether configurations are free from collision.
 
-\subsection{Changing environments}
+Robots performing real-world human-scale manipulation tasks
+tend to expend comparable effort in these two areas
+(see Figure~\ref{fig:plan-exec-cost}).
+While some approaches (e.g. anytime planning) attempt to capture
+this tradeoff,
+our approach,
+the Greedy PRM (Chapter~\ref{chap:inflate}),
+instead explicitly optimizes for both planning
+and execution effort
+given a planning effort model.
+This allows the planner to determine the proper allocation of effort
+between planning and execution in order to minimize total task cost.
 
-\section{Approach}
+Next, Chapter~\ref{chap:graphs-in-continuous}
+discusses how to embed these roadmaps efficiently
+into continuous configuration spaces,
+touching on completeness,
+efficiency, etc.
 
-Overview of approach.
+{
+\setlength{\offsetpage}{0.5in}
+\begin{figure}
+\begin{widepage}
+\begin{center}
+   \begin{subfigure}[b]{1.4in}
+      \begin{center}
+\begin{tikzpicture}
+\node at (0,0) {
+   \includegraphics[height=2in]{figs/herb-fuze-cost.jpg}
+};
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (planlab) at (-0.5,2.15) {Planning Cost};
+\draw[->,thick] (planlab.south) -- (-0.3,-0.1);
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (execlab) at (0.5,-2.2) {Execution Cost};
+\draw[->,thick] (execlab.north) -- (0.6,-1.4);
+\end{tikzpicture}
+      \end{center}
+      \caption{\textsc{Herb} Home Robot}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[b]{2.0in}
+      \begin{center}
+\begin{tikzpicture}
+\node at (0,0) {
+   \includegraphics[height=2in]{figs/chimp-debris-cost.jpg}
+};
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (planlab) at (1.0,2.15) {Planning Cost};
+\draw[->,thick] (planlab.south) -- (0.6,0.6);
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (execlab) at (-0.9,-2.2) {Execution Cost};
+\draw[->,thick] (execlab.north) -- (-1.1,-0.8);
+\end{tikzpicture}
+      \end{center}
+      \caption{\textsc{Chimp} Disaster Response Robot}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[b]{2.0in}
+      \begin{center}
+\begin{tikzpicture}
+\draw[<->,ultra thick] (0,-2.3) -- (0,2.3);
+\node at (0,2.5) {P};
+\node at (0,-2.5) {E};
+\node[circle,fill=black,inner sep=2] at (0,1.8) {};
+\node[circle,fill=black,inner sep=2] at (0,-1.8) {};
+\node[circle,draw,ultra thick,fill=white,inner sep=2.5] at (0,0) {};
+\node[anchor=west] at (0.3,2.0) {Feasible Planners};
+\node[anchor=west] at (0.3,1.6) {minimize planning cost};
+\node[anchor=west] at (0.4, 0.16) {Our Approach};
+\node[anchor=west] at (0.4,-0.2) {minimizes \emph{total} cost};
+\node[anchor=west] at (0.3,-1.64) {Optimal Planners};
+\node[anchor=west] at (0.3,-2.0) {minimize execution cost};
+\end{tikzpicture}
+      \end{center}
+      \caption{Planning vs. Execution Cost}
+   \end{subfigure}
+   \caption{For manipulation tasks,
+      both the \textsc{Herb} \cite{srinivasa2012herb20}
+      and \textsc{Chimp} \cite{stentz2014chimp} robots
+      incur comparable cost (e.g. time or energy)
+      during planning and execution.
+      Our approach considers both explicitly.}
+   \label{fig:plan-exec-cost}
+\end{center}
+\end{widepage}
+\end{figure}
+}
+
+\textbf{Challenge 2: Sub-Problem Structure.}
+
+While planning cost is a significant component
+in resource-constrained human-scale problems,
+manipulation tasks exhibit a structure
+which makes it difficult to apply fast planning approaches.
+In particular,
+they are inherently composed of multiple distinct sub-problems,
+each of which 
+must be validated a different subset of configuration space.
+For example, see the manipulation task in
+Figure~\ref{fig:intro-multi-step}.
+
+We could do na\"{\i}ve planning, like in the
+DRC Trials \cite{dellin2014drc}.
+No reuse.
+We could call a single-query planner for each step.
+Either we generate roots at the start,
+or we let each sub-planner pick a root it can get to, and commit.
+First, this is too slow.
+First, we can get stuck,
+comitting to something that either is infeasible, or takes too long.
+Second, this is too slow --
+each sub-plan simply takes too long.
+
+We could try multi-query planning,
+but as mentioned,
+the valid subset changes for each step.
+
+We solve this in two ways.
+First, in Chapter~\ref{chap:multi-set},
+we introduce the multi-set planning problem.
+We show that while the valid subsets are different for each step,
+they are related in a structured way.
+In fact, we show how lots of different prior ideas for planner
+efficiency are unified by this formalism.
+
+Second, Chapter~\ref{chap:multi-set-prm})
+uses the multi-set formalism as a planning cost model
+for use by the Greedy PRM.
+The resulting algorithm,
+the Multi-Set PRM,
+uses propositional logic to represent multi-set stuff
+algorithmically.
+We show how we can incremental graph search approaches
+to make it super fast.
+
+{
+\setlength{\offsetpage}{0.75in}
+\begin{figure}
+\begin{widepage}
+\begin{center}
+
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-a.png}
+\caption{Start config}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-b.png}
+\caption{Step 1 in $X_1$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-c.png}
+\caption{Step 2 in $X_2$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-d.png}
+\caption{Step 3 in $X_3$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-e.png}
+\caption{End config}
+\end{subfigure}
+
+\vspace{0.1in}
+
+   \begin{subfigure}[b]{4.0in}
+      \begin{center}
+\begin{tikzpicture}
+\node[draw,black,rounded corners,minimum height=3.5cm,minimum width=1cm]
+   (Xgrasp) at (3,0) {};
+\node[draw,black,rounded corners,minimum height=3.5cm,minimum width=1cm]
+   (Xdrop) at (6,0) {};
+\node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+\node[circle,fill=black,inner sep=2] (xg1) at (2.8,1.5) {};
+\node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.2) {};
+\node[circle,fill=black,inner sep=2] (xg3) at (2.9,-1.3) {};
+\node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+\node[circle,fill=black,inner sep=2] (xd2) at (6.0,-1.1) {};
+\node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+\node[above=0.1cm of xstart] {$x_{start}$};
+\node[above=0.1cm of Xgrasp] {$X_{grasp}$};
+\node[above=0.1cm of Xdrop] {$X_{drop}$};
+\node[above=0.1cm of xend] {$x_{end}$};
+
+\draw[line width=1.5mm,white]
+   (xstart)
+   .. controls (1,0.2) and (1.4,1.4) .. (xg1)
+   -- (4.7,1.2);
+\draw[line width=1.5mm,white]
+   (xstart)
+   .. controls (1.5,0.2) .. (xg2)
+   .. controls (4.5,1) and (3.5,-1.5) .. (4.5,-0.7)
+   .. controls (5.5,0.1) and (5.0,-2) .. (xd2);
+\draw[line width=1.5mm,white]
+   (xstart)
+   .. controls (1.8,-0.8) and (1.6,-1.2) .. (xg3);
+
+\draw
+   (xstart)
+   .. controls (1,0.2) and (1.4,1.4) .. (xg1)
+   -- (4.7,1.2);
+\draw
+   (xstart)
+   .. controls (1.5,0.2) .. (xg2)
+   .. controls (4.5,1) and (3.5,-1.5) .. (4.5,-0.7)
+   .. controls (5.5,0.1) and (5.0,-2) .. (xd2);
+\draw[line width=1.5mm,white]
+   (xg3)
+   .. controls (4.3,-0.2) and (4.5,-0.2) .. (xd1)
+   .. controls (8,0.3) and (8,0.1) .. (xend);
+\draw
+   (xstart)
+   .. controls (1.8,-0.8) and (1.6,-1.2) .. (xg3)
+   .. controls (4.3,-0.2) and (4.5,-0.2) .. (xd1)
+   .. controls (8,0.3) and (8,0.1) .. (xend);
+
+\node[fill,black,rounded corners,minimum height=3.5cm,minimum width=1cm,
+   opacity=0.1] at (3,0) {};
+\node[fill,black,rounded corners,minimum height=3.5cm,minimum width=1cm,
+   opacity=0.1] at (6,0) {};
+
+\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
+(0.0,-1.9) -- (2.9,-1.9) node [black,midway,yshift=-0.9cm,align=center]
+   {$X_1$\\(mug on table)};
+
+\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
+(3.1,-1.9) -- (5.9,-1.9) node [black,midway,yshift=-0.9cm,align=center]
+   {$X_2$\\(mug in hand)};
+
+\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
+(6.1,-1.9) -- (9.0,-1.9) node [black,midway,yshift=-0.9cm,align=center]
+   {$X_3$\\(mug in bin)};
+
+\end{tikzpicture}
+      \end{center}
+      \caption{Plan sequences
+         within distinct free $\mathcal{C}$-subsets
+         from the problem above.}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[b]{2.0in}
+      \begin{center}
+\begin{tikzpicture}
+\draw[<->,ultra thick] (0,-2.3) -- (0,2.3);
+\node at (0,2.5) {S};
+\node at (0,-2.5) {M};
+\node[circle,fill=black,inner sep=2] at (0,1.8) {};
+\node[circle,fill=black,inner sep=2] at (0,-1.8) {};
+\node[circle,draw,ultra thick,fill=white,inner sep=2.5] at (0,0) {};
+\node[anchor=west] at (0.3,2.0) {Single-Query Planners};
+\node[anchor=west] at (0.3,1.6) {No reuse between queries};
+\node[anchor=west] at (0.4, 0.16) {Our Approach};
+\node[anchor=west] at (0.4,-0.2) {enables partial reuse};
+\node[anchor=west] at (0.3,-1.64) {Multi-Query Planners};
+\node[anchor=west] at (0.3,-2.0) {require constant $\mathcal{C}_{free}$};
+\end{tikzpicture}
+      \end{center}
+      \caption{Single vs. Multi Query Planners}
+   \end{subfigure}
+   \caption{\textsc{Herb} plans for a simple manipulation task
+      to grasp, transfer, and drop a mug from a table into a bin
+      before returning to an end configuration.
+      Each sub-problem requires a path in a distinct free subset of
+      configuration space;
+      our approach enables partial reuse between these steps.}
+   \label{fig:intro-multi-step}
+\end{center}
+\end{widepage}
+\end{figure}
+}
+
+\textbf{Applications and Experiments}
+
+We give a bunch of examples of this framework
+for different robots.
+For example, I really want to talk about robots idly
+hypothesizing worlds.
+
+{
+\setlength{\offsetpage}{0.75in}
+\begin{figure}
+\begin{widepage}
+\begin{center}
+\begin{tikzpicture}
+
+% axes
+\draw[->,thick] (0,0) -- (0,8); 
+\draw[->,thick] (0,0) -- (12,0);
+\node[rotate=90,align=center] at (-1.0,4)
+   {Challenge 1:\\Task Efficiency};
+\node[align=center] at (6,-1.6)
+   {Challenge 2:\\Sub-Problem Structure};
+
+% y tics
+\draw (-0.2,1) -- (0.2,1);
+\node[rotate=90,align=center] at (-0.64,1)
+   {considers\\[-0.04in]execution cost};
+\draw (-0.2,7) -- (0.2,7);
+\node[rotate=90,align=center] at (-0.8,7)
+   {considers\\[-0.04in]planning and\\[-0.04in]execution cost};
+
+% x tics
+\draw (2,-0.2) -- (2,0.2);
+\node[align=center] at (2,-0.5) {no reuse};
+\draw (6,-0.2) -- (6,0.2);
+\node[align=center] at (6,-0.5) {two-set reuse};
+\draw (10,-0.2) -- (10,0.2);
+\node[align=center] at (10,-0.5) {full reuse};
+
+% algorithms
+\node[draw,ellipse,align=center] at (2,1)
+   {Lazy PRM \cite{bohlin2000lazyprm}};
+
+\node[draw,ellipse,align=center] at (6,1)
+   {\cite{leven2000changing}, \cite{kallman2004dynamicroadmaps},
+   \cite{jaillet2004dynamicprm}};
+
+\node[draw,ellipse,align=center] at (2,7)
+   {Greedy PRM\\(Chapter~\ref{chap:inflate})};
+
+\node[draw,ellipse,align=center] at (10,7)
+   {Multi-Set PRM\\(Chapter~\ref{chap:multi-set-prm})};
+
+\end{tikzpicture}
+\caption{Graphical outline of $\mathcal{C}$-space planners.
+   Work in progress.}
+\label{fig:graphical-outline}
+\end{center}
+\end{widepage}
+\end{figure}
+}
+
 
 
 \newpage
 \chapter{Problem Description and Approach}
 \label{chap:formulation}
 
-\section{Multiple steps}
+In this chapter,
+we lay out the structure of the manipulation planning problem.
 
-\subsection{steps from a human (drc) or symbolic planner}
-\subsection{some steps are constrained}
-\subsection{dual arm stuff}
-\subsection{Different spaces}
+\section{Sub-Problem Structure}
 
-multi-step problem structure (lots of options at each step)
+Show that figure again.
 
-decomposition into a bunch of "local planner" like things
+Briefly discuss the higher-level planner.
+Not doing research here -- just need something that specifies
+geometric goals.
+Complementary to symbolic planners
+or from humans (e.g. the DRC -- need cite).
+For this proposal,
+will only discuss seqential sub-plans,
+but an intelligent meta-planner
+can do non-sequential stuff too.
 
-\section{Approach}
+Multi-step problem structure (lots of options at each step);
+decomposition into a bunch of "local planner" like things.
+We're essentially building a meta-graph.
+Dont't get stuck.
 
-Decompose the problem into multiple steps.
-We'll build a meta-graph.
+\section{Root Sampling}
 
-\section{Expensive checking}
+Do sampling at this higher level.
+(Can't rely on the sub-planners to generate their own starts/goals --
+they must be synchronized.)
+Potential research question: learn good intermediate goals.
 
-\section{Dont't get stuck}
+\section{Two Ways to Make it Fast}
 
-\section{Most queries will be unexecuted (opt later)}
+The proposal is split into two complementary things,
+guided by how slow collision checking is.
 
-\section{Approach}
+Chapters 2,3 focus WITHIN each step.
+Make each step fast.
 
-Two complementary things:
-make each step fast (Chapter~\ref{chap:inflate}),
-and exploit structure between steps (Chapter~\ref{chap:multi-set}).
+Chapters 4,5 focus BETWEEN steps.
+Exploit structure between steps (Chapter~\ref{chap:multi-set}).
+Single-query vs. multi-query.
 
-Then we talk about the full task planner later.
+\section{Other Stuff}
+
+Other stuff to touch on:
+\begin{itemize}
+\item Dealing with constraints
+\item Dealing with dual-arm stuff
+\item Dealing with optimizers (run afterwards!)
+   Most solution paths will be unexecuted, so optimize later!
+\end{itemize}
 
 
 \newpage
@@ -809,7 +1254,8 @@ However, for many manipulation problems,
 search time is instead dominated by edge evaluations.
 
 Therefore, we introduce a new objective $f_p$
-which penalizes effort spent evaluating edges along a potential path:
+which penalizes remaining effort required to evaluate edges
+along a potential path:
 \begin{equation}
    f_p(\pi) = \sum_{e \in \pi} \left\{
    \begin{array}{cl}
@@ -960,7 +1406,7 @@ Based on empirical results, we also use the bidirectional edge evaluation
 algorithn,
 since it tends to finish faster.
 
-The Mult-Set PRM is the result of applying
+The Greedy PRM is the result of applying
 best-first graph search to
 a probabilistic roadmap \cite{kavrakietal1996prm}
 embedded in $\mathcal{C}$,
@@ -1139,6 +1585,14 @@ We implement the indicator functionals $\mathbf{1}_X[x(t)]$
 approximately by evaluating the corresponding indicator functions
 $\mathbf{1}_X(x)$ at a fixed resolution along the path.
 
+\subsection{Choosing the Execution Cost Functional}
+
+How to represent execution cost?
+Ideally, this would be additive.
+Sidd wants me to play with Hauser's fast bounded-velocity,
+bounded-acceleration segment timing code
+(which starts and stops at each waypoint).
+
 \subsection{Choosing $\lambda$}
 
 Minimizing total time in a greedy fashion implies $\lambda = 0.5$.
@@ -1168,6 +1622,8 @@ I need to work this out.
 
 \subsection{Choosing Batch Size $N$}
 
+\cdnote{Actuall, I think I should move this to
+Chapter~\ref{chap:graphs-in-continuous}.}
 What graph are we searching over?
 If it's too sparse, we'll stop after knowing that no solution exists.
 If it's too dense, we'll spend too much time filling in parts of
@@ -1177,6 +1633,9 @@ modeling.
 We get around this with artificial sparseness.
 There's definitely a paper's worth of work here too (Shushman's stuff).
 The easy version is with sequential batches of size $N$.
+Talk about how what we really want to do
+is evaluate the estimate of cost remaining
+\emph{in expectation}.
 
 Talk about how this is complementary to BIT* which acheive speedups
 by batching, not by inflating.
@@ -1282,9 +1741,20 @@ How to handle the narrow passage problem?
 Lots of literature on that, new sampling strategies, etc.
 (Toggle PRM, for instance.)
 
-\section{Stuff to Integrate}
 
-Relation of batchiness to probabalistic model of C-space.
+\newpage
+\chapter{Roadmaps in Continuous Spaces}
+\label{chap:graphs-in-continuous}
+
+Sweet, sweet chapter about how to best embed explicit graphs
+in continuous configuration spaces.
+Talk about the $N$ parameter.
+Extend the Greedy PRM algorith to do things in expectation.
+Motivate the incremental densification idea,
+with a graduated cost model
+to approximate a probabalistic model
+of the $\mathcal{C}$-space.
+Probabalistic vs lattice-based graphs.
 
 
 \newpage
@@ -2373,6 +2843,10 @@ Check right arm against gian left side box, etc.
 The Handey \cite{lozanoperez1987handey} robot
 assumed a box that contained the wrist links at a range of DOF values.
 
+\section{Other Stuff}
+
+Potential research question: learn cost model over time.
+
 
 \newpage
 \chapter{Applying Greedy PRM to Multi-Set: the Multi-Set Greedy PRM}
@@ -2745,7 +3219,6 @@ Defence & & December 2015 \\
 
 {\small
 \bibliographystyle{abbrv}
-%\bibliography{pr-refs,siddpubs/siddpubs-conf,siddpubs/siddpubs-journal,siddpubs/siddpubs-misc}
 \bibliography{pr-refs}
 }
 
