@@ -599,24 +599,66 @@ we lay out the structure of the manipulation planning problem.
 
 \section{Sub-Problem Structure}
 
+{
+\setlength{\offsetpage}{0.5in}
 \begin{figure}
 \begin{widepage}
+\begin{center}
+
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-a.png}
+\caption{Start config}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-b.png}
+\caption{Step 1 in $X_1$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-c.png}
+\caption{Step 2 in $X_2$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-d.png}
+\caption{Step 3 in $X_3$}
+\end{subfigure}
+\begin{subfigure}[t]{0.19\linewidth}
+\centering
+\includegraphics[width=\columnwidth]{figs/testherb-e.png}
+\caption{End config}
+\end{subfigure}
+
+\vspace{0.3cm}
+
+\begin{subfigure}[t]{\linewidth}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{>=latex} % arrow heads
 
 % top: symbolic planner
 \node[draw,ellipse,align=center] (high) at (0,0)
-   {High-Level\\Task Planner};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm] (step1) at (-4,-2)
+   {Task Planner:\\Clear the table};
+\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
+   (step1) at (-4.2,-2)
    {Step 1:\\Transit to\\[-0.04in]grasp};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm] (step2) at (0,-2)
+\node (grasp) at (-2.1,-2) {Grasp};
+\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
+   (step2) at (0,-2)
    {Step 2:\\Transfer to\\[-0.04in]drop};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm] (step3) at (4,-2)
+\node (drop) at (2.1,-2) {Drop};
+\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
+   (step3) at (4.2,-2)
    {Step 3:\\Transit to\\[-0.04in]home};
-\draw[->] (high) -> (step1);
-\draw[->] (high) -> (step2);
-\draw[->] (high) -> (step3);
+\draw[->] (high) -- (step1);
+\draw[->] (high) -- (step2);
+\draw[->] (high) -- (step3);
+\draw[->] (step1) -- (grasp);
+\draw[->] (grasp) -- (step2);
+\draw[->] (step2) -- (drop);
+\draw[->] (drop) -- (step3);
 
 % middle: c-space sequence
 % valid subsets
@@ -691,7 +733,7 @@ we lay out the structure of the manipulation planning problem.
 \node[draw,black,rounded corners,
    minimum height=2cm,minimum width=3.5cm]
    (sm1) at (-4.2,-7.75) {};
-\node[draw,black,rounded corners,
+\node[draw,black,fill=black!10,rounded corners,
    minimum height=1.7cm,minimum width=0.8cm,
    right=-1cm of sm1] {};
 \node[circle,fill=black!50,inner sep=2] (sm1xstart) at (-5.4,-7.75) {};
@@ -699,14 +741,17 @@ we lay out the structure of the manipulation planning problem.
 \node[circle,fill=black!50,inner sep=2] (sm1xg2) at (-3.1,-8.1) {};
 \draw[draw=black!50]
    (sm1xstart) -- (sm1xg1) (sm1xstart) -- (sm1xg2);
+\node[above=-0.5cm of sm1] {\footnotesize $X_1$};
+\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
+   at (-4.2,-7.85) {\Large ?};
 
 \node[draw,black,rounded corners,
    minimum height=2cm,minimum width=3.5cm]
    (sm2) at (0.5,-7.75) {};
-\node[draw,black,rounded corners,
+\node[draw,black,fill=black!10,rounded corners,
    minimum height=1.7cm,minimum width=0.8cm,
    left=-1cm of sm2] {};
-\node[draw,black,rounded corners,
+\node[draw,black,fill=black!10,rounded corners,
    minimum height=1.7cm,minimum width=0.8cm,
    right=-1cm of sm2] {};
 \node[circle,fill=black!50,inner sep=2] (sm2xg1) at (-0.6,-7.5) {};
@@ -717,14 +762,17 @@ we lay out the structure of the manipulation planning problem.
 \draw[draw=black!50]
    (sm2xg1) -- (sm2xd1) (sm2xg1) -- (sm2xd2) (sm2xg1) -- (sm2xd3)
    (sm2xg2) -- (sm2xd1) (sm2xg2) -- (sm2xd2) (sm2xg2) -- (sm2xd3);
+\node[above=-0.5cm of sm2] {\footnotesize $X_2$};
+\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
+   at (0.5,-7.85) {\Large ?};
 
 \node[draw,black,rounded corners,
    minimum height=2cm,minimum width=3.5cm]
-   (sm3) at ( 5.2,-7.75) {};
-\node[draw,black,rounded corners,
+   (sm3) at (5.2,-7.75) {};
+\node[draw,black,fill=black!10,rounded corners,
    minimum height=1.7cm,minimum width=0.8cm,
    left=-1cm of sm3] {};
-\node[draw,black,rounded corners,
+\node[draw,black,fill=black!10,rounded corners,
    minimum height=1.7cm,minimum width=0.8cm,
    right=-1cm of sm3] {};
 \node[circle,fill=black!50,inner sep=2] (sm3xd1) at ( 4.0,-7.4) {};
@@ -735,12 +783,37 @@ we lay out the structure of the manipulation planning problem.
 \draw[draw=black!50]
    (sm3xd1) -- (sm3xe1) (sm3xd1) -- (sm3xe2) (sm3xd2) -- (sm3xe1)
    (sm3xd2) -- (sm3xe2) (sm3xd3) -- (sm3xe1) (sm3xd3) -- (sm3xe2);
+\node[above=-0.5cm of sm3] {\footnotesize $X_3$};
+\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
+   at (5.2,-7.85) {\Large ?};
+
+% arrows
+\draw[->] (-4.1,-6.1) -- (-4.4,-6.6);
+\draw[->] ( 0.3,-6.2) -- ( 0.4,-6.6);
+\draw[->] ( 4.5,-6.1) -- ( 4.8,-6.6);
+
+% side labels
+\node[draw,rotate=90,align=center] at (-6.7,-2)
+   {Symbolic\\Plan};
+\node[draw,rotate=90,align=center] at (-6.7,-4.75)
+   {$\mathcal{C}$-space\\Planning};
+\node[draw,rotate=90,align=center] at (-6.7,-7.75)
+   {Individual\\Planner Queries};
 
 \end{tikzpicture}
 \end{center}
-\caption{This is a caption.}
+\caption{This thesis focuses on efficient geometric planning
+   for manipulation tasks (the lower two levels here).
+   Task planning can be performed by an autonomous
+   symbolic planner,
+   or guided by a human operator.}
+\end{subfigure}
+
+\end{center}
+\caption{Diagram of multi-step planning framework.}
 \end{widepage}
 \end{figure}
+}
 
 Show that figure again.
 
