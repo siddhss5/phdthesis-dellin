@@ -1,5 +1,7 @@
 \documentclass{report}
 
+\usepackage{standalone}
+
 % simple paragraph stuff
 \parindent=0pt
 \parskip=6pt
@@ -279,54 +281,21 @@ efficiency, etc.
 \begin{center}
    \begin{subfigure}[b]{1.4in}
       \begin{center}
-\begin{tikzpicture}
-\node at (0,0) {
-   \includegraphics[height=2in]{figs/herb-fuze-cost.jpg}
-};
-\node[black,fill=white,fill opacity=0.5,text opacity=1]
-   (planlab) at (-0.5,2.15) {Planning Cost};
-\draw[->,thick] (planlab.south) -- (-0.3,-0.1);
-\node[black,fill=white,fill opacity=0.5,text opacity=1]
-   (execlab) at (0.5,-2.2) {Execution Cost};
-\draw[->,thick] (execlab.north) -- (0.6,-1.4);
-\end{tikzpicture}
+      \includegraphics{build/intro-cost-herb}
       \end{center}
       \caption{\textsc{Herb} Home Robot}
    \end{subfigure}%
    \quad%
    \begin{subfigure}[b]{2.0in}
       \begin{center}
-\begin{tikzpicture}
-\node at (0,0) {
-   \includegraphics[height=2in]{figs/chimp-debris-cost.jpg}
-};
-\node[black,fill=white,fill opacity=0.5,text opacity=1]
-   (planlab) at (1.0,2.15) {Planning Cost};
-\draw[->,thick] (planlab.south) -- (0.6,0.6);
-\node[black,fill=white,fill opacity=0.5,text opacity=1]
-   (execlab) at (-0.9,-2.2) {Execution Cost};
-\draw[->,thick] (execlab.north) -- (-1.1,-0.8);
-\end{tikzpicture}
+      \includegraphics{build/intro-cost-chimp}
       \end{center}
       \caption{\textsc{Chimp} Disaster Response Robot}
    \end{subfigure}%
    \quad%
    \begin{subfigure}[b]{2.0in}
       \begin{center}
-\begin{tikzpicture}
-\draw[<->,ultra thick] (0,-2.3) -- (0,2.3);
-\node at (0,2.5) {P};
-\node at (0,-2.5) {E};
-\node[circle,fill=black,inner sep=2] at (0,1.8) {};
-\node[circle,fill=black,inner sep=2] at (0,-1.8) {};
-\node[circle,draw,ultra thick,fill=white,inner sep=2.5] at (0,0) {};
-\node[anchor=west] at (0.3,2.0) {Feasible Planners};
-\node[anchor=west] at (0.3,1.6) {minimize planning cost};
-\node[anchor=west] at (0.4, 0.16) {Our Approach};
-\node[anchor=west] at (0.4,-0.2) {minimizes \emph{total} cost};
-\node[anchor=west] at (0.3,-1.64) {Optimal Planners};
-\node[anchor=west] at (0.3,-2.0) {minimize execution cost};
-\end{tikzpicture}
+      \includegraphics{build/intro-cost-axis}
       \end{center}
       \caption{Planning vs. Execution Cost}
    \end{subfigure}
@@ -424,73 +393,7 @@ to make it super fast.
 
    \begin{subfigure}[b]{4.0in}
       \begin{center}
-\begin{tikzpicture}
-\node[draw,black,rounded corners,minimum height=3.5cm,minimum width=1cm]
-   (Xgrasp) at (3,0) {};
-\node[draw,black,rounded corners,minimum height=3.5cm,minimum width=1cm]
-   (Xdrop) at (6,0) {};
-\node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
-\node[circle,fill=black,inner sep=2] (xg1) at (2.8,1.5) {};
-\node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.2) {};
-\node[circle,fill=black,inner sep=2] (xg3) at (2.9,-1.3) {};
-\node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
-\node[circle,fill=black,inner sep=2] (xd2) at (6.0,-1.1) {};
-\node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
-\node[above=0.1cm of xstart] {$x_{\mbox{\scriptsize start}}$};
-\node[above=0cm of Xgrasp] {$X_{\mbox{\scriptsize grasp}}$};
-\node[above=0cm of Xdrop] {$X_{\mbox{\scriptsize drop}}$};
-\node[above=0.1cm of xend] {$x_{\mbox{\scriptsize end}}$};
-
-\draw[line width=1.5mm,white]
-   (xstart)
-   .. controls (1,0.2) and (1.4,1.4) .. (xg1)
-   -- (4.7,1.2);
-\draw[line width=1.5mm,white]
-   (xstart)
-   .. controls (1.5,0.2) .. (xg2)
-   .. controls (4.5,1) and (3.5,-1.5) .. (4.5,-0.7)
-   .. controls (5.5,0.1) and (5.0,-2) .. (xd2);
-\draw[line width=1.5mm,white]
-   (xstart)
-   .. controls (1.8,-0.8) and (1.6,-1.2) .. (xg3);
-
-\draw
-   (xstart)
-   .. controls (1,0.2) and (1.4,1.4) .. (xg1)
-   -- (4.7,1.2);
-\draw
-   (xstart)
-   .. controls (1.5,0.2) .. (xg2)
-   .. controls (4.5,1) and (3.5,-1.5) .. (4.5,-0.7)
-   .. controls (5.5,0.1) and (5.0,-2) .. (xd2);
-\draw[line width=1.5mm,white]
-   (xg3)
-   .. controls (4.3,-0.2) and (4.5,-0.2) .. (xd1)
-   .. controls (8,0.3) and (8,0.1) .. (xend);
-\draw
-   (xstart)
-   .. controls (1.8,-0.8) and (1.6,-1.2) .. (xg3)
-   .. controls (4.3,-0.2) and (4.5,-0.2) .. (xd1)
-   .. controls (8,0.3) and (8,0.1) .. (xend);
-
-\node[fill,black,rounded corners,minimum height=3.5cm,minimum width=1cm,
-   opacity=0.1] at (3,0) {};
-\node[fill,black,rounded corners,minimum height=3.5cm,minimum width=1cm,
-   opacity=0.1] at (6,0) {};
-
-\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
-(0.0,-1.9) -- (2.9,-1.9) node [black,midway,yshift=-0.9cm,align=center]
-   {$X_1$\\(mug on table)};
-
-\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
-(3.1,-1.9) -- (5.9,-1.9) node [black,midway,yshift=-0.9cm,align=center]
-   {$X_2$\\(mug in hand)};
-
-\draw [decorate,decoration={brace,mirror,amplitude=10pt}]
-(6.1,-1.9) -- (9.0,-1.9) node [black,midway,yshift=-0.9cm,align=center]
-   {$X_3$\\(mug in bin)};
-
-\end{tikzpicture}
+      \includegraphics{build/intro-subprob-cspace}
       \end{center}
       \caption{Plan sequences
          within distinct free $\mathcal{C}$-subsets
@@ -499,21 +402,7 @@ to make it super fast.
    \quad%
    \begin{subfigure}[b]{2.0in}
       \begin{center}
-\begin{tikzpicture}
-\draw[<->,ultra thick] (0,-2.3) -- (0,2.3);
-\node at (0,2.5) {S};
-\node at (0,-2.5) {M};
-\node[circle,fill=black,inner sep=2] at (0,1.8) {};
-\node[circle,fill=black,inner sep=2] at (0,-1.8) {};
-\node[circle,draw,ultra thick,fill=white,inner sep=2.5] at (0,0) {};
-\node[anchor=west] at (0.3,2.0) {Single-Query Planners};
-\node[anchor=west] at (0.3,1.6) {No reuse between queries};
-\node[anchor=west] at (0.4, 0.16) {Our Approach};
-\node[anchor=west] at (0.4,-0.2) {enables partial reuse};
-\node[anchor=west] at (0.3,-1.64) {Multi-Query Planners};
-\node[anchor=west] at (0.3,-2.0) {require constant
-   $\mathcal{C}_{\mbox{\scriptsize free}}$};
-\end{tikzpicture}
+      \includegraphics{build/intro-subprob-axis}
       \end{center}
       \caption{Single vs. Multi Query Planners}
    \end{subfigure}
@@ -2052,7 +1941,7 @@ a naive approach would plan separately in each.
 \end{subfigure}%
 \quad%
 \begin{subfigure}[b]{.45\linewidth}
-\input{figs/multiple-sets}
+\includegraphics{build/multiple-sets}
 \end{subfigure}
 \caption{
   The set of valid configurations for an articulated robot (left)
@@ -2481,7 +2370,7 @@ from Leven and Hutchinson \cite{leven2002changing}.
 
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/figstar-a}
+\includegraphics{build/figstar-a}
 \caption{A two-part multi-set problem in $\mathcal{C}$,
   first between $x_1$ and $x_2$ through $X_{12}$,
   then between $x_2$ and $x_3$ through $X_{23}$.
@@ -2491,7 +2380,7 @@ from Leven and Hutchinson \cite{leven2002changing}.
 \quad%
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/figstar-b}
+\includegraphics{build/figstar-b}
 \caption{The free sets are related via other underlying
   subsets of $\mathcal{C}$, with $X_{12}=A \cap B$
   and $X_{23}=A \cap C$.
@@ -2502,7 +2391,7 @@ from Leven and Hutchinson \cite{leven2002changing}.
 \quad%
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/figstar-c}
+\includegraphics{build/figstar-c}
 \caption{Due to the set relations,
   a planner solving the second part
   (from $x_2$ to $x_3$ in $X_{23}$)
@@ -2514,9 +2403,9 @@ from Leven and Hutchinson \cite{leven2002changing}.
 
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/example-2d-a}
-\input{figs/example-2d-b}
-\input{figs/example-2d-c}
+\includegraphics{build/example-2d-a}
+\includegraphics{build/example-2d-b}
+\includegraphics{build/example-2d-c}
 \caption{A forklift in a parking lot ($x_1$)
   must retrieve an object ($x_2$)
   and reverse park ($x_3$).
@@ -2529,9 +2418,9 @@ from Leven and Hutchinson \cite{leven2002changing}.
 \quad%
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/example-2d-d}
-\input{figs/example-2d-e}
-\input{figs/example-2d-f}
+\includegraphics{build/example-2d-d}
+\includegraphics{build/example-2d-e}
+\includegraphics{build/example-2d-f}
 \caption{Sets $X_{12}$ and $X_{23}$ are subsets of
   the configuration space of the robot $\mathcal{C}=\mbox{SE}(2)$,
   and can be represented as intersections
@@ -2542,9 +2431,9 @@ from Leven and Hutchinson \cite{leven2002changing}.
 \quad%
 \begin{subfigure}[t]{.32\linewidth}
 \centering
-\input{figs/example-2d-g}
-\input{figs/example-2d-h}
-\input{figs/example-2d-i}
+\includegraphics{build/example-2d-g}
+\includegraphics{build/example-2d-h}
+\includegraphics{build/example-2d-i}
 \caption{After planning a path from $x_1$ to $x_2$ (top),
   a planner can reuse a configuration in $X_{12}$ (middle)
   by checking only for its membership in subset $C$,
@@ -2605,13 +2494,13 @@ the initial object pose.
 \centering
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\input{figs/query-to-subset-a}
+\includegraphics{build/query-to-subset-a}
 \caption{Multi-query planning}
 \end{subfigure}%
 \quad\quad%
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\input{figs/query-to-subset-b}
+\includegraphics{build/query-to-subset-b}
 \caption{Multi-set planning}
 \end{subfigure}
 \caption{While queries in multi-query planning reference
@@ -2687,7 +2576,7 @@ tends to dominate planning cost.
 \centering
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\input{figs/relations-inclusion} \\
+\includegraphics{build/relations-inclusion} \\
 $A \subseteq B$ \\
 $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
 \caption{Containment relation}
@@ -2695,7 +2584,7 @@ $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
 \quad\quad%
 \begin{subfigure}[t]{0.45\linewidth}
 \centering
-\input{figs/relations-intersection} \\
+\includegraphics{build/relations-intersection} \\
 $A = B \cap C$ \\
 $\mathbf{1}_B \wedge \mathbf{1}_C \Rightarrow \mathbf{1}_A$
 \caption{Intersection relation}
@@ -2878,8 +2767,8 @@ in manipulation tasks.
 
 \begin{subfigure}[b]{\linewidth}
 \centering
-\input{figs/retroactive-a}
-\input{figs/retroactive-b}
+\includegraphics{build/retroactive-a}
+\includegraphics{build/retroactive-b}
 \caption{
   $\mathcal{C}$-subsets and relations
   can be added retroactively.
@@ -2964,7 +2853,7 @@ are included together in the experimental results
 
 \begin{figure}
 \centering
-\input{figs/self-collision}
+\includegraphics{build/self-collision}
 \caption{A roadmap is pre-computed in $R$,
   the subset of $\mathcal{C}$ consisting of configurations free
   of robot self-collision.
@@ -3002,7 +2891,7 @@ See Fig.~\ref{fig:self-collision-example}.
 
 \begin{subfigure}[t]{\linewidth}
 \centering
-\input{figs/broadphase-single}
+\includegraphics{build/broadphase-single}
 \caption{A single-set planner testing simply for membership in
   $\mathcal{C}_{\mbox{\scriptsize free}}$
   treats a collision validity checker as a
@@ -3018,7 +2907,7 @@ See Fig.~\ref{fig:self-collision-example}.
 
 \begin{subfigure}[t]{\linewidth}
 \centering
-\input{figs/broadphase-multi}
+\includegraphics{build/broadphase-multi}
 \caption{A multi-set planner can explicitly reason about the
   conservative nature of the broad-phase check.
   This allows it to defer some narrow phase checks
@@ -3444,7 +3333,7 @@ by the algorithm are a function only of their (constant) lengths.
 \newpage
 \chapter{Comprehensive Multi-Root Planning}
 
-Copy in that paper too!
+Copy in that paper too!!
 
 
 \newpage

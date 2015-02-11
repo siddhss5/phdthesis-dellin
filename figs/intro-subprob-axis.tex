@@ -1,0 +1,20 @@
+\documentclass{standalone}
+\usepackage{tikz}
+%\usetikzlibrary{...}
+\begin{document}
+\begin{tikzpicture}
+\draw[<->,ultra thick] (0,-2.3) -- (0,2.3);
+\node at (0,2.5) {S};
+\node at (0,-2.5) {M};
+\node[circle,fill=black,inner sep=2] at (0,1.8) {};
+\node[circle,fill=black,inner sep=2] at (0,-1.8) {};
+\node[circle,draw,ultra thick,fill=white,inner sep=2.5] at (0,0) {};
+\node[anchor=west] at (0.3,2.0) {Single-Query Planners};
+\node[anchor=west] at (0.3,1.6) {No reuse between queries};
+\node[anchor=west] at (0.4, 0.16) {Our Approach};
+\node[anchor=west] at (0.4,-0.2) {enables partial reuse};
+\node[anchor=west] at (0.3,-1.64) {Multi-Query Planners};
+\node[anchor=west] at (0.3,-2.0) {require constant
+   $\mathcal{C}_{\mbox{\scriptsize free}}$};
+\end{tikzpicture}%
+\end{document}

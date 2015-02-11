@@ -1,0 +1,16 @@
+\documentclass{standalone}
+\usepackage{tikz}
+%\usetikzlibrary{...}
+\begin{document}
+\begin{tikzpicture}
+\node at (0,0) {
+   \includegraphics[height=2in]{figs/herb-fuze-cost.jpg}
+};
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (planlab) at (-0.5,2.15) {Planning Cost};
+\draw[->,thick] (planlab.south) -- (-0.3,-0.1);
+\node[black,fill=white,fill opacity=0.5,text opacity=1]
+   (execlab) at (0.5,-2.2) {Execution Cost};
+\draw[->,thick] (execlab.north) -- (0.6,-1.4);
+\end{tikzpicture}%
+\end{document}
