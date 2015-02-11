@@ -1,9 +1,16 @@
 all: fast-manip.pdf
 
-# making compiling standalone tex's to pdfs
+# compiling standalone tex's to pdfs
 build/%.pdf: figs/%.tex
 	mkdir -p build
 	pdflatex -halt-on-error -output-directory=build figs/$*
+
+# compiling dots to texs
+build/%-dot.tex: figs/%.dot
+	mkdir -p build
+	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
+
+fast-manip.pdf: build/pairwise-labels-dot.tex
 
 # How to make a pdf from a tex
 fast-manip.pdf: fast-manip.tex pr-refs.bib
@@ -36,6 +43,26 @@ STANDALONES += relations-intersection
 STANDALONES += retroactive-a
 STANDALONES += retroactive-b
 STANDALONES += self-collision
+
+# CMR stuff
+STANDALONES += plot-edges-drill
+STANDALONES += plot-edges-w10005
+STANDALONES += plot-edges-w13
+STANDALONES += queue-batched
+STANDALONES += queue-interleaved
+STANDALONES += queue-intro
+STANDALONES += simpleex-classical
+STANDALONES += simpleex-colored
+STANDALONES += simpleex-queuestate
+STANDALONES += simpleex-pairsvchecks
+STANDALONES += w10005-fu4-ec434
+STANDALONES += w10005-fs4-ec434
+STANDALONES += w10005-fu4-ei3357
+STANDALONES += w10005-fs4-ei3357
+STANDALONES += w13-fu1-ec86
+STANDALONES += w13-fs1-ec86
+STANDALONES += w13-fu1-ei344
+STANDALONES += w13-fs1-ei344
 
 fast-manip.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 

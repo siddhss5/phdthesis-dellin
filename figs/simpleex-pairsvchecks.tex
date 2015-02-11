@@ -1,0 +1,21 @@
+\documentclass{standalone}
+\usepackage{tikz}
+%\usetikzlibrary{patterns}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\scriptsize]
+\begin{axis}[
+   xlabel={Edges Evaluated},
+   ylabel={Objective},
+   width=2.5in,
+   xmin=0, xmax=3.4, ymin=0, ymax=2.4,
+   xlabel near ticks,
+   ylabel near ticks,
+   axis on top]
+% classical prm
+\addplot[mark=none,black,very thick] plot coordinates { (3,0) (3,2) (4,2)};
+% colored prm
+\addplot[mark=none,green,very thick] plot coordinates {(2,0) (2,1) (3,1) (3,2) (4,2)};
+\end{axis}
+\end{tikzpicture}%
+\end{document}

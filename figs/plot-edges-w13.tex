@@ -1,0 +1,123 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usepackage{pgfplots}
+
+\newcommand\tikzfadein[3]{
+\foreach \x in {1,...,#1}
+{
+   \draw[black,opacity={(\x-1)/#1}]
+      ( $ (#2)!{(\x-1)/#1}!(#3) $ )
+      -- ( $ (#2)!{(\x)/#1}!(#3) $ );
+}}
+
+\begin{document}
+\begin{tikzpicture}[font=\scriptsize]
+% primary axis
+\begin{axis}[
+   xlabel={Edges Considered},
+   ylabel={Edges Evaluated},
+   legend pos= north west,
+   legend cell align=left,
+   axis equal image,
+   width=3.4in,
+   %xmin=0, xmax=5000, ymin=0,
+   xmin=0, xmax=1000, ymin=0,
+   %scaled ticks=base 10:-3,
+   xlabel near ticks,
+   ylabel near ticks,
+   axis on top]
+% y=x line
+\addplot[mark=none,black!20,forget plot] plot coordinates {(0,0) (2000,2000)};
+% vertical at first 8 pairs found
+\addplot[mark=none,black!20,forget plot] plot coordinates { (344,0) (344,344)};
+\addplot[mark=none,fill=green!20,pattern=north west lines,pattern color=black!50, draw=black!50,area legend]
+   table[col sep=space,row sep=crcr] {figs/w13-fs1-qs-tridata-eq.txt};
+\addlegendentry{Colored Queue}
+\addplot[mark=none,green,very thick] table[col sep=space] {figs/w13-fs1-qs-tridata-ec.txt};
+\addlegendentry{Colored}
+\addplot[mark=none,black,very thick] table[col sep=space]
+   {figs/w13-fu1-qs-tridata-ec.txt};
+\addlegendentry{Uncolored}
+% places where pairs are found
+\addplot[mark=*,black,only marks,mark size=1] plot coordinates {
+   (344,86) % sc 1
+   (344,91) % sc 2
+   (344,125) % uc all
+};
+\addplot[blue,mark=o,blue,mark size=2] plot coordinates {
+   (195,86) % uncolored, same echecked
+   (344,86) % supercolored
+   (344,125) % uncolored, same ein
+};
+\coordinate (zoomed) at (axis cs: 344,86);
+\coordinate (subfig_a_point) at (axis cs: 195,86);
+\coordinate (subfig_c_point) at (axis cs: 344,125);
+\coordinate (subfig_bd_point) at (axis cs: 344,86);
+\end{axis}
+
+% insert
+\begin{axis}[
+   name=insert,
+   at={(2in,0.7in)},
+   %xshift=1.8in,
+   %yshift=0.7in,
+   %width=1in,
+   height=1.2in,
+   xtick=\empty,
+   ytick=\empty,
+   xticklabels={,,},
+   yticklabels={,,},
+   axis equal image,
+   xmin=340, xmax=348,
+   ymin=83, ymax=94,
+   axis background/.style={fill,color=white},
+   axis on top
+   ]
+% vertical at first 8 pairs found
+\addplot[mark=none,black!20,forget plot] plot coordinates {(344,82) (344,94)};
+% pattern queue
+\addplot[mark=none,fill=green!20,pattern=north west lines,pattern color=black!50, draw=black!50,area legend]
+   plot coordinates
+{
+   (339,83) (339,95) (349,95) (349,93)
+   (345,93) (345,92) (344,92) (344,85) (342,85) (342,84) (339,84) (339,83) (335,83)
+};
+\addplot[mark=none,green,very thick] plot coordinates
+   {(335,83) (339,83) (339,84) (342,84) (342,85) (344,85) (344,92) (345,92) (345,93) (350,93)};
+\addplot[mark=*,black,only marks,mark size=1] plot coordinates {
+   (344,86) %+1
+   (344,87) %+1
+   (344,89) %+2
+   (344,90) %+2
+   (344,91) %+2
+};
+% horiz dashed line (comparison snapshots)
+\addplot[blue,mark=o,mark size=2] plot coordinates {(325,86) (344,86)};
+% vert dashed line (comparison snapshots)
+\addplot[blue,mark=o,mark size=2] plot coordinates {(344,92) (344,95)};
+% labeled coordinates
+\coordinate (subfig_b_point) at (axis cs: 344,86);
+\coordinate (subfig_d_point) at (axis cs: 344,92);
+\end{axis}
+
+% insert lines
+\tikzfadein{20}{zoomed}{insert.north west}
+\tikzfadein{20}{zoomed}{insert.south west}
+\tikzfadein{20}{zoomed}{insert.south east}
+
+% subfigure labels
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_a_label) at (0.6,1.3) {(a)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_c_label) at (1.2,1.9) {(c)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_bd_label) at (3.7,0.4) {(b,d)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_b_label) at (6.6,2.4) {(b)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_d_label) at (6.6,3.2) {(d)};
+\draw[color=blue,->] (subfig_a_label) -- ($ (subfig_a_point)!4pt!(subfig_a_label) $);
+\draw[color=blue,->] (subfig_c_label) -- ($ (subfig_c_point)!4pt!(subfig_c_label) $);
+\draw[color=blue,->] (subfig_bd_label) -- ($ (subfig_bd_point)!4pt!(subfig_bd_label) $);
+\draw[color=blue,->] (subfig_b_label) -- ($ (subfig_b_point)!4pt!(subfig_b_label) $);
+\draw[color=blue,->] (subfig_d_label) -- ($ (subfig_d_point)!4pt!(subfig_d_label) $);
+
+\end{tikzpicture}
+\end{document}

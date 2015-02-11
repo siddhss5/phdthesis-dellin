@@ -1,0 +1,135 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usepackage{pgfplots}
+
+\newcommand\tikzfadein[3]{
+\foreach \x in {1,...,#1}
+{
+   \draw[black,opacity={(\x-1)/#1}]
+      ( $ (#2)!{(\x-1)/#1}!(#3) $ )
+      -- ( $ (#2)!{(\x)/#1}!(#3) $ );
+}}
+
+\begin{document}
+\begin{tikzpicture}[font=\scriptsize]
+
+% primary plot
+\begin{axis}[
+   xlabel={Edges Considered},
+   ylabel={Edges Evaluated},
+   legend pos= north west,
+   axis equal image,
+   width=3.3in,
+   %xmin=0, xmax=5000, ymin=0,
+   xmin=0, xmax=4000, ymin=0, ymax=2000,
+   %scaled ticks=base 10:-3,
+   xlabel near ticks,
+   ylabel near ticks,
+   axis on top]
+% y=x line
+\addplot[mark=none,black!20,forget plot] plot coordinates {(0,0) (4000,4000)};
+% vertical at first 8 pairs found
+\addplot[mark=none,black!20,forget plot] plot coordinates { (3357,0) (3357,3357)};
+\addplot[mark=none,fill=green!20,pattern=north west lines,pattern color=black!50, draw=black!50,area legend]
+   table[col sep=space] {figs/w10005-fs4-qs-tridata-eq.txt};
+\addlegendentry{cPRM Edges Queued}
+\addplot[mark=none,green,very thick] table[col sep=space] {figs/w10005-fs4-qs-tridata-ec.txt};
+\addlegendentry{cPRM Edges Checked}
+\addplot[mark=none,black,very thick] table[col sep=space]
+   {figs/w10005-fu4-qs-tridata-ec.txt};
+\addlegendentry{PRM Edges Checked}
+\addplot[mark=*,black,only marks,mark size=1] plot coordinates {
+   (3357,434)
+   (3357,452)
+   (3357,738)
+};
+\addplot[blue,mark=o,blue,mark size=2] plot coordinates {
+   (1570,434) % uncolored, same echecked
+   (3357,434) % supercolored
+   (3357,738) % uncolored, same ein
+};
+\coordinate (zoomed) at (axis cs: 3357,434);
+\coordinate (subfig_a_point) at (axis cs: 1570,434);
+\coordinate (subfig_c_point) at (axis cs: 3357,738);
+\coordinate (subfig_bd_point) at (axis cs: 3357,434);
+\end{axis}
+
+% insert
+\begin{axis}[
+   name=insert,
+   at={(1.7in,0.7in)},
+   %xshift=1.8in,
+   %yshift=0.7in,
+   %width=1in,
+   height=1.2in,
+   xtick=\empty,
+   ytick=\empty,
+   xticklabels={,,},
+   yticklabels={,,},
+   axis equal image,
+   xmin=3352, xmax=3362,
+   ymin=431, ymax=455,
+   axis background/.style={fill,color=white},
+   axis on top
+   ]
+% vertical at first 8 pairs found
+\addplot[mark=none,black!20,forget plot] plot coordinates {(344,82) (344,94)};
+% pattern queue
+\addplot[mark=none,pattern=north west lines,pattern color=black!50,draw=black!50,area legend]
+   plot coordinates
+{
+   (3351,433) (3351,456) (3363,456) (3363,452) (3357,452) (3357,433) (3351,433)
+};
+\addplot[mark=none,green,very thick] plot coordinates
+   {(3351,433) (3357,433) (3357,452) (3363,452)};
+\addplot[mark=*,black,only marks,mark size=1] plot coordinates {
+   (3357,434)
+   (3357,435)
+   (3357,436)
+   (3357,437)
+   (3357,438)
+   (3357,439)
+   (3357,440)
+   (3357,441)
+   (3357,442)
+   (3357,443)
+   (3357,444)
+   (3357,445)
+   (3357,446)
+   (3357,447)
+   (3357,448)
+   (3357,449)
+   (3357,450)
+   (3357,451)
+   (3357,452)
+};
+% horiz dashed line (comparison snapshots)
+\addplot[blue,mark=o,mark size=2] plot coordinates {(3351,434) (3357,434)};
+% vert dashed line (comparison snapshots)
+\addplot[blue,mark=o,mark size=2] plot coordinates {(3357,452) (3357,456)};
+% labeled coordinates
+\coordinate (subfig_b_point) at (axis cs: 3357,434);
+\coordinate (subfig_d_point) at (axis cs: 3357,452);
+\end{axis}
+
+% insert lines
+\tikzfadein{20}{zoomed}{insert.north east}
+\tikzfadein{20}{zoomed}{insert.south west}
+\tikzfadein{20}{zoomed}{insert.south east}
+
+% subfigure labels
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_a_label) at (1.8,1.3) {(a)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_c_label) at (3.5,1.6) {(c)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_bd_label) at (6.3,0.4) {(b,d)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_b_label) at (6.3,2.3) {(b)};
+\node[circle,inner sep=0pt,color=blue,fill=white] (subfig_d_label) at (6.3,3.0) {(d)};
+\draw[color=blue,->] (subfig_a_label) -- ($ (subfig_a_point)!4pt!(subfig_a_label) $);
+\draw[color=blue,->] (subfig_c_label) -- ($ (subfig_c_point)!4pt!(subfig_c_label) $);
+\draw[color=blue,->] (subfig_bd_label) -- ($ (subfig_bd_point)!4pt!(subfig_bd_label) $);
+\draw[color=blue,->] (subfig_b_label) -- ($ (subfig_b_point)!4pt!(subfig_b_label) $);
+\draw[color=blue,->] (subfig_d_label) -- ($ (subfig_d_point)!4pt!(subfig_d_label) $);
+
+\end{tikzpicture}
+\end{document}

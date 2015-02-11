@@ -1,0 +1,30 @@
+digraph G {
+
+   graph [ranksep=0.15]; #mindist=0.5, nodesep=0.15, 
+   
+   d2toptions = "--figpreamble='\scriptsize'";
+   
+   node [fixedsize=true, shape=circle, width=0.2];
+
+   QQ -> FQ;
+   QQ -> CQ;
+   QQ -> SQ;
+   
+   FQ -> FF;
+   FQ -> FC [color=red];
+   FQ -> FS [color=red];
+   FC [color=red];
+   FS [color=red];
+   
+   CQ -> CF [color=red];
+   CQ -> CC;
+   CQ -> CS [color=red];
+   CF [color=red];
+   CS [color=red];
+   
+   SQ -> SF [color=red];
+   SQ -> SC [color=red];
+   SQ -> SS;
+   SF [color=red];
+   SC [color=red];
+}

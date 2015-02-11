@@ -1,0 +1,115 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usepackage{pgfplots}
+
+\newcommand\tikzfadein[3]{
+\foreach \x in {1,...,#1}
+{
+   \draw[black,opacity={(\x-1)/#1}]
+      ( $ (#2)!{(\x-1)/#1}!(#3) $ )
+      -- ( $ (#2)!{(\x)/#1}!(#3) $ );
+}}
+
+\begin{document}
+\begin{tikzpicture}[font=\scriptsize]
+\begin{axis}[
+   xlabel={Edges Considered},
+   ylabel={Edges Evaluated},
+   legend pos= north west,
+   axis equal image,
+   width=3.4in,
+   %xmin=0, xmax=5000, ymin=0,
+   xmin=0, xmax=10000, ymin=0, ymax=9000,
+   scaled ticks=base 10:-3,
+   xlabel near ticks,
+   ylabel near ticks,
+   axis on top]
+% y=x line
+\addplot[mark=none,black!20,forget plot] plot coordinates {(0,0) (10000,10000)};
+%\addplot[mark=none,black!20,forget plot] plot coordinates { (5981,0) (5981,5981)};
+% vertical at first 1 pair found
+\addplot[mark=none,black!20,forget plot] plot coordinates { (6231,0) (6231,6231)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (7858,0) (7858,7858)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (8052,0) (8052,8052)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (8361,0) (8361,8361)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (9180,0) (9180,9180)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (9183,0) (9183,9183)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (9718,0) (9718,9718)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (9734,0) (9734,9734)};
+\addplot[mark=none,black!20,forget plot] plot coordinates { (9745,0) (9745,9745)};
+\addplot[mark=none,fill=green!20,pattern=north west lines,pattern color=black!50, draw=black!50,area legend]
+   table[col sep=space] {figs/drillv1-fs3-qs-tridata-eq.txt} \closedcycle;
+\addlegendentry{cPRM Edges Queued}
+\addplot[mark=none,green,very thick] table[col sep=space] {figs/drillv1-fs3-qs-tridata-ec.txt};
+\addlegendentry{cPRM Edges Checked}
+\addplot[mark=none,black,very thick] table[col sep=space]
+   {figs/drillv1-fu3-qs-tridata-ec.txt};
+\addlegendentry{PRM Edges Checked}
+% pairs found
+\addplot[mark=*,black,only marks,mark size=1] plot coordinates {
+   % uc all
+   (6231,5675)
+   (7858,7158)
+   (8052,7314)
+   (8361,7544)
+   (9180,8068)
+   (9183,8069)
+   (9718,8373)
+   (9734,8376)
+   (9745,8379)
+   % sc all
+   (6231,3572)
+   (6231,3576)
+   (7858,5055)
+   (7858,5134)
+   (8052,5310)
+   (8052,5361)
+   (8361,5650)
+   (8361,5691)
+   (8361,5691)
+   (9180,6307)
+   (9180,6308)
+   (9183,6313)
+   (9183,6421)
+   (9718,6733)
+   (9718,6778)
+   (9734,6790)
+   (9734,6791)
+   (9745,6795)
+   (9745,6796)
+   (9745,6797)
+   (9745,6809)
+   (9745,6843)
+   (9745,6865)
+   (9745,6900)
+   (9745,6923)
+   (9745,6944)
+   (9745,6987)
+};
+\addplot[blue,mark=o,mark size=2] plot coordinates {
+   (3919,3572) % uncolored, same echecked
+   (6231,3572) % supercolored
+   (6231,5675) % uncolored, same ein
+};
+\addplot[blue,mark=o,mark size=2] plot coordinates {
+   (5855,5310) % uncolored, same echecked
+   (8052,5310) % supercolored
+   (8052,7314) % uncolored, same ein
+};
+\coordinate (first) at (axis cs: 6231,2200);
+\coordinate (connected) at (axis cs: 8052,1500);
+\end{axis}
+
+\node[inner sep=0pt,color=blue,fill=white] (first_label) at (2.7,0.8)
+   {\parbox{0.45in}{\centering first pair\\found}};
+\draw[color=blue,->] (first_label.north east) -- ($ (first)!1pt!(first_label) $);
+
+\node[inner sep=1pt,color=blue,fill=white] (connected_label) at (4.0,0.5)
+   {\parbox{0.45in}{\centering root sets\\connected}};
+\draw[color=white,line width=8] (connected_label.north east) -- ($ (connected)!2pt!(connected_label) $);
+\draw[color=blue,->] (connected_label.north east) -- ($ (connected)!1pt!(connected_label) $);
+
+\end{tikzpicture}
+\end{document}
