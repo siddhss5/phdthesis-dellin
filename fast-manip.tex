@@ -1027,7 +1027,7 @@ as is required when searching over implicit graphs.
 \Loop
    \State $\pi^* = \arg \min\limits_{\Pi} f(\pi)$
       \Comment{For some path cost function $f(\pi)$}
-      \label{line:select-optimistic-path}
+      \label{line:generic-select-optimistic-path}
    \If {$\pi^*$ fully evaluated}
       \State \Return $\pi^*$
    \EndIf
@@ -1195,7 +1195,7 @@ during the search.
 
 Due to this implicit representation,
 it is clear that each candidate path in $\Pi$ to be considered
-(line \ref{line:select-optimistic-path})
+(line \ref{line:generic-select-optimistic-path})
 cannot generally exist of entirely known edges.
 When enumerating candidate paths to the goal,
 we must include potential ``virtual'' path segments
@@ -1523,7 +1523,6 @@ with the following objective:
      \epsilon \, \epsilon^E \, \hat{c}(e) & \mbox{otherwise} \\
    \end{array}
    \right.
-   \label{eqn:prop-heuristics}
 \end{equation}
 
 The Greedy PRM applied to a single
@@ -1580,7 +1579,7 @@ as described in Section~\ref{subsec:alg-opt-path-cost}.
 \caption{Greedy PRM}
 \label{alg:greedy-prm}
 \begin{algorithmic}[1]
-\Procedure {\textsc{MultiSetPRM}}{$G, \mathcal{Q}, N, \lambda$}
+\Procedure {\textsc{GreedyPRM}}{$G, \mathcal{Q}, N, \lambda$}
 %\State $G.V \leftarrow \emptyset$
 %\State $G.E \leftarrow \emptyset$
 \Loop
@@ -1590,7 +1589,7 @@ as described in Section~\ref{subsec:alg-opt-path-cost}.
          \label{line:best-first-start}
       \State $\pi^* = \argmin\limits_{\pi \in \Pi(G,\mathcal{Q})}
          \big[ \lambda \, f_p[\pi] + (1 - \lambda) \, f_e[\pi] \big]$
-         \label{line:select-optimistic-path}
+         \label{line:e8-select-optimistic-path}
       \If {$\pi^* = \mbox{\textbf{nil}}$}
         \State \textbf{break}
       \EndIf
@@ -1643,7 +1642,7 @@ one query before moving on to the next,
 the planner can be interrupted at any point,
 allowing for interleaving queries.
 
-Line~\ref{line:select-optimistic-path}
+Line~\ref{line:e8-select-optimistic-path}
 implements the Greedy PRM's objective
 which trades off between planning and execution cost,
 mediated by the parameter $\lambda \in [0,1]$.
