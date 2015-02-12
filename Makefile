@@ -10,6 +10,17 @@ build/%-dot.tex: figs/%.dot
 	mkdir -p build
 	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
 
+fast-manip.pdf: ch01-intro.tex
+fast-manip.pdf: ch02-subprobs.tex
+fast-manip.pdf: ch03-e8.tex
+fast-manip.pdf: ch04-continuous.tex
+fast-manip.pdf: ch05-multiset.tex
+fast-manip.pdf: ch06-multisetprm.tex
+fast-manip.pdf: ch07-cmr.tex
+fast-manip.pdf: ch08-taskplanning.tex
+fast-manip.pdf: ch09-conclusion.tex
+fast-manip.pdf: ch10-proposed.tex
+
 fast-manip.pdf: build/pairwise-labels-dot.tex
 
 # How to make a pdf from a tex
@@ -80,4 +91,5 @@ EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc
 .PHONY: clean
 clean:
 	rm -rf build/
+	rm -f ch*.aux
 	rm -f $(foreach e,$(EXTS),fast-manip.$e)

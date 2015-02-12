@@ -1,0 +1,71 @@
+\chapter{Roadmaps in Continuous Spaces}
+\label{chap:graphs-in-continuous}
+
+Sweet, sweet chapter about how to best embed explicit graphs
+in continuous configuration spaces.
+
+\section{Types of Graphs}
+
+\begin{itemize}
+\item Probabalistic vs lattice-based graphs.
+\item Probabalistic (pseudo-random) for efficient caching.
+\end{itemize}
+
+\section{Optimization in Expectation}
+
+Extend the Greedy PRM algorith to do things in expectation.
+
+Relate to Evan's work.
+
+Motivate the incremental densification idea,
+with a graduated cost model
+to approximate a probabalistic model
+of the $\mathcal{C}$-space.
+
+\section{Batching}
+
+Choosing Batch Size $N$.
+
+What graph are we searching over?
+If it's too sparse, we'll stop after knowing that no solution exists.
+If it's too dense, we'll spend too much time filling in parts of
+space.
+There's actually some spatial relationship in
+$\mathcal{C}_{\mbox{\scriptsize free}}$ what we're not
+modeling.
+We get around this with artificial sparseness.
+There's definitely a paper's worth of work here too (Shushman's stuff).
+The easy version is with sequential batches of size $N$.
+Talk about how what we really want to do
+is evaluate the estimate of cost remaining
+\emph{in expectation}.
+
+Talk about how this is complementary to BIT* which acheive speedups
+by batching, not by inflating.
+
+Relate to Markov Random Fields and two-class image segmentation
+which capture spatial correlation.
+
+\section{Whole-Path Bisection Testing}
+
+Also talk here about the fancy Lazy PRM path bisection
+evaluation function.
+
+\section{The $\mbox{E}^8$ PRM}
+
+This is the planner in continuous spaces,
+requires a planning cost model for each edge.
+
+\section{Relaxing the Additive Cost Model Requirement}
+
+Could we do this?
+We lose the nice efficient LPA*-enabling structure in
+$\mbox{E}^8$ this way,
+but it lets us incorporate a more accurate cost model in some domains,
+especially for execution costs for fast motions (e.g. total time).
+
+\section{Future Work}
+
+How to handle the narrow passage problem?
+Lots of literature on that, new sampling strategies, etc.
+(Toggle PRM, for instance.)
