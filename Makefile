@@ -30,6 +30,7 @@ STANDALONES += example-2d-f
 STANDALONES += example-2d-g
 STANDALONES += example-2d-h
 STANDALONES += example-2d-i
+STANDALONES += example-in-expectation
 STANDALONES += intro-cost-axis
 STANDALONES += intro-cost-chimp
 STANDALONES += intro-cost-herb

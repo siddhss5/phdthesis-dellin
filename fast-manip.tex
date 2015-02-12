@@ -2,14 +2,6 @@
 
 \usepackage{standalone}
 
-% simple paragraph stuff
-\parindent=0pt
-\parskip=6pt
-
-% include \paragraph as numbered
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{2} % 3
-
 \usepackage[bookmarks=true]{hyperref}
 
 % symbols
@@ -23,15 +15,6 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
-% theorems
-\newtheorem{invariant}{Invariant}
-\newtheorem{theorem}{Theorem}
-\newtheorem{proposition}{Proposition}
-\newtheorem{lemma}{Lemma}
-% from http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html
-\newenvironment{proof}[1][Proof]{\begin{trivlist}
-   \item[\hskip \labelsep {\bfseries #1}]}{\hfill$\square$\end{trivlist}}
-
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{subcaption}
@@ -42,13 +25,23 @@
 % plots
 \usepackage{pgfplots}
 
-% tables
+% pretty tables
 \usepackage{multirow}
 \usepackage{booktabs}
 
+% custom title page
 \usepackage{titling}
 
-\usepackage{changepage} % for adjustwidth
+% for adjustwidth
+\usepackage{changepage}
+
+% simple paragraph stuff
+\parindent=0pt
+\parskip=6pt
+
+% include \paragraph as numbered
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2} % 3
 
 %\def\hidenotes{}
 % list of commenters
@@ -70,6 +63,15 @@
    {\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
     \addtolength{\textwidth}{2\offsetpage}}%
 {\end{adjustwidth}}
+
+% theorems
+\newtheorem{invariant}{Invariant}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+% from http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+   \item[\hskip \labelsep {\bfseries #1}]}{\hfill$\square$\end{trivlist}}
 
 \title{Efficient Manipulation Task Planning\\
    via Reuse-Informed Planning Cost Optimization}
@@ -1900,10 +1902,26 @@ is evaluate the estimate of cost remaining
 Talk about how this is complementary to BIT* which acheive speedups
 by batching, not by inflating.
 
+Relate to Markov Random Fields and two-class image segmentation
+which capture spatial correlation.
+
 \section{Whole-Path Bisection Testing}
 
 Also talk here about the fancy Lazy PRM path bisection
 evaluation function.
+
+\section{The $\mbox{E}^8$ PRM}
+
+This is the planner in continuous spaces,
+requires a planning cost model for each edge.
+
+\section{Relaxing the Additive Cost Model Requirement}
+
+Could we do this?
+We lose the nice efficient LPA*-enabling structure in
+$\mbox{E}^8$ this way,
+but it lets us incorporate a more accurate cost model in some domains,
+especially for execution costs for fast motions (e.g. total time).
 
 \section{Future Work}
 
@@ -3336,21 +3354,6 @@ by the algorithm are a function only of their (constant) lengths.
 \newpage
 \chapter{Comprehensive Multi-Root Planning}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ABSTRACT:
 We formulate and study the
 \emph{comprehensive multi-root} (CMR) planning problem,
@@ -3788,7 +3791,7 @@ We therefore want to maximize our objective \eqref{eqn:obj}
 while minimizing the number of edges to be checked.
 To accomplish this, we return to our CMR objective.
 
-\section{A General Technique for Fast\\CMR Planning on Graphs}
+\section{A General Technique for Fast CMR Planning on Graphs}
 \label{sec:gen-sol}
 
 We use the structure of the CMR problem
@@ -4637,19 +4640,16 @@ It can also be applied to  asymptotically-optimal variants of these planners
 \cite{karaman2011samplingoptimal}.
 
 
+\newpage
+\chapter{Task Planning}
+\label{chap:task-planning}
 
+\subsection{The \textsc{Proteus} Task Planner}
 
+Uses CMR.
+Runs separate Multi-Set PRMs.
 
-
-
-
-
-
-
-
-
-
-
+Proteus Reasons Over Task Effort Using Sampling.
 
 
 \newpage
@@ -4659,20 +4659,179 @@ It can also be applied to  asymptotically-optimal variants of these planners
 \newpage
 \chapter[Summary of Proposed Work]{Summary of\\Proposed Work}
 
-\section{Open-Source Software}
+\section{Research Questions}
+\label{sec:research-questions}
 
+List of research questions.
+
+\begin{center}
+\begin{tabular}{llc}
+\toprule
+   \multicolumn{2}{l}{Research Question}
+      & Chapter \\
+\midrule
+   \ref{ques:choosing-lambda}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:choosing-lambda}
+      \end{minipage}%
+      & \ref{chap:inflate} \\[10pt]
+   \ref{ques:incremental-search}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:incremental-search}
+      \end{minipage}%
+      & \ref{chap:inflate} \\[10pt]
+   \ref{ques:batching}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:batching}
+      \end{minipage}%
+      & \ref{chap:graphs-in-continuous} \\[10pt]
+   \ref{ques:multi-set-suited}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:multi-set-suited}
+      \end{minipage}%
+      & \ref{chap:multi-set-prm} \\[10pt]
+   \ref{ques:how-sequence}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:how-sequence}
+      \end{minipage}%
+      & \ref{chap:task-planning} \\[10pt]
+   \ref{ques:drc-compare}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:drc-compare}
+      \end{minipage}%
+      & \ref{chap:task-planning} \\[10pt]
+   \ref{ques:herb-performance}
+      &
+      \begin{minipage}[c]{0.8\columnwidth}%
+      \nameref{ques:herb-performance}
+      \end{minipage}%
+      & \ref{chap:task-planning} \\[6pt]
+\bottomrule
+\end{tabular}
+\end{center}
+
+{
+%\renewcommand\thesubsection{\thesection.Q\arabic{subsection}}
+\renewcommand\thesubsection{Q\arabic{subsection}}
+
+\subsection{How should the $\lambda$ parameter mediating
+   between planning and execution cost be chosen?}
+\label{ques:choosing-lambda}
+
+See Chapter~\ref{chap:inflate}.
+
+\subsection{How can incremental graph search ideas (e.g. LPA*)
+   be used to efficiently implement the $\mbox{E}^8$ algorithm?}
+\label{ques:incremental-search}
+
+See Chapter~\ref{chap:inflate}.
+
+\subsection{What is the best way to handle batching?}
+\label{ques:batching}
+
+Chapter~\ref{chap:graphs-in-continuous}
+discusses how to embed roadmaps in $\mathcal{C}$
+so that they can be searched by $\mbox{E}^8$.
+
+The problem with na\"{\i}vly running $\mbox{E}^8$ on a
+dense roadmap in $\mathcal{C}$
+is that it tends to bunch up in local minima.
+This is because reducing the continuous planning problem
+to a graph search ignores the spatial correlation
+inherent in $\mathcal{C}_{\mbox{\scriptsize free}}$.
+
+One way to capture this is to maintain a probabalistic model
+of $\mathcal{C}_{\mbox{\scriptsize free}}$,
+and then optimize in expectation.
+In particular,
+instead of greedily choosing the best path based on
+optimistic estimates of one-time planning and execution cost:
+\begin{equation}
+   f(\pi) = \lambda \hat{f}_p(\pi) + (1-\lambda) \hat{f}_x(\pi),
+\end{equation}
+we instead reason over the total \emph{expected} remaining cost:
+\begin{align}
+   f(\pi)
+      &= E \left[ \lambda f_p(\pi) + (1-\lambda) f_x(\pi) \right] \\
+   &= P_{\mbox{\scriptsize free}}(\pi)
+      \left[ \lambda \hat{f}_p(\pi) + (1-\lambda) \hat{f}_x(\pi) \right]
+      + (1-P_{\mbox{\scriptsize free}}(\pi))
+      \left[ \lambda F_p + (1-\lambda) F_x \right]
+\end{align}
+
+Consider the the problem from Figure~\ref{fig:example-in-expectation}.
+There are an infinite number of paths to the goal,
+each consisting of walking along the sidewalk,
+followed by crossing the street perpendicuarly at a particular
+position $x$.
+The sidewalk is known to be collision-free,
+whereas each position on the street must be tested for collision
+with obstacles with planning validation cost $\hat{f}_p(\pi)$
+independent of $x$.
+Execution cost $f_x(\pi)$ is given by $|x|+c$.
+
+Suppose we first test walking straight across the street $\pi_0$
+(knowing nothing, this is clearly the optimistically cheapest path)
+and this is deemed in collision.
+Which path should we consider next (e.g $\pi_a$ or $\pi_b$)?
+
+What is our model for $P_{\mbox{\scriptsize free}}(\pi)$?
+Radial basis functions.
+
+We are operating under assumptions:
 \begin{itemize}
-\item Release implementation of checkmask PRM (OMPL)
-\item Release implementation of multi-set decomposer (OpenRAVE+OMPL)
-\item Re-release orcdchomp with permissive license?
+\item Single-shot greedy (won't choose \emph{sets} of paths
+   which minimize remaining effort)
+\item Operates over \emph{paths} instead of configurations
+   or edges (won't probe points, no explicit exploration)
 \end{itemize}
+
+\begin{figure}
+   \begin{center}
+   \includegraphics{build/example-in-expectation}
+   \end{center}
+   \caption{Simple example problem to illustrate optimizing
+      remaining ensemble cost in expectation.}
+   \label{fig:example-in-expectation}
+\end{figure}
+
+\subsection{What types of multi-set structure is the Multi-Set PRM
+   well-suited to, and what not?}
+\label{ques:multi-set-suited}
+
+See Chapter~\ref{chap:multi-set-prm}.
+
+\subsection{How should the \textsc{Proteus} task planner
+   sample roots in multi-step problems?}
+\label{ques:how-sequence}
+
+See Chapter~\ref{chap:task-planning}.
+
+\subsection{How does the \textsc{Proteus} task planner
+   compare experimentally to the BiRRT used at the DRC Trials?}
+\label{ques:drc-compare}
+
+See Chapter~\ref{chap:task-planning}.
+
+\subsection{How does the \textsc{Proteus} task planner
+   perform on everyday kitchen tasks by the \textsc{Herb} robot?}
+\label{ques:herb-performance}
+
+See Chapter~\ref{chap:task-planning}.
+
+}%for custom Q1 subsection numbering
 
 \section{Timeline}
 
-See Table~\ref{table:timeline} for the timeline.
+See this table for the timeline.
 
-\begin{table}
-\centering
+\begin{center}
 \begin{tabular}{lll}
 \hline
 Topic & Sec. & Deadline \\
@@ -4687,9 +4846,15 @@ Writing & & November 2015 \\
 Defence & & December 2015 \\
 \hline
 \end{tabular}
-\caption{Proposed Timeline}
-\label{table:timeline}
-\end{table}
+\end{center}
+
+\section{Open-Source Software}
+
+\begin{itemize}
+\item Release implementation of checkmask PRM (OMPL)
+\item Release implementation of multi-set decomposer (OpenRAVE+OMPL)
+\item Re-release orcdchomp with permissive license?
+\end{itemize}
 
 
 {\small
