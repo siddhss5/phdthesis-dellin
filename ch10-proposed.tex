@@ -1,9 +1,12 @@
 \chapter[Summary of Proposed Work]{Summary of\\Proposed Work}
+\label{chap:proposed}
 
 \section{Research Questions}
 \label{sec:research-questions}
 
-List of research questions.
+I propose to address the following seven research questions
+in this thesis.
+This section discusses each question in turn.
 
 \begin{center}
 \begin{tabular}{llc}
@@ -13,43 +16,43 @@ List of research questions.
 \midrule
    \ref{ques:choosing-lambda}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:choosing-lambda}
       \end{minipage}%
-      & \ref{chap:inflate} \\[10pt]
+      & \ref{chap:inflate} \\[12pt]
    \ref{ques:incremental-search}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:incremental-search}
       \end{minipage}%
-      & \ref{chap:inflate} \\[10pt]
+      & \ref{chap:inflate} \\[12pt]
    \ref{ques:batching}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:batching}
       \end{minipage}%
-      & \ref{chap:graphs-in-continuous} \\[10pt]
+      & \ref{chap:graphs-in-continuous} \\[12pt]
    \ref{ques:multi-set-suited}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:multi-set-suited}
       \end{minipage}%
-      & \ref{chap:multi-set-prm} \\[10pt]
+      & \ref{chap:multi-set-prm} \\[12pt]
    \ref{ques:how-sequence}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:how-sequence}
       \end{minipage}%
-      & \ref{chap:task-planning} \\[10pt]
+      & \ref{chap:task-planning} \\[12pt]
    \ref{ques:drc-compare}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:drc-compare}
       \end{minipage}%
-      & \ref{chap:task-planning} \\[10pt]
+      & \ref{chap:task-planning} \\[12pt]
    \ref{ques:herb-performance}
       &
-      \begin{minipage}[c]{0.8\columnwidth}%
+      \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:herb-performance}
       \end{minipage}%
       & \ref{chap:task-planning} \\[6pt]
@@ -62,25 +65,52 @@ List of research questions.
 \renewcommand\thesubsection{Q\arabic{subsection}}
 
 \subsection{How should the $\lambda$ parameter mediating
-   between planning and execution cost be chosen?}
+   between planning and execution cost in the E$^8$
+   search algorithm be chosen?}
 \label{ques:choosing-lambda}
 
 See Chapter~\ref{chap:inflate}.
 
+Minimizing total time in a greedy fashion implies $\lambda = 0.5$.
+For later steps in a multi-step plan,
+we might have an estimate of the probability $P_e$ that the given query will
+actually be executed.
+We can then pose our optimistic objective as total planning and execution
+time in expection;
+this induces the following parameter choice:
+\begin{equation}
+   \lambda = \frac{1}{1 + P_e} .
+\end{equation}
+For example, $P_e=1$ induces $\lambda = 0.5$;
+as $P_e \rightarrow 0$, $\lambda \rightarrow 1$.
+In other words,
+as the estimated probability of executing the path goes down,
+the planner becomes greedier w.r.t. planning effort at the expense of
+costlier solution paths.
+
+This is all one-step greedy;
+it returns the optimal path optimistically,
+assuming it will be collision-free.
+If we have some estimate of the proportion $P_u$ of evaluated edges
+which will be part of the final path,
+we can then choose a cost function which downweights the planning time.
+I need to work this out.
+
 \subsection{How can incremental graph search ideas (e.g. LPA*)
-   be used to efficiently implement the $\mbox{E}^8$ algorithm?}
+   be used to efficiently implement the E$^8$ algorithm?}
 \label{ques:incremental-search}
 
 See Chapter~\ref{chap:inflate}.
 
-\subsection{What is the best way to handle batching?}
+\subsection{How should discrete graphs be constructed in continuous
+   $\mathcal{C}$-spaces with spatially correlated execution costs?}
 \label{ques:batching}
 
 Chapter~\ref{chap:graphs-in-continuous}
 discusses how to embed roadmaps in $\mathcal{C}$
-so that they can be searched by $\mbox{E}^8$.
+so that they can be searched by E$^8$.
 
-The problem with na\"{\i}vly running $\mbox{E}^8$ on a
+The problem with na\"{\i}vly running E$^8$ on a
 dense roadmap in $\mathcal{C}$
 is that it tends to bunch up in local minima.
 This is because reducing the continuous planning problem
@@ -142,8 +172,8 @@ We are operating under assumptions:
    \label{fig:example-in-expectation}
 \end{figure}
 
-\subsection{What types of multi-set structure is the Multi-Set PRM
-   well-suited to, and what not?}
+\subsection{What types of multi-set structure is well-suited to
+   the Multi-Set PRM, and types are poorly suited?}
 \label{ques:multi-set-suited}
 
 See Chapter~\ref{chap:multi-set-prm}.

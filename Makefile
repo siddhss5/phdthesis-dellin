@@ -29,9 +29,12 @@ fast-manip.pdf: fast-manip.tex pr-refs.bib
 
 STANDALONES += broadphase-single
 STANDALONES += broadphase-multi
-STANDALONES += figstar-a
-STANDALONES += figstar-b
-STANDALONES += figstar-c
+STANDALONES += diagram-multi-step
+STANDALONES += e8-exgraph-edge-eval
+STANDALONES += e8-exgraph-edge-select
+STANDALONES += e8-exgraph-implicit-expand
+STANDALONES += e8-exgraph-implicit-select
+STANDALONES += e8-exgraph-intro
 STANDALONES += example-2d-a
 STANDALONES += example-2d-b
 STANDALONES += example-2d-c
@@ -42,6 +45,9 @@ STANDALONES += example-2d-g
 STANDALONES += example-2d-h
 STANDALONES += example-2d-i
 STANDALONES += example-in-expectation
+STANDALONES += figstar-a
+STANDALONES += figstar-b
+STANDALONES += figstar-c
 STANDALONES += intro-cost-axis
 STANDALONES += intro-cost-chimp
 STANDALONES += intro-cost-herb
@@ -85,6 +91,17 @@ fast-manip.pdf: figs/testherb-b.png
 fast-manip.pdf: figs/testherb-c.png
 fast-manip.pdf: figs/testherb-d.png
 fast-manip.pdf: figs/testherb-e.png
+
+# other wacky figures to generate
+fast-manip.pdf: build/e8-world-intro.pdf
+fast-manip.pdf: build/e8-world-astar.pdf
+fast-manip.pdf: build/e8-world-wastar.pdf
+fast-manip.pdf: build/e8-world-e8.pdf
+
+build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
+	mkdir -p build
+	python3 fig-scripts/e8-example.py --fn=$* --output_tikz=build/e8-world-$*.tex --output_stats=build/e8-world-$*-stats.tex
+	pdflatex -halt-on-error -output-directory=build build/e8-world-$*
 
 # how to clean after latex
 EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc

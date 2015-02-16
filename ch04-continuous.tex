@@ -25,6 +25,67 @@ of the $\mathcal{C}$-space.
 \section{Batching}
 
 Choosing Batch Size $N$.
+See Algorithm~\ref{alg:batched-e8}.
+
+\begin{algorithm}
+\caption{Batched-E$^8$ Planner}
+\label{alg:batched-e8}
+\begin{algorithmic}[1]
+\Procedure {Batched-E$^8$}{$G, \mathcal{Q}, N, \lambda$}
+%\State $G.V \leftarrow \emptyset$
+%\State $G.E \leftarrow \emptyset$
+\Loop
+   \State \textsc{PrmAddSamples}($G, \mathcal{Q}, N$)
+   \State Run E$^8$ ...
+\EndLoop
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Partial Path Evaluation}
+\label{alg:path-evaluation}
+\begin{algorithmic}[1]
+\Function {\textsc{EvalPath}}{$\pi$}
+   \ForAll {$e \in \pi$}
+         \label{line:edge-evaluation-order}
+      \State $(S_{plan}, b_{plan}, c_{plan})
+         = \mbox{\textsc{OptEdgePlan}}(e)$
+      \ForAll {$X \in S_{plan}$}
+         \State $b_{act} = \mathbf{1}_X[e]$
+         \State $\arraycolsep=2pt
+            e.P \leftarrow e.P \cup
+            \left\{\left( \begin{array}{rl}
+            \mathbf{1}_X & \mbox{if } b_{act} \\
+            \lnot \mathbf{1}_X & \mbox{otherwise} \\
+            \end{array} \right)
+            \right\}$
+         \If {$b_{act} \neq b_{plan}(X)$}
+            \State \Return False
+         \EndIf
+      \EndFor
+   \EndFor
+   \State \Return True
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+The E$^8$ algorithm (Alg.~\ref{alg:e8})
+operates on an initially empty persistent roadmap graph $G$.
+Each vertex represents a configuration $x \in \mathcal{C}$,
+and each edge represents a path $x(t)$ planned by a local planner.
+Similarly to the LazyPRM,
+edges are not evaluated until necessary.
+
+The E$^8$ algorithm proceeds in \emph{batches};
+at the start of each batch,
+the \textsc{PrmAddSamples} procedure adds
+$N$ additional vertices to the graph sampled from $\mathcal{C}$
+(including sampled start and goal configurations from $\mathcal{Q}$
+if not yet present),
+and edges are generated according to the PRM construction method.
+The Multi-Set PRM does not commit to any particular such method
+(e.g. r-disk, K-nearest-neighbors).
 
 What graph are we searching over?
 If it's too sparse, we'll stop after knowing that no solution exists.
@@ -48,19 +109,35 @@ which capture spatial correlation.
 
 \section{Whole-Path Bisection Testing}
 
+We implement the indicator functionals $\mathbf{1}_X[x(t)]$
+approximately by evaluating the corresponding indicator functions
+$\mathbf{1}_X(x)$ at a fixed resolution along the path.
+
+Sidd wants me to play with Hauser's fast bounded-velocity,
+bounded-acceleration segment timing code
+(which starts and stops at each waypoint).
+
 Also talk here about the fancy Lazy PRM path bisection
 evaluation function.
 
-\section{The $\mbox{E}^8$ PRM}
+\section{The E$^8$ PRM}
 
 This is the planner in continuous spaces,
 requires a planning cost model for each edge.
+
+\subsection{Implementation Details}
+\label{subsec:implementation-details}
+
+We provide an implementation of the Multi-Set PRM
+as a plugin for the Open Motion Planning Library \cite{sucan2012ompl}.%
+\footnote{Not available during the anonymous review process.}
+Here, we discuss a few relevant details of the implementation.
 
 \section{Relaxing the Additive Cost Model Requirement}
 
 Could we do this?
 We lose the nice efficient LPA*-enabling structure in
-$\mbox{E}^8$ this way,
+E$^8$ this way,
 but it lets us incorporate a more accurate cost model in some domains,
 especially for execution costs for fast motions (e.g. total time).
 

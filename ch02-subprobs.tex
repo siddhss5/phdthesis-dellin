@@ -1,4 +1,4 @@
-\chapter{Sub-Problems in Manipulation Planning}
+\chapter{The Sub-Problem Structure of Manipulation Tasks}
 \label{chap:formulation}
 
 In this chapter,
@@ -7,221 +7,60 @@ we lay out the structure of the manipulation planning problem.
 Definitely reference DRC Trials paper for planning vs. execution
 time breakdown!
 
+We are NOT solving the symbolic task planning problem.
+Our pieces would be useable by such a planner,
+including one which reasons about different orders.
+But for the purpose of this thesis,
+we'll basically assume that the sequence is given to us.
+
 \section{Sub-Problem Structure}
 
 {
 \setlength{\offsetpage}{0.5in}
 \begin{figure}
 \begin{widepage}
-\begin{center}
-
-\begin{subfigure}[t]{0.19\linewidth}
 \centering
-\includegraphics[width=\columnwidth]{figs/testherb-a.png}
-\caption{Start config}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-b.png}
-\caption{Step 1 in $X_1$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-c.png}
-\caption{Step 2 in $X_2$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-d.png}
-\caption{Step 3 in $X_3$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-e.png}
-\caption{End config}
-\end{subfigure}
 
-\vspace{0.3cm}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \centering
+      \includegraphics[width=\columnwidth]{figs/testherb-a.png}
+      \caption{Start config}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \centering
+      \includegraphics[width=\columnwidth]{figs/testherb-b.png}
+      \caption{Step 1 in $X_1$}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \centering
+      \includegraphics[width=\columnwidth]{figs/testherb-c.png}
+      \caption{Step 2 in $X_2$}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \centering
+      \includegraphics[width=\columnwidth]{figs/testherb-d.png}
+      \caption{Step 3 in $X_3$}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \centering
+      \includegraphics[width=\columnwidth]{figs/testherb-e.png}
+      \caption{End config}
+   \end{subfigure}
 
-\begin{subfigure}[t]{\linewidth}
-\begin{center}
-\begin{tikzpicture}
-\tikzset{>=latex} % arrow heads
+   \vspace{0.3cm}
 
-% top: symbolic planner
-\node[draw,ellipse,align=center] (high) at (0,0)
-   {Task Planner:\\Clear the table};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
-   (step1) at (-4.2,-2)
-   {Step 1:\\Transit to\\[-0.04in]grasp};
-\node (grasp) at (-2.1,-2) {Grasp};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
-   (step2) at (0,-2)
-   {Step 2:\\Transfer to\\[-0.04in]drop};
-\node (drop) at (2.1,-2) {Drop};
-\node[draw,circle,align=center,inner sep=0,minimum size=1.9cm]
-   (step3) at (4.2,-2)
-   {Step 3:\\Transit to\\[-0.04in]home};
-\draw[->] (high) -- (step1);
-\draw[->] (high) -- (step2);
-\draw[->] (high) -- (step3);
-\draw[->] (step1) -- (grasp);
-\draw[->] (grasp) -- (step2);
-\draw[->] (step2) -- (drop);
-\draw[->] (drop) -- (step3);
+   \begin{subfigure}[t]{\linewidth}
+      \centering
+      \includegraphics{build/diagram-multi-step}
+      \caption{This thesis focuses on efficient geometric planning
+         for manipulation tasks (the lower two levels here).
+         Task planning can be performed by an autonomous
+         symbolic planner,
+         or guided by a human operator.}
+   \end{subfigure}
 
-% middle: c-space sequence
-% valid subsets
-\node[draw,black,rounded corners,
-   minimum height=2.3cm,minimum width=4.5cm]
-   (X1) at (-3.5,-4.75) {};
-\node[draw,black,rounded corners,
-   minimum height=2.6cm,minimum width=5.5cm]
-   (X2) at (0,-4.75) {};
-\node[draw,black,rounded corners,
-   minimum height=2.3cm,minimum width=5.5cm]
-   (X3) at ( 4,-4.75) {};
-% root sets
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   (Xgrasp) at (-2,-4.75) {};
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   (Xdrop) at (2,-4.75) {};
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   (Xend) at (6,-4.75) {};
-% set labels
-\node[above=-0.6cm of Xgrasp] {$X_{\mbox{\scriptsize grasp}}$};
-\node[above=-0.6cm of Xdrop] {$X_{\mbox{\scriptsize drop}}$};
-\node[above=-0.6cm of Xend] {$X_{\mbox{\scriptsize end}}$};
-\node[above left=-0.6cm and -2.1cm of X1] {$X_1$};
-\node[above=-0.75cm of X2] {$X_2$};
-\node[above=-0.6cm of X3] {$X_3$};
-% nodes and paths
-\node[circle,fill=black,inner sep=2] (xstart) at (-5,-4.9) {};
-\node[circle,fill=black!50,inner sep=2] (xg1) at (-1.9,-4.6) {};
-\node[circle,fill=black,inner sep=2] (xg2) at (-2.1,-5.3) {};
-\node[circle,fill=black,inner sep=2] (xd1) at ( 1.9,-4.5) {};
-\node[circle,fill=black!50,inner sep=2] (xd2) at ( 2.1,-5.0) {};
-\node[circle,fill=black!50,inner sep=2] (xd3) at ( 2.0,-5.4) {};
-\node[circle,fill=black!50,inner sep=2] (xe1) at ( 6.1,-4.7) {};
-\node[circle,fill=black,inner sep=2] (xe2) at ( 5.9,-5.2) {};
-\node[above=0cm of xstart] {$x_{\mbox{\scriptsize start}}$};
-% lines
-\draw[line width=1.5mm,white]
-   (xstart) -- (xg1) (xg1) -- (xd1) (xg1) -- (xd2) (xg1) -- (xd3)
-   (xg2) -- (xd2) (xg2) -- (xd3) (xd1) -- (xe1) (xd2) -- (xe1)
-   (xd2) -- (xe2) (xd3) -- (xe1) (xd3) -- (xe2);
-\draw[draw=black!50]
-   (xstart) -- (xg1) (xg1) -- (xd1) (xg1) -- (xd2) (xg1) -- (xd3)
-   (xg2) -- (xd2) (xg2) -- (xd3) (xd1) -- (xe1) (xd2) -- (xe1)
-   (xd2) -- (xe2) (xd3) -- (xe1) (xd3) -- (xe2);
-\draw[line width=1.5mm,white]
-   (xstart) -- (xg2) (xg2) -- (xd1) (xd1) -- (xe2);
-\draw
-   (xstart) -- (xg2) (xg2) -- (xd1) (xd1) -- (xe2);
-% grey sets (overlay)
-\node[fill=black,opacity=0.1,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   at (-2,-4.75) {};
-\node[fill=black,opacity=0.1,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   at (2,-4.75) {};
-\node[fill=black,opacity=0.1,rounded corners,
-   minimum height=2cm,minimum width=1.2cm]
-   at (6,-4.75) {};
-% question mark bubbles
-\node[circle,fill=white,fill opacity=0.9,inner sep=7pt]
-   at (-3.75,-4.9) {\LARGE ?};
-\node[circle,fill=white,fill opacity=0.9,inner sep=7pt]
-   at (0,-4.9) {\LARGE ?};
-\node[circle,fill=white,fill opacity=0.9,inner sep=7pt]
-   at (4.0,-4.9) {\LARGE ?};
-
-% bottom: individual planner instances
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=3.5cm]
-   (sm1) at (-4.2,-7.75) {};
-\node[draw,black,fill=black!10,rounded corners,
-   minimum height=1.7cm,minimum width=0.8cm,
-   right=-1cm of sm1] {};
-\node[circle,fill=black!50,inner sep=2] (sm1xstart) at (-5.4,-7.75) {};
-\node[circle,fill=black!50,inner sep=2] (sm1xg1) at (-2.9,-7.5) {};
-\node[circle,fill=black!50,inner sep=2] (sm1xg2) at (-3.1,-8.1) {};
-\draw[draw=black!50]
-   (sm1xstart) -- (sm1xg1) (sm1xstart) -- (sm1xg2);
-\node[above=-0.5cm of sm1] {\footnotesize $X_1$};
-\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
-   at (-4.2,-7.85) {\Large ?};
-
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=3.5cm]
-   (sm2) at (0.5,-7.75) {};
-\node[draw,black,fill=black!10,rounded corners,
-   minimum height=1.7cm,minimum width=0.8cm,
-   left=-1cm of sm2] {};
-\node[draw,black,fill=black!10,rounded corners,
-   minimum height=1.7cm,minimum width=0.8cm,
-   right=-1cm of sm2] {};
-\node[circle,fill=black!50,inner sep=2] (sm2xg1) at (-0.6,-7.5) {};
-\node[circle,fill=black!50,inner sep=2] (sm2xg2) at (-0.8,-8.1) {};
-\node[circle,fill=black!50,inner sep=2] (sm2xd1) at ( 1.6,-7.4) {};
-\node[circle,fill=black!50,inner sep=2] (sm2xd2) at ( 1.8,-7.9) {};
-\node[circle,fill=black!50,inner sep=2] (sm2xd3) at ( 1.7,-8.3) {};
-\draw[draw=black!50]
-   (sm2xg1) -- (sm2xd1) (sm2xg1) -- (sm2xd2) (sm2xg1) -- (sm2xd3)
-   (sm2xg2) -- (sm2xd1) (sm2xg2) -- (sm2xd2) (sm2xg2) -- (sm2xd3);
-\node[above=-0.5cm of sm2] {\footnotesize $X_2$};
-\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
-   at (0.5,-7.85) {\Large ?};
-
-\node[draw,black,rounded corners,
-   minimum height=2cm,minimum width=3.5cm]
-   (sm3) at (5.2,-7.75) {};
-\node[draw,black,fill=black!10,rounded corners,
-   minimum height=1.7cm,minimum width=0.8cm,
-   left=-1cm of sm3] {};
-\node[draw,black,fill=black!10,rounded corners,
-   minimum height=1.7cm,minimum width=0.8cm,
-   right=-1cm of sm3] {};
-\node[circle,fill=black!50,inner sep=2] (sm3xd1) at ( 4.0,-7.4) {};
-\node[circle,fill=black!50,inner sep=2] (sm3xd2) at ( 4.2,-7.9) {};
-\node[circle,fill=black!50,inner sep=2] (sm3xd3) at ( 4.1,-8.3) {};
-\node[circle,fill=black!50,inner sep=2] (sm3xe1) at ( 6.4,-7.6) {};
-\node[circle,fill=black!50,inner sep=2] (sm3xe2) at ( 6.2,-8.1) {};
-\draw[draw=black!50]
-   (sm3xd1) -- (sm3xe1) (sm3xd1) -- (sm3xe2) (sm3xd2) -- (sm3xe1)
-   (sm3xd2) -- (sm3xe2) (sm3xd3) -- (sm3xe1) (sm3xd3) -- (sm3xe2);
-\node[above=-0.5cm of sm3] {\footnotesize $X_3$};
-\node[circle,fill=white,fill opacity=0.9,inner sep=5pt]
-   at (5.2,-7.85) {\Large ?};
-
-% arrows
-\draw[->] (-4.1,-6.1) -- (-4.4,-6.6);
-\draw[->] ( 0.3,-6.2) -- ( 0.4,-6.6);
-\draw[->] ( 4.5,-6.1) -- ( 4.8,-6.6);
-
-% side labels
-\node[draw,rotate=90,align=center] at (-6.7,-2)
-   {Symbolic\\Plan};
-\node[draw,rotate=90,align=center] at (-6.7,-4.75)
-   {$\mathcal{C}$-space\\Planning};
-\node[draw,rotate=90,align=center] at (-6.7,-7.75)
-   {Individual\\Planner Queries};
-
-\end{tikzpicture}
-\end{center}
-\caption{This thesis focuses on efficient geometric planning
-   for manipulation tasks (the lower two levels here).
-   Task planning can be performed by an autonomous
-   symbolic planner,
-   or guided by a human operator.}
-\end{subfigure}
-
-\end{center}
-\caption{Diagram of multi-step planning framework.}
-\label{fig:diagram-multi-step}
+   \caption{Diagram of multi-step planning framework.}
+   \label{fig:diagram-multi-step}
 \end{widepage}
 \end{figure}
 }
@@ -235,7 +74,7 @@ Briefly discuss the higher-level planner.
 Not doing research here -- just need something that specifies
 geometric goals.
 Complementary to symbolic planners
-or from humans (e.g. the DRC -- need cite).
+or from humans (e.g. the DRC \cite{dellin2014drc}).
 For this proposal,
 will only discuss seqential sub-plans,
 but an intelligent meta-planner
@@ -248,7 +87,7 @@ It was slow, and it got stuck!
 
 Copy-paste in from the ISER paper!
 
-\section{Approach}
+\section{Multi-Step Approach}
 
 Multi-step problem structure (lots of options at each step);
 decomposition into a bunch of "local planner" like things.
@@ -265,7 +104,12 @@ For now, assume a prescribed order,
 but we'll talk later about more complex meta-planning
 approaches.
 
-\subsection{Root Sampling}
+\section{DRC Trials Approach}
+
+Used a bidirectional RRT.
+Deep-dive into DRC Trials data analysis from ISER paper.
+
+\section{Root Sampling}
 
 Do sampling at this higher level.
 (Can't rely on the sub-planners to generate their own starts/goals --
@@ -283,6 +127,32 @@ Make each step fast.
 Chapters 5,6 focus BETWEEN steps.
 Exploit structure between steps (Chapter~\ref{chap:multi-set}).
 Single-query vs. multi-query.
+
+\section{Within-Step Approach}
+
+While there are many types of approaches for such queries
+which we discuss in Section~\ref{sec:related-work},
+one of the most common are graph search algorithms.
+
+\paragraph{General Problem Characterization.}
+
+We are motivated to solve motion planning problems for articulated robots.
+In the simplest version of this problem,
+the robot has a continuous configuration space $C$,
+with some subset $C_{obs}$ in collision.
+All feasible trajectories must then lie entirely in
+$\mathcal{C}_{\mbox{\scriptsize free}} = C \setminus C_{obs}$.
+In general, testing some configuration $q$ for membership in
+$\mathcal{C}_{\mbox{\scriptsize free}}$
+is an expensive operation.
+A typical query asks for a trajectory $t: [0,1] \rightarrow Q$ between
+a start set and a goal set (e.g. $t(0) \in Q_s$ and $t(1) \in Q_g$.
+We defer discussion constraints until later.
+We are focused on configuration spaces without dynamics.
+
+In this chapter,
+we'll primarly focus on single-query things,
+but we'll keep in mind that we want things that can enable reuse eventually.
 
 \section{Related Work}
 

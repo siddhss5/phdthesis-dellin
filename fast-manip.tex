@@ -73,8 +73,8 @@
 \newenvironment{proof}[1][Proof]{\begin{trivlist}
    \item[\hskip \labelsep {\bfseries #1}]}{\hfill$\square$\end{trivlist}}
 
-\title{Efficient Manipulation Task Planning\\
-   via Reuse-Informed Planning Cost Optimization}
+\title{Efficient Manipulation Task Planning via\\
+   Reuse-Informed Optimization of Planning Effort}
 \author{Christopher M. Dellin}
 \date{\today}
 
@@ -101,11 +101,8 @@ Lydia Kavraki, Rice University\\
 \maketitle
 
 \begin{abstract}
-Driven by a symbolic task planner, plan a feasible or low-cost sequence of
-robot trajectory segments to solve a multi-step manipulation problem
-(e.g. move an object, turn a valve, etc).
-
-\textbf{From RSS paper:}
+\cdnote{This is still from the RSS paper.
+The intro is more up-to-date.}
 Motion planning approaches that build graphs
 in the collision-free subset of configuration space
 have proven promising
@@ -149,46 +146,6 @@ and provide an open-source implementation of our planner.
 
 \tableofcontents
 
-
-%\begin{figure}
-%\begin{widepage}
-%   \centering
-%   \begin{subfigure}[b]{0.24\textwidth}
-%      \begin{center}
-%      \includegraphics[width=\textwidth]{figs/switchboard.jpg}
-%      
-%      \includegraphics[width=\textwidth]{figs/mech-switches.jpg}
-%      \end{center}
-%      \caption{Something}
-%   \end{subfigure}
-%   \begin{subfigure}[b]{0.24\textwidth}
-%      \begin{center}
-%      \includegraphics[width=\textwidth]{figs/assembly-line.jpg}
-%      
-%      \includegraphics[width=\textwidth]{figs/car-robots.jpg}
-%      \end{center}
-%      \caption{Something}
-%   \end{subfigure}
-%   \begin{subfigure}[b]{0.24\textwidth}
-%      \begin{center}
-%      \includegraphics[width=\textwidth]{figs/table-clearing.jpg}
-%      
-%      \includegraphics[height=2in]{figs/herb-fuze.jpg}
-%      \end{center}
-%      \caption{HERB Robot}
-%   \end{subfigure}
-%   \begin{subfigure}[b]{0.24\textwidth}
-%      \begin{center}
-%      \includegraphics[width=\textwidth]{figs/chernobyl.jpg}
-%      
-%      \includegraphics[height=2in]{figs/chimp-debris.jpg}
-%      \end{center}
-%      \caption{CHIMP Robot}
-%   \end{subfigure}
-%   \caption{Manipulation problems.}
-%\end{widepage}
-%\end{figure}
-
 \include{ch01-intro}
 \include{ch02-subprobs}
 \include{ch03-e8}
@@ -199,9 +156,6 @@ and provide an open-source implementation of our planner.
 \include{ch08-taskplanning}
 \include{ch09-conclusion}
 \include{ch10-proposed}
-
-
-
 
 {\small
 \bibliographystyle{abbrv}

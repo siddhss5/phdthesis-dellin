@@ -33,14 +33,14 @@ in dynamic, unstructured environments.
 }
 \end{quote}
 
-We outline the general structure of multi-step manipulation planning
+We outline the general structure of manipulation tasks
 in Chapter~\ref{chap:formulation}.
-There are two principal challenges inherent in
+There are three principal challenges inherent in
 human-scale manipulation tasks
-that must be addressed by such approaches,
+that must be addressed by planning approaches,
 which we review here.
 
-\textbf{Challenge 1: Task Efficiency.}
+\textbf{Challenge 1: Manipulation Tasks must be Resource-Efficient}
 
 Autonomous systems performing manipulation tasks are
 resource-constrained.
@@ -50,42 +50,44 @@ into its mission,
 these robots will not see widespread use.
 These metrics are only meaningful
 when applied across the entire task,
-from the point it is assigned to the robot
-to the point it is complete.
+from assignment to completion.
 
 In order to accomplish such a manipulation task,
 an autonomous robot must expend two types of effort.
 First, it must allocate computation to \emph{plan}
 a sequence of motions that will acheive the task.
-Second, it must \emph{execute} these plans using its actuators.
-Generally, there is a tradeoff between these two;
-spending more effort during planning produces paths that are
-cheaper to execute.
 Planning costs are dominated by \emph{validity checking} --
 e.g. checking whether configurations are free from collision.
+Second, it must \emph{execute} these motions using its actuators.
+Typically, there is a tradeoff between these two;
+spending more effort during planning produces paths that are
+cheaper to execute.
 
 Robots performing real-world human-scale manipulation tasks
 tend to expend comparable effort in these two areas
 (see Figure~\ref{fig:plan-exec-cost}).
-While some approaches (e.g. anytime planning) attempt to capture
+While some approaches (e.g. anytime planning) partially capture
 this tradeoff,
-our approach,
-the Greedy PRM (Chapter~\ref{chap:inflate}),
-instead explicitly optimizes for both planning
+our approach explicitly optimizes for both planning
 and execution effort
-given a planning effort model.
-This allows the planner to determine the proper allocation of effort
-between planning and execution in order to minimize total task cost.
+-- what we call the task's \emph{ensemble effort}.
+We apply this reasoning to explicit graphs
+with the E$^8$ search algorithm (Chapter~\ref{chap:inflate})
+which determines an effort allocation between planning and execution
+in order to minimize total task cost.
 
-Next, Chapter~\ref{chap:graphs-in-continuous}
-discusses how to embed these roadmaps efficiently
-into continuous configuration spaces,
-touching on completeness,
-efficiency, etc.
+In order to solve planning problems in continous configuration spaces,
+we borrow heavily from roadmap techniques for graph construction.
+The application of our ensemble effort algorithm to such roadmaps,
+the E$^8$-PRM (Chapter~\ref{chap:graphs-in-continuous}),
+maintains efficiency through an
+incremental densification approach
+motivated by approximating the probabalistic spatial correlation of
+$\mathcal{C}_{\mbox{\scriptsize free}}$.
 
 {
 \setlength{\offsetpage}{0.5in}
-\begin{figure}
+\begin{figure}[t]
 \begin{widepage}
 \begin{center}
    \begin{subfigure}[b]{1.4in}
@@ -120,55 +122,11 @@ efficiency, etc.
 \end{figure}
 }
 
-\textbf{Challenge 2: Sub-Problem Structure.}
-
-While planning cost is a significant component
-in resource-constrained human-scale problems,
-manipulation tasks exhibit a structure
-which makes it difficult to apply fast planning approaches.
-In particular,
-they are inherently composed of multiple distinct sub-problems,
-each of which 
-must be validated a different subset of configuration space.
-For example, see the manipulation task in
-Figure~\ref{fig:intro-multi-step}.
-
-We could do na\"{\i}ve planning, like in the
-DRC Trials \cite{dellin2014drc},
-with no reuse.
-We call a single-query planner for each step.
-Either we generate roots at the start,
-or we let each sub-planner pick a root it can get to, and commit.
-First, we can get stuck,
-comitting to something that either is infeasible, or takes too long.
-Second, this is too slow --
-each sub-plan simply takes too long.
-
-We could try multi-query planning,
-but as mentioned,
-the valid subset changes for each step.
-
-We solve this in two ways.
-First, in Chapter~\ref{chap:multi-set},
-we introduce the multi-set planning problem.
-We show that while the valid subsets are different for each step,
-they are related in a structured way.
-In fact, we show how lots of different prior ideas for planner
-efficiency are unified by this formalism.
-
-Second, Chapter~\ref{chap:multi-set-prm}
-uses the multi-set formalism as a planning cost model
-for use by the Greedy PRM.
-The resulting algorithm,
-the Multi-Set PRM,
-uses propositional logic to represent multi-set stuff
-algorithmically.
-We show how we can incremental graph search approaches
-to make it super fast.
+\textbf{Challenge 2: Incongruent Sub-Problems Impede Reuse.}
 
 {
 \setlength{\offsetpage}{0.75in}
-\begin{figure}
+\begin{figure}[t]
 \begin{widepage}
 \begin{center}
 
@@ -180,17 +138,17 @@ to make it super fast.
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
 \includegraphics[width=\columnwidth]{figs/testherb-b.png}
-\caption{Step 1 in $X_1$}
+\caption{Part 1 in $X_1$}
 \end{subfigure}
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
 \includegraphics[width=\columnwidth]{figs/testherb-c.png}
-\caption{Step 2 in $X_2$}
+\caption{Part 2 in $X_2$}
 \end{subfigure}
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
 \includegraphics[width=\columnwidth]{figs/testherb-d.png}
-\caption{Step 3 in $X_3$}
+\caption{Part 3 in $X_3$}
 \end{subfigure}
 \begin{subfigure}[t]{0.19\linewidth}
 \centering
@@ -220,23 +178,100 @@ to make it super fast.
       before returning to an end configuration.
       Each sub-problem requires a path in a distinct free subset of
       configuration space;
-      our approach enables partial reuse between these steps.}
-   \label{fig:intro-multi-step}
+      our approach enables partial reuse between these parts.}
+   \label{fig:intro-multi-part}
 \end{center}
 \end{widepage}
 \end{figure}
 }
 
-\textbf{Applications and Experiments}
+While planning cost is a significant component
+in resource-constrained human-scale problems,
+manipulation tasks exhibit a structure
+which makes it difficult to apply fast planning approaches.
+In particular,
+they are inherently composed of multiple distinct sub-problems,
+each of which 
+must be validated a different subset of configuration space,
+which makes traditional multi-query planners impractical.
+For example, see the manipulation task in
+Figure~\ref{fig:intro-multi-part}.
+
+We solve this in two ways.
+First, in Chapter~\ref{chap:multi-set},
+we introduce the \emph{multi-set planning problem}.
+We show that while the valid subsets are different for each part,
+they are related in a structured way.
+In fact, we show how lots of different prior ideas for planner
+efficiency are unified by this formalism.
+
+Second, Chapter~\ref{chap:multi-set-prm}
+uses the multi-set formalism as a planning cost model
+for the E$^8$-PRM.
+The resulting algorithm,
+the Multi-Set PRM,
+uses propositional logic to represent the multi-set structure
+algorithmically.
+%We show how we can use incremental graph search approaches
+%to make it super fast.
+
+\textbf{Challenge 3: Task Robustness Requires Long-Horizon Plans.}
+
+Not only does the structure of manipulation tasks
+impede planner reuse between sub-problems,
+but it also necessitates long-horizon plans to ensure robustness.
+For example,
+consider sequentially planning for the task in
+Figure~\ref{fig:intro-multi-part}.
+The interfaces between these parts lie on continuous manifolds.
+A choice made by an early planning part
+-- e.g. what arm configuration or object grasp to use --
+often renders a subsequent part either difficult to plan,
+costly to execute, or impossible altogether.
+
+Many planners are designed to take as input start and/or goal sets.
+We might hope that we can delegate each task sub-problem to
+separate such planner instances,
+and provide each with specifications for their corresponding
+root sets.
+However,
+a customary planning request takes an \emph{any-to-any} form
+(i.e. from \emph{any} start to \emph{any} goal configuration).
+Clearly, without coordination,
+the juxtaposed paths will not be continuous.
+
+We mitigate this in two parts.
+First, we introduce the \emph{Comprehensive Multi-Root} (CMR) planner
+objective (Chapter~\ref{chap:cmr}).
+In constrast to the traditional any-to-any objective,
+CMR encourages a planner to discover paths between multiple pairs of
+roots.
+
+Second,
+we introduce the \textsc{Proteus} task planner
+(Chapter~\ref{chap:task-planning})
+which restricts each sub-problem to a limited set of samples
+for each interface manifold
+by performing root sampling
+and coordinates between sub-planners.
+
+\textbf{Applications and Experiments.}
 
 We give a bunch of examples of this framework
 for different robots.
 For example, I really want to talk about robots idly
 hypothesizing worlds.
 
+
+\textbf{Summary of Proposed Work.}
+
+See Chapter~\ref{chap:proposed}
+for a summary and timeline of proposed work.
+
+
 {
 \setlength{\offsetpage}{0.75in}
-\begin{figure}
+\begin{figure}[t]
 \begin{widepage}
 \begin{center}
 \begin{tikzpicture}
@@ -274,7 +309,7 @@ hypothesizing worlds.
    \cite{jaillet2004dynamicprm}};
 
 \node[draw,ellipse,align=center] at (2,7)
-   {Greedy PRM\\(Chapter~\ref{chap:inflate})};
+   {E$^8$-PRM\\(Chapter~\ref{chap:inflate})};
 
 \node[draw,ellipse,align=center] at (10,7)
    {Multi-Set PRM\\(Chapter~\ref{chap:multi-set-prm})};
@@ -287,3 +322,42 @@ hypothesizing worlds.
 \end{widepage}
 \end{figure}
 }
+
+%\begin{figure}
+%\begin{widepage}
+%   \centering
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/switchboard.jpg}
+%      
+%      \includegraphics[width=\textwidth]{figs/mech-switches.jpg}
+%      \end{center}
+%      \caption{Something}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/assembly-line.jpg}
+%      
+%      \includegraphics[width=\textwidth]{figs/car-robots.jpg}
+%      \end{center}
+%      \caption{Something}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/table-clearing.jpg}
+%      
+%      \includegraphics[height=2in]{figs/herb-fuze.jpg}
+%      \end{center}
+%      \caption{HERB Robot}
+%   \end{subfigure}
+%   \begin{subfigure}[b]{0.24\textwidth}
+%      \begin{center}
+%      \includegraphics[width=\textwidth]{figs/chernobyl.jpg}
+%      
+%      \includegraphics[height=2in]{figs/chimp-debris.jpg}
+%      \end{center}
+%      \caption{CHIMP Robot}
+%   \end{subfigure}
+%   \caption{Manipulation problems.}
+%\end{widepage}
+%\end{figure}
