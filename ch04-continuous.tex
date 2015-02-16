@@ -4,6 +4,72 @@
 Sweet, sweet chapter about how to best embed explicit graphs
 in continuous configuration spaces.
 
+In this chapter,
+we'll primarly focus on single-query things,
+but we'll keep in mind that we want things that can enable reuse eventually.
+
+\section{Review of Alternative Approaches}
+\label{sec:related-work}
+
+Since $C$ is continuous,
+all approaches must introduce some sort of discretization
+in order to compute solutions.
+We choose to build a graph consisting of vertices and edges in $C$,
+and then search that graph (Section~\ref{sec:best-first}).
+We do this because we can rely on existing techniques,
+and because an explicit graph can be more easily reused than other
+approaches.
+In this section, we discuss alternative approaches to solving
+the motion planning problem for articulated robots.
+
+\subsection{Multi-Query Approaches}
+
+We could run a PRM \cite{kavrakietal1996prm}.
+Commit to a fixed graph,
+and determine the validity of each vertex and edge w.r.t.
+$\mathcal{C}_{\mbox{\scriptsize free}}$.
+Then, at query time,
+run A* to find the shortest path (this is fast due to graph sparseness).
+This is good because it reuses work.
+Unfortunately,
+(a) our $\mathcal{C}_{\mbox{\scriptsize free}}$
+is different for every subplan
+(and for different options with each),
+and (b) we don't want to determine validity over the entire graph
+because it's costly.
+
+\subsection{Anytime algorithms}
+
+Compare to RRT*, FMT*, BIT*, etc.
+
+\subsection{Other}
+
+Need to look into the SBL planner \cite{sanchezante2001sbl}
+(Single Query BiDirectional Lazy PRM).
+
+\subsection{Incremental Construction Algorithms}
+
+We could construct the graph incrementally and in response to the shape
+of $\mathcal{C}_{\mbox{\scriptsize free}}$.
+RRTs behave well for quickly finding feasible paths.
+We'll compare against them at the end of this chapter.
+Also talk about ESTs.
+Difficult to cache things.
+
+\subsection{Trajectory Optimization}
+
+One approach is trajectory optimization.
+For example, there's CHOMP \cite{zucker2013chomp}
+and TrajOpt \cite{schulman2013trajopt}.
+Lots of other prior work here that is not manipulation-focused.
+
+Local minima problems.
+Difficult to cache / apply to similar problems.
+
+This is largely complementary.
+Use sampling-based planning to quickly find feasible solutions,
+and then optimize them.
+
 \section{Types of Graphs}
 
 \begin{itemize}
@@ -13,7 +79,7 @@ in continuous configuration spaces.
 
 \section{Optimization in Expectation}
 
-Extend the Greedy PRM algorith to do things in expectation.
+Extend the E$^8$-PRM algorithm to do things in expectation.
 
 Relate to Evan's work.
 
@@ -70,21 +136,21 @@ See Algorithm~\ref{alg:batched-e8}.
 \end{algorithmic}
 \end{algorithm}
 
-The E$^8$ algorithm (Alg.~\ref{alg:e8})
+The E$^8$-PRM (Algorithm~\ref{alg:e8})
 operates on an initially empty persistent roadmap graph $G$.
 Each vertex represents a configuration $x \in \mathcal{C}$,
 and each edge represents a path $x(t)$ planned by a local planner.
 Similarly to the LazyPRM,
 edges are not evaluated until necessary.
 
-The E$^8$ algorithm proceeds in \emph{batches};
+The E$^8$-PRM proceeds in \emph{batches};
 at the start of each batch,
 the \textsc{PrmAddSamples} procedure adds
 $N$ additional vertices to the graph sampled from $\mathcal{C}$
 (including sampled start and goal configurations from $\mathcal{Q}$
 if not yet present),
 and edges are generated according to the PRM construction method.
-The Multi-Set PRM does not commit to any particular such method
+The E$^8$-PRM does not commit to any particular such method
 (e.g. r-disk, K-nearest-neighbors).
 
 What graph are we searching over?
@@ -120,7 +186,7 @@ bounded-acceleration segment timing code
 Also talk here about the fancy Lazy PRM path bisection
 evaluation function.
 
-\section{The E$^8$ PRM}
+\section{The E$^8$-PRM}
 
 This is the planner in continuous spaces,
 requires a planning cost model for each edge.
@@ -128,7 +194,7 @@ requires a planning cost model for each edge.
 \subsection{Implementation Details}
 \label{subsec:implementation-details}
 
-We provide an implementation of the Multi-Set PRM
+We provide an implementation of the E$^8$-PRM
 as a plugin for the Open Motion Planning Library \cite{sucan2012ompl}.%
 \footnote{Not available during the anonymous review process.}
 Here, we discuss a few relevant details of the implementation.

@@ -7,6 +7,7 @@
 I propose to address the following seven research questions
 in this thesis.
 This section discusses each question in turn.
+See Table~\ref{table:proposed-timeline} for a timeline.
 
 \begin{center}
 \begin{tabular}{llc}
@@ -19,13 +20,13 @@ This section discusses each question in turn.
       \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:choosing-lambda}
       \end{minipage}%
-      & \ref{chap:inflate} \\[12pt]
+      & \ref{chap:e8} \\[12pt]
    \ref{ques:incremental-search}
       &
       \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:incremental-search}
       \end{minipage}%
-      & \ref{chap:inflate} \\[12pt]
+      & \ref{chap:e8} \\[12pt]
    \ref{ques:batching}
       &
       \begin{minipage}[c]{0.75\columnwidth}%
@@ -69,7 +70,7 @@ This section discusses each question in turn.
    search algorithm be chosen?}
 \label{ques:choosing-lambda}
 
-See Chapter~\ref{chap:inflate}.
+See Chapter~\ref{chap:e8}.
 
 Minimizing total time in a greedy fashion implies $\lambda = 0.5$.
 For later steps in a multi-step plan,
@@ -100,7 +101,14 @@ I need to work this out.
    be used to efficiently implement the E$^8$ algorithm?}
 \label{ques:incremental-search}
 
-See Chapter~\ref{chap:inflate}.
+See Chapter~\ref{chap:e8}, especially Algorithm~\ref{alg:e8}.
+The algorithm is clearly making multiple graph search queries
+over a fixed graph with only a few edge costs changing between queries.
+While, for small graphs, graph search time is small,
+for larger graphs,
+it will become significant.
+It should be relatively straightforward to implement LPA* here.
+We just have to do it!
 
 \subsection{How should discrete graphs be constructed in continuous
    $\mathcal{C}$-spaces with spatially correlated execution costs?}
@@ -184,11 +192,21 @@ See Chapter~\ref{chap:multi-set-prm}.
 
 See Chapter~\ref{chap:task-planning}.
 
+See Section~\ref{subsec:learning-good-intermediate-roots}.
+
+This is a cool (and very complementary) learning problem.
+
+Evan may have done some work here already.
+
 \subsection{How does the \textsc{Proteus} task planner
    compare experimentally to the BiRRT used at the DRC Trials?}
 \label{ques:drc-compare}
 
 See Chapter~\ref{chap:task-planning}.
+
+I want to run my planner on the DRC Trials data
+and show significant improvement.
+
 
 \subsection{How does the \textsc{Proteus} task planner
    perform on everyday kitchen tasks by the \textsc{Herb} robot?}
@@ -196,33 +214,78 @@ See Chapter~\ref{chap:task-planning}.
 
 See Chapter~\ref{chap:task-planning}.
 
+I want to greatly expand the number of manipulation planning tasks
+on the HERB platform in my data set.
+
 }%for custom Q1 subsection numbering
 
 \section{Timeline}
 
-See this table for the timeline.
+See Table~\ref{table:proposed-timeline} for the timeline.
+It's currently very aggressive.
 
-\begin{center}
-\begin{tabular}{lll}
-\hline
-Topic & Sec. & Deadline \\
-\hline
-Greedy PRM, Multi-Set Planning & & January 2015 (RSS) (completed) \\
-Proposal & & February 2015 \\
-The Greedy PRM: Optimizing Total Task Cost & & March 2015 (IROS) \\
-DRC Integration & & April-May 2015 \\
-Multi-Set Planning at the DRC & & June 2015 (Humanoids) \\
-Bored Robots: Hypothesized Conservative Volumes & & October 2015 (ICRA) \\
-Writing & & November 2015 \\
-Defence & & December 2015 \\
-\hline
-\end{tabular}
-\end{center}
+I'm not sure if integration of my OMPL planner
+is in the best interests of the DRC project.
+Will know more about this after the March 2015 DRC meetup.
+In any case, I'd like to test against Trials data
+(abd perhaps Finals data if it's available).
+
+\begin{table}
+\begin{widepage}
+   \centering
+   {
+   \renewcommand{\arraystretch}{1.5}
+   \begin{tabular}{lccl}
+   \toprule
+   {\bf Topic} & {\bf Chapter} & {\bf Questions} & {\bf Deadline} \\
+   \midrule
+   Guided Manipulation Planning at the DRC Trials \cite{dellin2014drc}
+      & \ref{chap:formulation}
+      &
+      & February 2014 (ISER) (completed) \\
+   Comprehensive Multi-Root Planning \cite{dellin2015cmr}
+      & \ref{chap:cmr}
+      &
+      & October 2014 (ICRA) (completed) \\
+   Reduce, Reuse, Recycle: Multi-Set Planning \cite{dellin2015multiset}
+      & \ref{chap:multi-set}, \ref{chap:multi-set-prm}
+      & \ref{ques:choosing-lambda}, \ref{ques:incremental-search}
+      & January 2015 (RSS) (in submission) \\
+   \midrule
+   Proposal
+      & & & February 2015 \\
+   The E$^8$-PRM: Optimizing Total Task Cost
+      & \ref{chap:e8}, \ref{chap:graphs-in-continuous}
+      & \ref{ques:choosing-lambda}, \ref{ques:batching}
+      & March 2015 (IROS) \\
+   DRC Integration
+      & & & April-May 2015 (if helpful) \\
+   Multi-Set Planning for the DRC
+      & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
+      & \ref{ques:how-sequence}, \ref{ques:drc-compare}
+      & June 2015 (Humanoids) \\
+   HERB Experiments
+      & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
+      & \ref{ques:multi-set-suited}, \ref{ques:herb-performance}
+      & July-August 2015 \\
+   Thesis Writing
+      & & & Sepcember-November 2015 \\
+   Bored Robots: Hypothesized Conservative Volumes
+      & & & October 2015 (ICRA) \\
+   Defense
+      & & & December 2015 \\
+   \bottomrule
+   \end{tabular}
+   } %arraystretch
+\end{widepage}
+\caption{Proposed Timeline. \cdnote{This is quite agressive.}}
+\label{table:proposed-timeline}
+\end{table}
 
 \section{Open-Source Software}
 
 \begin{itemize}
-\item Release implementation of checkmask PRM (OMPL)
+\item Release implementation of E$^8$-PRM (OMPL) 
 \item Release implementation of multi-set decomposer (OpenRAVE+OMPL)
-\item Re-release orcdchomp with permissive license?
+\item Release implementation of \textsc{Proteus}
 \end{itemize}

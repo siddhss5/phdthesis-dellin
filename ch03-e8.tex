@@ -1,5 +1,5 @@
 \chapter{Quickly Searching Explicit Expensive Graphs}
-\label{chap:inflate}
+\label{chap:e8}
 
 In order for an articulated robot to perform manipulation tasks
 in changing, unstructured environments,
@@ -30,7 +30,7 @@ From Winston's \emph{Articifial Intelligence} \cite{winston1977ai},
    \begin{itemize}
    \item First, there is the effort expended in \emph{finding} either
       some path or the best path.
-   \item And, second, there is the effor actually expended in
+   \item And, second, there is the effort actually expended in
       \emph{traversing} the network.''
    \end{itemize}
 \end{quote}
@@ -542,7 +542,7 @@ guided by its cost model $\mathcal{M}$.
 Its behavior mimics that of an inflated heuristic planner
 depending on the selection of the planning/execution cost
 tradeoff parameter $\lambda$
-as described in Section~\ref{subsec:alg-opt-path-cost}.
+as described in Section~\ref{subsec:choosing-lambda}.
 
 \subsection{E$^8$ Algorithm Description}
 \label{subsec:alg-e8-description}
@@ -651,6 +651,7 @@ The E$^8$ algorithm admits a number of choices
 which we discuss in the remainder of this section.
 
 \subsection{Choosing $\lambda$}
+\label{subsec:choosing-lambda}
 
 The E$^8$ algorithm's objective,
 from (\ref{eqn:general-objective-explicit}),
