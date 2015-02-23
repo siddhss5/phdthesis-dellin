@@ -8,6 +8,12 @@ In this chapter,
 we'll primarly focus on single-query things,
 but we'll keep in mind that we want things that can enable reuse eventually.
 
+You get a bunch of benefit by patching
+(you can apply LPA* efficiencly in outwards order).
+
+By using graphs (and caching of structure)
+we can completely eliminate nearest-neighbor queries!
+
 \section{Review of Alternative Approaches}
 \label{sec:related-work}
 
@@ -70,7 +76,7 @@ This is largely complementary.
 Use sampling-based planning to quickly find feasible solutions,
 and then optimize them.
 
-\section{Types of Graphs}
+\section{Building Graphs in Continuous Spaces}
 
 \begin{itemize}
 \item Probabalistic vs lattice-based graphs.
@@ -179,10 +185,6 @@ We implement the indicator functionals $\mathbf{1}_X[x(t)]$
 approximately by evaluating the corresponding indicator functions
 $\mathbf{1}_X(x)$ at a fixed resolution along the path.
 
-Sidd wants me to play with Hauser's fast bounded-velocity,
-bounded-acceleration segment timing code
-(which starts and stops at each waypoint).
-
 Also talk here about the fancy Lazy PRM path bisection
 evaluation function.
 
@@ -199,13 +201,39 @@ as a plugin for the Open Motion Planning Library \cite{sucan2012ompl}.%
 \footnote{Not available during the anonymous review process.}
 Here, we discuss a few relevant details of the implementation.
 
-\section{Relaxing the Additive Cost Model Requirement}
+\section{Execution Cost Models}
 
-Could we do this?
+\begin{table}
+   \centering
+   \begin{tabular}{lc}
+      \toprule
+      Model & Additive? \\
+      \midrule
+      Path Length & Yes \\
+      Bounded-Vel-Acc & Yes \\
+      Smoothed & No \\
+      \bottomrule
+   \end{tabular}
+   \caption{Execution cost models.
+      Additive models admit efficient graph search methods
+      when choosing optimistic paths for evaluation.}
+   \label{table:exec-cost-models}
+\end{table}
+
+See Table~\ref{table:exec-cost-models}.
+
+Could we relax the additive execution cost constraint?
 We lose the nice efficient LPA*-enabling structure in
 E$^8$ this way,
 but it lets us incorporate a more accurate cost model in some domains,
 especially for execution costs for fast motions (e.g. total time).
+
+Sidd wants me to play with Hauser's fast bounded-velocity,
+bounded-acceleration segment timing code
+(which starts and stops at each waypoint).
+This may have better performance,
+choosing longer paths with few long edges over
+shorter paths with many short edges.
 
 \section{Future Work}
 

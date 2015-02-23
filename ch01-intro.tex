@@ -6,7 +6,7 @@ previously performed by humans.
 Computer algorithms now trade our stocks,
 route our telephone calls and packages,
 and fly our planes,
-and simple machines clean our clothes and wash our dishes.
+while simple machines clean our clothes and wash our dishes.
 
 More complex tasks require complex robots with many
 degrees of freedom.
@@ -14,67 +14,424 @@ Manipulation tasks, in particular,
 present challenges in many areas including
 perception, symbolic reasoning, and motion planning.
 Successful applications have so far been largely
-confined to large-scale manufacturing domains,
+confined to manufacturing domains
 whose prescribed and structured environments
 allow these challenges to be overcome.
 
-However,
-manipulation tasks such as clearing a kitchen table
-or moving debris in a dangerous disaster scenario
-can not yet be planned for quickly and reliably.
+In contrast,
+consider the manipulation tasks in Figure~\ref{fig:intro-examples}.
+In the first application,
+the \textsc{Herb} home robot must retrieve a frozen meal from 
+a cluttered countertop
+and transfer it into a microwave oven.
+In the second,
+the \textsc{Chimp} distaster response robot
+must clear large pieces of debris from a blocked doorway
+in the recent DARPA Robotics Challenge competition.
+These multi-step manipulation tasks
+require finding motion plans in
+high-dimensional, dynamic, semi-structured spaces
+under significant resource constraints (e.g. time or energy).
+State-of-the-art approaches can not yet handle these
+planning problems quickly and reliably.
+
 \begin{quote}
 \emph{%
 This thesis proposes an
-efficient and robust motion planning approach
+efficient motion planning approach
 well-suited
 to articulated robots
-performing recurring manipulation tasks
-in dynamic, unstructured environments.
+performing recurring multi-step manipulation tasks
+in dynamic, semi-structured environments.
 }
 \end{quote}
 
-We outline the general structure of manipulation tasks
-in Chapter~\ref{chap:formulation}.
+\begin{figure}
+{\setlength{\offsetpage}{0.5in}
+\begin{widepage}
+   \centering
+   \begin{subfigure}[t]{0.48\textwidth}
+      \includegraphics[width=\textwidth]{figs/herb-microwave-intro.png}
+      \caption{The \textsc{Herb} assistance robot
+         must move a frozen meal into a microwave oven.
+         \cdnote{Add clutter.}}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[t]{0.48\textwidth}
+      \includegraphics[width=\textwidth]{figs/chimp-debris-overhead.png}
+      \caption{The \textsc{Chimp} distaster response robot
+         must clear large pieces of debris from a blocked doorway.}
+   \end{subfigure}
+   
+   \vspace{0.1in}
+   \begin{subfigure}[t]{\textwidth}
+      \centering
+      \begin{tabular}{cc}
+         \toprule
+         Challenges & Insights \\
+         \midrule
+         Capturing Planning/Execution Tradeoff
+            & Minimize Ensemble Effort on Explicit Graphs \\
+         Incongruent Sub-Problems Impede Reuse
+            & Identify and Exploit Multi-Set Structure \\
+         Coupled Steps Require Long-Horizon Plans
+            & Comprehensive Sub-Problem Planning \\
+         \bottomrule
+      \end{tabular}
+      \caption{Challenges and Insights}
+   \end{subfigure}
+   \caption{This thesis addresses multi-step motion planning
+      for manipulation tasks.}
+   \label{fig:intro-examples}
+\end{widepage}
+}%offsetpage
+\end{figure}
+
+To address this problem in depth,
+this thesis focuses on
+efficient kinematic planning approaches
+to coupled manipulation tasks consisting of several (2-5) steps
+as formuated in Chapter~\ref{chap:formulation}.
+We don't consider uncertainty
+or feedback to symbolic planners,
+and we focus primarily on sequential planning and execution.
+We consider our approach complementary to
+hybrid and interleaved planners,
+as well as approaches which learn heuristics.
+
+\subsection*{Challenges to Efficient Manipulation Planning}
+
 There are three principal challenges inherent in
-human-scale manipulation tasks
-that must be addressed by planning approaches,
-which we review here.
+human-scale manipulation tasks,
+such as those from Figure~\ref{fig:intro-examples},
+which render the planning problem difficult.
+We survey them here.
 
-\textbf{Challenge 1: Manipulation Tasks must be Resource-Efficient}
+\subsubsection*{Challenge 1:
+   Capturing the Planning vs. Execution Tradeoff}
 
-Autonomous systems performing manipulation tasks are
-resource-constrained.
+Manipulation robots must be resource-efficient.
 If a home robot takes thirty minutes to clear a table,
 or a disaster response robot exhausts its battery ten minutes
 into its mission,
 these robots will not see widespread use.
-These metrics are only meaningful
-when applied across the entire task,
-from assignment to completion.
-
-In order to accomplish such a manipulation task,
-an autonomous robot must expend two types of effort.
+A robot expends two types of effort.
 First, it must allocate computation to \emph{plan}
 a sequence of motions that will acheive the task.
-Planning costs are dominated by \emph{validity checking} --
-e.g. checking whether configurations are free from collision.
 Second, it must \emph{execute} these motions using its actuators.
 Typically, there is a tradeoff between these two;
-spending more effort during planning produces paths that are
+spending more effort planning produces solutions that are
 cheaper to execute.
 
-Robots performing real-world human-scale manipulation tasks
-tend to expend comparable effort in these two areas
-(see Figure~\ref{fig:plan-exec-cost}).
-While some approaches (e.g. anytime planning) partially capture
-this tradeoff,
-our approach explicitly optimizes for both planning
+Consider the spectrum of planning domains
+in Figure~\ref{fig:plan-exec-cost}.
+In many types of problems,
+such as planetary exploration,
+execution resources are most scarce,
+and therefore the optimality of the solution is most imporant.
+On the other hand,
+in domains such as automated theorem proving,
+the quality of the solution is less important;
+planners are instead designed to find a feasible solution quickly.
+
+In manipulation tasks,
+both types of efficiency are equally important;
+metrics such as time or energy use are only meaningful
+when applied across the entire task (from assignment to completion).
+In fact, measured in either time or energy,
+robots tend to expend comparable effort on each.
+For example, at the DRC Trials,
+the CHIMP robot spent an average of 140.6 s planning,
+and 373.6 s executing those plans
+(with very slow execution speeds for safety).
+\cdnote{Get timing examples for a HERB example as well.}
+Therefore,
+manipulation task planners must be able to reason about
+the important tradeoff between these two types of effort.
+
+{
+\setlength{\offsetpage}{1.2in}
+\begin{figure}[t]
+\begin{widepage}
+\begin{center}
+   \begin{subfigure}[b]{1.6in}
+      \begin{center}
+      \includegraphics[height=2in]{figs/curiosity-rover.png}
+      \end{center}
+      \caption{Planetary exploration\footnotemark,
+         cost = execution effort}
+   \end{subfigure}
+   \begin{subfigure}[b]{3.5in}
+      \begin{center}
+      \includegraphics{build/intro-cost-herb}
+      \includegraphics{build/intro-cost-chimp}
+      \end{center}
+      \caption{Manipulation tasks on the \textsc{Herb} and 
+         and \textsc{Chimp} robots,\\
+         cost = planning effort + execution effort}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[b]{1.8in}
+      \fbox{\scriptsize
+         \begin{minipage}[t]{\textwidth - 2\fboxsep}
+            Axioms:\\
+            - Axiom 1: $f(1,x) = x$ \\
+            - Axiom 2: $u(x,y) = u(y,x)$ \\
+            - Axiom 3: $u(1,a) = a$ \\
+            
+            Goal Theorem: \\
+            - $u(a, f(a,b) = f(a,b)$ \\
+            
+            Proof: \\
+            
+            Lemma 1: \\
+            - $u(z, f(a,z)) = f(a,z)$ \\
+            $= u(f(a,z),z)$ by Axiom 2 \\
+            $= u(f(a,z), f(1,z))$ by Axiom 1 \\
+            
+            Theorem 1: \\
+            $\dots$
+         \end{minipage}
+      }
+      \caption{Automated theorem proving,
+         cost = planning effort}
+   \end{subfigure}
+   \caption{In many planning domains,
+      either planning effort or execution effort is most important
+      to minimize.
+      For manipulation tasks,
+      the \textsc{Herb} \cite{srinivasa2012herb20}
+      and \textsc{Chimp} \cite{stentz2014chimp} robots
+      incur comparable cost (e.g. time or energy)
+      during planning and execution.
+      It is therefore important for planning approaches
+      to accurately model and reason about this tradeoff.
+      }
+   \label{fig:plan-exec-cost}
+\end{center}
+\end{widepage}
+\end{figure}
+}
+
+\footnotetext{Image Credit:
+   NASA / JPL-Caltech / Malin Space Science Systems}
+
+\subsubsection*{Challenge 2: Incongruent Sub-Problems Impede Reuse}
+
+{
+\setlength{\offsetpage}{1.0in}
+\begin{figure}[t]
+\begin{widepage}
+\begin{center}
+
+   \begin{subfigure}[t]{1.4in}
+      \centering
+      \includegraphics[height=1.6in]{figs/car-robots.jpg}
+      \caption{Fixed worlds\\
+         (multi-query)}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[t]{3.9in}
+      \centering
+      \includegraphics[height=1.6in]{figs/testherb-b.png}%
+      \,%
+      \includegraphics[height=1.6in]{figs/testherb-c.png}%
+      \,%
+      \includegraphics[height=1.6in]{figs/testherb-d.png}
+      \caption{A multi-step problem.}
+   \end{subfigure}%
+   \quad%
+   \begin{subfigure}[t]{1.1in}
+      \centering
+      \includegraphics[height=1.6in]{figs/herb-random-world.jpg}
+      \caption{Random worlds\\
+         (single-query)}
+   \end{subfigure}
+
+   \caption{\textsc{Herb} plans for a simple manipulation task
+      to grasp, transfer, and drop a mug from a table into a bin
+      before returning to an end configuration.
+      Each sub-problem requires a path in a distinct free subset of
+      configuration space.}
+   \label{fig:intro-multi-part}
+\end{center}
+\end{widepage}
+\end{figure}
+}
+
+\begin{figure}[t]
+   \centering
+   \includegraphics[height=1.4in]{figs/testherb-b.png}%
+   \quad%
+   \includegraphics[height=1.4in]{figs/testherb-c.png}%
+   \quad%
+   \includegraphics[height=1.4in]{figs/testherb-d.png}
+   
+   \includegraphics{build/intro-subprob-cspace}
+   \caption{Manipulation sub-problems
+      within incongruous free $\mathcal{C}$-subsets.}
+\end{figure}
+
+Because planning effort is such an important factor in
+manipulation task efficiency,
+it's important to consider approaches which minimize computation
+across multiple planning queries.
+This is especially important in high-dimensional spaces,
+where planning costs are dominated by \emph{validity checking} --
+e.g. checking whether configurations are free from collision.
+However, the structure of manipulation problems
+makes it difficult to apply common approaches.
+
+Consider the motion planning problems in
+Figure~\ref{fig:intro-multi-part}.
+In the first case,
+an industrial robot repeatedly addresses the same scene;
+\emph{multi-query} approaches such as the Probabalistic RoadMap
+\cite{kavrakietal1996prm}
+have proven effective at facilitating reuse in such cases.
+However,
+autonomous manipulation robots perform tasks
+in dynamic, semi-structured environments.
+Further,
+during each step of a manipulation plan,
+the valid subset of configuration space changes
+as objects are grasped and moved,
+making it difficult to apply roadmap approaches.
+
+At the other extreme,
+a robot addressing a set of different random worlds
+are best served by \emph{single-query} approaches
+which build a unique graph structure ``from scratch''
+for each problem they solve.
+Applying such approaches to multi-step manipulation tasks
+leads to inefficiency in planning
+as computation is not reused between queries.
+
+Manipulation sub-problems do have structure.
+Since they occupy this middle ground between
+fixed and random environments,
+it's essential that planning approaches
+find a way to reuse computation effectively
+between inconguent sub-problems.
+
+\subsubsection*{Challenge 3: Coupled Steps Require Long-Horizon Plans}
+
+Not only does the structure of manipulation tasks
+impede planner reuse between sub-problems,
+but it also necessitates long-horizon plans to ensure robustness.
+For example,
+consider sequentially planning for the task in
+Figure~\ref{fig:intro-multi-part}.
+The interfaces between these three steps lie on continuous manifolds.
+A choice made by an early planning step
+-- e.g. what arm configuration or object grasp to use --
+often renders a subsequent part either difficult to plan,
+costly to execute, or impossible altogether.
+We say that such sub-problems are \emph{coupled}.
+
+We therefore might endeavor to plan for all steps
+simultaneously before execution.
+Indeed,
+many motion planners are designed to take as input
+start and goal sets.
+We might hope that we can delegate each task sub-problem to
+separate such planner instances,
+and provide each with specifications for their corresponding
+root sets.
+However,
+a customary planning request takes an \emph{any-to-any} form
+(i.e. from \emph{any} start to \emph{any} goal configuration).
+Clearly, without coordination,
+the juxtaposed solution paths will not be continuous.
+
+\subsection*{Key Insights to Our Approach}
+
+While these three challenges make efficient
+manipulation task planning a difficult problem,
+we identify three corresponding and complementary
+key insights to address them.
+We apply our insights to graph- and roadmap-based planners
+as summarized in Table~\ref{table:intro-algorithms}.
+A more detailed summary and outline of the structure of
+manipulation task planning is presented in
+Chapter~\ref{chap:formulation},
+along with a summary of prior work on the problem.
+
+\begin{table}
+{\setlength{\offsetpage}{1in}
+\begin{widepage}
+   \centering
+   {\renewcommand{\arraystretch}{1.2}
+   \begin{tabular}{clcccc}
+   \toprule
+   {\bf Ch.} & Algorithm & Problem & Representation & Opt-Plan & Multi-Set \\
+   \midrule
+   & A$^*$ Search \cite{hart1968astar} & Graph & Implicit & No & No \\
+   & Weighted A$^*$ Search & Graph & Implicit & Partial & No \\
+   & Experience Graphs \cite{phillips2012egraphs} & Graph & Implicit & Partial & Partial \\
+   & BUGSY \cite{ruml2007bugsy} & Graph & Implicit & Yes & No \\
+    \ref{chap:e8}
+      & {\bf E$^8$ Search}
+      & {\bf Graph} & {\bf Explicit} & {\bf Yes} & {\bf No} \\
+   \midrule
+   & Lazy PRM \cite{bohlin2000lazyprm} & $\mathcal{C}$-space & Roadmap (Explicit) & No & No \\
+   & Dynamic Planner \cite{jaillet2004dynamicprm} & $\mathcal{C}$-space & Roadmap (Explicit) & No & Partial \\
+   \ref{chap:graphs-in-continuous}
+      & {\bf E$^8$-PRM}
+      & {\bf $\mathcal{C}$-space} & {\bf Roadmap (Explicit)} & {\bf Yes} & {\bf No} \\
+   \ref{chap:multi-set-prm}
+      & {\bf Multi-Set PRM}
+      & {\bf $\mathcal{C}$-space} & {\bf Roadmap (Explicit)} & {\bf Yes} & {\bf Yes} \\
+   \midrule
+   \ref{chap:task-planning}
+      & {\bf \textsc{Proteus}}
+      & {\bf Multi-Step Tasks} & {\bf Multi-Graph (Explicit)} & {\bf Yes} & {\bf Yes} \\
+   \bottomrule
+   \end{tabular}
+   } %arraystretch
+   \caption{Comparison of algorithms.
+      The ``Opt-Plan'' column denotes planners which explicitly
+      optimize an objective which includes a planning effort term.
+      The ``Multi-Set'' column denotes planners which reason about
+      common structure between related problems.}
+   \label{table:intro-algorithms}
+\end{widepage}
+}%offsetpage
+\end{table}
+
+\subsubsection*{Insight 1: Minimize Ensemble Effort on Explicit Graphs}
+
+Because the tradeoff between planning and execution effort
+is so important for manipulation tasks,
+it is important to choose problem representations and design algorithms
+which accurately model and exploit this structure.
+We make two contributions to this end
+as described in Chapter~\ref{chap:e8}.
+
+First,
+while graph-based approaches have proven effective at solving
+many problems in high-dimensional spaces,
+we propose that the planning effort model assumed by
+traditional search algorithms (e.g. A*)
+may not be well-suited to motion planning problems for articulated
+robots.
+In particular,
+we propose that \emph{explicit} graph representations
+allow the planner to more accurately capture the significant
+edge evaluation costs inherent in such problems.
+
+Second,
+our planning approach explicitly optimizes for both planning
 and execution effort
 -- what we call the task's \emph{ensemble effort}.
+We submit that our approach handles this tradeoff more directly
+than ``anytime'' planning approaches.
 We apply this reasoning to explicit graphs
-with the E$^8$ search algorithm (Chapter~\ref{chap:e8})
+with the E$^8$ search algorithm
 which determines an effort allocation between planning and execution
 in order to minimize total task cost.
+%We show how we can use incremental graph search approaches
+%to make it super fast.
 
 In order to solve planning problems in continous configuration spaces,
 we borrow heavily from roadmap techniques for graph construction.
@@ -84,244 +441,177 @@ maintains efficiency through an
 incremental densification approach
 motivated by approximating the probabalistic spatial correlation of
 $\mathcal{C}_{\mbox{\scriptsize free}}$.
+We show that this planner outperforms state-of-the-art
+single-query motion planners for several manipulation tasks.
 
-{
-\setlength{\offsetpage}{0.5in}
-\begin{figure}[t]
-\begin{widepage}
-\begin{center}
-   \begin{subfigure}[b]{1.4in}
-      \begin{center}
-      \includegraphics{build/intro-cost-herb}
-      \end{center}
-      \caption{\textsc{Herb} Home Robot}
-   \end{subfigure}%
-   \quad%
-   \begin{subfigure}[b]{2.0in}
-      \begin{center}
-      \includegraphics{build/intro-cost-chimp}
-      \end{center}
-      \caption{\textsc{Chimp} Disaster Response Robot}
-   \end{subfigure}%
-   \quad%
-   \begin{subfigure}[b]{2.0in}
-      \begin{center}
-      \includegraphics{build/intro-cost-axis}
-      \end{center}
-      \caption{Planning vs. Execution Cost}
-   \end{subfigure}
-   \caption{For manipulation tasks,
-      both the \textsc{Herb} \cite{srinivasa2012herb20}
-      and \textsc{Chimp} \cite{stentz2014chimp} robots
-      incur comparable cost (e.g. time or energy)
-      during planning and execution.
-      Our approach considers both explicitly.}
-   \label{fig:plan-exec-cost}
-\end{center}
-\end{widepage}
-\end{figure}
-}
+%\begin{figure}[t]
+%\begin{widepage}
+%\begin{center}
+%   \begin{subfigure}[b]{2.0in}
+%      \begin{center}
+%      \includegraphics{build/intro-cost-axis}
+%      \end{center}
+%      \caption{Planning vs. Execution Cost}
+%   \end{subfigure}%
+%   \quad%
+%   \begin{subfigure}[b]{2.0in}
+%      \begin{center}
+%      \includegraphics{build/intro-subprob-axis}
+%      \end{center}
+%      \caption{Single vs. Multi Query Planners}
+%   \end{subfigure}
+%   \caption{
+%      Our approach considers both explicitly
+%      during planning.
+%      Our approach enables partial reuse between these parts
+%      }
+%   \label{fig:ensemble-effort-our-approach}
+%\end{center}
+%\end{widepage}
+%\end{figure}
 
-\textbf{Challenge 2: Incongruent Sub-Problems Impede Reuse.}
+\subsubsection*{Insight 2: Identifying and Exploiting Multi-Set
+   Structure}
 
-{
-\setlength{\offsetpage}{0.75in}
-\begin{figure}[t]
-\begin{widepage}
-\begin{center}
+In order to address the important issue of planning computation
+reuse between the incongruent sub-problems inherent in manipulation
+tasks,
+we propose the \emph{multi-set} planning formulation
+in Chapter~\ref{chap:multi-set}
+which bridges the gap between single-query and multi-query approaches.
+We explicitly represent the structure of such problems
+through labeled subsets of the robot's configuration space,
+as well as set relations between them.
+We further demonstrate instances of multi-set structure
+in many classes of manipulation problems,
+and use the formulation to unify several instances of
+prior work aimed at efficiently planning for such tasks.
 
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-a.png}
-\caption{Start config}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-b.png}
-\caption{Part 1 in $X_1$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-c.png}
-\caption{Part 2 in $X_2$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-d.png}
-\caption{Part 3 in $X_3$}
-\end{subfigure}
-\begin{subfigure}[t]{0.19\linewidth}
-\centering
-\includegraphics[width=\columnwidth]{figs/testherb-e.png}
-\caption{End config}
-\end{subfigure}
-
-\vspace{0.1in}
-
-   \begin{subfigure}[b]{4.0in}
-      \begin{center}
-      \includegraphics{build/intro-subprob-cspace}
-      \end{center}
-      \caption{Plan sequences
-         within distinct free $\mathcal{C}$-subsets
-         from the problem above.}
-   \end{subfigure}%
-   \quad%
-   \begin{subfigure}[b]{2.0in}
-      \begin{center}
-      \includegraphics{build/intro-subprob-axis}
-      \end{center}
-      \caption{Single vs. Multi Query Planners}
-   \end{subfigure}
-   \caption{\textsc{Herb} plans for a simple manipulation task
-      to grasp, transfer, and drop a mug from a table into a bin
-      before returning to an end configuration.
-      Each sub-problem requires a path in a distinct free subset of
-      configuration space;
-      our approach enables partial reuse between these parts.}
-   \label{fig:intro-multi-part}
-\end{center}
-\end{widepage}
-\end{figure}
-}
-
-While planning cost is a significant component
-in resource-constrained human-scale problems,
-manipulation tasks exhibit a structure
-which makes it difficult to apply fast planning approaches.
-In particular,
-they are inherently composed of multiple distinct sub-problems,
-each of which 
-must be validated a different subset of configuration space,
-which makes traditional multi-query planners impractical.
-For example, see the manipulation task in
-Figure~\ref{fig:intro-multi-part}.
-
-We solve this in two ways.
-First, in Chapter~\ref{chap:multi-set},
-we introduce the \emph{multi-set planning problem}.
-We show that while the valid subsets are different for each part,
-they are related in a structured way.
-In fact, we show how lots of different prior ideas for planner
-efficiency are unified by this formalism.
-
-Second, Chapter~\ref{chap:multi-set-prm}
-uses the multi-set formalism as a planning cost model
-for the E$^8$-PRM.
+Next, Chapter~\ref{chap:multi-set-prm}
+shows how the multi-set formulation can be used as a
+planning effort model
+when solving planning queries in related subsets of configuration space.
+This planning model can then be inserted directly into the 
+E$^8$-PRM to handle multi-step problems.
 The resulting algorithm,
 the Multi-Set PRM,
 uses propositional logic to represent the multi-set structure
 algorithmically.
-%We show how we can use incremental graph search approaches
-%to make it super fast.
 
-\textbf{Challenge 3: Task Robustness Requires Long-Horizon Plans.}
+\subsubsection*{Insight 3: Comprehensive Sub-Problem Planning}
 
-Not only does the structure of manipulation tasks
-impede planner reuse between sub-problems,
-but it also necessitates long-horizon plans to ensure robustness.
-For example,
-consider sequentially planning for the task in
-Figure~\ref{fig:intro-multi-part}.
-The interfaces between these parts lie on continuous manifolds.
-A choice made by an early planning part
--- e.g. what arm configuration or object grasp to use --
-often renders a subsequent part either difficult to plan,
-costly to execute, or impossible altogether.
-
-Many planners are designed to take as input start and/or goal sets.
-We might hope that we can delegate each task sub-problem to
-separate such planner instances,
-and provide each with specifications for their corresponding
-root sets.
-However,
-a customary planning request takes an \emph{any-to-any} form
-(i.e. from \emph{any} start to \emph{any} goal configuration).
-Clearly, without coordination,
-the juxtaposed paths will not be continuous.
-
-We mitigate this in two parts.
+Our last insight addresses how to efficiently decompose a coupled
+multi-step manipulation task into individual sub-problems.
 First, we introduce the \emph{Comprehensive Multi-Root} (CMR) planner
 objective (Chapter~\ref{chap:cmr}).
 In constrast to the traditional any-to-any objective,
 CMR encourages a planner to discover paths between multiple pairs of
 roots.
+We also show that this objective can be applied greedily
+to traditional PRM planners
+yielding a provably superior algorithm. 
 
 Second,
 we introduce the \textsc{Proteus} task planner
 (Chapter~\ref{chap:task-planning})
-which restricts each sub-problem to a limited set of samples
-for each interface manifold
-by performing root sampling
-and coordinates between sub-planners.
+which combines the three insights into a single planning approach.
+The task planner
+automatically discovers the multi-set structure in each task
+and instantiates a Multi-Set PRM to handle planning queries
+for each sub-problem.
+It then performs root sampling within each interface manifold
+and uses the CMR objective for each query to
+efficiently search for a full task plan.
 
-\textbf{Applications and Experiments.}
+\subsection*{Evaluation}
 
-We give a bunch of examples of this framework
-for different robots.
-For example, I really want to talk about robots idly
-hypothesizing worlds.
+Because this thesis presents an integrated set of algorithms
+for multi-step manipulation task planning,
+we endeavor to place significant emphasis on empirical evaluation
+in order to verify the performance of the proposed approach.
+See Chapter~\ref{chap:experiments} for more details
+about the metrics, baseline approaches, and test platforms
+that will be used in these comparisons.
+\cdnote{I welcome suggestions from my committee for
+appropriate baseline approaches.}
+
+I refer the reader to Chapter~\ref{chap:proposed} for a summary
+of the particular research questions that I propose to answer.
+Chief among these questions are the effects of the insights above
+on task performance as borne out by these experiment:
+\begin{itemize}
+\item The effect of the E$^8$ algorithm's planning vs. execution
+   effort tradeoff parameter ($\lambda$)
+   when compared to baseline weighted and anytime approaches
+\item The effect of the E$^8$-PRM's batching strategy on its efficacy
+   as a single-query planner in high-dimensional motion planning
+   problems
+\item The performance of the Multi-Set PRM on problems with various
+   amounts of shared structure
+   (from fully fixed to fully random environments)
+\item The performance of the Proteus task planner
+   compared to other baseline planners that address multi-step tasks
+\end{itemize}
+Along with research questions,
+Chapter~\ref{chap:proposed} also contains
+a summary and timeline of proposed work.
 
 
-\textbf{Summary of Proposed Work.}
-
-See Chapter~\ref{chap:proposed}
-for a summary and timeline of proposed work.
 
 
-{
-\setlength{\offsetpage}{0.75in}
-\begin{figure}[t]
-\begin{widepage}
-\begin{center}
-\begin{tikzpicture}
-
-% axes
-\draw[->,thick] (0,0) -- (0,8); 
-\draw[->,thick] (0,0) -- (12,0);
-\node[rotate=90,align=center] at (-1.0,4)
-   {Challenge 1:\\Task Efficiency};
-\node[align=center] at (6,-1.6)
-   {Challenge 2:\\Sub-Problem Structure};
-
-% y tics
-\draw (-0.2,1) -- (0.2,1);
-\node[rotate=90,align=center] at (-0.64,1)
-   {considers\\[-0.04in]execution cost};
-\draw (-0.2,7) -- (0.2,7);
-\node[rotate=90,align=center] at (-0.8,7)
-   {considers\\[-0.04in]planning and\\[-0.04in]execution cost};
-
-% x tics
-\draw (2,-0.2) -- (2,0.2);
-\node[align=center] at (2,-0.5) {no reuse};
-\draw (6,-0.2) -- (6,0.2);
-\node[align=center] at (6,-0.5) {two-set reuse};
-\draw (10,-0.2) -- (10,0.2);
-\node[align=center] at (10,-0.5) {full reuse};
-
-% algorithms
-\node[draw,ellipse,align=center] at (2,1)
-   {Lazy PRM \cite{bohlin2000lazyprm}};
-
-\node[draw,ellipse,align=center] at (6,1)
-   {\cite{leven2000changing}, \cite{kallman2004dynamicroadmaps},
-   \cite{jaillet2004dynamicprm}};
-
-\node[draw,ellipse,align=center] at (2,7)
-   {E$^8$-PRM\\(Chapter~\ref{chap:e8})};
-
-\node[draw,ellipse,align=center] at (10,7)
-   {Multi-Set PRM\\(Chapter~\ref{chap:multi-set-prm})};
-
-\end{tikzpicture}
-\caption{Graphical outline of $\mathcal{C}$-space planners.
-   \cdnote{Work in progress. I don't really like this as it is.}}
-\label{fig:graphical-outline}
-\end{center}
-\end{widepage}
-\end{figure}
-}
+%{
+%\setlength{\offsetpage}{0.75in}
+%\begin{figure}[t]
+%\begin{widepage}
+%\begin{center}
+%\begin{tikzpicture}
+%
+%% axes
+%\draw[->,thick] (0,0) -- (0,8); 
+%\draw[->,thick] (0,0) -- (12,0);
+%\node[rotate=90,align=center] at (-1.0,4)
+%   {Challenge 1:\\Task Efficiency};
+%\node[align=center] at (6,-1.6)
+%   {Challenge 2:\\Sub-Problem Structure};
+%
+%% y tics
+%\draw (-0.2,1) -- (0.2,1);
+%\node[rotate=90,align=center] at (-0.64,1)
+%   {considers\\[-0.04in]execution cost};
+%\draw (-0.2,7) -- (0.2,7);
+%\node[rotate=90,align=center] at (-0.8,7)
+%   {considers\\[-0.04in]planning and\\[-0.04in]execution cost};
+%
+%% x tics
+%\draw (2,-0.2) -- (2,0.2);
+%\node[align=center] at (2,-0.5) {no reuse};
+%\draw (6,-0.2) -- (6,0.2);
+%\node[align=center] at (6,-0.5) {two-set reuse};
+%\draw (10,-0.2) -- (10,0.2);
+%\node[align=center] at (10,-0.5) {full reuse};
+%
+%% algorithms
+%\node[draw,ellipse,align=center] at (2,1)
+%   {Lazy PRM \cite{bohlin2000lazyprm}};
+%
+%\node[draw,ellipse,align=center] at (6,1)
+%   {\cite{leven2000changing}, \cite{kallman2004dynamicroadmaps},
+%   \cite{jaillet2004dynamicprm}};
+%
+%\node[draw,ellipse,align=center] at (2,7)
+%   {E$^8$-PRM\\(Chapter~\ref{chap:e8})};
+%
+%\node[draw,ellipse,align=center] at (10,7)
+%   {Multi-Set PRM\\(Chapter~\ref{chap:multi-set-prm})};
+%
+%\end{tikzpicture}
+%\caption{Graphical outline of $\mathcal{C}$-space planners.
+%   \cdnote{Work in progress. I don't really like this as it is.}}
+%\label{fig:graphical-outline}
+%\end{center}
+%\end{widepage}
+%\end{figure}
+%}
 
 %\begin{figure}
 %\begin{widepage}

@@ -1,0 +1,94 @@
+\chapter{Experiments}
+\label{chap:experiments}
+
+A suite of experiments performed on multiple robots
+both in simulation and on actual hardware.
+Scoped by the problem described in Chapter~\ref{chap:formulation}.
+
+This chapter deals with whole-planner comparisons.
+For evaluatoints of the individual algorithms in isolation,
+see the associated chapters.
+E.g. E$^8$, the E$^8$-PRM, the Multi-Set PRM, etc.
+
+\section{Metrics}
+
+Here are some metrics we propose to use:
+\begin{itemize}
+\item Full CDFs of *planning time*, *execution time*,
+   and *total time* for each task
+\item Success rate (within time budget)
+\end{itemize}
+
+Full CDFS of planning, execution, and total effort.
+
+Time (s) and energy (J).
+
+Success rates for different budgets.
+
+\section{Control Variables}
+
+Several things to control for to identify what parts of our framework
+are most important for different types of structure.
+
+Parameters/structure in my approach to vary to find out
+what's important:
+\begin{itemize}
+\item The $\lambda$ parameter
+\item The batching approach
+\item What kinds of multi-set structure is exploited
+\end{itemize}
+
+Addressing fully known and fully unknown worlds.
+Find out what really matters.
+
+For example, I really want to talk about robots idly
+hypothesizing worlds.
+
+\section{Baseline Approaches}
+
+\cdnote{Looking for suggestions for committee members here!}
+
+DRC Trials approach
+
+HPN (committing early, interleaved?)
+
+Symbolic planners with symbolic stuff ripped out
+
+Compare to anytime planners.
+
+Compare to hybrid planners,
+both interleaved and non-interleaved.
+
+We compare against a few different task planners.
+
+\begin{itemize}
+\item The DRC Trials approach.
+\item Some symbolic planners, with the symbolic stuff ripped out?
+   Tak to Evan!
+\item Hierarchical Planning in the Now (with however it commits things)
+\end{itemize}
+
+\section{Test Platforms}
+
+We give a bunch of examples of this framework
+for different robots.
+HERB and CHIMP.
+Simulation and real robots.
+
+
+\section{Primary Comparison (No Interleaving)}
+
+\subsection{DRC Experiments (Real Competition Data)}
+
+\subsection{HERB Experiments}
+
+\section{Secondary Comparison}
+
+Allowing interleaved planning and execution
+on deterministic, reversible worlds.
+We expect planners like HPN to get a speedup
+due to pipelining.
+
+\section{Non-Reversable Problems}
+
+What if actions cannot be undone?

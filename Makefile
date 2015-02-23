@@ -18,8 +18,9 @@ fast-manip.pdf: ch05-multiset.tex
 fast-manip.pdf: ch06-multisetprm.tex
 fast-manip.pdf: ch07-cmr.tex
 fast-manip.pdf: ch08-taskplanning.tex
-fast-manip.pdf: ch09-conclusion.tex
-fast-manip.pdf: ch10-proposed.tex
+fast-manip.pdf: ch09-experiments.tex
+fast-manip.pdf: ch10-conclusion.tex
+fast-manip.pdf: ch11-proposed.tex
 
 fast-manip.pdf: build/pairwise-labels-dot.tex
 
