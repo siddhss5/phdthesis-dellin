@@ -27,10 +27,22 @@ See Table~\ref{table:proposed-timeline} for a timeline.
       \nameref{ques:incremental-search}
       \end{minipage}%
       & \ref{chap:e8} \\[12pt]
+   \ref{ques:e8-comparisons}
+      &
+      \begin{minipage}[c]{0.75\columnwidth}%
+      \nameref{ques:e8-comparisons}
+      \end{minipage}%
+      & \ref{chap:e8} \\[12pt]
    \ref{ques:batching}
       &
       \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:batching}
+      \end{minipage}%
+      & \ref{chap:graphs-in-continuous} \\[12pt]
+   \ref{ques:evalpath}
+      &
+      \begin{minipage}[c]{0.75\columnwidth}%
+      \nameref{ques:evalpath}
       \end{minipage}%
       & \ref{chap:graphs-in-continuous} \\[12pt]
    \ref{ques:multi-set-suited}
@@ -50,13 +62,7 @@ See Table~\ref{table:proposed-timeline} for a timeline.
       \begin{minipage}[c]{0.75\columnwidth}%
       \nameref{ques:drc-compare}
       \end{minipage}%
-      & \ref{chap:task-planning} \\[12pt]
-   \ref{ques:herb-performance}
-      &
-      \begin{minipage}[c]{0.75\columnwidth}%
-      \nameref{ques:herb-performance}
-      \end{minipage}%
-      & \ref{chap:task-planning} \\[6pt]
+      & \ref{chap:experiments} \\[12pt]
 \bottomrule
 \end{tabular}
 \end{center}
@@ -71,6 +77,33 @@ See Table~\ref{table:proposed-timeline} for a timeline.
 \label{ques:choosing-lambda}
 
 See Chapter~\ref{chap:e8}.
+
+The E$^8$ algorithm's objective,
+from (\ref{eqn:general-objective-explicit}),
+trades off between planning and execution effort,
+mediated by the parameter $\lambda \in [0,1]$.
+Loosely,
+adjusting $\lambda$ varies the behavior between
+\emph{feasibility} (finding paths quickly)
+and \emph{optimality} (of execution).
+
+With $\lambda=0$,
+E$^8$ focuses solely on minimizing execution effort.
+This is similar to the LazyPRM algorithm.
+On the other hand,
+with $\lambda=0$,
+it focuses solely on minimizing planning effort,
+similarly to the RRT algorithm.
+We discuss these comparisons to existing continuous-space planners
+in Chapter~\ref{chap:graphs-in-continuous}.
+
+If our ensemble effort model $\mathcal{M}$
+specifies effort estimates in the same units
+(e.g. time or energy),
+$\lambda=\frac{1}{2}$ is a natural choice.
+However,
+due to the optimistic nature of the E$^8$ algorithm,
+a different value of $\lambda$ may perform better in practice.
 
 Minimizing total time in a greedy fashion implies $\lambda = 0.5$.
 For later steps in a multi-step plan,
@@ -109,6 +142,12 @@ for larger graphs,
 it will become significant.
 It should be relatively straightforward to implement LPA* here.
 We just have to do it!
+
+\subsection{How does the explicit graph approach of E$^8$ compare to
+   weighted and anytime implicit algorithms?}
+\label{ques:e8-comparisons}
+
+Narrow this to problems with expensive edge evaluations.
 
 \subsection{How should discrete graphs be constructed in continuous
    $\mathcal{C}$-spaces with spatially correlated execution costs?}
@@ -180,42 +219,55 @@ We are operating under assumptions:
    \label{fig:example-in-expectation}
 \end{figure}
 
-\subsection{What types of multi-set structure is well-suited to
-   the Multi-Set PRM, and types are poorly suited?}
+\subsection{What path evaluation strategy performs best
+   across manipulation tasks?}
+\label{ques:evalpath}
+
+This has two paths.
+For E$^8$,
+we're confined to evaluating edges wholesale.
+For the E$^8$-PRM,
+we are free to do partial edge evaluations.
+What tends to perform best?
+
+\subsection{How does the extent of disclosed multi-set structure
+   affect planner performance on multi-step problems?}
 \label{ques:multi-set-suited}
 
 See Chapter~\ref{chap:multi-set-prm}.
 
-\subsection{How should the \textsc{Proteus} task planner
-   sample roots in multi-step problems?}
+\subsection{How does the amount of inter-step coupling
+   affect the merit of interleaving planning and execution?}
 \label{ques:how-sequence}
 
-See Chapter~\ref{chap:task-planning}.
+Especially relevant for Proteus,
+see Chapter~\ref{chap:task-planning}.
 
-See Section~\ref{subsec:learning-good-intermediate-roots}.
+Compared to HPN
+in experimental section, Chapter~\ref{chap:experiments}.
 
-This is a cool (and very complementary) learning problem.
+In particular,
+more coupling means you should plan ahead farther,
+and interleave less.
 
-Evan may have done some work here already.
+Compelemtary to learning approaches
+to determine what are good Markov islands.
 
 \subsection{How does the \textsc{Proteus} task planner
-   compare experimentally to the BiRRT used at the DRC Trials?}
+   compare experimentally to baseline approaches
+   on \textsc{HERB} and \textsc{CHIMP}?}
 \label{ques:drc-compare}
 
 See Chapter~\ref{chap:task-planning}.
 
+See Chapter~\ref{chap:experiments}.
+
 I want to run my planner on the DRC Trials data
 and show significant improvement.
 
-
-\subsection{How does the \textsc{Proteus} task planner
-   perform on everyday kitchen tasks by the \textsc{Herb} robot?}
-\label{ques:herb-performance}
-
-See Chapter~\ref{chap:task-planning}.
-
 I want to greatly expand the number of manipulation planning tasks
 on the HERB platform in my data set.
+
 
 }%for custom Q1 subsection numbering
 
@@ -253,13 +305,13 @@ In any case, I'd like to test against Trials data
       & January 2015 (RSS) (in submission) \\
    \midrule
    Proposal
-      & & & February 2015 \\
-   The E$^8$-PRM: Optimizing Total Task Cost
-      & \ref{chap:e8}, \ref{chap:graphs-in-continuous}
-      & \ref{ques:choosing-lambda}, \ref{ques:batching}
-      & March 2015 (IROS) \\
-   DRC Integration
-      & & & April-May 2015 (if helpful) \\
+      & & & March 2015 \\
+   ??
+      & 
+      & 
+      & March 2015 (ISRR) \\
+   DRC Integration (presuming project alignment)
+      & & & April-May 2015 \\
    Multi-Set Planning for the DRC
       & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
       & \ref{ques:how-sequence}, \ref{ques:drc-compare}
@@ -268,8 +320,12 @@ In any case, I'd like to test against Trials data
       & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
       & \ref{ques:multi-set-suited}, \ref{ques:herb-performance}
       & July-August 2015 \\
+   The E$^8$-PRM: Optimizing Total Task Cost
+      & \ref{chap:e8}, \ref{chap:graphs-in-continuous}
+      & \ref{ques:choosing-lambda}, \ref{ques:batching}
+      & September 2015 (AAAI) \\
    Thesis Writing
-      & & & Sepcember-November 2015 \\
+      & & & September-November 2015 \\
    Bored Robots: Hypothesized Conservative Volumes
       & & & October 2015 (ICRA) \\
    Defense

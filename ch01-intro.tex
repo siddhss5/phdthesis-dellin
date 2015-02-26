@@ -502,6 +502,8 @@ algorithmically.
 
 Our last insight addresses how to efficiently decompose a coupled
 multi-step manipulation task into individual sub-problems.
+For tightly coupled problems,
+it is especially important to plan for multiple possibilities.
 First, we introduce the \emph{Comprehensive Multi-Root} (CMR) planner
 objective (Chapter~\ref{chap:cmr}).
 In constrast to the traditional any-to-any objective,
@@ -538,7 +540,7 @@ appropriate baseline approaches.}
 I refer the reader to Chapter~\ref{chap:proposed} for a summary
 of the particular research questions that I propose to answer.
 Chief among these questions are the effects of the insights above
-on task performance as borne out by these experiment:
+on task performance as borne out by these experiments:
 \begin{itemize}
 \item The effect of the E$^8$ algorithm's planning vs. execution
    effort tradeoff parameter ($\lambda$)
@@ -556,8 +558,34 @@ Along with research questions,
 Chapter~\ref{chap:proposed} also contains
 a summary and timeline of proposed work.
 
+\subsection*{Summary of Contributions}
 
-
+In summary,
+we propose the following contributions:
+\begin{itemize}
+\item A set of insights into the structure of the
+   multi-step manipulation planning problem,
+   including the multi-set and comprehensive multi-root (CMR)
+   formulations.
+\item The E$^8$ graph search algorithm which explicitly minimizes
+   both planning and execution effort over explicit graphs.
+\item The E$^8$-PRM, an application of E$^8$ to roadmaps in
+   configuration space.
+\item The Multi-Set PRM, an instantiation of the E$^8$-PRM
+   using the multi-set formulation as a planning effort model.
+\item The {\sc Proteus} task planner,
+   a sequencing planner which submits queries across steps
+   to an instance of the Multi-Set PRM using the CMR objective.
+\item The {\tt ompl\_multi\_set\_prm} package
+   for the OMPL \cite{sucan2012ompl} sampling-based planning framework
+   containing implementations of the E$^8$-PRM and Multi-Set PRM
+   algorithms.
+\item The {\tt or\_proteus} package for the
+   OpenRAVE \cite{diankov2010openrave} simulation framework
+   which implements the {\sc Proteus} task planner.
+\item An experimental evaluation of the above algorithms against
+   state-of-the-art baseline approaches.
+\end{itemize}
 
 %{
 %\setlength{\offsetpage}{0.75in}

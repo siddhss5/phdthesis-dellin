@@ -730,6 +730,8 @@ not just the edges on the solution path.
 
 \section{Results}
 
+See research question \label{ques:e8-comparisons}.
+
 \begin{figure}
    \centering
    % for stats
@@ -783,78 +785,3 @@ E$^8$ & 5 & 5 & 5 \\
 \bottomrule
 \end{tabular}
 \end{center}
-
-I hope to show that the E$^8$-PRM is competitive with RRT-Connect
-in terms of planning effort required to find a feasible path.
-
-\begin{figure}
-   \centering
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-rrtextcon-r1-s1.png}
-      \caption{RRT Ext-Con, R=1}
-   \end{subfigure}%
-   \quad
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-rrtconcon-r1-s1.png}
-      \caption{RRT Con-Con, R=1}
-   \end{subfigure}%
-   \quad
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-checkmask-l00-s1.png}
-      \caption{E$^8$-PRM, $\lambda=0$}
-   \end{subfigure}%
-   \vspace{0.05in}
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-rrtextcon-r6-s1.png}
-      \caption{RRT Ext-Con, R=6}
-   \end{subfigure}%
-   \quad
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-rrtconcon-r6-s1.png}
-      \caption{RRT Con-Con, R=6}
-   \end{subfigure}%
-   \quad
-   \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-checkmask-l10-s1.png}
-      \caption{E$^8$-PRM, $\lambda=1$}
-   \end{subfigure}%
-   \caption{Example runs with different planners,
-      with the same sequence of samples.
-      Note that E$^8$-PRM with $\lambda=0$ is equivalent to LazyPRM.
-      Red dots show collision checks.}
-   \label{fig:compare-2d-rrtc1-vis}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figs/compare-2d-rrtc1-medians.png}
-\caption{Plot of collision checks vs solution path cost for the
-   different algorithms from the problem from
-   Figure~\ref{fig:compare-2d-rrtc1-vis}.}
-\end{figure}
-
-\begin{figure}
-   \centering
-   \begin{subfigure}[b]{0.4\textwidth}
-      \includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-00.png}
-      \caption{Paths with $\lambda = 0$}
-   \end{subfigure}%
-   \quad
-   \begin{subfigure}[b]{0.4\textwidth}
-      \includegraphics[width=\textwidth]{figs/timegreedy-bean-lambda-10.png}
-      \caption{Paths with $\lambda = 1$}
-   \end{subfigure}%
-   \caption{Examples of paths for a 2d problems
-      for different values of $\lambda$.
-      As $\lambda$ is increased,
-      paths are longer, but are faster to find.}
-   \label{fig:bean}
-\end{figure}
-
-\begin{figure}
-   \centering
-   \includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
-   \caption{Comparison between different algorithms on a HERB problem.
-      Must add in ESTs.}
-   \label{fig:herb-comparison-cdfs}
-\end{figure}

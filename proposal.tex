@@ -1,0 +1,176 @@
+\documentclass{report}
+
+\usepackage{standalone}
+
+\usepackage{calc}
+
+\usepackage[bookmarks=true]{hyperref}
+
+% symbols
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb} % for \square
+
+% from http://tex.stackexchange.com/a/5255
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% algorithm stuff
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,backgrounds,calc,patterns,positioning,shapes,decorations.pathmorphing}
+
+% plots
+\usepackage{pgfplots}
+
+% pretty tables
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% custom title page
+\usepackage{titling}
+
+% for adjustwidth
+\usepackage{changepage}
+
+% simple paragraph stuff
+\parindent=0pt
+\parskip=6pt
+
+% include \paragraph as numbered
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1} % 3
+
+%\def\hidenotes{}
+% list of commenters
+\newcommand{\ssnote}[1]{{\xxnote{SS}{red}{#1}}}
+\newcommand{\cdnote}[1]{{\xxnote{CD}{blue}{#1}}}
+\newcommand{\mknote}[1]{{\xxnote{MK}{green}{#1}}}
+% implement conditional notes (turn on/off with \hidenotes above)
+\newcommand{\xxnote}[3]{}
+\ifx\hidenotes\undefined
+  \usepackage{color}
+  \renewcommand{\xxnote}[3]{\color{#2}{#1: #3}}
+\fi
+
+% wide page for side by side figures, tables, etc
+% see http://tex.stackexchange.com/a/154766
+\newlength{\offsetpage}
+\setlength{\offsetpage}{1.5in}
+\newenvironment{widepage}
+   {\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
+    \addtolength{\textwidth}{2\offsetpage}}%
+{\end{adjustwidth}}
+
+% theorems
+\newtheorem{invariant}{Invariant}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+% from http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+   \item[\hskip \labelsep {\bfseries #1}]}{\hfill$\square$\end{trivlist}}
+
+\title{Efficient Manipulation Task Planning via\\
+   Reuse-Informed Optimization of Planning Effort}
+\author{Christopher M. Dellin}
+\date{\today}
+
+\renewcommand{\maketitlehookd}{
+\begin{center}
+\vspace{0.7in}
+The Robotics Institute\\
+Carnegie Mellon University\\
+Pittsburgh, PA 15213\\
+\vspace{0.7in}
+\textbf{Thesis Committee:}\\
+Siddhartha Srinivasa, CMU RI (Chair)\\
+Anthony Stentz, CMU RI\\
+Maxim Likhachev, CMU RI\\
+Lydia Kavraki, Rice University\\
+%\vspace{0.7in}
+%\emph{Submitted in partial fulfillment of the requirements\\
+%for the degree of Doctor of Philosophy.}
+\end{center}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In order to assist humans
+with dangerous or menial tasks,
+autonomous robots will need to
+act under significant time and energy constraints.
+At task time,
+the amount of effort a robot spends planning directly
+detracts from its total performance.
+Manipulation tasks, however, present challenges
+to efficient motion planning.
+They are often tightly coupled --
+while moving an object can be decomposed into
+steps (reach, grasp, transfer, release),
+comitting to an early step (e.g. a bad grasp)
+can render subsequent steps difficult;
+this encourages longer planning horizons.
+However,
+an articulated robot
+situated within a geometrically complex and dynamic environment
+induces a high-dimensional configuration space
+in which it is expensive to test for valid paths.
+And since multi-step plans
+require paths in changing valid subsets of configuration space,
+it is difficult to reuse computation across steps
+or maintain caches between tasks.
+
+We focus on a motion planning approach for coupled multi-step
+manipulation problems that is efficient over the entire task
+(including both planning and execution).
+We contend that the problem's cost structure
+favors explicit handling of
+both graph representation and task effort optimization,
+and propose a graph search algorithm which captures these insights
+given a model of planning effort.
+We offer methods for roadmap construction
+which seek to balance completeness with efficiency at task time.
+We then unify previous work examining configuration space structure of
+related problems (e.g. multi-step manipulation)
+into a general set-theoretic formulation
+which suggests a planning effort model
+to be exploited by our roadmap search algorithm,
+yielding a motion planner which
+efficiently reuses computation between queries.
+We also present a task planner
+that maps a task decomposition into queries to our motion planner.
+Our insights yield complementary components
+which, taken together,
+consitute an efficient approach to planning manipulation tasks.
+
+This thesis proposes a heavy emphasis on experimental evaluation
+of the individual constituent algorithms
+and the approach as a whole.
+We will compare against
+state-of-the-art task and motion planners
+on multiple robotic platforms,
+in applications from home table clearing
+to remote disaster response.
+We also provide open-source implementations of our algorithms.
+\end{abstract}
+
+\tableofcontents
+
+\include{ch01-intro}
+\include{chxx-proposed-framework}
+\include{ch11-proposed}
+
+{\small
+\bibliographystyle{abbrv}
+\bibliography{pr-refs}
+}
+
+\end{document}

@@ -1,16 +1,7 @@
-all: fast-manip.pdf
-
-# compiling standalone tex's to pdfs
-build/%.pdf: figs/%.tex
-	mkdir -p build
-	pdflatex -halt-on-error -output-directory=build figs/$*
-
-# compiling dots to texs
-build/%-dot.tex: figs/%.dot
-	mkdir -p build
-	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
+all: fast-manip.pdf proposal.pdf
 
 fast-manip.pdf: ch01-intro.tex
+fast-manip.pdf: chxx-proposed-framework.tex
 fast-manip.pdf: ch02-subprobs.tex
 fast-manip.pdf: ch03-e8.tex
 fast-manip.pdf: ch04-continuous.tex
@@ -22,11 +13,25 @@ fast-manip.pdf: ch09-experiments.tex
 fast-manip.pdf: ch10-conclusion.tex
 fast-manip.pdf: ch11-proposed.tex
 
-fast-manip.pdf: build/pairwise-labels-dot.tex
+proposal.pdf: ch01-intro.tex
+proposal.pdf: chxx-proposed-framework.tex
+proposal.pdf: ch11-proposed.tex
 
-# How to make a pdf from a tex
-fast-manip.pdf: fast-manip.tex pr-refs.bib
-	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' fast-manip
+# hardcoded stuff fast-manip.pdf: figs/chimp-voxels-delta.png
+fast-manip.pdf: figs/simple-table-clearing-task.png
+fast-manip.pdf: figs/testherb-a.png
+fast-manip.pdf: figs/testherb-b.png
+fast-manip.pdf: figs/testherb-c.png
+fast-manip.pdf: figs/testherb-d.png
+fast-manip.pdf: figs/testherb-e.png
+
+# other wacky figures to generate
+fast-manip.pdf: build/e8-world-intro.pdf
+fast-manip.pdf: build/e8-world-astar.pdf
+fast-manip.pdf: build/e8-world-wastar.pdf
+fast-manip.pdf: build/e8-world-e8.pdf
+
+fast-manip.pdf: build/pairwise-labels-dot.tex
 
 STANDALONES += broadphase-single
 STANDALONES += broadphase-multi
@@ -85,24 +90,26 @@ STANDALONES += w13-fs1-ei344
 
 fast-manip.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 
-fast-manip.pdf: figs/chimp-voxels-delta.png
-fast-manip.pdf: figs/simple-table-clearing-task.png
-fast-manip.pdf: figs/testherb-a.png
-fast-manip.pdf: figs/testherb-b.png
-fast-manip.pdf: figs/testherb-c.png
-fast-manip.pdf: figs/testherb-d.png
-fast-manip.pdf: figs/testherb-e.png
-
-# other wacky figures to generate
-fast-manip.pdf: build/e8-world-intro.pdf
-fast-manip.pdf: build/e8-world-astar.pdf
-fast-manip.pdf: build/e8-world-wastar.pdf
-fast-manip.pdf: build/e8-world-e8.pdf
-
 build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
 	mkdir -p build
 	python3 fig-scripts/e8-example.py --fn=$* --output_tikz=build/e8-world-$*.tex --output_stats=build/e8-world-$*-stats.tex
 	pdflatex -halt-on-error -output-directory=build build/e8-world-$*
+
+# compiling standalone tex's to pdfs
+build/%.pdf: figs/%.tex
+	mkdir -p build
+	pdflatex -halt-on-error -output-directory=build figs/$*
+
+# compiling dots to texs
+build/%-dot.tex: figs/%.dot
+	mkdir -p build
+	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
+
+# how to make a pdf from a tex
+fast-manip.pdf: fast-manip.tex pr-refs.bib
+	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' fast-manip
+proposal.pdf: proposal.tex pr-refs.bib
+	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal
 
 # how to clean after latex
 EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc
@@ -110,4 +117,4 @@ EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc
 clean:
 	rm -rf build/
 	rm -f ch*.aux
-	rm -f $(foreach e,$(EXTS),fast-manip.$e)
+	rm -f $(foreach p,fast-manip proposal,$(foreach e,$(EXTS),$p.$e))
