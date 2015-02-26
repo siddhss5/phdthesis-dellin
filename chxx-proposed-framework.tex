@@ -1,48 +1,5 @@
 \chapter{Framework for Efficient Manipulation Task Planning}
-
-This chapter serves as a very brief
-overview of our approach.
-
-\section{Multiple Steps}
-\label{chap:formulation}
-
-See Figure~\ref{fig:xx-diagram-multi-step}.
-
-Define the \emph{configuration space} \cite{lozanoperez1983cspace}.
-
-We first focus on the simple geometric case,
-with a composite configuration space
-with constraints from prehensile manipuation.
-You could easily imagine extending this to other source of Cfree
-e.g. torque contraints, etc.
-
-Where to steps come from?
-
-spend more effort on the decomposition
-
-what do i mean by steps?
-
-what is a step?
-
-walking, parkour
-
-cosntrained door opening
-
-reaching into a box
-
-replacing the car tire
-
-we focus on manipuation
-
-opening a door are manipuation
-
-two things that produce structure:
-
-- cobs
-
-- cspace manifolds
-
-we're just looking at a projection of the composite c-space
+\label{chap:proposal-framework}
 
 {
 \setlength{\offsetpage}{0.5in}
@@ -94,6 +51,56 @@ we're just looking at a projection of the composite c-space
 \end{figure}
 }
 
+This chapter lays out our proposed approach
+to planning for coupled manipulation tasks.
+The reader is directed to Figure~\ref{fig:xx-diagram-multi-step}
+for an overview.
+Our approach consists generally of decomposing the task into
+multiple steps,
+each of which is solved by queries to an underlying motion
+planner in the robot's
+\emph{configuration space} \cite{lozanoperez1983cspace}.
+
+% from sidd:
+%Where to steps come from?
+%what do i mean by steps?
+%what is a step?
+%walking, parkour
+%cosntrained door opening
+%reaching into a box
+%replacing the car tire
+%we focus on manipuation
+%opening a door are manipuation
+%two things that produce structure:
+%- cobs
+%- cspace manifolds
+%we're just looking at a projection of the composite c-space
+
+We suggest that a reasonable decomposition of a task into steps
+should be guided by changes to either
+the valid subset of the robot's configuration space
+(e.g. at grasp and release points of manipulated objects)
+or the set of constraints active on the robot's configuration.
+This facilitates simpler calls to each motion planner,
+and also allows separate planners with different capabilities
+(e.g. constrained planners)
+to be used for each step.
+
+\textbf{Outline.}
+Loosely, the sections in this chapter are layed out as follows.
+Sections~\ref{chap:e8} and~\ref{chap:graphs-in-continuous}
+describe our approach to planning \emph{within} each step,
+on graphs and roadmaps respectively.
+Next,
+Sections~\ref{chap:multi-set} and~\ref{chap:multi-set-prm}
+identify and exploit structure \emph{between} steps
+in order to reuse planning computation across queries.
+Lastly,
+Sections~\ref{chap:cmr} and~\ref{chap:task-planning}
+discuss how to specify queries across all steps
+in a higher-level sequencing task planner.
+
+
 \section{Quickly Searching Explicit Expensive Graphs}
 \label{chap:e8}
 
@@ -102,7 +109,7 @@ in changing, unstructured environments,
 it must be able to quickly solve planning queries.
 In this section,
 we discuss formulating
-the motion planning problem as best-first search over paths
+the motion planning problem as best-first graph search over paths
 and propose a search algorithm on explicit graphs.
 Our approach is motivated by two insights.
 
@@ -431,7 +438,7 @@ We currently implement the algorithm's best-first search
 using a bidirectional variant of
 Dijkstra's algorithm \cite{dijkstra1959anote}
 on line~\ref{line:e8-select-optimistic-path}.
-See Section~\ref{subsec:search-each-iteration} below
+See research question \ref{ques:incremental-search}
 for more details.
 
 If this path is already fully evaluated,
@@ -548,33 +555,44 @@ See Figure~\ref{fig:e8-results} for an example problem.
    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics{build/e8-world-intro}
-      \caption{intro}
+      \caption{Planning world.}
    \end{subfigure}%
    \quad%
    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics{build/e8-world-astar}
-      \caption{astar\\
-         plan: \worldstatsastarplan\\
-         exec: \worldstatsastarexec}
+      \caption{A$^*$ search.\\
+         Planning Effort: 692.3 \\%\worldstatsastarplan\\
+         Execution Effort: 14.2 }%\worldstatsastarexec}
    \end{subfigure}%
-   \quad%
+   
+   \vspace{0.05in}
+   
    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics{build/e8-world-wastar}
-      \caption{wastar, $\epsilon=3$\\
-         plan: \worldstatswastarplan\\
-         exec: \worldstatswastarexec}
+      \caption{Weighted A$^*$ search, $\epsilon=3$\\
+         Planning Effort: 390.8 \\%\worldstatswastarplan\\
+         Execution Effort: 18.5 }%\worldstatswastarexec}
    \end{subfigure}%
    \quad%
    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics{build/e8-world-e8}
-      \caption{e8, $\lambda=0.5$\\
-         plan: \worldstatseEplan\\
-         exec: \worldstatseEexec}
+      \caption{E$^8$ search, $\lambda=0.5$\\
+         Planning Effort: 358.8 \\%\worldstatseEplan\\
+         Execution Effort: 20.5 }%\worldstatseEexec}
    \end{subfigure}
-   \caption{An E$^8$ example world problem.}
+   \caption{A simple 2D explicit graph search problem,
+      comparing three approaches.
+      A robot (bottom left) must reach a goal position (top right)
+      on an 8-connected graph
+      while avoiding a wall (black).
+      Execution effort is equal to path length.
+      The planning effort required to check an edge is proportional
+      to its distance to the blue radar at top.
+      The E$^8$ algorithm's solution has a lower combined
+      planning and execution effort.}
    \label{fig:e8-results}
 \end{figure}
 
@@ -801,19 +819,18 @@ Defer discussion of caching to subsequent
       \includegraphics[width=\textwidth]{figs/compare-2d-rrtc1-checkmask-l10-s1.png}
       \caption{E$^8$-PRM, $\lambda=1$}
    \end{subfigure}%
+   \vspace{0.05in}
+   \begin{subfigure}[b]{\textwidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{figs/compare-2d-rrtc1-medians.png}
+      \caption{Plot of collision checks vs solution path cost for the
+         different algorithmsm.}
+   \end{subfigure}%
    \caption{Example runs with different planners,
       with the same sequence of samples.
-      Note that E$^8$-PRM with $\lambda=0$ is equivalent to LazyPRM.
+      Note that E$^8$-PRM with $\lambda=0$ is equivalent to the Lazy PRM.
       Red dots show collision checks.}
    \label{fig:compare-2d-rrtc1-vis}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figs/compare-2d-rrtc1-medians.png}
-\caption{Plot of collision checks vs solution path cost for the
-   different algorithms from the problem from
-   Figure~\ref{fig:compare-2d-rrtc1-vis}.}
 \end{figure}
 
 \begin{figure}
@@ -837,12 +854,9 @@ Defer discussion of caching to subsequent
 \begin{figure}
    \centering
    \includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
-   \caption{Comparison between different algorithms on a HERB problem.
-      Must add in ESTs.}
+   \caption{Comparison between different algorithms on a HERB problem.}
    \label{fig:herb-comparison-cdfs}
 \end{figure}
-
-
 
 \section{The Multi-Set Planning Problem}
 \label{chap:multi-set}
@@ -1405,32 +1419,32 @@ Collision checkers currently use a similar approach internally
 to speed up collision checks (see Fig.~\ref{fig:broad-phase}.
 and Fig~\ref{fig:broad-phase-2d}).
 
-\subsubsection*{Conservative Bounding Volumes for Different Grasps}
-
-\subsubsection*{Conservative Bounding Volumes for Hypothesized Objects}
-
-There's a sweet ICRA paper here.
-
-\subsubsection*{Dual Arm Stuff}
-
-I think this is related.
-
-Check right arm against gian left side box, etc.
-
-\subsubsection*{Dimensionality Reduction}
-
-The Handey \cite{lozanoperez1987handey} robot
-assumed a box that contained the wrist links at a range of DOF values.
-
-\subsubsection*{Dual-Arm Stuff}
-
-This is very similar to dimensionality reduction.
-
-Loose coupling between arms.
-
-Separate roadmaps for each arm.
-
-Investigate this multi-set structure.
+%\subsubsection*{Conservative Bounding Volumes for Different Grasps}
+%
+%\subsubsection*{Conservative Bounding Volumes for Hypothesized Objects}
+%
+%There's a sweet ICRA paper here.
+%
+%\subsubsection*{Dual Arm Stuff}
+%
+%I think this is related.
+%
+%Check right arm against gian left side box, etc.
+%
+%\subsubsection*{Dimensionality Reduction}
+%
+%The Handey \cite{lozanoperez1987handey} robot
+%assumed a box that contained the wrist links at a range of DOF values.
+%
+%\subsubsection*{Dual-Arm Stuff}
+%
+%This is very similar to dimensionality reduction.
+%
+%Loose coupling between arms.
+%
+%Separate roadmaps for each arm.
+%
+%Investigate this multi-set structure.
 
 
 
@@ -1442,7 +1456,7 @@ Our second key insight
 is to apply the principle of best-first search over roadmaps
 using an objective which explicitly considers both planning and
 execution costs.
-The result is the Multi-Set PRM (Section~\ref{chap:multi-set-prm}).
+The result is the Multi-Set PRM.
 This approach allows the planner to exploit the multi-set structure
 inherent in these problems.
 
@@ -1499,6 +1513,8 @@ Note that representing all functionals in common units
 to effectively trade off between planning and execution cost.
 
 \subsection{The Multi-Set PRM}
+
+\cdnote{I must explain how this works here.}
 
 \begin{algorithm}
 \caption{Multi-Set PRM Planner with Hard Batching}
@@ -1585,7 +1601,7 @@ we first briefly discuss the propositional logic approach
 used to reason about the state of each edge.
 
 The planner represents the list of set relations $\mathcal{R}$
-(Section~\ref{subsec:problem-definition})
+(Section~\ref{chap:multi-set})
 specified in the multi-set problem formulation
 as a set of \emph{logical propositions} $P_{rels}$
 which are considered globally applicable.
@@ -1794,26 +1810,28 @@ changed
 -- this is because the paths that are selected for evaluation
 by the algorithm are a function only of their (constant) lengths.
 
-\subsection{Other Experiments to Run}
-
-\begin{itemize}
-\item with/without inter-step relations
-\item with/without padding
-\item with/without self-checked cache
-\item with/without relations for changing worlds
-\item with/without conservative boxes for grabbed objects
-\item constraints:
-   \begin{itemize}
-   \item handle with separate planner
-   \item handle with relaxed constraint, followed by local optimizer
-   \end{itemize}
-\item run optimizer on paths occasionally and/or before executing
-\end{itemize}
+%\subsection{Other Experiments to Run}
+%
+%\begin{itemize}
+%\item with/without inter-step relations
+%\item with/without padding
+%\item with/without self-checked cache
+%\item with/without relations for changing worlds
+%\item with/without conservative boxes for grabbed objects
+%\item constraints:
+%   \begin{itemize}
+%   \item handle with separate planner
+%   \item handle with relaxed constraint, followed by local optimizer
+%   \end{itemize}
+%\item run optimizer on paths occasionally and/or before executing
+%\end{itemize}
 
 
 \subsection{Results and Behavior of the Multi-Set PRM}
 
-See Figure~\ref{fig:broad-phase-2d}.
+See Figure~\ref{fig:broad-phase-2d}
+for a simple example with integrated broad-phase collision checking
+as described in Section~\ref{subsec:broad-phase}.
 
 \begin{figure}
 \centering
@@ -2100,26 +2118,32 @@ This example uses a simple forest-of-trees PRM construction rule.
 
 \subsection{The \textsc{Proteus} Task Planner}
 
-Talk about coupling here.
+I propose to write a simple task planner,
+\textsc{Proteus}
+(\textsc{Proteus} Reasons Over Task Effort Using Sampling).
+For a specified coupled manipulation planning problems,
+it will compute its multi-set structure
+and call into parallel instances of the Multi-Set PRM for each step
+using the CMR objective
+in order to find a solution path.
+This will allow for full-scope experimental evaluations to be conducted
+on the approach.
+We assume the step decomposition is provided by either
+a human operator or symbolic planner.
 
-Uses CMR.
-Runs separate Multi-Set PRMs.
+\textbf{Related Work.}
+\cdnote{There is a large body of related work in the area of subgoal planning
+that is relevant to the design of this task planner that I
+should reference here.}
 
-Lots of literature in subgoal planning to connect to here.
-
-Proteus Reasons Over Task Effort Using Sampling.
-
-To be clear, no symbolic planning here --
-complementary!
-
-\subsection{Interleaved Planning and Execution}
-\label{sec:interleaved}
-
-We talk about how the approach in this thesis is
-amenable to interleaved planning and execution.
-Proteus can just keep updating $q_{\mbox{\scriptsize init}}$.
-
-``The \textsc{Proteus} task planning server
-will handle moving starts.''
-
-And experiments.
+\textbf{Interleaved Planning and Execution.}
+While primary comparisons
+will consider planning in a separate phase from execution,
+\textsc{Proteus} will also support a simple version of
+interleaved planning execution
+for comparison to baseline approaches which commit to early choices.
+In fact, the approach in this thesis is
+amenable to interleaved planning and execution,
+since the Multi-Set PRM can continually updated
+the $q_{\mbox{\scriptsize init}}$ configuration.
+See research question \ref{ques:proteus-compare} for details.

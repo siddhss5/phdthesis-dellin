@@ -4,7 +4,7 @@
 \section{Research Questions}
 \label{sec:research-questions}
 
-I propose to address the following seven research questions
+I propose to address the following eight research questions
 in this thesis.
 This section discusses each question in turn.
 See Table~\ref{table:proposed-timeline} for a timeline.
@@ -57,12 +57,12 @@ See Table~\ref{table:proposed-timeline} for a timeline.
       \nameref{ques:how-sequence}
       \end{minipage}%
       & \ref{chap:task-planning} \\[12pt]
-   \ref{ques:drc-compare}
+   \ref{ques:proteus-compare}
       &
       \begin{minipage}[c]{0.75\columnwidth}%
-      \nameref{ques:drc-compare}
+      \nameref{ques:proteus-compare}
       \end{minipage}%
-      & \ref{chap:experiments} \\[12pt]
+      & \ref{chap:task-planning} \\[12pt]
 \bottomrule
 \end{tabular}
 \end{center}
@@ -76,7 +76,7 @@ See Table~\ref{table:proposed-timeline} for a timeline.
    search algorithm be chosen?}
 \label{ques:choosing-lambda}
 
-See Chapter~\ref{chap:e8}.
+See Section~\ref{chap:e8}.
 
 The E$^8$ algorithm's objective,
 from (\ref{eqn:general-objective-explicit}),
@@ -95,7 +95,7 @@ with $\lambda=0$,
 it focuses solely on minimizing planning effort,
 similarly to the RRT algorithm.
 We discuss these comparisons to existing continuous-space planners
-in Chapter~\ref{chap:graphs-in-continuous}.
+in Section~\ref{chap:graphs-in-continuous}.
 
 If our ensemble effort model $\mathcal{M}$
 specifies effort estimates in the same units
@@ -128,26 +128,32 @@ assuming it will be collision-free.
 If we have some estimate of the proportion $P_u$ of evaluated edges
 which will be part of the final path,
 we can then choose a cost function which downweights the planning time.
-I need to work this out.
 
 \subsection{How can incremental graph search ideas (e.g. LPA*)
    be used to efficiently implement the E$^8$ algorithm?}
 \label{ques:incremental-search}
 
-See Chapter~\ref{chap:e8}, especially Algorithm~\ref{alg:e8}.
+The E$^8$ algorithm (Algorithm~\ref{alg:e8}) from Section~\ref{chap:e8}
+is currently executing a fully bidirectional Dijkstra's search
+during each iteration.
 The algorithm is clearly making multiple graph search queries
 over a fixed graph with only a few edge costs changing between queries.
 While, for small graphs, graph search time is small,
 for larger graphs,
 it will become significant.
-It should be relatively straightforward to implement LPA* here.
-We just have to do it!
+How can we efficiently implement LPA* \cite{koenig2004lpastar}
+to improve planning efficiency on large graphs?
 
 \subsection{How does the explicit graph approach of E$^8$ compare to
    weighted and anytime implicit algorithms?}
 \label{ques:e8-comparisons}
 
-Narrow this to problems with expensive edge evaluations.
+This question addresses the empirical performance of
+the E$^8$ algorithm when compared to baseline algorithms
+on implicit and explicit graphs with expensive edge evaluations.
+We will use metrics of measured planning and execution effort
+expended both on 2D graphs and on fixed lattice and RGG
+graphs in \textsc{Herb}'s configuration space.
 
 \subsection{How should discrete graphs be constructed in continuous
    $\mathcal{C}$-spaces with spatially correlated execution costs?}
@@ -223,51 +229,172 @@ We are operating under assumptions:
    across manipulation tasks?}
 \label{ques:evalpath}
 
-This has two paths.
-For E$^8$,
-we're confined to evaluating edges wholesale.
-For the E$^8$-PRM,
-we are free to do partial edge evaluations.
-What tends to perform best?
+Because the E$^8$ and E$^8$-PRM algorithms
+operate over explicit graphs and roadmaps,
+they have the freedom to evaluate edges in any order.
+In contrast, search algorithms over implicit graphs
+must evaluate vertices via e.g. the graph's \textsc{Successors($v$)}
+function.
+This freedom may allow intelligent alternating or bisection approaches
+to reduce average-case planning cost.
+
+Since E$^8$ operates on graphs,
+it is constrained to evaluating entire edges,
+one at a time.
+On the other hand,
+the E$^8$-PRM roadmap algorithm
+has the luxury of evaluating individual configurations at any
+point on the path;
+the Lazy PRM algorithm, for example,
+reported promising results by performing a bisection collision
+check on the entire path.
+
+This question serves to identify
+the best-performing path evaluation strategies during
+testing on \textsc{Herb} and \textsc{Chimp} manipuation tasks.
 
 \subsection{How does the extent of disclosed multi-set structure
    affect planner performance on multi-step problems?}
 \label{ques:multi-set-suited}
 
-See Chapter~\ref{chap:multi-set-prm}.
+The preliminary \textsc{Herb} experimental results reported in
+Table~\ref{tab:testherb} evaluate the Multi-Set PRM's performance
+with different combinations of multi-set structure is provided
+to the planner.
+The purpose of this question is to extend this analysis to a broader
+set of manipulation tasks
+which exploit other types of multi-set structure,
+such as those listed in Section~\ref{chap:multi-set}
+in order to identify particular types of structure which yield
+the most promising performance.
 
 \subsection{How does the amount of inter-step coupling
    affect the merit of interleaving planning and execution?}
 \label{ques:how-sequence}
 
-Especially relevant for Proteus,
-see Chapter~\ref{chap:task-planning}.
+As discussed in the introduction,
+a large amount of coupling between tasks
+-- what we loosely define as the extent to which early choices
+affect the performance of later portions of the task --
+motivates longer planning horizons.
+The importance of considering this coupling is motivated by the
+performance of the planning system used on the \textsc{Chimp} robot
+at the DRC Trials competition \cite{dellin2014drc},
+which often failed to find solutions to multi-step tasks because
+it committed too early.
 
-Compared to HPN
-in experimental section, Chapter~\ref{chap:experiments}.
-
-In particular,
-more coupling means you should plan ahead farther,
-and interleave less.
-
-Compelemtary to learning approaches
-to determine what are good Markov islands.
+We hypothesize that highly coupled tasks will favor approaches
+such as \textsc{Proteus} (Chapter~\ref{chap:task-planning})
+that wait to find a full task plan
+before beginning execution,
+while less coupled tasks will favor interleaved approaches
+such as Hierarchical Task and Motion Planning in the Now
+\cite{kaelbling2011inthenow}.
+The purpose of this question is to validate this hypothesis
+through experimental evaluation on \textsc{Herb} and \textsc{Chimp}.
 
 \subsection{How does the \textsc{Proteus} task planner
    compare experimentally to baseline approaches
    on \textsc{HERB} and \textsc{CHIMP}?}
-\label{ques:drc-compare}
+\label{ques:proteus-compare}
 
-See Chapter~\ref{chap:task-planning}.
+This question serves to evaluate the full task performance of the
+proposed approach
+in comparison to state-of-the-art baseline approaches.
+In order to evaluate the efficacy of the approach,
+this chapter details a set of experiments on multiple robot systems
+both in simulation and on real hardware.
 
-See Chapter~\ref{chap:experiments}.
+Here, we describe the test platforms, software,
+metrics, control variables,
+and baseline approaches that are used in the experimental
+evaluation.
 
-I want to run my planner on the DRC Trials data
-and show significant improvement.
+\textbf{HERB: The Home Exploring Robot Butler.}
+The HERB robot \cite{srinivasa2012herb20}
+is human-scale mobile manipulator designed to assist in home
+environments.
+It has two seven-degree-of-freedom Barrett WAM arms mounted
+on a Segway RMP base.
+It includes a BLAH KWh battery and has three onboard rack-mount
+computers.
 
-I want to greatly expand the number of manipulation planning tasks
-on the HERB platform in my data set.
+\textbf{CHIMP: the CMU Highly Intelligent Mobile Platform.}
+CHIMP \cite{stentz2014chimp}
+is a disaster response robot built by NREC at CMU
+for the Darpa Robotics Challenge.
+It is a tracked mobile manipulation robot consisting of
+four limbs comprising 26 limb degrees of freedom.
+It has Robotiq adaptive 3-finger grippers.
+\cdnote{I want to run my planner on the DRC Trials data
+and show significant improvement.}
 
+\textbf{OpenRAVE Simulation Environment.}
+We use the OpenRAVE \cite{diankov2010openrave} simulation environment
+for planning and collision checking.
+It implements kinematics, robot models,
+and interfaces to several collision checkers.
+When reporting planning effort,
+we present both total time and energy used,
+as well as number of collision checks performed
+for comparison to other checkers.
+See the section on metrics below.
+
+\textbf{Open Motion Planning Library.}
+We use the Open Motion Planning Library (OMPL)
+planning framework \cite{sucan2012ompl}
+to implement our planners
+and for baseline approaches which we compare against.
+
+\textbf{Metrics.}
+Our primary metric is \emph{total task effort} exerted to accomplish
+the task.
+For each run of our algorithms,
+we record this effort as measured in
+(a) time, in seconds,
+and (b) energy, in Joules.
+In order to present these data as fairly as possible,
+we record the split between planning and execution effort
+for each plan.
+We also report the difference between expected and actual
+execution effort for the solution path
+that may result from an approximate execution effort model
+(see Chapter~\ref{chap:graphs-in-continuous}).
+
+To enable comparisons to other robots and collision checkers,
+we also report number of collision checks as a proxy for collision
+checking effort.
+We also report the number of triangles in each collision model.
+
+While our approach terminates automatically
+given an the input $\lambda$ parameter between planning and execution
+effort,
+we also compare against anytime approaches that return multiple
+improving solutions over time.
+We present plots of all of these results for comparison,
+and also report the data points that result from several
+a-priori time budgets.
+
+\textbf{Baseline Approaches.}
+We propose to test our task planner against a suite of
+state-of-the-art approaches,
+including:
+\begin{itemize}
+\item Hierarchical task and motion planning in the now
+   \cite{kaelbling2011inthenow}.
+   Note that we compare against HPN both
+   interleaved and non-interleaved.
+\item The seqeutial task planner used by by the CMU team
+   at the Darpa Robotics Challenge
+   \cite{dellin2014drc},
+   based on the Constrained Bi-Directional RRT
+   \cite{berenson2009manifolds}.
+\item Other hybrid symbolic/geometric planners.
+   \cdnote{Talk to Evan.}
+\end{itemize}
+For a fair comparison,
+we also select parameters for other approaches using a set of testing
+problems.
 
 }%for custom Q1 subsection numbering
 
@@ -278,9 +405,9 @@ It's currently very aggressive.
 
 I'm not sure if integration of my OMPL planner
 is in the best interests of the DRC project.
-Will know more about this after the March 2015 DRC meetup.
+Will know more about this after the March 2015 DRC testbed meeting.
 In any case, I'd like to test against Trials data
-(abd perhaps Finals data if it's available).
+(and perhaps Finals data if it's available).
 
 \begin{table}
 \begin{widepage}
@@ -289,10 +416,10 @@ In any case, I'd like to test against Trials data
    \renewcommand{\arraystretch}{1.5}
    \begin{tabular}{lccl}
    \toprule
-   {\bf Topic} & {\bf Chapter} & {\bf Questions} & {\bf Deadline} \\
+   {\bf Topic} & {\bf Section} & {\bf Questions} & {\bf Deadline} \\
    \midrule
    Guided Manipulation Planning at the DRC Trials \cite{dellin2014drc}
-      & \ref{chap:formulation}
+      & %\ref{chap:formulation}
       &
       & February 2014 (ISER) (completed) \\
    Comprehensive Multi-Root Planning \cite{dellin2015cmr}
@@ -306,23 +433,26 @@ In any case, I'd like to test against Trials data
    \midrule
    Proposal
       & & & March 2015 \\
-   ??
-      & 
-      & 
-      & March 2015 (ISRR) \\
+%   ??
+%      & 
+%      & 
+%      & March 2015 (ISRR) \\
    DRC Integration (presuming project alignment)
       & & & April-May 2015 \\
    Multi-Set Planning for the DRC
       & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
-      & \ref{ques:how-sequence}, \ref{ques:drc-compare}
+      & \ref{ques:evalpath}, \ref{ques:how-sequence},
+        \ref{ques:proteus-compare}
       & June 2015 (Humanoids) \\
    HERB Experiments
       & \ref{chap:multi-set-prm}, \ref{chap:task-planning}
-      & \ref{ques:multi-set-suited}, \ref{ques:herb-performance}
+      & \ref{ques:evalpath}, \ref{ques:multi-set-suited},
+        \ref{ques:proteus-compare}
       & July-August 2015 \\
    The E$^8$-PRM: Optimizing Total Task Cost
       & \ref{chap:e8}, \ref{chap:graphs-in-continuous}
-      & \ref{ques:choosing-lambda}, \ref{ques:batching}
+      & \ref{ques:choosing-lambda}, \ref{ques:e8-comparisons},
+        \ref{ques:batching}
       & September 2015 (AAAI) \\
    Thesis Writing
       & & & September-November 2015 \\
@@ -340,8 +470,10 @@ In any case, I'd like to test against Trials data
 
 \section{Open-Source Software}
 
+I propose to release the following open-source software packages
+as part of my thesis deliverables:
 \begin{itemize}
-\item Release implementation of E$^8$-PRM (OMPL) 
-\item Release implementation of multi-set decomposer (OpenRAVE+OMPL)
-\item Release implementation of \textsc{Proteus}
+\item The E$^8$-PRM (OMPL).
+\item The multi-set decomposer (OpenRAVE+OMPL).
+\item The \textsc{Proteus} task planner.
 \end{itemize}
