@@ -244,7 +244,7 @@ fp = open(args.output_tikz,'w')
 fp.write(r'''\documentclass{standalone}
 \usepackage{tikz}
 \begin{document}
-\begin{tikzpicture}[scale=0.5]
+\begin{tikzpicture}[scale=0.4]
 
 \draw[black!10] (-0.5,-0.5) rectangle (10.5,10.5);
 

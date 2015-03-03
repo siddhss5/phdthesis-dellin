@@ -1,4 +1,5 @@
-all: fast-manip.pdf proposal.pdf
+all: proposal.pdf
+#all: fast-manip.pdf proposal.pdf
 
 fast-manip.pdf: ch01-intro.tex
 fast-manip.pdf: chxx-proposed-framework.tex
@@ -24,14 +25,28 @@ fast-manip.pdf: figs/testherb-b.png
 fast-manip.pdf: figs/testherb-c.png
 fast-manip.pdf: figs/testherb-d.png
 fast-manip.pdf: figs/testherb-e.png
-
 # other wacky figures to generate
 fast-manip.pdf: build/e8-world-intro.pdf
 fast-manip.pdf: build/e8-world-astar.pdf
 fast-manip.pdf: build/e8-world-wastar.pdf
 fast-manip.pdf: build/e8-world-e8.pdf
-
+# other
 fast-manip.pdf: build/pairwise-labels-dot.tex
+
+# hardcoded stuff fast-manip.pdf: figs/chimp-voxels-delta.png
+proposal.pdf: figs/simple-table-clearing-task.png
+proposal.pdf: figs/testherb-a.png
+proposal.pdf: figs/testherb-b.png
+proposal.pdf: figs/testherb-c.png
+proposal.pdf: figs/testherb-d.png
+proposal.pdf: figs/testherb-e.png
+# other wacky figures to generate
+proposal.pdf: build/e8-world-intro.pdf
+proposal.pdf: build/e8-world-astar.pdf
+proposal.pdf: build/e8-world-wastar.pdf
+proposal.pdf: build/e8-world-e8.pdf
+# other
+proposal.pdf: build/pairwise-labels-dot.tex
 
 STANDALONES += broadphase-single
 STANDALONES += broadphase-multi
@@ -89,6 +104,7 @@ STANDALONES += w13-fu1-ei344
 STANDALONES += w13-fs1-ei344
 
 fast-manip.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
+proposal.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 
 build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
 	mkdir -p build

@@ -311,7 +311,7 @@ and baseline approaches that are used in the experimental
 evaluation.
 
 \textbf{HERB: The Home Exploring Robot Butler.}
-The HERB robot \cite{srinivasa2012herb20}
+The HERB robot \citep{srinivasa2012herb20}
 is human-scale mobile manipulator designed to assist in home
 environments.
 It has two seven-degree-of-freedom Barrett WAM arms mounted
@@ -320,7 +320,7 @@ It includes a BLAH KWh battery and has three onboard rack-mount
 computers.
 
 \textbf{CHIMP: the CMU Highly Intelligent Mobile Platform.}
-CHIMP \cite{stentz2014chimp}
+CHIMP \citep{stentz2014chimp}
 is a disaster response robot built by NREC at CMU
 for the Darpa Robotics Challenge.
 It is a tracked mobile manipulation robot consisting of
@@ -330,7 +330,7 @@ It has Robotiq adaptive 3-finger grippers.
 and show significant improvement.}
 
 \textbf{OpenRAVE Simulation Environment.}
-We use the OpenRAVE \cite{diankov2010openrave} simulation environment
+We use the OpenRAVE \citep{diankov2010openrave} simulation environment
 for planning and collision checking.
 It implements kinematics, robot models,
 and interfaces to several collision checkers.
@@ -342,7 +342,7 @@ See the section on metrics below.
 
 \textbf{Open Motion Planning Library.}
 We use the Open Motion Planning Library (OMPL)
-planning framework \cite{sucan2012ompl}
+planning framework \citep{sucan2012ompl}
 to implement our planners
 and for baseline approaches which we compare against.
 
@@ -381,15 +381,15 @@ state-of-the-art approaches,
 including:
 \begin{itemize}
 \item Hierarchical task and motion planning in the now
-   \cite{kaelbling2011inthenow}.
+   \citep{kaelbling2011inthenow}.
    Note that we compare against HPN both
    interleaved and non-interleaved.
 \item The seqeutial task planner used by by the CMU team
    at the Darpa Robotics Challenge
-   \cite{dellin2014drc},
+   \citep{dellin2014drc},
    based on the Constrained Bi-Directional RRT
    \cite{berenson2009manifolds}.
-\item Other hybrid symbolic/geometric planners.
+\item Otpher hybrid symbolic/geometric planners.
    \cdnote{Talk to Evan.}
 \end{itemize}
 For a fair comparison,
@@ -409,8 +409,8 @@ Will know more about this after the March 2015 DRC testbed meeting.
 In any case, I'd like to test against Trials data
 (and perhaps Finals data if it's available).
 
-\begin{table}
-\begin{widepage}
+\begin{table*}
+   \begin{widepage}
    \centering
    {
    \renewcommand{\arraystretch}{1.5}
@@ -418,15 +418,15 @@ In any case, I'd like to test against Trials data
    \toprule
    {\bf Topic} & {\bf Section} & {\bf Questions} & {\bf Deadline} \\
    \midrule
-   Guided Manipulation Planning at the DRC Trials \cite{dellin2014drc}
+   Guided Manipulation Planning at the DRC Trials \citep{dellin2014drc}
       & %\ref{chap:formulation}
       &
       & February 2014 (ISER) (completed) \\
-   Comprehensive Multi-Root Planning \cite{dellin2015cmr}
+   Comprehensive Multi-Root Planning \citep{dellin2015cmr}
       & \ref{chap:cmr}
       &
       & October 2014 (ICRA) (completed) \\
-   Reduce, Reuse, Recycle: Multi-Set Planning \cite{dellin2015multiset}
+   Reduce, Reuse, Recycle: Multi-Set Planning \citep{dellin2015multiset}
       & \ref{chap:multi-set}, \ref{chap:multi-set-prm}
       & \ref{ques:choosing-lambda}, \ref{ques:incremental-search}
       & January 2015 (RSS) (in submission) \\
@@ -463,10 +463,10 @@ In any case, I'd like to test against Trials data
    \bottomrule
    \end{tabular}
    } %arraystretch
-\end{widepage}
-\caption{Proposed Timeline. \cdnote{This is quite agressive.}}
-\label{table:proposed-timeline}
-\end{table}
+   \end{widepage}
+   \caption[][0.2in]{Proposed Timeline. \cdnote{This is quite agressive.}}
+   \label{table:proposed-timeline}
+\end{table*}
 
 \section{Open-Source Software}
 

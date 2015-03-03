@@ -1,14 +1,17 @@
-\documentclass{report}
+%\documentclass{report}
+\documentclass[nobib]{tufte-book}
 
 \usepackage{standalone}
 
 \usepackage{calc}
 
-\usepackage[bookmarks=true]{hyperref}
+%\usepackage[bookmarks=true]{hyperref}
 
 % symbols
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb} % for \square
+% non-italicized math subscripts
+\newcommand{\ms}[1]{\mbox{\scriptsize #1}}
 
 % from http://tex.stackexchange.com/a/5255
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -19,7 +22,8 @@
 
 \usepackage{array}
 \usepackage{graphicx}
-\usepackage{subcaption}
+%\usepackage{subcaption}
+\usepackage[caption=false]{subfig}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows,backgrounds,calc,patterns,positioning,shapes,decorations.pathmorphing}
@@ -36,10 +40,6 @@
 
 % for adjustwidth
 \usepackage{changepage}
-
-% simple paragraph stuff
-\parindent=0pt
-\parskip=6pt
 
 % include \paragraph as numbered
 \setcounter{secnumdepth}{3}
@@ -80,6 +80,10 @@
 \author{Christopher M. Dellin}
 \date{\today}
 
+\renewcommand{\maketitlehooka}{
+\begin{fullwidth}
+}
+
 \renewcommand{\maketitlehookd}{
 \begin{center}
 \vspace{0.7in}
@@ -96,13 +100,21 @@ Lydia Kavraki, Rice University\\
 %\emph{Submitted in partial fulfillment of the requirements\\
 %for the degree of Doctor of Philosophy.}
 \end{center}
+\end{fullwidth}
 }
 
 \begin{document}
 
 \maketitle
 
-\begin{abstract}
+%\begin{abstract}
+\begin{fullwidth}
+\begin{adjustwidth}{1in}{1in}
+
+\emph{Abstract}
+
+\vspace{0.2in}
+
 In order to assist humans
 with dangerous or menial tasks,
 autonomous robots will need to
@@ -115,7 +127,8 @@ to efficient motion planning.
 They are often tightly coupled --
 while moving an object can be decomposed into
 steps (reach, grasp, transfer, release),
-comitting to an early step (e.g. a bad grasp)
+each step requires choices (e.g. which grasp),
+and committing to a bad choice
 can render subsequent steps difficult;
 this encourages longer planning horizons.
 However,
@@ -160,7 +173,10 @@ on multiple robotic platforms,
 in applications from home table clearing
 to remote disaster response.
 We also provide open-source implementations of our algorithms.
-\end{abstract}
+
+\end{adjustwidth}
+\end{fullwidth}
+%\end{abstract}
 
 \tableofcontents
 
@@ -168,9 +184,13 @@ We also provide open-source implementations of our algorithms.
 \include{chxx-proposed-framework}
 \include{ch11-proposed}
 
-{\small
+%{\small
+%\bibliographystyle{abbrv}
+%\bibliography{pr-refs}
+%}
+
 \bibliographystyle{abbrv}
 \bibliography{pr-refs}
-}
+%\doccmddef{bibliography}
 
 \end{document}
