@@ -28,34 +28,25 @@
       \includegraphics{build/diagram-multi-step}
    }
 
-   %\caption[][0.2in]{
-   %   Diagram of multi-step planning framework.
-   %   This thesis focuses on efficient geometric planning
-   %   for manipulation tasks (the lower two levels here).
-   %   Task planning can be performed by an autonomous
-   %   symbolic planner,
-   %   or guided by a human operator.}
+   \caption[][99in]{x}
+   \label{fig:xx-diagram-multi-step}
 
    \end{center}
    
-   \refstepcounter{figure}
-   \smallskip\noindent\small Figure \thefigure:
+   \smallskip\noindent\small Figure \ref{fig:xx-diagram-multi-step}:
       Diagram of multi-step planning framework.
       This thesis focuses on efficient geometric planning
       for manipulation tasks (the lower two levels here).
       Task planning can be performed by an autonomous
       symbolic planner,
       or guided by a human operator.
-   
-   \label{fig:xx-diagram-multi-step}
-   
 \end{figure*}
 
 This chapter lays out our proposed approach
 to planning for coupled manipulation tasks.
 The reader is directed to
-%Figure~\ref{fig:xx-diagram-multi-step}
-Figure~2.1
+Figure~\ref{fig:xx-diagram-multi-step}
+%Figure~2.1
 for an overview.
 Our approach consists generally of decomposing the task into
 multiple steps,
@@ -103,6 +94,7 @@ discuss how to specify queries across all steps
 in a higher-level sequencing task planner.
 
 
+\clearpage
 \section{Quickly Searching Explicit Expensive Graphs}
 \label{chap:e8}
 
@@ -435,15 +427,9 @@ which minimizes the this ensemble objective.
 We select over all paths which connect
 a vertex in $V_{\mbox{\scriptsize start}}$
 to a vertex in $V_{\mbox{\scriptsize goal}}$
-(any-to-any);
-for other types of planner specifications,
-see Chapter~\ref{chap:cmr}.
-We currently implement the algorithm's best-first selection
-using a bidirectional variant of
-Dijkstra's algorithm \cite{dijkstra1959anote}
-on line~\ref{line:e8-select-optimistic-path};
-see research question \ref{ques:incremental-search}
-for more details.
+(any-to-any).
+\marginnote{For types of planner specifications besides
+any-to-any, see Chapter~\ref{chap:cmr}.}
 
 If this path is already fully evaluated,
 we finish on line~\ref{line:return-done}.
@@ -474,8 +460,7 @@ which we discuss in the remainder of this section.
 \textbf{Choosing $\lambda$.}
 The choice of the $\lambda$ parameter
 affects the algorithm's tradeoff between planning and execution effort.
-See research question \ref{ques:choosing-lambda}
-to a discussion about choosing this parameter.
+\marginnote{See research question \ref{ques:choosing-lambda}.}
 
 \textbf{Finding the Optimistic-Optimal Path}.
 The current implementation of E$^8$ uses
@@ -486,9 +471,9 @@ at each iteration of the algorithm.
 However, since the cost of only a few edges
 are adjusted at each iteration (line~\ref{line:update-estimate}),
 it appears to be well-suited to incremental
-graph search algorithms (e.g. \cite{koenig2004lpastar}).
-See research question \ref{ques:incremental-search}
-for discussion regarding improving the efficiency of this search.
+graph search algorithms (e.g. \citep{koenig2004lpastar})
+to improve search efficiency.
+\marginnote{See research question \ref{ques:incremental-search}.}
 
 \textbf{Selecting the Edge Evaluation Order.}
 \label{subsec:alg-path-evaluation}
@@ -500,8 +485,7 @@ orders the edges alternating from the ends in.
 \cdnote{I need a figure to show this.}
 With different choices (e.g. forwards or backwards),
 E$^8$ looks a lot like A$^*$.
-See research question \ref{ques:evalpath}
-for more.
+\marginnote{See research question \ref{ques:evalpath}.}
 
 \subsection{Repeated Queries}
 
@@ -515,7 +499,7 @@ For different queries on the same graph,
 edge evaluations can simply be used in subsequent searches.
 
 When used in this fashion,
-E$^8$ behaves similarily to Experience graphs
+E$^8$ behaves similarily to Experience graphs%
 \cite{phillips2012egraphs}.
 E-graphs are a type of best-first search which
 are designed to find paths quickly by incentivizing the planner
@@ -536,7 +520,7 @@ with the following objective:
 
 The E$^8$ algorithm
 is therefore equivalent to a simplified version of the E-Graph algorithm
-with $\epsilon=1$ and $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda}$.
+with $\epsilon=1$ and $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda}$,
 with the exception that all evaluated edges are placed in the graph,
 not just the edges on the solution path.
 Note that E-graph shortcuts
@@ -546,8 +530,8 @@ are not necessary for small explicit graphs.
 
 We propose to perform experiments on graphs with
 expensive edge evaluations
-in order to evaluate the E$^8$ algorithm
-(see research question \ref{ques:e8-comparisons}).
+in order to evaluate the E$^8$ algorithm.
+\marginnote{See research question \ref{ques:e8-comparisons}.}
 See Figure~\ref{fig:e8-results} for an example problem.
 
 \begin{figure}[t]
@@ -562,22 +546,22 @@ See Figure~\ref{fig:e8-results} for an example problem.
       \includegraphics{build/e8-world-intro}
    }
    \quad
-   \subfloat[A$^*$ search.
-         Planning Effort: 692.3 %\worldstatsastarplan\\
+   \subfloat[][A$^*$ search.\\
+         Planning Effort: 692.3 \\ %\worldstatsastarplan\\
          Execution Effort: 14.2 %\worldstatsastarexec}
    ]{
       \includegraphics{build/e8-world-astar}
    }
    \vspace{0.05in}
-   \subfloat[Weighted A$^*$ search, $\epsilon=3$
-         Planning Effort: 390.8 %\worldstatswastarplan\\
+   \subfloat[][Weighted A$^*$ search, $\epsilon=3$\\
+         Planning Effort: 390.8 \\%\worldstatswastarplan\\
          Execution Effort: 18.5 %\worldstatswastarexec}
    ]{
       \includegraphics{build/e8-world-wastar}
    }
    \quad
-   \subfloat[E$^8$ search, $\lambda=0.5$
-         Planning Effort: 358.8 %\worldstatseEplan\\
+   \subfloat[][E$^8$ search, $\lambda=0.5$\\
+         Planning Effort: 358.8 \\%\worldstatseEplan\\
          Execution Effort: 20.5 %\worldstatseEexec}
    ]{
       \includegraphics{build/e8-world-e8}
@@ -596,6 +580,7 @@ See Figure~\ref{fig:e8-results} for an example problem.
    \label{fig:e8-results}
 \end{figure}
 
+\clearpage
 \section{Roadmaps in Continuous Spaces}
 \label{chap:graphs-in-continuous}
 
@@ -671,6 +656,24 @@ With the exception of the path evaluation strategy
 the E$^8$-PRM with $\lambda = 0$
 is equivalent to 
 the Lazy PRM \citep{bohlin2000lazyprm}.
+Figure~\ref{fig:bean} shows solution paths for a simple
+2D path planning problem for various runs of the algorithm.
+
+\begin{figure}
+   \centering
+   \subfloat[Paths with $\lambda = 0$]{
+      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-00.png}
+   }
+   \,
+   \subfloat[Paths with $\lambda = 1$]{
+      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-10.png}
+   }
+   \caption{Examples of paths for a 2d problems
+      for different values of $\lambda$.
+      As $\lambda$ is increased,
+      paths are longer, but are faster to find.}
+   \label{fig:bean}
+\end{figure}
 
 \subsection{Optimization in Expectation}
 
@@ -687,8 +690,7 @@ The easy version is with sequential batches of size $N$.
 Talk about how what we really want to do
 is evaluate the estimate of cost remaining
 \emph{in expectation}.
-Relate to Markov Random Fields and two-class image segmentation
-which capture spatial correlation.
+Relate to GPs for classification\cite{rasmussen2006gpml}.
 
 We propose to extend the E$^8$ search algorithm
 to minimize ensemble effort \emph{in expection}
@@ -726,28 +728,55 @@ We discuss simple implementations that are useful
 for the single-query E$^8$-PRM.
 \cdnote{I should talk about how such models can be added.}
 
-\begin{algorithm}
-\caption{Validitiy Effort Model
-   $\mathcal{M}_{\ms{valid}}$}
-\label{alg:single-set-effort-model}
-{\algrenewcommand\textproc{}% Used to be \textsc
-\begin{algorithmic}[1]
-\Function {$x_{\ms{valid}}$}{$e, U$}
-   \If {${\bf 1}_U[q_e(t)]$}
-      \State \Return $0$
-   \Else
-      \State \Return $\infty$
-   \EndIf
-\EndFunction
-\Function {$\hat{x}_{\ms{valid}}$}{$e, U$}
-   \State \Return $0$
-\EndFunction
-\Function {$\hat{p}_{\ms{valid}}$}{$e, U$}
-   \State \Return $\hat{p}_U[q_e(t)]$
-\EndFunction
-\end{algorithmic}
-} %textproc
-\end{algorithm}
+\begin{genericfloat}
+   {%
+   \floatname{algorithm}{Alg.}% shorter captions
+   \algrenewcommand\textproc{}% no smallcaps for procedures
+   \begin{minipage}[t]{0.49\linewidth}%
+      \vspace{-0.17in}%
+      \begin{algorithm}[H]
+         \caption{Set Validity Model
+            $\mathcal{M}_{\ms{valid}}$}
+         \label{alg:single-set-effort-model}
+         \begin{algorithmic}[1]
+         \Function {$x_{\ms{valid}}$}{$e, U$}
+            \If {${\bf 1}_U[q_e(t)]$}
+               \State \Return $0$
+            \Else
+               \State \Return $\infty$
+            \EndIf
+         \EndFunction
+         \Function {$\hat{x}_{\ms{valid}}$}{$e, U$}
+            \State \Return $0$
+         \EndFunction
+         \Function {$\hat{p}_{\ms{valid}}$}{$e, U$}
+            \State \Return $\hat{p}_U[q_e(t)]$
+         \EndFunction
+         \end{algorithmic}
+      \end{algorithm}
+   \end{minipage}%
+   \hspace{0.02\linewidth}%
+   \begin{minipage}[t]{0.49\linewidth}%
+      \vspace{-0.17in}%
+      \begin{algorithm}[H]
+         \caption{Distance Model
+            $\mathcal{M}_{\ms{dist}}$}
+         %\label{alg:single-set-effort-model}
+         \begin{algorithmic}[1]
+         \Function {$x_{\ms{valid}}$}{$e$}
+            \State \Return $|| q_e(1) - q_e(0) ||$
+         \EndFunction
+         \Function {$\hat{x}_{\ms{valid}}$}{$e$}
+            \State \Return $|| q_e(1) - q_e(0) ||$
+         \EndFunction
+         \Function {$\hat{p}_{\ms{valid}}$}{$e$}
+            \State \Return $0$
+         \EndFunction
+         \end{algorithmic}
+      \end{algorithm}
+   \end{minipage}%
+   }%
+\end{genericfloat}
 
 \textbf{Planning Cost Models.}
 This is the planner in continuous spaces,
@@ -757,6 +786,22 @@ we typically implement $\hat{p}(e)$ to be
 proportional to the number of collision checks required
 to validate the edge.
 See Algorithm~\ref{alg:single-set-effort-model}.
+
+\textbf{Execution Cost Models.}
+Due to the graph problem representation,
+E$^8$ requires additive effort models.
+Could we relax the additive execution cost constraint?
+We lose the nice efficient LPA*-enabling structure in
+E$^8$ this way,
+but it lets us incorporate a more accurate cost model in some domains,
+especially for execution costs for fast motions (e.g. total time).
+See Table~\ref{table:exec-cost-models} for examples.
+Sidd wants me to play with Hauser's fast bounded-velocity,
+bounded-acceleration segment timing code
+(which starts and stops at each waypoint).
+This may have better performance,
+choosing longer paths with few long edges over
+shorter paths with many short edges.
 
 \begin{margintable}
    \centering
@@ -775,22 +820,6 @@ See Algorithm~\ref{alg:single-set-effort-model}.
       when choosing optimistic paths for evaluation.}
    \label{table:exec-cost-models}
 \end{margintable}
-
-\textbf{Execution Cost Models.}
-Due to the graph problem representation,
-E$^8$ requires additive effort models.
-Could we relax the additive execution cost constraint?
-We lose the nice efficient LPA*-enabling structure in
-E$^8$ this way,
-but it lets us incorporate a more accurate cost model in some domains,
-especially for execution costs for fast motions (e.g. total time).
-See Table~\ref{table:exec-cost-models} for examples.
-Sidd wants me to play with Hauser's fast bounded-velocity,
-bounded-acceleration segment timing code
-(which starts and stops at each waypoint).
-This may have better performance,
-choosing longer paths with few long edges over
-shorter paths with many short edges.
 
 \subsection{Experimental Evaluation of the E$^8$-PRM}
 \label{subsec:single-query-results}
@@ -837,28 +866,12 @@ shorter paths with many short edges.
    \label{fig:compare-2d-rrtc1-vis}
 \end{figure}
 
-\begin{figure}
-   \centering
-   \subfloat[Paths with $\lambda = 0$]{
-      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-00.png}
-   }
-   \,
-   \subfloat[Paths with $\lambda = 1$]{
-      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-10.png}
-   }
-   \caption{Examples of paths for a 2d problems
-      for different values of $\lambda$.
-      As $\lambda$ is increased,
-      paths are longer, but are faster to find.}
-   \label{fig:bean}
-\end{figure}
-
-\begin{figure}
-   \centering
-   \includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
-   \caption{Comparison between different algorithms on a HERB problem.}
-   \label{fig:herb-comparison-cdfs}
-\end{figure}
+%\begin{figure}
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{figs/timegreedy-herbstep1-comparison-cdfs.png}
+%   \caption{Comparison between different algorithms on a HERB problem.}
+%   \label{fig:herb-comparison-cdfs}
+%\end{figure}
 
 I hope to show that the E$^8$-PRM is competitive with RRT-Connect
 in terms of planning effort required to find a feasible path.
@@ -866,7 +879,8 @@ in terms of planning effort required to find a feasible path.
 We will compare this approach to
 single-query baseline approaches
 such as the RRT \citep{kuffner2000rrtconnect},
-EST, SBL \citep{sanchezante2001sbl},
+EST \citep{hsu1997expansive},
+SBL \citep{sanchezante2001sbl},
 and Lazy PRM \citep{bohlin2000lazyprm},
 approaches over lattices such as E-graphs,
 as well as asymptotically-optimal planners such as
@@ -879,10 +893,11 @@ and TrajOpt \citep{schulman2013trajopt}.
 Defer discussion of caching to subsequent
 sections.
 
-See Figures~\ref{fig:compare-2d-rrtc1-vis},
-\ref{fig:bean}, and \ref{fig:herb-comparison-cdfs}
-for results from some preliminary experiments.
+See Figure~\ref{fig:compare-2d-rrtc1-vis}
+%and \ref{fig:herb-comparison-cdfs}
+for initial results from some preliminary experiments.
 
+\clearpage
 \section{The Multi-Set Planning Problem}
 \label{chap:multi-set}
 
@@ -930,97 +945,104 @@ which we formulate as the \emph{multi-set planning problem}.
 \label{sec:multi-set}
 
 \begin{figure*}
-\begin{widepage}
-\centering
+   \begin{widepage}
+   \begin{center}
 
-\subfloat[
-   A two-part multi-set problem in $\mathcal{C}$,
-   first between $q_1$ and $q_2$ through $X_{12}$,
-   then between $q_2$ and $q_3$ through $X_{23}$.
-   The two free subsets $X_{12}$ and $X_{23}$ are distinct
-   but related.
-]{
-   \includegraphics{build/figstar-a}
-}%
-\quad%
-\subfloat[
-   The free subsets are related via other underlying
-   subsets of $\mathcal{C}$, with $X_{12}=A \cap B$
-   and $X_{23}=A \cap C$.
-   A planner solving the first part (from $q_1$ to $q_2$)
-   has found paths in $X_{12}$.
-]{
-   \includegraphics{build/figstar-b}
-   \label{subfig:figstar-intersections}
-}%
-\quad%
-\subfloat[
-   Due to the set relations,
-   a planner solving the second part
-   (from $q_2$ to $q_3$ in $X_{23}$)
-   can reuse any segment known to be in $X_{12}$
-   by checking only for its membership in $C$.
-]{
-   \includegraphics{build/figstar-c}
-}
+   \subfloat[
+      A two-part multi-set problem in $\mathcal{C}$,
+      first between $q_1$ and $q_2$ through $X_{12}$,
+      then between $q_2$ and $q_3$ through $X_{23}$.
+      The two free subsets $X_{12}$ and $X_{23}$ are distinct
+      but related.
+   ]{
+      \includegraphics{build/figstar-a}
+   }%
+   \quad%
+   \subfloat[
+      The free subsets are related via other underlying
+      subsets of $\mathcal{C}$, with $X_{12}=A \cap B$
+      and $X_{23}=A \cap C$.
+      A planner solving the first part (from $q_1$ to $q_2$)
+      has found paths in $X_{12}$.
+   ]{
+      \label{subfig:figstar-intersections}
+      \includegraphics{build/figstar-b}
+   }%
+   \quad%
+   \subfloat[
+      Due to the set relations,
+      a planner solving the second part
+      (from $q_2$ to $q_3$ in $X_{23}$)
+      can reuse any segment known to be in $X_{12}$
+      by checking only for its membership in $C$.
+   ]{
+      \includegraphics{build/figstar-c}
+   }
 
-\vspace{0.1in}
+   \vspace{0.1in}
 
-\subfloat[
-   A forklift in a parking lot ($q_1$)
-   must retrieve an object ($q_2$)
-   and reverse park ($q_3$).
-   This two-part problem
-   requires plans in distinct collision-free
-   $\mathcal{C}$-subsets
-   $X_{12}$ and $X_{23}$.
-]{
-   \begin{tabular}{c}
-   \includegraphics{build/example-2d-a} \\
-   \includegraphics{build/example-2d-b} \\
-   \includegraphics{build/example-2d-c} \\
-   \end{tabular}
-   \label{subfig:figstar-manip-probdef}
-}%
-\quad%
-\subfloat[
-   Sets $X_{12}$ and $X_{23}$ are subsets of
-   the configuration space of the robot $\mathcal{C}=\mbox{SE}(2)$,
-   and can be represented as intersections
-   of underlying subsets $A$, $B$, and $C$
-   as in Fig.~\ref{subfig:figstar-intersections}.
-]{
-   \begin{tabular}{c}
-   \includegraphics{build/example-2d-d} \\
-   \includegraphics{build/example-2d-e} \\
-   \includegraphics{build/example-2d-f} \\
-   \end{tabular}
-}%
-\quad%
-\subfloat[
-   After planning a path from $q_1$ to $q_2$ (top),
-   a planner can reuse a configuration in $X_{12}$ (middle)
-   by checking only for its membership in subset $C$,
-   resulting in plan reuse (bottom).
-]{
-   \begin{tabular}{c}
-   \includegraphics{build/example-2d-g} \\
-   \includegraphics{build/example-2d-h} \\
-   \includegraphics{build/example-2d-i} \\
-   \end{tabular}
-}
+   \subfloat[
+      A forklift in a parking lot ($q_1$)
+      must retrieve an object ($q_2$)
+      and reverse park ($q_3$).
+      This two-part problem
+      requires plans in distinct collision-free
+      $\mathcal{C}$-subsets
+      $X_{12}$ and $X_{23}$.
+   ]{%
+      \begin{tabular}{c}
+      \includegraphics{build/example-2d-a} \\
+      \includegraphics{build/example-2d-b} \\
+      \includegraphics{build/example-2d-c} \\
+      \end{tabular}%
+      \label{subfig:figstar-manip-probdef}
+   }%
+   \quad%
+   \subfloat[
+      Sets $X_{12}$ and $X_{23}$ are subsets of
+      the configuration space of the robot $\mathcal{C}=\mbox{SE}(2)$,
+      and can be represented as intersections
+      of underlying subsets $A$, $B$, and $C$
+      as in \protect\subref{subfig:figstar-intersections}.
+   ]{%
+      \label{subfig:figstar-manip-spaces}
+      \begin{tabular}{c}
+      \includegraphics{build/example-2d-d} \\
+      \includegraphics{build/example-2d-e} \\
+      \includegraphics{build/example-2d-f} \\
+      \end{tabular}%
+   }%
+   \quad%
+   \subfloat[
+      After planning a path from $q_1$ to $q_2$ (top),
+      a planner can reuse a configuration in $X_{12}$ (middle)
+      by checking only for its membership in subset $C$,
+      resulting in plan reuse (bottom).
+   ]{%
+      \begin{tabular}{c}
+      \includegraphics{build/example-2d-g} \\
+      \includegraphics{build/example-2d-h} \\
+      \includegraphics{build/example-2d-i} \\
+      \end{tabular}%
+   }
 
-\caption[][0.2in]{An illustration of a multi-set planning
-  problem in a common configuration space $\mathcal{C}$.
-  The problem definition generalizes to an artibrary number of
-  configuration space subsets and set relations between them.
-  When two queries in different subests are solved sequentially,
-  a multi-set planner can reuse path segments less expensively.
-  See Section~\ref{sec:in-manipulation} for examples in
-  manipulation.}
-\label{fig:multi-set}
+   \caption[][99in]{x}
+   \label{fig:multi-set}
 
-\end{widepage}
+   \end{center}
+   \end{widepage}
+   
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:multi-set}:
+   An illustration of a multi-set planning
+   problem in a common configuration space $\mathcal{C}$.
+   The problem definition generalizes to an artibrary number of
+   configuration space subsets and set relations between them.
+   When two queries in different subests are solved sequentially,
+   a multi-set planner can reuse path segments less expensively.
+   See Section~\ref{sec:in-manipulation} for examples in
+   manipulation.
+
 \end{figure*}
 
 Here we define the multi-set planning problem,
@@ -1038,22 +1060,6 @@ explicitly captures both planning and execution effort
 and can therefore be used as an ensemble effort model
 for use in the E$^8$-PRM planner across queries.
 
-\begin{marginfigure}
-   \centering
-   \subfloat[Multi-query planning]{
-      \includegraphics{build/query-to-subset-a}
-   }
-   \vspace{-0.05in}
-   \subfloat[Multi-set planning]{
-      \includegraphics{build/query-to-subset-b}
-   }
-   \vspace{0.1in}
-   \caption{While queries in multi-query planning reference
-     the same subset of $\mathcal{C}$,
-     each multi-set query references one of a number of such sets.}
-   \label{fig:query-to-subset}
-\end{marginfigure}
-
 The multi-set planning problem is multi-query in
 a fixed configuration space $\mathcal{C}$.
 However, unlike related problems in which all
@@ -1069,11 +1075,28 @@ each member of $\mathcal{S}$
 is a subset of the common configuration space
 (that is,
 $X \subseteq \mathcal{C} \;\forall\; X \in \mathcal{S}$).
-For example, in Fig.~\ref{subfig:figstar-manip-spaces},
+For example,
+in Fig.~\ref{fig:multi-set}\subref{subfig:figstar-manip-spaces},
 $\mathcal{C}$-subset $B$
 consists of configurations
 free of collision between the robot and
 the initial object pose.
+
+\begin{marginfigure}
+   \centering
+   \subfloat[Multi-query planning]{
+      \includegraphics{build/query-to-subset-a}
+   }
+   \vspace{-0.05in}
+   \subfloat[Multi-set planning]{
+      \includegraphics{build/query-to-subset-b}
+   }
+   \vspace{0.1in}
+   \caption{While queries in multi-query planning reference
+     the same subset of $\mathcal{C}$,
+     each multi-set query references one of a number of such sets.}
+   \label{fig:query-to-subset}
+\end{marginfigure}
 
 The problem supports an arbitrary number of queries $\mathcal{U}$.
 Each query $u$ references a \emph{single}
@@ -1117,6 +1140,26 @@ Equivalently, the set itself can be defined w.r.t. its indicator:
 \begin{equation}
   X = \{ q \in \mathcal{C} \;|\; \mathbf{1}_X(q) = \mbox{True} \} .
 \end{equation}
+Excusing the abuse of notation,
+we define an analogous indicator functional $\mathbf{1}_X[\cdot]$
+which operates on path segments $q(t)$.
+We use parentheses for functions and brackets for functionals.
+\begin{equation}
+  \mathbf{1}_X[q(t)] =
+    \left\{ \begin{array}{ll}
+      \mbox{True} & \mbox{if } q(t) \in X \;\forall\; t \in [0,1] \\
+      \mbox{False} & \mbox{otherwise}.
+    \end{array} \right.
+  \label{eqn:indicator-functional}
+\end{equation}
+Common examples of such indicators
+(\ref{eqn:indicator-function}) or (\ref{eqn:indicator-functional})
+include validity checkers for
+geometric (workspace) collision,
+stability, and visibility constraints.
+Note that for complex problems,
+evaluation of these indicators 
+tends to dominate planning effort.
 
 \begin{marginfigure}
    \centering
@@ -1143,27 +1186,6 @@ Equivalently, the set itself can be defined w.r.t. its indicator:
      $\mathbf{1}_X(\cdot)$.}
    \label{fig:relations}
 \end{marginfigure}
-
-Excusing the abuse of notation,
-we define an analogous indicator functional $\mathbf{1}_X[\cdot]$
-which operates on path segments $q(t)$.
-We use parentheses for functions and brackets for functionals.
-\begin{equation}
-  \mathbf{1}_X[q(t)] =
-    \left\{ \begin{array}{ll}
-      \mbox{True} & \mbox{if } q(t) \in X \;\forall\; t \in [0,1] \\
-      \mbox{False} & \mbox{otherwise}.
-    \end{array} \right.
-  \label{eqn:indicator-functional}
-\end{equation}
-Common examples of such indicators
-(\ref{eqn:indicator-function}) or (\ref{eqn:indicator-functional})
-include validity checkers for
-geometric (workspace) collision,
-stability, and visibility constraints.
-Note that for complex problems,
-evaluation of these indicators 
-tends to dominate planning effort.
 
 Finally, the multi-set problem incudes a list of set relations
 $\mathcal{R}$
@@ -1202,7 +1224,7 @@ evaluating $\mathbf{1}_B$ and $\mathbf{1}_C$ incurs cost 2,
 and evaluating $\mathbf{1}_{X_{12}}$ and $\mathbf{1}_{X_{23}}$
 incurs cost 6.
 In the manipulation example in
-Fig.~\ref{subfig:figstar-manip-probdef},
+Fig.~\ref{fig:multi-set}\subref{subfig:figstar-manip-probdef},
 this would be the case if each
 pairwise outlined shape collision check incurs unit cost.
 
@@ -1304,8 +1326,7 @@ in manipulation tasks.
 \end{figure}
 
 The sensors on most articulated robots allow them to maintain
-dynamic environment models to track changing collision geometry
-(see Fig.~\ref{fig:chimp-voxels-delta}).
+dynamic environment models to track changing collision geometry.
 These models might be
 structured (e.g. recognizing objects with known models)
 or unstructured (e.g. occupancy models).
@@ -1318,16 +1339,16 @@ leverages this by imposing a dichotomy between
 \emph{fixed} and \emph{moving} components of $\mathcal{C}$.
 Our formulation extends this to an arbitrary number of such labels,
 including ones defined retroactively (i.e. during planning;
-see Fig.~\ref{fig:retroactive}).
+see Fig.~\ref{fig:dynamic-environments}).
 By explicitly labeling such areas in workspace
 (and leveraging the \emph{set containment} property
 \citep{newmanbranicky1991cspacetransforms}),
 we can represent this structure as a multi-set planning problem.
 
+\cdnote{%
 Special case of this is if objects are disappearing.
-
 Relation to occupancy grid representations of workspace
-(for deltas, conservative approxs, etc).
+(for deltas, conservative approxs, etc).}
 
 \vspace{0.1in}
 \noindent
@@ -1416,8 +1437,8 @@ See Fig.~\ref{fig:self-collision-example}.
       using a low-dimensional conservative representation
       to quickly identify non-colliding bodies before
       resorting to an expensive narrow-phase check.
-   ]{
-      \includegraphics{build/broadphase-single}
+   ]{%
+      \includegraphics{build/broadphase-single}%
    }%
    \quad%
    \subfloat[
@@ -1426,8 +1447,8 @@ See Fig.~\ref{fig:self-collision-example}.
       This allows it to defer some narrow phase checks
       (often indefinitely)
       and instead prefer paths that require fewer expensive checks.
-   ]{
-      \includegraphics{build/broadphase-multi}
+   ]{%
+      \includegraphics{build/broadphase-multi}%
    }
    
    \caption[][0.2in]{Collision validity checking is a commonly used
@@ -1486,7 +1507,7 @@ and Fig~\ref{fig:broad-phase-2d}).
 
 
 
-
+\clearpage
 \section{Multi-Set as a Planning Cost Model for Roadmap Planners}
 \label{chap:multi-set-prm}
 
@@ -1761,7 +1782,7 @@ we save and return it.
    \label{fig:testherb-problem}
 \end{figure*}
 
-\begin{table*}
+\begin{table*}[b]
    \begin{widepage}
    \centering
    \footnotesize
@@ -1822,7 +1843,7 @@ we save and return it.
    \\ 
    \bottomrule
    \end{tabular}
-   \caption[][0.2in]{Home robot manipulation task results.
+   \caption[][-0.1in]{Home robot manipulation task results.
      The entry with no relations and $\lambda=0$ is equivalent
      to the LazyPRM.}
    \label{tab:testherb}
@@ -1932,6 +1953,7 @@ as described in Section~\ref{subsec:broad-phase}.
 \end{figure}
 
 
+\clearpage
 \section{Comprehensive Multi-Root Planning}
 \label{chap:cmr}
 
@@ -2050,7 +2072,8 @@ We track progress via the $r$-score:
       \} \big|.
    \label{eqn:obj}
 \end{equation}
-For example, the solution illustrated in Figure~\ref{subfig:cmr-illustration}
+For example, the solution illustrated in
+Figure~\ref{fig:cmr-problems}\subref{subfig:cmr-illustration}
 has an $r$-score of 6 out of a maximum of 27.
 Our objective is to \emph{maximize} the $r$-score as \emph{quickly} as
 possible.
@@ -2067,6 +2090,7 @@ possible.
       }
       \subfloat[cPRM (86 Edges Checked) (344 Edges Considered, 1 Pair)]{
          \includegraphics{build/w13-fs1-ec86}
+         \label{subfig:w13-sameec-colored}
       }
       \\ \quad \\
       \subfloat[PRM (344 Edges Considered) (125 Edges Checked, 8 Pairs)]{
@@ -2137,12 +2161,18 @@ possible.
       }
    \end{minipage}
    \caption[][0.2in]{A comparison between an
-      uncolored~(\ref{subfig:w13-sameec-uncolored},\ref{subfig:w13-sameein-uncolored})
-      and colored~(\ref{subfig:w13-sameec-colored},\ref{subfig:w13-sameein-colored})
+      uncolored~
+      \protect\subref{subfig:w13-sameec-uncolored},
+      \protect\subref{subfig:w13-sameein-uncolored}
+      and colored~
+      \protect\subref{subfig:w13-sameec-colored},
+      \protect\subref{subfig:w13-sameein-colored}
       forest-of-trees PRM on the same sequence of edges.
-      Plot~(\ref{subfig:w13-plot-edges}) shows the evolution of edges in both
+      Plot~\protect\subref{subfig:w13-plot-edges}
+      shows the evolution of edges in both
       algorithms as they progress,
-      and plot~(\ref{subfig:w13-plot-pairs}) shows the number of between-rootset
+      and plot~\protect\subref{subfig:w13-plot-pairs}
+      shows the number of between-rootset
       pairs found by each.}
    \label{fig:example-w13-figstar}
    %\end{widepage}
@@ -2153,6 +2183,7 @@ for a sample CMR problem between a set of start vertices (at top)
 and a set of goal vertices (at bottom).
 This example uses a simple forest-of-trees PRM construction rule.
 
+\clearpage
 \section{Task Planning}
 \label{chap:task-planning}
 

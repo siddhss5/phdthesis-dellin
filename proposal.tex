@@ -23,7 +23,14 @@
 \usepackage{array}
 \usepackage{graphicx}
 %\usepackage{subcaption}
-\usepackage[caption=false]{subfig}
+\usepackage[caption=false]{subfig} %[caption=false]
+\usepackage{float} % for side-by-side figures?
+% http://tex.stackexchange.com/a/95357
+
+\usepackage{setspace}
+
+\floatstyle{plain}
+\newfloat{genericfloat}{t}{gflt}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows,backgrounds,calc,patterns,positioning,shapes,decorations.pathmorphing}
@@ -111,7 +118,7 @@ Lydia Kavraki, Rice University\\
 \begin{fullwidth}
 \begin{adjustwidth}{1in}{1in}
 
-\emph{Abstract}
+{\LARGE \emph{Abstract}}
 
 \vspace{0.2in}
 
