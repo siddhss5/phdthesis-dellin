@@ -87,7 +87,7 @@ We consider our approach complementary to
 hybrid and interleaved planners,
 as well as approaches which learn heuristics.
 
-\subsection*{Challenges to Efficient Manipulation Planning}
+\section*{Challenges to Efficient Manipulation Planning}
 
 There are three principal challenges inherent in
 human-scale manipulation tasks,
@@ -113,9 +113,7 @@ We survey them here.
    \label{tab:challenges-insights}
 \end{table*}
 
-\vspace{0.1in}
-\noindent
-\textbf{Challenge 1:
+\subsection*{Challenge 1:
    Capturing the Planning vs. Execution Tradeoff}
 
 \begin{figure*}[t]
@@ -209,9 +207,7 @@ Therefore,
 manipulation task planners must be able to reason about
 the important tradeoff between these two types of effort.
 
-\vspace{0.1in}
-\noindent
-\textbf{Challenge 2: Incongruent Sub-Problems Impede Reuse}
+\subsection*{Challenge 2: Incongruent Sub-Problems Impede Reuse}
 
 \begin{figure*}[t]
    \centering
@@ -280,9 +276,7 @@ it's essential that planning approaches
 find a way to reuse computation effectively
 between inconguent sub-problems.
 
-\vspace{0.1in}
-\noindent
-\textbf{Challenge 3: Coupled Steps Require Long-Horizon Plans}
+\subsection*{Challenge 3: Coupled Steps Require Long-Horizon Plans}
 
 \begin{figure}[t]
    \centering
@@ -326,7 +320,7 @@ a customary planning request takes an \emph{any-to-any} form
 Clearly, without coordination,
 the juxtaposed solution paths will not be continuous.
 
-\subsection*{Key Insights to Our Approach}
+\section*{Key Insights to Our Approach}
 
 While these three challenges make efficient
 manipulation task planning a difficult problem,
@@ -377,9 +371,7 @@ Chapter~\ref{chap:proposal-framework}.
    \label{table:intro-algorithms}
 \end{table*}
 
-\vspace{0.1in}
-\noindent
-\textbf{Insight 1: Minimize Ensemble Effort on Explicit Graphs}
+\subsection*{Insight 1: Minimize Ensemble Effort on Explicit Graphs}
 
 Because the tradeoff between planning and execution effort
 is so important for manipulation tasks,
@@ -450,9 +442,7 @@ single-query motion planners for several manipulation tasks.
 %\end{widepage}
 %\end{figure}
 
-\vspace{0.1in}
-\noindent
-\textbf{Insight 2: Identifying and Exploiting Multi-Set
+\subsection*{Insight 2: Identifying and Exploiting Multi-Set
    Structure}
 
 In order to address the important issue of planning computation
@@ -480,9 +470,7 @@ the Multi-Set PRM,
 uses propositional logic to represent the multi-set structure
 algorithmically.
 
-\vspace{0.1in}
-\noindent
-\textbf{Insight 3: Comprehensive Sub-Problem Planning}
+\subsection*{Insight 3: Comprehensive Sub-Problem Planning}
 
 Our last insight addresses how to efficiently decompose a coupled
 multi-step manipulation task into individual sub-problems.
@@ -509,7 +497,7 @@ It then performs root sampling within each interface manifold
 and uses the CMR objective for each query to
 efficiently search for a full task plan.
 
-\subsection*{Evaluation}
+\section*{Evaluation}
 
 Because this thesis presents an integrated set of algorithms
 for multi-step manipulation task planning,
@@ -518,54 +506,53 @@ in order to verify the performance of the proposed approach.
 See research question \ref{ques:proteus-compare} for more details
 about the metrics, baseline approaches, and test platforms
 that will be used in these comparisons.
-\cdnote{I welcome suggestions from my committee for
-appropriate baseline approaches.}
+\marginnote{\cdnote{I welcome suggestions from my committee for
+appropriate baseline approaches.}}
 
 I refer the reader to Chapter~\ref{chap:proposed} for a summary
 of the particular research questions that I propose to answer.
 Chief among these questions are the effects of the insights above
 on task performance as borne out by these experiments:
 \begin{itemize}
+\itemsep-3pt
 \item The effect of the E$^8$ algorithm's planning vs. execution
    effort tradeoff parameter ($\lambda$)
-   when compared to baseline weighted and anytime approaches
+   compared to weighted/anytime approaches.
 \item The effect of the E$^8$-PRM's batching strategy on its efficacy
-   as a single-query planner in high-dimensional motion planning
-   problems
+   as a single-query planner in high-dimensional planning
+   problems.
 \item The performance of the Multi-Set PRM on problems with various
    amounts of shared structure
-   (from fully fixed to fully random environments)
-\item The performance of the Proteus task planner
-   compared to other baseline planners that address multi-step tasks
+   (from fully fixed to fully random environments).
+\item The performance of the {\sc Proteus} task planner
+   compared to other baseline planners that address multi-step tasks.
 \end{itemize}
-Along with research questions,
-Chapter~\ref{chap:proposed} also contains
-a summary and timeline of proposed work.
 
-\subsection*{Summary of Contributions}
+\section*{Summary of Contributions}
 
 In summary,
-we propose the following contributions:
+I propose the following contributions:
 \begin{itemize}
+\itemsep-3pt
 \item A set of insights into the structure of the
    multi-step manipulation planning problem,
    including the multi-set and comprehensive multi-root (CMR)
    formulations.
 \item The E$^8$ graph search algorithm which explicitly minimizes
    both planning and execution effort over explicit graphs.
-\item The E$^8$-PRM, an application of E$^8$ to roadmaps in
-   configuration space.
+\item The E$^8$-PRM, an application of E$^8$ to
+   $\mathcal{C}$-space roadmaps.
 \item The Multi-Set PRM, an instantiation of the E$^8$-PRM
    using the multi-set formulation as a planning effort model.
 \item The {\sc Proteus} task planner,
    a sequencing planner which submits queries across steps
    to an instance of the Multi-Set PRM using the CMR objective.
 \item The {\tt ompl\_multi\_set\_prm} package
-   for the OMPL\cite{sucan2012ompl} sampling-based planning framework
+   for the OMPL\citep{sucan2012ompl} sampling-based planning framework
    containing implementations of the E$^8$-PRM and Multi-Set PRM
    algorithms.
 \item The {\tt or\_proteus} package for the
-   OpenRAVE\cite{diankov2010openrave} simulation framework
+   OpenRAVE\citep{diankov2010openrave} simulation framework
    which implements the {\sc Proteus} task planner.
 \item An experimental evaluation of the above algorithms against
    state-of-the-art baseline approaches.

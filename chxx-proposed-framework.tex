@@ -79,7 +79,7 @@ and also allows separate planners with different capabilities
 (e.g. constrained planners)
 to be used for each step.
 
-\textbf{Outline.}
+\paragraph{Outline.}
 Loosely, the sections in this chapter are layed out as follows.
 Sections~\ref{chap:e8} and~\ref{chap:graphs-in-continuous}
 describe our approach to planning \emph{within} each step,
@@ -104,10 +104,10 @@ it must be able to quickly solve planning queries.
 In this section,
 we discuss formulating
 the motion planning problem as best-first graph search over paths
-and propose a search algorithm on explicit graphs.
+and propose an algorithm on explicit graphs.
 Our approach is motivated by two insights.
 
-\textbf{Explicit Optimization of Ensemble Effort.}
+\paragraph{Explicit Optimization of Ensemble Effort.}
 This section reference two different types of efficiency
 with regard to robotic tasks.
 First, once a planner has computed a solution path or trajectory,
@@ -117,7 +117,7 @@ Second, there is the cost incurred from actually computing the solution
 itself.
 We propose to optimize for both types of effort explicitly.
 
-\textbf{Explicit Graph Representation.}
+\paragraph{Explicit Graph Representation.}
 We contend that representing graphs explicitly
 is better suited to search over roadmap graphs
 for two reasons.
@@ -168,17 +168,19 @@ because we are focused primarily on explicit graphs.
 \noindent
 This formulation admits two choices:
 
-\textbf{Cost Function $f(\pi)$.}
+\paragraph{Cost Function $f(\pi)$.}
 What is the cost function $f(\pi)$ over paths used to select the
 path for evaluation at each iteration?
-For now, we will use the following path objective:
+Traditional graph search uses the following path objective:
 \begin{equation}
    f(\pi) = \hat{f}_x(\pi): \mbox{\emph{optimistic estimate of execution effort}}.
 \end{equation}
 In other worts, $\hat{f}_x(\pi)$
 gives a lower bound on the cost of executing
-path $\pi$.
-If the path consists of a mix of evaluated and unevaluated edges,
+path $\pi$
+given the algorith's current knowledge of the graph.
+In our case,
+if the path consists of a mix of evaluated and unevaluated edges,
 we could write this as:
 \begin{equation}
    \hat{f}_x(\pi) = \sum_{e \in \pi} \left\{
@@ -187,13 +189,16 @@ we could write this as:
       \hat{x}(e) & \mbox{otherwise} \\
    \end{array}
    \right.
-   .
+   ,
    \label{eqn:execution-cost-objective}
 \end{equation}
+with $\hat{x}(e)$ an admissible estimate of the edge's execution effort.
 
-\textbf{Evaluation Procedure $\mbox{\sc EvalPath}(\pi)$}.
+\paragraph{Evaluation Procedure $\mbox{\sc EvalPath}(\pi)$}.
 How is a potential path evaluated?
+We discuss this later in this section.
 
+\vspace{0.1in}
 The choice of these two components of the algorithm
 intimately depend on the graph representation.
 For appropriate selection
@@ -218,14 +223,14 @@ Consider the following path objective:
 For problems over large graphs,
 planning effort may be dominated by discovering vertex successors
 or maintaining a sorted vertex open list.
-\marginnote{Traditional metrics for evaluating planning
+\marginnote{Traditional metrics for planning
 effort include \emph{vertiex expansions}
-and \emph{heap percolates}.}.
-However, for many manipulation problems,
-search time is instead dominated by \emph{edge evaluations}.
+and \emph{heap percolates}.}
+However, in many manipulation problems,
+planning effort is instead dominated by \emph{edge evaluations}.
 Therefore, our objective $\hat{f}_p$
 penalizes remaining effort required to evaluate edges
-along a potential path:
+along a path:
 \begin{equation}
    \hat{f}_p(\pi) = \sum_{e \in \pi} \left\{
    \begin{array}{cl}
@@ -269,7 +274,7 @@ we recover our old solution cost objective $\hat{f}_x(\pi)$.
 %Note that this objective is used in an optimistic, greedy fashion at each
 %iteration of best-first search.
 Represented over edges,
-this can then be written:
+we can write:
 \begin{equation}
    f(\pi) = \sum_{e \in \pi} \left\{
    \begin{array}{cl}
@@ -280,28 +285,28 @@ this can then be written:
    .
    \label{eqn:general-objective-explicit}
 \end{equation}
-
 We represent a particular choice of $\hat{p}(e)$
 and $\hat{x}(e)$,
 along with the evaluation function $x(e)$,
 as an \emph{ensemble effort model}
 denoted with $\mathcal{M}$:
+\marginnote{For examples of ensemble effort models,
+see Section~\ref{subsec:ensemble-effort-models}.}
 \begin{equation}
    \mathcal{M} : (x, \hat{x}, \hat{p})
 \end{equation}
 
-\vspace{0.1in}
-\noindent
-\textbf{Simplification with Propotional Heuristics}
+\paragraph{Simplification with Propotional Heuristics.}
 
 Suppose that our heuristic for planning effort
 were proportional to that for execution effort,
 \begin{equation}
    \hat{p}(e) = \alpha \, \hat{x}(e) .
 \end{equation}
+\marginnote{%
 This might happen if, for example, each were proportional to the edge's
 \emph{distance} (with longer paths taking longer to both collision check
-and execute at constant velocity).
+and execute at constant velocity).}%
 In this case, we can write:
 \begin{equation}
    f(\pi) = (1-\lambda) \sum_{e \in \pi} \left\{
@@ -313,12 +318,12 @@ In this case, we can write:
    .
    \label{eqn:prop-heuristics}
 \end{equation}
-
-Consider the case where we're using forward vertex or edge evaluations
+Further,
+if we use an \textsc{EvalPath}() function which forward-evaluates
+vertices or edges
 (as is required with implicit graph representations),
-and $\lambda < 1$.
-In this case, we can rewrite (\ref{eqn:prop-heuristics})
-simply as:
+and $\lambda < 1$,
+we can rewrite (\ref{eqn:prop-heuristics}) as:
 \begin{equation}
    f(\pi) \propto
    \underbrace{\sum_{e \; \mbox{\scriptsize evaled}} x[e]}_{g[v_f]}
@@ -454,15 +459,14 @@ more expensive than we had anticipated
 (line~\ref{line:exec-cost-check}),
 we break and select a new path.
 
-The E$^8$ algorithm admits a number of choices
-which we discuss in the remainder of this section.
+The E$^8$ algorithm admits a number of choices.
 
-\textbf{Choosing $\lambda$.}
+\paragraph{Choosing $\lambda$.}
 The choice of the $\lambda$ parameter
 affects the algorithm's tradeoff between planning and execution effort.
 \marginnote{See research question \ref{ques:choosing-lambda}.}
 
-\textbf{Finding the Optimistic-Optimal Path}.
+\paragraph{Finding the Optimistic-Optimal Path.}
 The current implementation of E$^8$ uses
 bidirectional Dijkstra's algorithm
 (line~\ref{line:e8-select-optimistic-path})
@@ -475,7 +479,7 @@ graph search algorithms (e.g. \citep{koenig2004lpastar})
 to improve search efficiency.
 \marginnote{See research question \ref{ques:incremental-search}.}
 
-\textbf{Selecting the Edge Evaluation Order.}
+\paragraph{Selecting the Edge Evaluation Order.}
 \label{subsec:alg-path-evaluation}
 Once a candidate path is selected,
 its constituent unevaluated edges are evaluted
@@ -522,7 +526,7 @@ The E$^8$ algorithm
 is therefore equivalent to a simplified version of the E-Graph algorithm
 with $\epsilon=1$ and $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda}$,
 with the exception that all evaluated edges are placed in the graph,
-not just the edges on the solution path.
+not just the edges on previous solution paths.
 Note that E-graph shortcuts
 are not necessary for small explicit graphs.
 
@@ -609,16 +613,196 @@ Also,
 since it can be computed offline,
 you can sparsify it \citep{shaharabani2013sparsification}.
 
+\subsection{Continuous-Space Problem Formulation}
+\label{subsec:single-set-formulation}
+
+Consider a planning problem in a configuration space $\mathcal{C}$
+between start and goal configurations
+within a collision-free subset
+$\mathcal{C}_{\ms{free}} \subseteq \mathcal{C}$.
+A continuous feasible solution path $q(t)$ must then satisfy
+\begin{equation}
+  \begin{array}{c}
+  q(t) \in \mathcal{C}_{\ms{free}} \;\forall\; t \in [0,1] \\
+  q(0) = q_{start},\; q(1) = q_{goal} . \\
+  \end{array}
+  \label{eqn:solution}
+\end{equation}
+Eqn. (\ref{eqn:solution})
+specify single configurations
+$q_{start}$ and $q_{goal}$,
+but the formulation is trivially extended to start/goal sets.
+
+While simple problems may admit explicit representations of
+$\mathcal{C}_{\ms{free}}$,
+recent approaches to complex problems
+(e.g. sampling-based planners)
+instead reason implicitly via test function(s).%
+\cite{lavalle2006planningbook}
+To capture this,
+we endow $\mathcal{C}_{\ms{free}}$ with an
+\emph{indicator function} $\mathbf{1}_{\ms{free}}(q)$:
+\begin{equation}
+  \mathbf{1}_{\ms{free}}(q) =
+    \left\{ \begin{array}{ll}
+      \mbox{True} & \mbox{if } q \in \mathcal{C}_{\ms{free}} \\
+      \mbox{False} & \mbox{otherwise}.
+    \end{array} \right.
+  \label{eqn:indicator-function}
+\end{equation}
+The set itself can equivalently be defined w.r.t. its indicator:
+\begin{equation}
+  \mathcal{C}_{\ms{free}} =
+  \{ q \in \mathcal{C} \;|\; \mathbf{1}_{\ms{free}}(q) = \mbox{True} \} .
+\end{equation}
+Common examples of such indicators
+(\ref{eqn:indicator-function})
+include validity checkers for
+geometric (workspace) collision,
+stability, and visibility constraints.
+Note that for complex problems,
+evaluation of these indicators 
+tends to dominate planning effort.
+
+Excusing the abuse of notation,
+we define an analogous indicator functional
+$\mathbf{1}_{\ms{free}}[\cdot]$
+which operates on path segments $q(t)$.
+We use parentheses for functions and brackets for functionals.
+\begin{equation}
+  \mathbf{1}_{\ms{free}}[q(t)] =
+    \left\{ \begin{array}{ll}
+      \mbox{True} & \mbox{if } q(t) \in \mathcal{C}_{\ms{free}}
+         \;\forall\; t \in [0,1] \\
+      \mbox{False} & \mbox{otherwise}.
+    \end{array} \right.
+  \label{eqn:single-indicator-functional}
+\end{equation}
+A common way to approximate this functional is to call the subset's
+corresponding indicator function ${\bf 1}_{\ms{free}}(q)$
+(e.g. a collision check) at some fixed resolution.
+
+\subsection{Ensemble Effort Models}
+\label{subsec:ensemble-effort-models}
+
+The E$^8$ algorithm requires an ensemble effort model
+$\mathcal{M}$ over graph edges.
+Note that these models can be simply added element-wise.
+
+\begin{genericfloat}
+   {%
+   \floatname{algorithm}{Alg.}% shorter captions
+   \algrenewcommand\textproc{}% no smallcaps for procedures
+   \begin{minipage}[t]{0.49\linewidth}%
+      \vspace{-0.17in}%
+      \begin{algorithm}[H]
+         \caption{Set Validity Model
+            $\mathcal{M}_{\ms{valid}}$}
+         \label{alg:single-set-effort-model}
+         \begin{algorithmic}[1]
+         \Function {$x_{\ms{valid}}$}{$e, \mathcal{C}_{\ms{free}}$}
+            \If {${\bf 1}_{\ms{free}}[q_e(t)]$}
+               \State \Return $0$
+            \Else
+               \State \Return $\infty$
+            \EndIf
+         \EndFunction
+         \Function {$\hat{x}_{\ms{valid}}$}{$e, \mathcal{C}_{\ms{free}}$}
+            \State \Return $0$
+         \EndFunction
+         \Function {$\hat{p}_{\ms{valid}}$}{$e, \mathcal{C}_{\ms{free}}$}
+            \State \Return $\hat{p}_{\ms{free}}[q_e(t)]$
+         \EndFunction
+         \end{algorithmic}
+      \end{algorithm}
+   \end{minipage}%
+   \hspace{0.02\linewidth}%
+   \begin{minipage}[t]{0.49\linewidth}%
+      \vspace{-0.17in}%
+      \begin{algorithm}[H]
+         \caption{Distance Model
+            $\mathcal{M}_{\ms{dist}}$}
+         \label{alg:dist-effort-model}
+         \begin{algorithmic}[1]
+         \Function {$x_{\ms{valid}}$}{$e$}
+            \State \Return $|| q_e(1) - q_e(0) ||$
+         \EndFunction
+         \Function {$\hat{x}_{\ms{valid}}$}{$e$}
+            \State \Return $|| q_e(1) - q_e(0) ||$
+         \EndFunction
+         \Function {$\hat{p}_{\ms{valid}}$}{$e$}
+            \State \Return $0$
+         \EndFunction
+         \end{algorithmic}
+      \end{algorithm}
+   \end{minipage}%
+   }%
+\end{genericfloat}
+
+\paragraph{Models of Planning Effort.}
+Suppose we also have an estimate $\hat{p}_{\ms{free}}[q(t)]$
+of the effort required to evaluate the indicator functional
+(\ref{eqn:single-indicator-functional}),
+for example proportional to the number of collision checks required.
+The simplest way to capture subset membership of an edge $e$
+during the search
+is to map the indicator and its planning effort estimate
+to real-valued costs as described in
+$\mathcal{M}_{\ms{valid}}$
+(Algorithm~\ref{alg:single-set-effort-model}).
+Here, invalid edges imply infinite execution effort.
+
+\paragraph{Models of Execution Effort.}
+The simplest model might simply compute Euclidean distances between
+vertices
+($\mathcal{M}_{\ms{dist}}$,
+Algorithm~\ref{alg:dist-effort-model}),
+although other models are possible
+(see Table~\ref{table:exec-cost-models}).
+When posed as a traditional graph search problem,
+E$^8$ requires an additive effort models --
+the cost of a path is the sum of the costs of its consituent edges.
+However,
+for many problems it may be advantageous to consider
+non-additive models (e.g. total smoothed time),
+especially for execution costs for fast motions.
+Note that non-additive models
+render the path search problem more difficult.
+
+\begin{margintable}
+   \centering
+   \begin{tabular}{lc}
+      \toprule
+      Model & Additive? \\
+      \midrule
+      Path Length & Yes \\
+      Bounded-Vel-Acc \citep{hauser2010smoothing} & Yes \\
+      Smoothed & No \\
+      \bottomrule
+   \end{tabular}
+   \vspace{0.1in}
+   \caption{Execution cost models.
+      Additive models admit efficient graph search methods
+      when choosing optimistic paths for evaluation.}
+   \label{table:exec-cost-models}
+\end{margintable}
+
 \subsection{The E$^8$-PRM with Hard Batching}
 
 \begin{algorithm}
 \caption{E$^8$-PRM Planner with Hard Batching}
 \label{alg:e8-prm-hard}
 \begin{algorithmic}[1]
-\Procedure {E$^8$-PRM}{$
+\State $G \leftarrow \mbox{empty graph}$
+\State $\mathcal{M} \leftarrow
+   \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})
+   + \mathcal{M}_{\ms{exec}}$
+\Procedure {E$^8$-PRM}{$G,
    V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
    N, \mathcal{M}, \lambda$}
-\State $G \leftarrow \mbox{empty graph}$
+%\State $\mathcal{M}_{\ms{both}} \leftarrow
+%   \mathcal{M}_{\ms{exec}}
+%   + \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$
 %\State $G.E \leftarrow \emptyset$
 \Loop
    \State \textsc{PrmAddSamples}($G,
@@ -627,7 +811,7 @@ you can sparsify it \citep{shaharabani2013sparsification}.
    \State $\pi^* \leftarrow \mbox{E}^8(G,
       V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
       \mathcal{M}, \lambda)$
-      \Comment See Algorithm~\ref{alg:e8}.
+      \Comment See Algorithm~\ref{alg:e8}
    \If {$\hat{x}(\pi^*) < \infty$}
       \Comment $\hat{x}(\cdot)$ from cost model $\mathcal{M}$
       \State \Return $\pi^*$
@@ -662,11 +846,13 @@ Figure~\ref{fig:bean} shows solution paths for a simple
 \begin{figure}
    \centering
    \subfloat[Paths with $\lambda = 0$]{
-      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-00.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/timegreedy-bean-lambda-00.png}
    }
    \,
    \subfloat[Paths with $\lambda = 1$]{
-      \includegraphics[width=0.45\textwidth]{figs/timegreedy-bean-lambda-10.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/timegreedy-bean-lambda-10.png}
    }
    \caption{Examples of paths for a 2d problems
       for different values of $\lambda$.
@@ -677,22 +863,13 @@ Figure~\ref{fig:bean} shows solution paths for a simple
 
 \subsection{Optimization in Expectation}
 
-What graph are we searching over?
-If it's too sparse, we'll stop after knowing that no solution exists.
-If it's too dense, we'll spend too much time filling in parts of
-space.
-There's actually some spatial relationship in
-$\mathcal{C}_{\mbox{\scriptsize free}}$ that we're not
-modeling.
-We get around this with artificial sparseness.
-There's definitely a paper's worth of work here too (Shushman's stuff).
-The easy version is with sequential batches of size $N$.
-Talk about how what we really want to do
-is evaluate the estimate of cost remaining
-\emph{in expectation}.
-Relate to GPs for classification\cite{rasmussen2006gpml}.
+The purpose of the incremental graph densification strategy
+achieved by hard batching (Algorithm \ref{alg:e8-prm-hard})
+is to account for spatial correlation
+in $\mathcal{C}_{\mbox{\scriptsize free}}$.
+We would like to motivate this more formally.
 
-We propose to extend the E$^8$ search algorithm
+We propose to extend the E$^8$-PRM planner
 to minimize ensemble effort \emph{in expection}
 using a probabalistic model of $\mathcal{C}_{\mbox{\scriptsize free}}$.
 Even if this is too expensive,
@@ -719,107 +896,6 @@ we can actually implement more complex path tests,
 such as the whole-path bisection test used in the
 Lazy PRM.
 \marginnote{See research question \ref{ques:evalpath}.}
-
-\subsection{Ensemble Effort Models}
-
-The E$^8$ algorithm requires an ensemble effort model
-$\mathcal{M}$.
-We discuss simple implementations that are useful
-for the single-query E$^8$-PRM.
-\cdnote{I should talk about how such models can be added.}
-
-\begin{genericfloat}
-   {%
-   \floatname{algorithm}{Alg.}% shorter captions
-   \algrenewcommand\textproc{}% no smallcaps for procedures
-   \begin{minipage}[t]{0.49\linewidth}%
-      \vspace{-0.17in}%
-      \begin{algorithm}[H]
-         \caption{Set Validity Model
-            $\mathcal{M}_{\ms{valid}}$}
-         \label{alg:single-set-effort-model}
-         \begin{algorithmic}[1]
-         \Function {$x_{\ms{valid}}$}{$e, U$}
-            \If {${\bf 1}_U[q_e(t)]$}
-               \State \Return $0$
-            \Else
-               \State \Return $\infty$
-            \EndIf
-         \EndFunction
-         \Function {$\hat{x}_{\ms{valid}}$}{$e, U$}
-            \State \Return $0$
-         \EndFunction
-         \Function {$\hat{p}_{\ms{valid}}$}{$e, U$}
-            \State \Return $\hat{p}_U[q_e(t)]$
-         \EndFunction
-         \end{algorithmic}
-      \end{algorithm}
-   \end{minipage}%
-   \hspace{0.02\linewidth}%
-   \begin{minipage}[t]{0.49\linewidth}%
-      \vspace{-0.17in}%
-      \begin{algorithm}[H]
-         \caption{Distance Model
-            $\mathcal{M}_{\ms{dist}}$}
-         %\label{alg:single-set-effort-model}
-         \begin{algorithmic}[1]
-         \Function {$x_{\ms{valid}}$}{$e$}
-            \State \Return $|| q_e(1) - q_e(0) ||$
-         \EndFunction
-         \Function {$\hat{x}_{\ms{valid}}$}{$e$}
-            \State \Return $|| q_e(1) - q_e(0) ||$
-         \EndFunction
-         \Function {$\hat{p}_{\ms{valid}}$}{$e$}
-            \State \Return $0$
-         \EndFunction
-         \end{algorithmic}
-      \end{algorithm}
-   \end{minipage}%
-   }%
-\end{genericfloat}
-
-\textbf{Planning Cost Models.}
-This is the planner in continuous spaces,
-requires a planning cost model for each edge.
-For single-query planners,
-we typically implement $\hat{p}(e)$ to be
-proportional to the number of collision checks required
-to validate the edge.
-See Algorithm~\ref{alg:single-set-effort-model}.
-
-\textbf{Execution Cost Models.}
-Due to the graph problem representation,
-E$^8$ requires additive effort models.
-Could we relax the additive execution cost constraint?
-We lose the nice efficient LPA*-enabling structure in
-E$^8$ this way,
-but it lets us incorporate a more accurate cost model in some domains,
-especially for execution costs for fast motions (e.g. total time).
-See Table~\ref{table:exec-cost-models} for examples.
-Sidd wants me to play with Hauser's fast bounded-velocity,
-bounded-acceleration segment timing code
-(which starts and stops at each waypoint).
-This may have better performance,
-choosing longer paths with few long edges over
-shorter paths with many short edges.
-
-\begin{margintable}
-   \centering
-   \begin{tabular}{lc}
-      \toprule
-      Model & Additive? \\
-      \midrule
-      Path Length & Yes \\
-      Bounded-Vel-Acc & Yes \\
-      Smoothed & No \\
-      \bottomrule
-   \end{tabular}
-   \vspace{0.1in}
-   \caption{Execution cost models.
-      Additive models admit efficient graph search methods
-      when choosing optimistic paths for evaluation.}
-   \label{table:exec-cost-models}
-\end{margintable}
 
 \subsection{Experimental Evaluation of the E$^8$-PRM}
 \label{subsec:single-query-results}
@@ -895,7 +971,7 @@ sections.
 
 See Figure~\ref{fig:compare-2d-rrtc1-vis}
 %and \ref{fig:herb-comparison-cdfs}
-for initial results from some preliminary experiments.
+for results on a simple 2D problem.
 
 \clearpage
 \section{The Multi-Set Planning Problem}
@@ -942,7 +1018,7 @@ in fact special instances of a more general structure,
 which we formulate as the \emph{multi-set planning problem}.
 
 \subsection{Multi-Set Problem Formulation}
-\label{sec:multi-set}
+\label{sec:multi-set-formulation}
 
 \begin{figure*}
    \begin{widepage}
@@ -1045,14 +1121,14 @@ which we formulate as the \emph{multi-set planning problem}.
 
 \end{figure*}
 
-Here we define the multi-set planning problem,
+The multi-set planning problem is
 a generalization of both the movers' problem
 and the multi-query planning problem%
 \cite{kavrakietal1996prm}.
 The reader is referred to
 Fig.~\ref{fig:multi-set}
 for a general example,
-as well as a simple instantiation in a 2D manipulation task.
+as well as a simple instantiation on a 2D manipulation task.
 %which is discussed in more detail in
 %Section~\ref{subsec:multi-prm-example}.
 The multi-set problem formulation
@@ -1074,13 +1150,25 @@ Like $\mathcal{C}_{\mbox{\scriptsize free}}$,
 each member of $\mathcal{S}$
 is a subset of the common configuration space
 (that is,
-$X \subseteq \mathcal{C} \;\forall\; X \in \mathcal{S}$).
+$X \subseteq \mathcal{C} \;\forall\; X \in \mathcal{S}$),
+and each subset $X$ has its own indicator and planning estimator
+${\bf 1}_X[\cdot]$ and $\hat{p}_X(\cdot)$
+as in Section~\ref{subsec:single-set-formulation}.
 For example,
 in Fig.~\ref{fig:multi-set}\subref{subfig:figstar-manip-spaces},
 $\mathcal{C}$-subset $B$
 consists of configurations
 free of collision between the robot and
 the initial object pose.
+
+The problem supports an arbitrary number of queries $\mathcal{U}$.
+Each query $u$ demands a solution path through a \emph{single}
+$\mathcal{C}$-subset $U \in \mathcal{S}$
+(see Fig~\ref{fig:query-to-subset}):
+\begin{equation}
+  u : ( q_{start},\; q_{goal},\; U ) .
+  \label{eqn:q}
+\end{equation}
 
 \begin{marginfigure}
    \centering
@@ -1097,69 +1185,6 @@ the initial object pose.
      each multi-set query references one of a number of such sets.}
    \label{fig:query-to-subset}
 \end{marginfigure}
-
-The problem supports an arbitrary number of queries $\mathcal{U}$.
-Each query $u$ references a \emph{single}
-$\mathcal{C}$-subset $U \in \mathcal{S}$
-(see Fig~\ref{fig:query-to-subset}):
-\begin{equation}
-  u : ( q_{start},\; q_{goal},\; U ) .
-  \label{eqn:q}
-\end{equation}
-A continuous feasible solution path $q(t)$ must then satisfy
-\begin{equation}
-  \begin{array}{c}
-  q(t) \in U \;\forall\; t \in [0,1] \\
-  q(0) = q_{start},\; q(1) = q_{goal} . \\
-  \end{array}
-  \label{eqn:solution}
-\end{equation}
-Eqns. (\ref{eqn:q}), (\ref{eqn:solution})
-specify single configurations
-$q_{start}$ and $q_{goal}$,
-but the formulation is trivially extended to start/goal sets.
-
-While simple problems may admit explicit representations of
-subsets of $\mathcal{C}$,
-recent approaches to complex problems
-(e.g. sampling-based planners)
-instead reason implicitly via test function(s)
-\citep{lavalle2006planningbook}.
-To capture this,
-we endow each $\mathcal{C}$-subset $X \in \mathcal{S}$ with an
-\emph{indicator function} $\mathbf{1}_X(q)$:
-\begin{equation}
-  \mathbf{1}_X(q) =
-    \left\{ \begin{array}{ll}
-      \mbox{True} & \mbox{if } q \in X \\
-      \mbox{False} & \mbox{otherwise}.
-    \end{array} \right.
-  \label{eqn:indicator-function}
-\end{equation}
-Equivalently, the set itself can be defined w.r.t. its indicator:
-\begin{equation}
-  X = \{ q \in \mathcal{C} \;|\; \mathbf{1}_X(q) = \mbox{True} \} .
-\end{equation}
-Excusing the abuse of notation,
-we define an analogous indicator functional $\mathbf{1}_X[\cdot]$
-which operates on path segments $q(t)$.
-We use parentheses for functions and brackets for functionals.
-\begin{equation}
-  \mathbf{1}_X[q(t)] =
-    \left\{ \begin{array}{ll}
-      \mbox{True} & \mbox{if } q(t) \in X \;\forall\; t \in [0,1] \\
-      \mbox{False} & \mbox{otherwise}.
-    \end{array} \right.
-  \label{eqn:indicator-functional}
-\end{equation}
-Common examples of such indicators
-(\ref{eqn:indicator-function}) or (\ref{eqn:indicator-functional})
-include validity checkers for
-geometric (workspace) collision,
-stability, and visibility constraints.
-Note that for complex problems,
-evaluation of these indicators 
-tends to dominate planning effort.
 
 \begin{marginfigure}
    \centering
@@ -1207,7 +1232,7 @@ a set of queries $\mathcal{U}$,
 and a list of subset relations $\mathcal{R}$)
 comprise a multi-set planning problem.
 
-\textbf{Example Problem.}
+\paragraph{Example Problem.}
 Consider the diagram from Fig.~\ref{fig:multi-set}.
 $\mathcal{S}$ consists of five $\mathcal{C}$-subsets labeled
 $A$, $B$, $C$, $X_{12}$, and $X_{23}$,
@@ -1261,7 +1286,8 @@ in manipulation tasks.
 
 \vspace{0.1in}
 \noindent
-\textbf{Dynamic Environments}
+%\textbf{Dynamic Environments}
+\paragraph{Dynamic Environments.}
 \label{subsec:dynamic-environments}
 
 \begin{figure}
@@ -1350,9 +1376,7 @@ Special case of this is if objects are disappearing.
 Relation to occupancy grid representations of workspace
 (for deltas, conservative approxs, etc).}
 
-\vspace{0.1in}
-\noindent
-\textbf{Grasped Objects}
+\paragraph{Grasped Objects}
 \label{subsec:grasped-objects}
 
 One instance specific to manipulation problems is the handling of
@@ -1403,9 +1427,7 @@ are included together in the experimental results
    \label{fig:self-collision-example}
 \end{marginfigure}
 
-\vspace{0.1in}
-\noindent
-\textbf{Cached Self-Collision-Checked Roadmaps}
+\paragraph{Cached Self-Collision-Checked Roadmaps}
 \label{subsec:cached-self-valid}
 
 Self-collision checking is a potentially expensive component to
@@ -1424,7 +1446,7 @@ As a type of invariant in $\mathcal{C}$,
 this can be seen as a particular instance of multi-set planning.
 See Fig.~\ref{fig:self-collision-example}.
 
-\begin{figure*}[t]
+\begin{figure*}[b]
    \centering
    
    \subfloat[
@@ -1451,7 +1473,7 @@ See Fig.~\ref{fig:self-collision-example}.
       \includegraphics{build/broadphase-multi}%
    }
    
-   \caption[][0.2in]{Collision validity checking is a commonly used
+   \caption[][0.0in]{Collision validity checking is a commonly used
      indicator function.
      The multi-set formulation allows an intelligent planner to
      reach inside the checker's ``black box'' and reduce the number
@@ -1461,9 +1483,7 @@ See Fig.~\ref{fig:self-collision-example}.
    \label{fig:broad-phase}
 \end{figure*}
 
-\vspace{0.1in}
-\noindent
-\textbf{Integration with Broad-Phase Collision Checking}
+\paragraph{Integration with Broad-Phase Collision Checking}
 \label{subsec:broad-phase}
 
 The multi-set formulation also enables motion planners to
@@ -1506,111 +1526,102 @@ and Fig~\ref{fig:broad-phase-2d}).
 %Investigate this multi-set structure.
 
 
-
 \clearpage
-\section{Multi-Set as a Planning Cost Model for Roadmap Planners}
+\section{Multi-Set as an Effort Model for Roadmap Planners}
 \label{chap:multi-set-prm}
 
-Our second key insight
-is to apply the principle of best-first search over roadmaps
-using an objective which explicitly considers both planning and
-execution costs.
-The result is the Multi-Set PRM.
-This approach allows the planner to exploit the multi-set structure
-inherent in these problems.
+This section lays out how to leverage the multi-set formulation
+as a planning effort model
+for use in the E$^8$-PRM.
+The resulting algorithm,
+the Multi-Set PRM,
+exploits the multi-set structure inherent in manipulation problems
+by efficiently reuses planning computation between related queries.
 
 \subsection{The Multi-Set PRM}
 
-\cdnote{I must explain how this works here.}
+The Multi-Set PRM (Algorithm~\ref{alg:multi-set-prm}) is a simple
+extension of the \mbox{E$^8$-PRM}
+(Section~\ref{chap:graphs-in-continuous}).
+They key differences are that
+(a) it reasons about $\mathcal{C}$-subsets
+using logical propositions,
+and (b) it uses a multi-set ensemble effort model
+$\mathcal{M}_{\ms{multi}}$ to capture relations
+between these subsets.
 
 \begin{algorithm}
-\caption{Multi-Set PRM Planner with Hard Batching}
-\label{alg:multi-set-prm-hard}
+\caption{Multi-Set PRM Planner}
+\label{alg:multi-set-prm}
 \begin{algorithmic}[1]
-\Procedure {MultiSetPRM}{$G,
-   V_{\ms{start}}, V_{\ms{goal}},
-   N, \lambda$}
-%\State $G \leftarrow \mbox{empty graph}$
+\State $G \leftarrow \mbox{empty graph}$
 \State $P_{\ms{global}} \leftarrow
    \mbox{global propositions from\;} \mathcal{R}$
-%\State $\mathcal{M} \leftarrow
-%   \left\{ \, {\hat p}_{Xu}(\cdot), \, {\hat x}(\cdot) \, \right\}$
-\Loop
-   \State \textsc{PrmAddSamples}($G,
+\Procedure {MultiSetPRM}{$G,
+   V_{\ms{start}}, V_{\ms{goal}},
+   U, N, \lambda$}
+\State $\mathcal{M} \leftarrow
+   \mathcal{M}_{\ms{valid}}(U)
+   + \mathcal{M}_{\ms{exec}}$
+\State \Return $\mbox{E}^8\mbox{-PRM}(G,
       V_{\ms{start}}, V_{\ms{goal}},
-      N$)
-   \State $\pi^* \leftarrow \mbox{E}^8(G,
-      V_{\ms{start}}, V_{\ms{goal}},
-      \mathcal{M}, \lambda)$
-      \Comment See Algorithm~\ref{alg:e8}.
-   \If {$\hat{x}(\pi^*) < \infty$}
-      \Comment $\hat{x}(\cdot)$ from cost model $\mathcal{M}$
-      \State \Return $\pi^*$
-   \EndIf
-\EndLoop
+      \mathcal{M}, N, \lambda)$
+      \Comment See Algorithm~\ref{alg:e8-prm-hard}.
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{An Ensemble Effort Model for Multi-Set Problems}
-\label{subsec:cost-model}
+\paragraph{Set Relations as Logical Propositions.}
+The planner represents the list of set relations $\mathcal{R}$
+(Section~\ref{chap:multi-set})
+specified in the multi-set problem formulation
+as a set of \emph{logical propositions} $P_{\ms{global}}$
+which are considered globally applicable.
+For example,
+the proposition $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
+follows from the relation $A \subseteq B$
+(see Fig.~\ref{fig:relations}).
+In addition,
+each edge $e$ in the roadmap $G$ is augmented with an initially empty
+set $e.P$ containing all additional edge-specific propositions
+known to be true as a result of any indicator functions evaluated
+over that edge.
+For example,
+if planner evaluated the indicator $\mathbf{1}_B[e]$
+and it returned False,
+the proposition $\lnot\mathbf{1}_B$ would be added to $e.P$.
+Together, such sets of propositions can be used as \emph{premises}
+as part of an \emph{argument} to demonstrate a \emph{conclusion};
+a logical solver can then be used validate or invalidate the argument.
+For example, an argument with these premises and conclusion
+$\{ (\mathbf{1}_A \Rightarrow \mathbf{1}_B), (\lnot\mathbf{1}_B) \}
+\Rightarrow (\lnot\mathbf{1}_A)$
+can be shown to be valid.
 
-While the indicators
-(\ref{eqn:indicator-function}) and (\ref{eqn:indicator-functional})
-are binary,
-we are often interested not only in solution feasibility,
-but also minimizing a measure of \emph{execution cost}
-on the solution path.
-Furthermore,
-\emph{planning cost} is often also an important consideration.
-Here,
-we define a cost model $\mathcal{M}$
-for multi-set problems
-which allows these costs to be captured.
-
-%\subsubsection*{Execution Cost}
-We capture the expected execution cost of a candidate path
-$q(t)$ in the space of $\mathcal{C}$-space paths $H$
-via a simple functional ${\hat x}[\cdot]$:
-\begin{equation}
-  \hat{x} : H \rightarrow \mathbb{R}_0^+ .
-\end{equation}
-We assume that $\hat{x}[q(t)]$ is known and inexpensive to compute.
-Common metrics include
-execution time (s) or energy (J).
-
-%\subsubsection*{Planning Cost}
-Since indicator evaluation tends to dominate planning costs
-in sampling-based planners,
-we choose to explicitly penalize such evaluations.
-In particular,
-each call to indicator functional $\mathbf{1}_X[\cdot]$
-incurs a cost given by ${\hat p}_X[\cdot]$:
-\begin{equation}
-  {\hat p}_X : H \rightarrow \mathbb{R}_0^+ .
-\end{equation}
-We assume that ${\hat p}_X[\cdot]$ itself is inexpensive to compute.
-Common estimates include expected collision checking time (s)
-or computational energy required (J).
-Often, ${\hat p}_X[q(t)]$ is proportional to both
-the length of the path $q(t)$
-and a fixed estimate of the complexity of $\mathcal{C}$-subset $X$.
-
-Together, the execution cost functional ${\hat x}[\cdot]$
-and the planning cost functionals
-${\hat p}_X[\cdot] \;\forall\; X \in \mathcal{S}$
-comprise the multi-set ensemble effort model $\mathcal{M}$.
-Note that representing all functionals in common units
-(e.g. seconds or Joules) allows a planner
-to effectively trade off between planning and execution cost.
+\paragraph{A Multi-Set Ensemble Effort Model.}
+The key to the Multi-Set PRM is the ensemble effort model
+$\mathcal{M}_{\ms{multi}}$
+(Algorithm~\ref{alg:multi-set-effort-model})
+which allows for evaluation of an edge
+as well as estimates of its planning and execution effort
+in a way that takes advantage of multi-set structure.
+The core of this model is the {\sc MultiOptCert} function
+which takes as input an edge $q_e$,
+a query $\mathcal{C}$-subset $U$,
+and a set of known logical propositions $P_{\ms{known}}$
+for that edge,
+and as output produces an \emph{optimistic validation certificate}
+consisting of subset indicators which if evaluated would
+validate the membership of the edge in $U$ with lowest effort.
 
 \begin{algorithm}
 \caption{Multi-Set Validitiy Effort Model
    $\mathcal{M}_{\ms{multi}}$}
+\label{alg:multi-set-effort-model}
 {\algrenewcommand\textproc{}% Used to be \textsc
 \begin{algorithmic}[1]
 \Function {$x_{\ms{multi}}$}{$e, U$}
-   \State $({\hat p}_{\ms{cert}}, \mathcal{S}_{\ms{cert}}, b_{\ms{cert}})
+   \State $(\mathcal{S}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
       \leftarrow \mbox{\sc MultiOptCert}(q_e, U,
       P_{\ms{global}} \cup e.P_{\ms{eval}})$
    \ForAll {$X \in \mathcal{S}_{\ms{cert}}$}
@@ -1632,7 +1643,7 @@ to effectively trade off between planning and execution cost.
    \State \Return $0$
 \EndFunction
 \Function {$\hat{p}_{\ms{multi}}$}{$e, U$}
-   \State $({\hat p}_{\ms{cert}}, \mathcal{S}_{\ms{cert}}, b_{\ms{cert}})
+   \State $(\mathcal{S}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
       \leftarrow \mbox{\sc MultiOptCert}(q_e, U,
       P_{\ms{global}} \cup e.P_{\ms{eval}})$
    \State \Return ${\hat p}_{\ms{cert}}$
@@ -1641,48 +1652,24 @@ to effectively trade off between planning and execution cost.
 } %textproc
 \end{algorithm}
 
-\subsection{Calculating the Multi-Set Optimistic Certificate}
-\label{subsec:alg-opt-path-cost}
-
-The execution cost component is given by ${\hat x}[q(t)]$
-as defined in the cost model $\mathcal{M}$
-(Section~\ref{subsec:cost-model}).
-The optimistic estimate of the remaining planning cost for the path
-is computed by determining the cost of the optimistic plan for each
-edge using the \textsc{MultiOptCert} function.
-
+\paragraph{Calculating the Multi-Set Optimistic Certificate}
+%The \textsc{MultiOptCert} function (Alg.~\ref{alg:opt-edge-plan})
+%performs the core reasoning which exploits the relations in
+%the multi-set problem.
 The \textsc{MultiOptCert} function (Alg.~\ref{alg:opt-edge-plan})
-performs the core reasoning which exploits the relations in
-the multi-set problem.
-Before discussing its implementation,
-we first briefly discuss the propositional logic approach
-used to reason about the state of each edge.
-
-The planner represents the list of set relations $\mathcal{R}$
-(Section~\ref{chap:multi-set})
-specified in the multi-set problem formulation
-as a set of \emph{logical propositions} $P_{rels}$
-which are considered globally applicable.
-For example,
-the proposition $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
-follows from the relation $A \subseteq B$
-(see Fig.~\ref{fig:relations}).
-In addition,
-each edge $e$ in the roadmap is augmented with an initially empty
-set $e.P$ containing all additional edge-specific propositions
-known to be true as a result of any indicator functions evaluated
-over that edge.
-For example,
-if planner evaluated the indicator $\mathbf{1}_B[e]$
-and it returned False,
-the proposition $\lnot\mathbf{1}_B$ would be added to $e.P$.
-Together, such sets of propositions can be used as \emph{premises}
-as part of an \emph{argument} to demonstrate a \emph{conclusion};
-a logical solver can then be used validate or invalidate the argument.
-For example, an argument with these premises and conclusion
-$\{ (\mathbf{1}_A \Rightarrow \mathbf{1}_B), (\lnot\mathbf{1}_B) \}
-\Rightarrow (\lnot\mathbf{1}_A)$
-can be shown to be valid.
+is tasked with computing
+the optimistically optimal set of indicator evaluations to perform
+for the edge in order to validate its membership in the query
+$\mathcal{C}$-subset $U$.
+The function returns three elements:
+(a) the set of $\mathcal{C}$-subsets
+$\mathcal{S}_{\ms{cert}} \subseteq \mathcal{S}$
+whose indicators are to be evaluated,
+(b) a binary function $b_{\ms{res}}$
+which provides the desired indicator result for each evaluation,
+and (c) the total evaluation cost ${\hat p}_{\ms{cert}}$
+given by the $\hat{p}_X[\cdot]$ functionals
+(Section~\ref{sec:multi-set-formulation}).
 
 \begin{algorithm}
 \caption{Multi-Set Optimistic Certification}
@@ -1709,47 +1696,81 @@ can be shown to be valid.
                \Rightarrow \mathbf{1}_U$ is valid}
             \State $\mathcal{T}_{\ms{imply}} \leftarrow
                \mathcal{T}_{\ms{imply}} \cup
-               \{ ({\hat p}_{\ms{cert}}, \mathcal{S}_{\ms{cert}}, b_{\ms{res}}) \}$
+               \{ (\mathcal{S}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}}) \}$
          \EndIf
       \EndFor
    \EndFor
-   \State \Return $({\hat p}_{\ms{cert}}, \mathcal{S}_{\ms{cert}}, b_{\ms{res}})
+   \State \Return $(\mathcal{S}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}})
       \in \mathcal{T}_{\ms{imply}}$
       with lowest ${\hat p}_{\ms{cert}}$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-The \textsc{MultiOptCert} function (Alg.~\ref{alg:opt-edge-plan})
-is tasked with computing
-the optimistically optimal set of indicator evaluations to perform
-for the edge in order to validate its membership in the query
-$\mathcal{C}$-subset $X_g$.
-The function returns three elements:
-(a) the set of $\mathcal{C}$-subsets $S \subseteq \mathcal{S}$
-whose indicators are to be evaluated,
-(b) a binary function $b$
-which provides the desired indicator result for each evaluation,
-and (c) the total evaluation cost $c$
-given by the cost model $\mathcal{M}$'s $f_X[\cdot]$ functionals
-(Section~\ref{subsec:cost-model}).
-
-The function proceeds by considering all combinations of
-available $\mathcal{C}$-subset indicators $S$ (line~\ref{line:power-set}).
+The function accumulates a set $\mathcal{T}_{\ms{imply}}$ of
+valid certificates which would imply membership in $U$.
+We proceed by considering all combinations of
+available $\mathcal{C}$-subset indicators
+$\mathcal{S}_{\ms{cert}}$ (line~\ref{line:power-set}).
 For each set of evaluations,
-we compute the planning cost $c$ which would be required.
+we compute the planning effort ${\hat p}_{\ms{cert}}$
+which would be required.
 We then consider all possible outcomes for each indicator
-by iterating over all functions $b$ mapping
+by iterating over all functions $b_{\ms{res}}$ mapping
 from $\mathcal{C}$-subset $X$ to binary values
 (line~\ref{line:all-binary-functions}).
-For each potential outcome $b$,
-we form the set of additional propositions $P_{new}$,
-and then use a logic solver to determine whether the aggregate
-premises imply membership in the query $\mathcal{C}$-subset $X_g$.
-If so (and the required cost is the best so far),
-we save and return it.
+For each potential outcome $b_{\ms{res}}$,
+we form the set of additional propositions $P_{\ms{res}}$,
+and then use a propositional logic solver to determine whether
+the aggregate premises imply membership
+in the query $\mathcal{C}$-subset $U$.
+If so, this certificate is added to $\mathcal{T}_{\ms{imply}}$,
+and the lowest-effort certificate is returned.
 
-\subsection{Home Robot Manipulation Task}
+\subsection{Behavior of the Multi-Set PRM}
+
+See Figure~\ref{fig:broad-phase-2d}
+for a simple example with integrated broad-phase collision checking
+as described in Section~\ref{subsec:broad-phase}.
+
+\begin{figure}
+   \centering
+
+   \subfloat[][
+      $\lambda=0$, no broad phase.\\
+      Median planning cost: 6650
+   ]{
+      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-norel.png}
+   }
+   \subfloat[][
+      $\lambda=1$, no broad phase.\\
+     Median planning cost: 4530
+   ]{
+      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-norel.png}
+   }
+   
+   \subfloat[][
+      $\lambda=0$, with broad phase.\\
+      Median planning cost: 2122
+   ]{
+      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-wrel.png}
+   }
+   \subfloat[][
+      $\lambda=1$, with broad phase.\\
+      Median planning cost: 737
+   ]{
+      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-wrel.png}
+   }
+
+   \caption{A simple 2D example of the Multi-Set PRM using
+     a broad-phase check.
+     Checking for collision with the grey box is 10x less expensive
+     than with the actual black obstacle.}
+     %\cdnote{I need to talk about this in the text.}}
+   \label{fig:broad-phase-2d}
+\end{figure}
+
+\subsection{Home Robot Manipulation Task Results}
 \label{subsec:herb-experiment}
 
 \begin{figure*}[t]
@@ -1860,12 +1881,9 @@ sequentially.
 
 We varied
 (a) the planning vs. execution parameter $\lambda$
-(see Section~\ref{subsec:alg-opt-path-cost}), and
+(see Section~\ref{sec:e8-planner}), and
 (b) the subset relations provided to the planner
-as described in Sections
-\ref{subsec:dynamic-environments},
-\ref{subsec:grasped-objects},
-and \ref{subsec:cached-self-valid}.
+as described in Section~\ref{subsec:dynamic-environments}.
 We measured the time required for planning (s)
 and the length of the resulting solution resulting path (rad)
 for each step of the task.
@@ -1907,50 +1925,6 @@ by the algorithm are a function only of their (constant) lengths.
 %   \end{itemize}
 %\item run optimizer on paths occasionally and/or before executing
 %\end{itemize}
-
-
-\subsection{Results and Behavior of the Multi-Set PRM}
-
-See Figure~\ref{fig:broad-phase-2d}
-for a simple example with integrated broad-phase collision checking
-as described in Section~\ref{subsec:broad-phase}.
-
-\begin{figure}
-   \centering
-
-   \subfloat[
-      $\lambda=0$, no broad phase.
-      Median planning cost: 6650
-   ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-norel.png}
-   }
-   \subfloat[
-      $\lambda=1$, no broad phase.
-     Median planning cost: 4530
-   ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-norel.png}
-   }
-   
-   \subfloat[
-      $\lambda=0$, with broad phase.
-      Median planning cost: 2122
-   ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-wrel.png}
-   }
-   \subfloat[
-      $\lambda=1$, with broad phase.
-      Median planning cost: 737
-   ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-wrel.png}
-   }
-
-   \caption{A simple 2D example of the Multi-Set PRM using
-     a broad-phase check.
-     Checking for collision with the grey box is 10x less expensive
-     than with the actual black obstacle.
-     \cdnote{I need to talk about this in the text.}}
-   \label{fig:broad-phase-2d}
-\end{figure}
 
 
 \clearpage
@@ -2184,10 +2158,8 @@ and a set of goal vertices (at bottom).
 This example uses a simple forest-of-trees PRM construction rule.
 
 \clearpage
-\section{Task Planning}
+\section{The \textsc{Proteus} Task Planner}
 \label{chap:task-planning}
-
-\subsection{The \textsc{Proteus} Task Planner}
 
 I propose to write a simple task planner,
 \textsc{Proteus}
