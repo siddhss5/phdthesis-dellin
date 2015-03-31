@@ -8,15 +8,15 @@
       \includegraphics[width=0.19\linewidth]{figs/testherb-a.png}%
    }
    \,
-   \subfloat[Step 1 in $X_1$]{%
+   \subfloat[Step 1 in $S_1$]{%
       \includegraphics[width=0.19\linewidth]{figs/testherb-b.png}%
    }
    \,
-   \subfloat[Step 2 in $X_2$]{%
+   \subfloat[Step 2 in $S_2$]{%
       \includegraphics[width=0.19\linewidth]{figs/testherb-c.png}%
    }
    \,
-   \subfloat[Step 3 in $X_3$]{%
+   \subfloat[Step 3 in $S_3$]{%
       \includegraphics[width=0.19\linewidth]{figs/testherb-d.png}%
    }
    \,
@@ -36,7 +36,7 @@
    \smallskip\noindent\small Figure \ref{fig:xx-diagram-multi-step}:
       Diagram of multi-step planning framework.
       This thesis focuses on efficient geometric planning
-      for manipulation tasks (the lower two levels here).
+      for manipulation tasks (the lower levels here).
       Task planning can be performed by an autonomous
       symbolic planner,
       or guided by a human operator.
@@ -108,7 +108,7 @@ and propose an algorithm on explicit graphs.
 Our approach is motivated by two insights.
 
 \paragraph{Explicit Optimization of Ensemble Effort.}
-This section reference two different types of efficiency
+This section references two different types of efficiency
 with regard to robotic tasks.
 First, once a planner has computed a solution path or trajectory,
 there is the cost incurred while executing that trajectory.
@@ -152,7 +152,7 @@ because we are focused primarily on explicit graphs.
    \begin{algorithmic}[1]
    \Procedure {\textsc{GenericBestFirst}}{$G$}
    \Loop
-      \State $\pi^* = \argmin\limits_{\pi \in \Pi} f(\pi)$
+      \State $\pi^* = \argmin\limits_{\pi \in \Pi(G)} f(\pi)$
          \Comment{For some path cost function $f(\pi)$}
          \label{line:generic-select-optimistic-path}
       \If {$\pi^*$ fully evaluated}
@@ -178,7 +178,7 @@ Traditional graph search uses the following path objective:
 In other worts, $\hat{f}_x(\pi)$
 gives a lower bound on the cost of executing
 path $\pi$
-given the algorith's current knowledge of the graph.
+given the algorithm's current knowledge of the graph.
 In our case,
 if the path consists of a mix of evaluated and unevaluated edges,
 we could write this as:
@@ -194,7 +194,7 @@ we could write this as:
 \end{equation}
 with $\hat{x}(e)$ an admissible estimate of the edge's execution effort.
 
-\paragraph{Evaluation Procedure $\mbox{\sc EvalPath}(\pi)$}.
+\paragraph{Evaluation Procedure $\mbox{\sc EvalPath}(\pi)$.}
 How is a potential path evaluated?
 We discuss this later in this section.
 
@@ -338,7 +338,7 @@ In other words,
 \emph{weighted A* is equivalent to
    best-first search whose objective
    includes a planning effort term
-   proportional to execution effot.}
+   proportional to execution effort.}
 In particular, if planning effort is proportional to execution
 effort by a factor of $\alpha$,
 a weighted A* search with inflation factor $\epsilon$
@@ -486,7 +486,7 @@ its constituent unevaluated edges are evaluted
 in a particular order (line~\ref{line:path-eval-order}).
 Our current algorithm
 orders the edges alternating from the ends in.
-\cdnote{I need a figure to show this.}
+%\cdnote{I need a figure to show this.}
 With different choices (e.g. forwards or backwards),
 E$^8$ looks a lot like A$^*$.
 \marginnote{See research question \ref{ques:evalpath}.}
@@ -551,22 +551,25 @@ See Figure~\ref{fig:e8-results} for an example problem.
    }
    \quad
    \subfloat[][A$^*$ search.\\
-         Planning Effort: 692.3 \\ %\worldstatsastarplan\\
-         Execution Effort: 14.2 %\worldstatsastarexec}
+         Planning Effort: 692.3 \\%\worldstatsastarplan\\
+         Execution Effort: 14.2 \\%\worldstatsastarexec\\
+         Total Effort: 706.5
    ]{
       \includegraphics{build/e8-world-astar}
    }
    \vspace{0.05in}
    \subfloat[][Weighted A$^*$ search, $\epsilon=3$\\
          Planning Effort: 390.8 \\%\worldstatswastarplan\\
-         Execution Effort: 18.5 %\worldstatswastarexec}
+         Execution Effort: 18.5 \\%\worldstatswastarexec\\
+         Total Effort: 409.3
    ]{
       \includegraphics{build/e8-world-wastar}
    }
    \quad
    \subfloat[][E$^8$ search, $\lambda=0.5$\\
          Planning Effort: 358.8 \\%\worldstatseEplan\\
-         Execution Effort: 20.5 %\worldstatseEexec}
+         Execution Effort: 20.5 \\%\worldstatseEexec\\
+         Total Effort: 379.3
    ]{
       \includegraphics{build/e8-world-e8}
    }
@@ -598,20 +601,41 @@ Due to this focus,
 we strive to compare against alternative single-query approaches
 as we discuss in Section~\ref{subsec:single-query-results}.
 
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=1.5in]{build/roadmap-2d-densified}
+   \caption{A 3-subgraph densified roadmap from pseudorandom
+      milestones.}
+   \label{fig:roadmap-2d-densified}
+\end{marginfigure}
+
 Although
 our approach makes no commitment to the roadmap class
-(e.g. probabalistic or lattice-based),
+(e.g. probabalistic or lattice-based,
+$r$-disk or $k$-nearest, etc.),
 we propose to use Random Geometric Graphs (RGGs)
-as roadmaps covering configuration space,
+as roadmaps covering configuration space
+(see Figure~\ref{fig:roadmap-2d-densified}),
 borrowing heavily from prior approaches \citep{kavrakietal1996prm}
 and analyses \citep{karaman2011samplingoptimal}.
-we make no commitment as to the connection strategy
-(e.g. $r$-disk or $k$-nearest).
+However, we are interested in trying other non-probabalistic
+sources of roadmap milestones
+(e.g. Halton sequences, Figure~\ref{fig:halton-sequence})
+as described in \citep{lavalle2004deterministic}.
 Note that by pre-computing a sequence of samples,
 nearest-neighbor queries can be moved entirely offline.
 Also,
 since it can be computed offline,
 you can sparsify it \citep{shaharabani2013sparsification}.
+
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=1.5in]{figs/halton.png}
+   \caption{A Halton sequence
+      (taken from Branicky, LaValle, Olson, and Yang,
+      ``Deterministic vs. Probabalistic Roadmaps.''}
+   \label{fig:halton-sequence}
+\end{marginfigure}
 
 \subsection{Continuous-Space Problem Formulation}
 \label{subsec:single-set-formulation}
@@ -628,7 +652,7 @@ A continuous feasible solution path $q(t)$ must then satisfy
   \end{array}
   \label{eqn:solution}
 \end{equation}
-Eqn. (\ref{eqn:solution})
+Eqns. (\ref{eqn:solution})
 specify single configurations
 $q_{start}$ and $q_{goal}$,
 but the formulation is trivially extended to start/goal sets.
@@ -724,13 +748,13 @@ Note that these models can be simply added element-wise.
             $\mathcal{M}_{\ms{dist}}$}
          \label{alg:dist-effort-model}
          \begin{algorithmic}[1]
-         \Function {$x_{\ms{valid}}$}{$e$}
+         \Function {$x_{\ms{dist}}$}{$e$}
             \State \Return $|| q_e(1) - q_e(0) ||$
          \EndFunction
-         \Function {$\hat{x}_{\ms{valid}}$}{$e$}
+         \Function {$\hat{x}_{\ms{dist}}$}{$e$}
             \State \Return $|| q_e(1) - q_e(0) ||$
          \EndFunction
-         \Function {$\hat{p}_{\ms{valid}}$}{$e$}
+         \Function {$\hat{p}_{\ms{dist}}$}{$e$}
             \State \Return $0$
          \EndFunction
          \end{algorithmic}
@@ -821,6 +845,37 @@ render the path search problem more difficult.
 \end{algorithmic}
 \end{algorithm}
 
+\begin{marginfigure}
+   \centering
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 7219.5
+   ]{
+      \includegraphics[width=\textwidth]
+      {figs/bean-allpaths-lambda0.png}
+   }
+   \\
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 836.5\par
+      Average check cost: 4692.6
+   ]{
+      \includegraphics[width=\textwidth]
+      {figs/bean-allpaths-lambda1.png}
+   }
+   \vspace{0.1in}
+   
+   \caption{
+      Examples of paths for a 2D problem
+      for different values of $\lambda$.
+      As $\lambda$ is increased,
+      paths are longer, but are faster to find.}
+   \label{fig:bean}
+\end{marginfigure}
+
 The E$^8$-PRM (Algorithm~\ref{alg:e8-prm-hard})
 operates on an initially empty persistent roadmap graph $G$.
 Each vertex represents a configuration $q \in \mathcal{C}$,
@@ -842,24 +897,6 @@ is equivalent to
 the Lazy PRM \citep{bohlin2000lazyprm}.
 Figure~\ref{fig:bean} shows solution paths for a simple
 2D path planning problem for various runs of the algorithm.
-
-\begin{figure}
-   \centering
-   \subfloat[Paths with $\lambda = 0$]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/timegreedy-bean-lambda-00.png}
-   }
-   \,
-   \subfloat[Paths with $\lambda = 1$]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/timegreedy-bean-lambda-10.png}
-   }
-   \caption{Examples of paths for a 2d problems
-      for different values of $\lambda$.
-      As $\lambda$ is increased,
-      paths are longer, but are faster to find.}
-   \label{fig:bean}
-\end{figure}
 
 \subsection{Optimization in Expectation}
 
@@ -930,9 +967,9 @@ Lazy PRM.
    
    \vspace{0.05in}
    
-   \subfloat[Plot of collision checks vs solution path cost for the
-         different algorithms.]{
-      \includegraphics[width=0.8\textwidth]{figs/compare-2d-rrtc1-medians.png}
+   \subfloat[Plot of average collision checks vs solution path
+         cost for the different algorithms.]{
+      \includegraphics[width=0.8\textwidth]{build/maze-plot-ensemble}
    }
    
    \caption{Example runs with different planners,
@@ -1026,9 +1063,9 @@ which we formulate as the \emph{multi-set planning problem}.
 
    \subfloat[
       A two-part multi-set problem in $\mathcal{C}$,
-      first between $q_1$ and $q_2$ through $X_{12}$,
-      then between $q_2$ and $q_3$ through $X_{23}$.
-      The two free subsets $X_{12}$ and $X_{23}$ are distinct
+      first between $q_1$ and $q_2$ through $S_{12}$,
+      then between $q_2$ and $q_3$ through $S_{23}$.
+      The two free subsets $S_{12}$ and $S_{23}$ are distinct
       but related.
    ]{
       \includegraphics{build/figstar-a}
@@ -1036,10 +1073,10 @@ which we formulate as the \emph{multi-set planning problem}.
    \quad%
    \subfloat[
       The free subsets are related via other underlying
-      subsets of $\mathcal{C}$, with $X_{12}=A \cap B$
-      and $X_{23}=A \cap C$.
+      subsets of $\mathcal{C}$, with $S_{12}=A \cap B$
+      and $S_{23}=A \cap C$.
       A planner solving the first part (from $q_1$ to $q_2$)
-      has found paths in $X_{12}$.
+      has found paths in $S_{12}$.
    ]{
       \label{subfig:figstar-intersections}
       \includegraphics{build/figstar-b}
@@ -1048,8 +1085,8 @@ which we formulate as the \emph{multi-set planning problem}.
    \subfloat[
       Due to the set relations,
       a planner solving the second part
-      (from $q_2$ to $q_3$ in $X_{23}$)
-      can reuse any segment known to be in $X_{12}$
+      (from $q_2$ to $q_3$ in $S_{23}$)
+      can reuse any segment known to be in $S_{12}$
       by checking only for its membership in $C$.
    ]{
       \includegraphics{build/figstar-c}
@@ -1064,7 +1101,7 @@ which we formulate as the \emph{multi-set planning problem}.
       This two-part problem
       requires plans in distinct collision-free
       $\mathcal{C}$-subsets
-      $X_{12}$ and $X_{23}$.
+      $S_{12}$ and $S_{23}$.
    ]{%
       \begin{tabular}{c}
       \includegraphics{build/example-2d-a} \\
@@ -1075,7 +1112,7 @@ which we formulate as the \emph{multi-set planning problem}.
    }%
    \quad%
    \subfloat[
-      Sets $X_{12}$ and $X_{23}$ are subsets of
+      Sets $S_{12}$ and $S_{23}$ are subsets of
       the configuration space of the robot $\mathcal{C}=\mbox{SE}(2)$,
       and can be represented as intersections
       of underlying subsets $A$, $B$, and $C$
@@ -1091,7 +1128,7 @@ which we formulate as the \emph{multi-set planning problem}.
    \quad%
    \subfloat[
       After planning a path from $q_1$ to $q_2$ (top),
-      a planner can reuse a configuration in $X_{12}$ (middle)
+      a planner can reuse a configuration in $S_{12}$ (middle)
       by checking only for its membership in subset $C$,
       resulting in plan reuse (bottom).
    ]{%
@@ -1144,15 +1181,15 @@ $\mathcal{C}$
 (usually the set of collision-free configurations, denoted
 $\mathcal{C}_{\mbox{\scriptsize free}}$),
 the multi-set problem allows for the specification of
-\emph{multiple} such $\mathcal{C}$-subsets
-$\mathcal{S} = \{ A, B, \dots \}$.
+a \emph{family} of multiple such subsets
+$\mathcal{F} = \{ A, B, \dots \}$.
 Like $\mathcal{C}_{\mbox{\scriptsize free}}$,
-each member of $\mathcal{S}$
+each member of $\mathcal{F}$
 is a subset of the common configuration space
 (that is,
-$X \subseteq \mathcal{C} \;\forall\; X \in \mathcal{S}$),
-and each subset $X$ has its own indicator and planning estimator
-${\bf 1}_X[\cdot]$ and $\hat{p}_X(\cdot)$
+$S \subseteq \mathcal{C} \;\forall\; S \in \mathcal{F}$),
+and each subset $S$ has its own indicator and planning estimator
+${\bf 1}_S[\cdot]$ and $\hat{p}_S(\cdot)$
 as in Section~\ref{subsec:single-set-formulation}.
 For example,
 in Fig.~\ref{fig:multi-set}\subref{subfig:figstar-manip-spaces},
@@ -1163,7 +1200,7 @@ the initial object pose.
 
 The problem supports an arbitrary number of queries $\mathcal{U}$.
 Each query $u$ demands a solution path through a \emph{single}
-$\mathcal{C}$-subset $U \in \mathcal{S}$
+$\mathcal{C}$-subset $U \in \mathcal{F}$
 (see Fig~\ref{fig:query-to-subset}):
 \begin{equation}
   u : ( q_{start},\; q_{goal},\; U ) .
@@ -1206,15 +1243,16 @@ $\mathcal{C}$-subset $U \in \mathcal{S}$
    \vspace{0.1in}
    \caption{Types of subset relations.
      Each relation can be expressed directly as set relations
+     w.r.t a set $S$,
      or equivalently as logical statements
      on the corresponding indicator functions
-     $\mathbf{1}_X(\cdot)$.}
+     $\mathbf{1}_S(\cdot)$.}
    \label{fig:relations}
 \end{marginfigure}
 
 Finally, the multi-set problem incudes a list of set relations
 $\mathcal{R}$
-between the $\mathcal{C}$-subsets in $\mathcal{S}$.
+between the $\mathcal{C}$-subsets in $\mathcal{F}$.
 These can be expressed directly using set theoretic relations,
 or equivalently as logical statements
 on the corresponding indicator functions.
@@ -1227,37 +1265,37 @@ robot model (see Section~\ref{subsec:broad-phase}).
 
 Together, these four elements
 (a configuration space $\mathcal{C}$,
-subsets $\mathcal{S}$ each with endowed indicators,
+subsets $\mathcal{F}$ each with endowed indicators,
 a set of queries $\mathcal{U}$,
 and a list of subset relations $\mathcal{R}$)
 comprise a multi-set planning problem.
 
 \paragraph{Example Problem.}
 Consider the diagram from Fig.~\ref{fig:multi-set}.
-$\mathcal{S}$ consists of five $\mathcal{C}$-subsets labeled
-$A$, $B$, $C$, $X_{12}$, and $X_{23}$,
+$\mathcal{F}$ consists of five $\mathcal{C}$-subsets labeled
+$A$, $B$, $C$, $S_{12}$, and $S_{23}$,
 and we have two queries,
-$u_{12}: (q_1, q_2, X_{12})$
+$u_{12}: (q_1, q_2, S_{12})$
 and
-$u_{23}: (q_2, q_3, X_{23})$.
+$u_{23}: (q_2, q_3, S_{23})$.
 $\mathcal{R}$ consists of the two relations
-$X_{12} = A \cap B$ and $X_{23} = A \cap C$.
+$S_{12} = A \cap B$ and $S_{23} = A \cap C$.
 Suppose a cost model $\mathcal{M}$
 wherein evaluating the indicator
 $\mathbf{1}_A$ incurs cost 4,
 evaluating $\mathbf{1}_B$ and $\mathbf{1}_C$ incurs cost 2,
-and evaluating $\mathbf{1}_{X_{12}}$ and $\mathbf{1}_{X_{23}}$
+and evaluating $\mathbf{1}_{S_{12}}$ and $\mathbf{1}_{S_{23}}$
 incurs cost 6.
 In the manipulation example in
 Fig.~\ref{fig:multi-set}\subref{subfig:figstar-manip-probdef},
 this would be the case if each
 pairwise outlined shape collision check incurs unit cost.
 
-Suppose a graph structure within ${X_{12}}$ has been grown to solve
+Suppose a graph structure within ${S_{12}}$ has been grown to solve
 the first query $u_{12}$.
 During the subsequent solve of query $u_{23}$,
-an existing path segment known to be in ${X_{12}}$ can be shown to
-also be contained within ${X_{23}}$ by only evaluating $\mathbf{1}_C$.
+an existing path segment known to be in ${S_{12}}$ can be shown to
+also be contained within ${S_{23}}$ by only evaluating $\mathbf{1}_C$.
 In the manipulation example,
 reusing an a configuration from the previous search
 would require only a check of cost 2,
@@ -1339,11 +1377,11 @@ in manipulation tasks.
       \noindent
       (Right) $\mathcal{C}$-subsets and relations
       can be added retroactively.
-      Here, the graph for an initial query is checked w.r.t $X_1$.
+      Here, the graph for an initial query is checked w.r.t $S_1$.
       After environment changes,
-      $X_1$ is redefined in terms of the $\mathcal{C}$-subsets
+      $S_1$ is redefined in terms of the $\mathcal{C}$-subsets
       derived from the set of common, added, and removed elements,
-      allowing for reuse on a query in $X_2$.
+      allowing for reuse on a query in $S_2$.
       Here,
       the planner need only check existing path segments
       against added voxels in order to reuse them for the current query.}
@@ -1371,10 +1409,10 @@ By explicitly labeling such areas in workspace
 \citep{newmanbranicky1991cspacetransforms}),
 we can represent this structure as a multi-set planning problem.
 
-\cdnote{%
-Special case of this is if objects are disappearing.
-Relation to occupancy grid representations of workspace
-(for deltas, conservative approxs, etc).}
+%\cdnote{%
+%Special case of this is if objects are disappearing.
+%Relation to occupancy grid representations of workspace
+%(for deltas, conservative approxs, etc).}
 
 \paragraph{Grasped Objects}
 \label{subsec:grasped-objects}
@@ -1385,11 +1423,11 @@ For example,
 consider a manipulator which grasps a geometric object.
 This affects the set of collision-free configurations
 across a large section of $\mathcal{C}$
-relative to the old set of valid configurations $X_{old}$.
+relative to the old set of valid configurations $S_{\ms{old}}$.
 However,
-the resulting $\mathcal{C}$-subset $X_{new}$
+the resulting $\mathcal{C}$-subset $S_{new}$
 can be represented simply as
-$X_{new} = X_{old} \cap G$,
+$S_{\ms{new}} = S_{\ms{old}} \cap G$,
 with $G$ the set of robot configurations in which
 the \emph{grasped object} (only)
 is deemed free of collision with the robot and environment.
@@ -1419,7 +1457,7 @@ are included together in the experimental results
       of robot self-collision.
       Online, the planner must find a path that's also within $E$,
       the subset free of environment collision.
-      When solving this query in $X = R \cap E$,
+      When solving this query in $S = R \cap E$,
       the Multi-Set PRM automatically prefers potential paths with
       pre-computed edges (e.g. shown in grey)
       due to lower planning costs over alternatives with lower
@@ -1493,7 +1531,7 @@ one with high quality (e.g. from a CAD program),
 and one hand-tuned ``padded'' model consisting of 
 a small number of simple conservative bounding volumes.
 The $\mathcal{C}$-subsets derived from these models
-are related by $R_{padded} \subseteq R_{CAD}$.
+are related by $R_{\ms{padded}} \subseteq R_{\ms{CAD}}$.
 Collision checkers currently use a similar approach internally
 to speed up collision checks (see Fig.~\ref{fig:broad-phase}.
 and Fig~\ref{fig:broad-phase-2d}).
@@ -1621,19 +1659,19 @@ validate the membership of the edge in $U$ with lowest effort.
 {\algrenewcommand\textproc{}% Used to be \textsc
 \begin{algorithmic}[1]
 \Function {$x_{\ms{multi}}$}{$e, U$}
-   \State $(\mathcal{S}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
+   \State $(\mathcal{F}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
       \leftarrow \mbox{\sc MultiOptCert}(q_e, U,
       P_{\ms{global}} \cup e.P_{\ms{eval}})$
-   \ForAll {$X \in \mathcal{S}_{\ms{cert}}$}
-      \State $b_{\ms{eval}} \leftarrow \mathbf{1}_X[q_e]$
+   \ForAll {$S \in \mathcal{F}_{\ms{cert}}$}
+      \State $b_{\ms{eval}} \leftarrow \mathbf{1}_S[q_e]$
       \State $\arraycolsep=2pt
          e.P_{\ms{eval}} \leftarrow e.P_{\ms{eval}} \cup
          \left\{\begin{array}{rl}
-         \mathbf{1}_X & \mbox{if } b_{\ms{eval}} \\
-         \lnot \mathbf{1}_X & \mbox{otherwise} \\
+         \mathbf{1}_S & \mbox{if } b_{\ms{eval}} \\
+         \lnot \mathbf{1}_S & \mbox{otherwise} \\
          \end{array}
          \right\}$
-      \If {$b_{\ms{eval}} \neq b_{\ms{cert}}(X)$}
+      \If {$b_{\ms{eval}} \neq b_{\ms{cert}}(S)$}
          \State \Return $\infty$
       \EndIf
    \EndFor
@@ -1643,7 +1681,7 @@ validate the membership of the edge in $U$ with lowest effort.
    \State \Return $0$
 \EndFunction
 \Function {$\hat{p}_{\ms{multi}}$}{$e, U$}
-   \State $(\mathcal{S}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
+   \State $(\mathcal{F}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
       \leftarrow \mbox{\sc MultiOptCert}(q_e, U,
       P_{\ms{global}} \cup e.P_{\ms{eval}})$
    \State \Return ${\hat p}_{\ms{cert}}$
@@ -1662,13 +1700,13 @@ the optimistically optimal set of indicator evaluations to perform
 for the edge in order to validate its membership in the query
 $\mathcal{C}$-subset $U$.
 The function returns three elements:
-(a) the set of $\mathcal{C}$-subsets
-$\mathcal{S}_{\ms{cert}} \subseteq \mathcal{S}$
+(a) the family of $\mathcal{C}$-subsets
+$\mathcal{F}_{\ms{cert}} \subseteq \mathcal{F}$
 whose indicators are to be evaluated,
 (b) a binary function $b_{\ms{res}}$
 which provides the desired indicator result for each evaluation,
 and (c) the total evaluation cost ${\hat p}_{\ms{cert}}$
-given by the $\hat{p}_X[\cdot]$ functionals
+given by the $\hat{p}_S[\cdot]$ functionals
 (Section~\ref{sec:multi-set-formulation}).
 
 \begin{algorithm}
@@ -1677,30 +1715,30 @@ given by the $\hat{p}_X[\cdot]$ functionals
 \begin{algorithmic}[1]
 \Function {MultiOptCert}{$q_e, U, P_{\ms{known}}$}
    \State $\mathcal{T}_{\ms{imply}} \leftarrow \emptyset$
-   \ForAll {$\mathcal{S}_{\ms{cert}} \in \mathcal{P}(\mathcal{S})$}
+   \ForAll {$\mathcal{F}_{\ms{cert}} \in \mathcal{P}(\mathcal{F})$}
          \label{line:power-set}
-      \State ${\hat p}_{\ms{cert}} \leftarrow \sum_{X \in \mathcal{S}_{\ms{cert}}} \hat{p}_X[q_e]$
+      \State ${\hat p}_{\ms{cert}} \leftarrow \sum_{S \in \mathcal{F}_{\ms{cert}}} \hat{p}_S[q_e]$
       \ForAll {$b_{\ms{res}} \mbox{ \textbf{s.t.} }
-            b_{\ms{res}} : \mathcal{S}_{\ms{cert}} \rightarrow \{\mbox{True},\mbox{False}\}$}
+            b_{\ms{res}} : \mathcal{F}_{\ms{cert}} \rightarrow \{\mbox{True},\mbox{False}\}$}
             \label{line:all-binary-functions}
          \State $\arraycolsep=2pt
             P_{\ms{res}} \leftarrow
             \left\{\left. \begin{array}{rl}
-            \mathbf{1}_X & \mbox{if } b_{\ms{res}}(X) \\
-            \lnot \mathbf{1}_X & \mbox{otherwise} \\
+            \mathbf{1}_S & \mbox{if } b_{\ms{res}}(S) \\
+            \lnot \mathbf{1}_S & \mbox{otherwise} \\
             \end{array}
             \right|
-            X \in \mathcal{S}_{\ms{cert}}
+            S \in \mathcal{F}_{\ms{cert}}
             \right\}$
          \If {$P_{\ms{known}} \cup P_{\ms{res}}
                \Rightarrow \mathbf{1}_U$ is valid}
             \State $\mathcal{T}_{\ms{imply}} \leftarrow
                \mathcal{T}_{\ms{imply}} \cup
-               \{ (\mathcal{S}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}}) \}$
+               \{ (\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}}) \}$
          \EndIf
       \EndFor
    \EndFor
-   \State \Return $(\mathcal{S}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}})
+   \State \Return $(\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}})
       \in \mathcal{T}_{\ms{imply}}$
       with lowest ${\hat p}_{\ms{cert}}$
 \EndFunction
@@ -1711,13 +1749,13 @@ The function accumulates a set $\mathcal{T}_{\ms{imply}}$ of
 valid certificates which would imply membership in $U$.
 We proceed by considering all combinations of
 available $\mathcal{C}$-subset indicators
-$\mathcal{S}_{\ms{cert}}$ (line~\ref{line:power-set}).
+$\mathcal{F}_{\ms{cert}}$ (line~\ref{line:power-set}).
 For each set of evaluations,
 we compute the planning effort ${\hat p}_{\ms{cert}}$
 which would be required.
 We then consider all possible outcomes for each indicator
 by iterating over all functions $b_{\ms{res}}$ mapping
-from $\mathcal{C}$-subset $X$ to binary values
+from $\mathcal{C}$-subset $S$ to binary values
 (line~\ref{line:all-binary-functions}).
 For each potential outcome $b_{\ms{res}}$,
 we form the set of additional propositions $P_{\ms{res}}$,
@@ -1736,30 +1774,45 @@ as described in Section~\ref{subsec:broad-phase}.
 \begin{figure}
    \centering
 
-   \subfloat[][
-      $\lambda=0$, no broad phase.\\
-      Median planning cost: 6650
+   % left side
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 7219.5
    ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-norel.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda0.png}
    }
-   \subfloat[][
-      $\lambda=1$, no broad phase.\\
-     Median planning cost: 4530
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 836.5\par
+      Average check cost: 4692.6
    ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-norel.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda1.png}
    }
-   
-   \subfloat[][
-      $\lambda=0$, with broad phase.\\
-      Median planning cost: 2122
+   \\
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 2685.7
    ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda0-wrel.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda0.png}
    }
-   \subfloat[][
-      $\lambda=1$, with broad phase.\\
-      Median planning cost: 737
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 907.1\par
+      Average check cost: 1064.5
    ]{
-      \includegraphics[width=0.45\linewidth]{figs/paths-lambda1-wrel.png}
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda1.png}
    }
 
    \caption{A simple 2D example of the Multi-Set PRM using
@@ -1779,13 +1832,13 @@ as described in Section~\ref{subsec:broad-phase}.
    \subfloat[Starting Configuration]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-a.png}
    }
-   \subfloat[Step 1, in $X_1$]{
+   \subfloat[Step 1, in $S_1$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-b.png}
    }
-   \subfloat[Step 2, in $X_2$]{
+   \subfloat[Step 2, in $S_2$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-c.png}
    }
-   \subfloat[Step 3, in $X_3$]{
+   \subfloat[Step 3, in $S_3$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-d.png}
    }
    \subfloat[Ending Configuration.]{
@@ -1963,7 +2016,7 @@ paths.
       \begin{scope}
       \node[rectangle,draw,dotted,
          inner sep=0,minimum height=0.4in,minimum width=0.7in] (x1) at (0,0) {};
-      \node[below] at (x1.north) {$X_1$};
+      \node[below] at (x1.north) {$S_1$};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1a) at (-0.75,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1b) at (-0.25,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1c) at ( 0.25,-0.2) {};
@@ -1973,7 +2026,7 @@ paths.
       \begin{scope}[shift={(-1.5,-2.7)},rotate=120]
       \node[rectangle,draw,dotted,rotate=120,
          inner sep=0,minimum height=0.4in,minimum width=0.7in] (x2) at (0,0) {};
-      \node at (0,0.3) {$X_2$};
+      \node at (0,0.3) {$S_2$};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2a) at (-0.75,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2b) at (-0.25,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2c) at ( 0.25,-0.2) {};
@@ -1983,7 +2036,7 @@ paths.
       \begin{scope}[shift={(1.5,-2.7)},rotate=-120]
       \node[rectangle,draw,dotted,rotate=-120,
          inner sep=0,minimum height=0.4in,minimum width=0.7in] (x3) at (0,0) {};
-      \node at (0,0.3) {$X_3$};
+      \node at (0,0.3) {$S_3$};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3a) at (-0.75,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3b) at (-0.25,-0.2) {};
       \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3c) at ( 0.25,-0.2) {};
@@ -2034,7 +2087,7 @@ is illustrated on 2D and 7D CMR problems.
 We work with the robot's configuration space $\mathcal{C}$
 and its collision-free subset $\mathcal{C}_{\mbox{\scriptsize free}}$.
 We consider the general problem with $N$ root sets in this space
-$\{ X_1, \dots, X_N \}$.
+$\{ S_1, \dots, S_N \}$.
 We seek a diverse set of feasible paths between root sets
 -- that is, we want to maximize the number of connected roots between sets. 
 We call this the \emph{comprehensive multi-root} (CMR) planning problem.
@@ -2174,10 +2227,10 @@ on the approach.
 We assume the step decomposition is provided by either
 a human operator or symbolic planner.
 
-\textbf{Related Work.}
-\cdnote{There is a large body of related work in the area of subgoal planning
-that is relevant to the design of this task planner that I
-should reference here.}
+%\textbf{Related Work.}
+%\cdnote{There is a large body of related work in the area of subgoal planning
+%that is relevant to the design of this task planner that I
+%should reference here.}
 
 \textbf{Interleaved Planning and Execution.}
 While primary comparisons

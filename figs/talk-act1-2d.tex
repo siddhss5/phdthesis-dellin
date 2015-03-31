@@ -1,0 +1,458 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning,decorations.pathreplacing,shadows.blur}
+\begin{document}%
+\begin{tikzpicture}%
+
+\ifdefined\argcfree
+   \def\drawcfree{}
+\fi
+
+\ifdefined\argpaths
+   \def\drawcfree{}
+   \def\drawpaths{}
+\fi
+
+\ifdefined\argtraja
+   \def\drawcfree{}
+\fi
+
+\ifdefined\argtrajb
+   \def\drawcfree{}
+   \def\drawtrajneighborhood{}
+\fi
+
+\ifdefined\argtrajc
+   \def\drawcfreefuzzy{}
+   \def\drawtrajneighborhood{}
+\fi
+
+\ifdefined\argtrajd
+   \def\drawcfreefuzzy{}
+   \def\drawtrajneighborhood{}
+\fi
+
+\ifdefined\argfirstfail
+   \def\drawcfree{}
+   \def\drawfirstfailtraj{}
+\fi
+
+\ifdefined\argfirstfailnext
+   \def\drawcfree{}
+   \def\drawfirstfailtraj{}
+\fi
+
+\ifdefined\argrrtstart
+   \def\drawcfree{}
+   \def\drawrrtstart{}
+\fi
+
+\ifdefined\argrrtsample
+   \def\drawcfree{}
+   \def\drawrrtstart{}
+   \def\drawrrtsample{}
+\fi
+
+\ifdefined\argrrtcandidates
+   \def\drawcfree{}
+   \def\drawrrtstart{}
+   \def\drawrrtsample{}
+\fi
+
+\ifdefined\arggraph
+   \def\drawcfree{}
+\fi
+
+\ifdefined\arggraphfirst
+   \def\drawcfree{}
+\fi
+
+\ifdefined\arggraphfirstevaled
+   \def\drawcfree{}
+\fi
+
+\ifdefined\arggraphfirstnext
+   \def\drawcfree{}
+\fi
+
+
+%\node[inner sep=0] at (-3.5,1.5) {%
+%   \includegraphics[width=0.2\textwidth]{figs/fridge-intro.png}%
+%};
+
+\node[draw,black!0,rounded corners,minimum height=5cm,minimum width=5cm]
+   (C) at (0,0) {};
+\node[above left=-0.8cm of C] (clab) {$\mathcal{C}$};
+
+\ifdefined\drawfirstfailtraj
+   \draw[red,line width=2pt] plot [smooth] coordinates {(-2,0) (1.9,1.4)};
+\fi
+
+% subset definitions
+\def\crect{(-2.5,-2.5) rectangle (2.5,2.5)}
+\def\bloba{(-3,1) (-1,1.5) (0,3) (3,3) (3,0.8) (-0.1,1.5) (0,1) (1,0.5) (0.5,0) (-3,-0.5)}
+\def\blobb{(-3,-1) (0,-1) (3,0.5) (3,-3) (0,-2) (-3,-2)}
+
+\ifdefined\drawcfree
+
+   % for clipping
+   \begin{scope}
+      \draw[draw=none,clip,rounded corners] \crect;
+      \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=3pt,rounded corners,fill=blue!20] \crect;
+      \draw[line width=3pt] plot [smooth cycle] coordinates {\bloba};
+   \end{scope}
+   %\draw [red] plot [smooth cycle] coordinates {\bloba};
+   
+   \begin{scope}
+      \draw[draw=none,clip,rounded corners] \crect;
+      \draw[draw=none,clip] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=3pt,rounded corners,fill=blue!20] \crect;
+      \draw[line width=3pt] plot [smooth cycle] coordinates {\blobb};
+   \end{scope}
+   %\draw [red] plot [smooth cycle] coordinates {\blobb};
+
+   %\node[draw,line width=1.5pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+   %   (Cfreebox) at (-4.0, 0.5) {};
+   %\node[right=0cm of Cfreebox] {$\mathcal{C}_{\mbox{\scriptsize free}}$}; 
+
+\fi
+   
+\ifdefined\drawcfreefuzzy
+
+   \begin{scope}
+      \draw[draw=none,clip,rounded corners] \crect;
+      \draw[line width=15pt,color=blue!5] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=10pt,color=blue!10] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width= 5pt,color=blue!15] plot [smooth cycle] coordinates {\bloba};
+      \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=15pt,color=blue!30,fill=blue!35] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=10pt,color=blue!25] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width= 5pt,color=blue!20] plot [smooth cycle] coordinates {\bloba};
+   \end{scope}
+   
+   \begin{scope}
+      \draw[draw=none,clip,rounded corners] \crect;
+      \draw[line width=15pt,color=blue!5] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=10pt,color=blue!10] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width= 5pt,color=blue!15] plot [smooth cycle] coordinates {\blobb};
+      \draw[draw=none,clip] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=15pt,color=blue!30,fill=blue!35] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=10pt,color=blue!25] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width= 5pt,color=blue!20] plot [smooth cycle] coordinates {\blobb};
+   \end{scope}
+
+\fi
+   
+% draw crect itself!
+\draw[rounded corners] \crect;
+
+
+% starts
+\coordinate (st01) at (-2,0);
+\fill[black] (st01) circle (0.07cm);
+
+% goals
+\coordinate (go01) at (2.1,2);
+\coordinate (go02) at (2.0,1.4);
+\coordinate (go03) at (2.0,0.5);
+\coordinate (go04) at (2.1,-0.5);
+\coordinate (go05) at (1.9,-1.5);
+\fill[black] (go01) circle (0.07cm);
+\fill[black] (go02) circle (0.07cm);
+\fill[black] (go03) circle (0.07cm);
+\fill[black] (go04) circle (0.07cm);
+\fill[black] (go05) circle (0.07cm);
+
+\ifdefined\drawpaths
+   % candidate paths
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,2) (2.1,2)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0.5,-0.5) (1.9,1.4)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,0.5) (2.0,0.5)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,-1.5) (1.9,-1.5)};
+\fi
+
+\ifdefined\argtraja
+   \draw plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+\fi
+
+\ifdefined\drawtrajneighborhood
+   \draw[fill=black!50,opacity=0.5] plot [smooth cycle] coordinates {(-2,0) (-0.2,1.0) (2.0,1.4) (0.2,0.4)};
+   \draw plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+\fi
+
+\ifdefined\argtrajd
+   \draw[line width=2pt] plot [smooth] coordinates {(-2,0) (0.2,0.5) (2.0,1.4)};
+\fi
+
+\ifdefined\drawfirstfailtraj
+   \begin{scope}
+      \draw[draw=none,clip,rounded corners] \crect;
+      \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=2pt] plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+   \end{scope}
+\fi
+
+\ifdefined\argfirstfailnext
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0.2,0.9) (2.0,1.4)};
+\fi
+
+\ifdefined\drawrrtstart
+   % forward tree
+   \draw[line width=2pt] plot coordinates {(-2,0) (0,0.7)};
+   \fill[black]
+      (-1.5,0.175) circle (0.07cm)
+      (-1.0,0.35) circle (0.07cm)
+      (-0.5,0.525) circle (0.07cm)
+      ( 0.0,0.7) circle (0.07cm);
+
+   % reverse tree
+   \draw[line width=2pt] plot coordinates {(1.4,1.225) (2.0,1.4)};
+   \fill[black] (1.4,1.225) circle (0.07cm);
+   
+   %\begin{scope}
+   %   \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
+   %   \draw[line width=2pt] plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+   %\end{scope}
+\fi
+
+\ifdefined\argrrtcandidates
+   % forward options
+   \draw[dashed]
+      (-2,0) -- (-1,2)
+      (-1.5,0.175) -- (-1,2)
+      (-1.0,0.35) -- (-1,2)
+      (-0.5,0.525) -- (-1,2)
+      ( 0.0,0.7) -- (-1,2);
+   % reverse options
+   \draw[dashed]
+      (-1,2) -- (2.1,2)
+      (-1,2) -- (2.0,1.4)
+      (-1,2) -- (1.4,1.225);
+\fi
+
+\ifdefined\drawrrtsample
+   \fill[green] (-1,2) circle (0.07cm);
+\fi
+
+% graph stuff
+\coordinate (gr01) at (-1.3, 0.2);
+\coordinate (gr02) at (-0.2, 0.4);
+\coordinate (gr03) at (-0.6, 1.0);
+\coordinate (gr04) at (-1.7, 0.9);
+\coordinate (gr05) at ( 0.6, 0.9);
+\coordinate (gr06) at ( 1.2, 1.3);
+\coordinate (gr07) at ( 0.3, 1.8);
+\coordinate (gr08) at (-0.3, 2.0);
+\coordinate (gr09) at (-1.5, 2.1);
+\coordinate (gr10) at ( 1.3, 2.2);
+\coordinate (gr11) at ( 1.2, 0.2);
+\coordinate (gr12) at ( 0.2, 0.2);
+\coordinate (gr13) at (-1.2,-0.8);
+\coordinate (gr14) at (-0.6,-0.6);
+\coordinate (gr15) at ( 0.4,-0.6);
+\coordinate (gr16) at ( 1.1,-0.9);
+\coordinate (gr17) at (-1.8,-1.2);
+\coordinate (gr18) at (-1.1,-1.7);
+\coordinate (gr19) at (-0.2,-1.5);
+\coordinate (gr20) at ( 0.8,-1.5);
+\coordinate (gr21) at (-2.0,-1.8);
+\coordinate (gr22) at (-0.5,-2.2);
+\coordinate (gr23) at ( 0.5,-1.9);
+
+\ifdefined\arggraph
+   \fill[black]
+      (gr01) circle (0.07cm)
+      (gr02) circle (0.07cm)
+      (gr03) circle (0.07cm)
+      (gr04) circle (0.07cm)
+      (gr05) circle (0.07cm)
+      (gr06) circle (0.07cm)
+      (gr07) circle (0.07cm)
+      (gr08) circle (0.07cm)
+      (gr09) circle (0.07cm)
+      (gr10) circle (0.07cm)
+      (gr11) circle (0.07cm)
+      (gr12) circle (0.07cm)
+      (gr13) circle (0.07cm)
+      (gr14) circle (0.07cm)
+      (gr15) circle (0.07cm)
+      (gr16) circle (0.07cm)
+      (gr17) circle (0.07cm)
+      (gr18) circle (0.07cm)
+      (gr19) circle (0.07cm)
+      (gr20) circle (0.07cm)
+      (gr21) circle (0.07cm)
+      (gr22) circle (0.07cm)
+      (gr23) circle (0.07cm)
+      ;
+   \draw[dotted]
+      (st01) -- (gr01) -- (gr02) -- (gr05) -- (gr06) -- (go02)
+      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
+      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
+      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
+      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
+      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
+      (gr12) -- (gr11) -- (go04) -- (go05)
+      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
+      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
+      (gr12) -- (gr15)
+      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
+      (gr18) -- (gr13) -- (gr19) -- (gr14)
+      (gr19) -- (gr15) -- (gr20) -- (gr16)
+      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
+      (gr22) -- (gr23)  -- (gr20)
+      ;
+\fi
+
+\ifdefined\arggraphfirst
+   \fill[black]
+      (gr01) circle (0.07cm)
+      (gr02) circle (0.07cm)
+      (gr03) circle (0.07cm)
+      (gr04) circle (0.07cm)
+      (gr05) circle (0.07cm)
+      (gr06) circle (0.07cm)
+      (gr07) circle (0.07cm)
+      (gr08) circle (0.07cm)
+      (gr09) circle (0.07cm)
+      (gr10) circle (0.07cm)
+      (gr11) circle (0.07cm)
+      (gr12) circle (0.07cm)
+      (gr13) circle (0.07cm)
+      (gr14) circle (0.07cm)
+      (gr15) circle (0.07cm)
+      (gr16) circle (0.07cm)
+      (gr17) circle (0.07cm)
+      (gr18) circle (0.07cm)
+      (gr19) circle (0.07cm)
+      (gr20) circle (0.07cm)
+      (gr21) circle (0.07cm)
+      (gr22) circle (0.07cm)
+      (gr23) circle (0.07cm)
+      ;
+   \draw
+      (st01) -- (gr01) -- (gr02) -- (gr05) -- (gr06) -- (go02);
+   \draw[dotted]
+      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
+      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
+      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
+      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
+      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
+      (gr12) -- (gr11) -- (go04) -- (go05)
+      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
+      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
+      (gr12) -- (gr15)
+      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
+      (gr18) -- (gr13) -- (gr19) -- (gr14)
+      (gr19) -- (gr15) -- (gr20) -- (gr16)
+      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
+      (gr22) -- (gr23)  -- (gr20)
+      ;
+\fi
+
+\ifdefined\arggraphfirstevaled
+   \draw[dotted]
+      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
+      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
+      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
+      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
+      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
+      (gr12) -- (gr11) -- (go04) -- (go05)
+      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
+      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
+      (gr12) -- (gr15)
+      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
+      (gr18) -- (gr13) -- (gr19) -- (gr14)
+      (gr19) -- (gr15) -- (gr20) -- (gr16)
+      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
+      (gr22) -- (gr23)  -- (gr20)
+      ;
+   \draw[red,line width=2pt] (gr02) -- (gr05) -- (gr06);
+   \draw[line width=2pt]
+      (st01) -- (gr01) -- (gr02) (gr06) -- (go02);
+   \fill[black]
+      (gr01) circle (0.07cm)
+      (gr02) circle (0.07cm)
+      (gr03) circle (0.07cm)
+      (gr04) circle (0.07cm)
+      %(gr05) circle (0.07cm)
+      (gr06) circle (0.07cm)
+      (gr07) circle (0.07cm)
+      (gr08) circle (0.07cm)
+      (gr09) circle (0.07cm)
+      (gr10) circle (0.07cm)
+      (gr11) circle (0.07cm)
+      (gr12) circle (0.07cm)
+      (gr13) circle (0.07cm)
+      (gr14) circle (0.07cm)
+      (gr15) circle (0.07cm)
+      (gr16) circle (0.07cm)
+      (gr17) circle (0.07cm)
+      (gr18) circle (0.07cm)
+      (gr19) circle (0.07cm)
+      (gr20) circle (0.07cm)
+      (gr21) circle (0.07cm)
+      (gr22) circle (0.07cm)
+      (gr23) circle (0.07cm)
+      ;
+   \fill[red] (gr05) circle (0.07cm);
+\fi
+
+\ifdefined\arggraphfirstnext
+   \draw[dotted]
+      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
+      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
+      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
+      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
+      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
+      (gr12) -- (gr11) -- (go04) -- (go05)
+      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
+      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
+      (gr12) -- (gr15)
+      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
+      (gr18) -- (gr13) -- (gr19) -- (gr14)
+      (gr19) -- (gr15) -- (gr20) -- (gr16)
+      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
+      (gr22) -- (gr23)  -- (gr20)
+      ;
+   \draw[red,line width=2pt] (gr02) -- (gr05) -- (gr06);
+   \draw[line width=2pt]
+      (st01) -- (gr01) -- (gr02) (gr06) -- (go02);
+   \fill[black]
+      (gr01) circle (0.07cm)
+      (gr02) circle (0.07cm)
+      (gr03) circle (0.07cm)
+      (gr04) circle (0.07cm)
+      %(gr05) circle (0.07cm)
+      (gr06) circle (0.07cm)
+      (gr07) circle (0.07cm)
+      (gr08) circle (0.07cm)
+      (gr09) circle (0.07cm)
+      (gr10) circle (0.07cm)
+      (gr11) circle (0.07cm)
+      (gr12) circle (0.07cm)
+      (gr13) circle (0.07cm)
+      (gr14) circle (0.07cm)
+      (gr15) circle (0.07cm)
+      (gr16) circle (0.07cm)
+      (gr17) circle (0.07cm)
+      (gr18) circle (0.07cm)
+      (gr19) circle (0.07cm)
+      (gr20) circle (0.07cm)
+      (gr21) circle (0.07cm)
+      (gr22) circle (0.07cm)
+      (gr23) circle (0.07cm)
+      ;
+   \fill[red] (gr05) circle (0.07cm);
+   
+   \draw
+      (gr02) -- (gr12) -- (gr11) -- (go04);
+   
+\fi
+
+%\draw[step=1,black!10,very thin] (-2,-2) grid (2,2);
+   
+\end{tikzpicture}%
+\end{document}%

@@ -1,4 +1,4 @@
-all: proposal.pdf
+all: proposal.pdf proposal-talk.pdf
 #all: fast-manip.pdf proposal.pdf
 
 fast-manip.pdf: ch01-intro.tex
@@ -51,6 +51,7 @@ proposal.pdf: build/pairwise-labels-dot.tex
 STANDALONES += broadphase-single
 STANDALONES += broadphase-multi
 STANDALONES += diagram-multi-step
+STANDALONES += diagram-mutlistep-intro
 STANDALONES += e8-exgraph-edge-eval
 STANDALONES += e8-exgraph-edge-select
 STANDALONES += e8-exgraph-implicit-expand
@@ -72,8 +73,11 @@ STANDALONES += figstar-c
 STANDALONES += intro-cost-axis
 STANDALONES += intro-cost-chimp
 STANDALONES += intro-cost-herb
+STANDALONES += intro-cost-proving
+STANDALONES += intro-cost-rover
 STANDALONES += intro-subprob-axis
 STANDALONES += intro-subprob-cspace
+STANDALONES += maze-plot-ensemble
 STANDALONES += multiple-sets
 STANDALONES += query-to-subset-a
 STANDALONES += query-to-subset-b
@@ -81,7 +85,25 @@ STANDALONES += relations-inclusion
 STANDALONES += relations-intersection
 STANDALONES += retroactive-a
 STANDALONES += retroactive-b
+STANDALONES += roadmap-2d-densified
 STANDALONES += self-collision
+STANDALONES += talk-act1-2d
+STANDALONES += talk-act1-2d,cfree
+STANDALONES += talk-act1-2d,paths
+STANDALONES += talk-act1-2d,traja
+STANDALONES += talk-act1-2d,trajb
+STANDALONES += talk-act1-2d,trajc
+STANDALONES += talk-act1-2d,trajd
+STANDALONES += talk-act1-2d,firstfail
+STANDALONES += talk-act1-2d,firstfailnext
+STANDALONES += talk-act1-2d,rrtstart
+STANDALONES += talk-act1-2d,rrtsample
+STANDALONES += talk-act1-2d,rrtcandidates
+STANDALONES += talk-act1-2d,graph
+STANDALONES += talk-act1-2d,graphfirst
+STANDALONES += talk-act1-2d,graphfirstevaled
+STANDALONES += talk-act1-2d,graphfirstnext
+STANDALONES += talk-challenge1-tradeoff
 
 # CMR stuff
 STANDALONES += plot-edges-drill
@@ -105,16 +127,37 @@ STANDALONES += w13-fs1-ei344
 
 fast-manip.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 proposal.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
+proposal-talk.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
+
+figs/roadmap-2d-densified.tex:
+	@echo instructions to make:
+	@echo rosrun test_multiset roadmaps-2d 0.6 100 3
+	@echo rosrun test_multiset roadmaps-2d-totex.py --roadmap-file=roadmap-3ab10de0d8eef49de93149a9510707253edf3391.txt --output-tex=$@
+	false
 
 build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
 	mkdir -p build
 	python3 fig-scripts/e8-example.py --fn=$* --output_tikz=build/e8-world-$*.tex --output_stats=build/e8-world-$*-stats.tex
 	pdflatex -halt-on-error -output-directory=build build/e8-world-$*
 
+
+
+
 # compiling standalone tex's to pdfs
-build/%.pdf: figs/%.tex
+#build/%.pdf: figs/%.tex
+comma := ,
+*1 = $(word 1, $(subst $(comma), ,$*))
+*2 = $(word 2, $(subst $(comma), ,$*))
+.SECONDEXPANSION:
+build/%.pdf: figs/$$(*1).tex
+	@echo first is $(*1)
+	@echo after is $(*2)
 	mkdir -p build
-	pdflatex -halt-on-error -output-directory=build figs/$*
+	#pdflatex -halt-on-error -output-directory=build --jobname=$* figs/$(*1)
+	pdflatex -halt-on-error -output-directory=build --jobname="$*" "\def\arg$(*2){}\input{figs/$(*1)}"
+
+
+
 
 # compiling dots to texs
 build/%-dot.tex: figs/%.dot
@@ -126,6 +169,8 @@ fast-manip.pdf: fast-manip.tex pr-refs.bib
 	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' fast-manip
 proposal.pdf: proposal.tex pr-refs.bib
 	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal
+proposal-talk.pdf: proposal-talk.tex
+	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal-talk
 
 # how to clean after latex
 EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc

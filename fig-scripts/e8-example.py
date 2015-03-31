@@ -248,6 +248,8 @@ fp.write(r'''\documentclass{standalone}
 
 \draw[black!10] (-0.5,-0.5) rectangle (10.5,10.5);
 
+\draw[step=1cm,black!10,very thin] (0,0) grid (10,10);
+
 % radars
 \begin{scope}
    \clip (-0.5,-0.5) rectangle (10.5,10.5);
@@ -266,8 +268,6 @@ for x1,y1,x2,y2 in boxes:
 fp.write(r'''
 \fill[gray] (1.0,1.0) circle (0.2cm);
 \fill[gray] (9.0,9.0) circle (0.2cm);
-
-\draw[step=1cm,black!10,very thin] (0,0) grid (10,10);
 ''')
 
 local_fn = 'fn_{}'.format(args.fn)
