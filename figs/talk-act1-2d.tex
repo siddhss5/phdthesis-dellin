@@ -4,85 +4,137 @@
 \begin{document}%
 \begin{tikzpicture}%
 
+\ifdefined\argrootsonly
+   \def\drawc{1.0}
+\fi
+
 \ifdefined\argcfree
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
 \fi
 
 \ifdefined\argpaths
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawpaths{}
 \fi
 
 \ifdefined\argtraja
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
 \fi
 
 \ifdefined\argtrajb
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawtrajneighborhood{}
 \fi
 
 \ifdefined\argtrajc
+   \def\drawc{1.0}
    \def\drawcfreefuzzy{}
    \def\drawtrajneighborhood{}
 \fi
 
 \ifdefined\argtrajd
+   \def\drawc{1.0}
    \def\drawcfreefuzzy{}
    \def\drawtrajneighborhood{}
 \fi
 
 \ifdefined\argfirstfail
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawfirstfailtraj{}
 \fi
 
 \ifdefined\argfirstfailnext
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawfirstfailtraj{}
 \fi
 
 \ifdefined\argrrtstart
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawrrtstart{}
 \fi
 
 \ifdefined\argrrtsample
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawrrtstart{}
    \def\drawrrtsample{}
 \fi
 
 \ifdefined\argrrtcandidates
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
    \def\drawrrtstart{}
    \def\drawrrtsample{}
+   \def\drawrrtcandidates{}
+\fi
+
+\ifdefined\argrrtchosen
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
+   \def\drawrrtstart{}
+   \def\drawrrtsample{}
+   \def\drawrrtcandidates{}
 \fi
 
 \ifdefined\arggraph
-   \def\drawcfree{}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
+   \def\drawgraph{dotted}
 \fi
 
 \ifdefined\arggraphfirst
-   \def\drawcfree{}
+   \def\drawgraph{dotted}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
 \fi
 
 \ifdefined\arggraphfirstevaled
-   \def\drawcfree{}
+   \def\drawgraph{dotted}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
 \fi
 
 \ifdefined\arggraphfirstnext
-   \def\drawcfree{}
+   \def\drawgraph{dotted}
+   \def\drawc{1.0}
+   \def\drawcfree{1.0}
 \fi
 
+\def\drawfadedgraph{
+   \def\drawgraph{dotted}
+   \def\drawc{0.2}
+   \def\drawcfree{0.2}
+}
+\ifdefined\argastara\drawfadedgraph\fi
+\ifdefined\argastarb\drawfadedgraph\fi
+\ifdefined\argastarc\drawfadedgraph\fi
+\ifdefined\argastard\drawfadedgraph\fi
+\ifdefined\argastare\drawfadedgraph\fi
+\ifdefined\argastarf\drawfadedgraph\fi
+\ifdefined\argastarg\drawfadedgraph\fi
+\ifdefined\argastarh\drawfadedgraph\fi
+\ifdefined\argastari\drawfadedgraph\fi
+\ifdefined\argastarj\drawfadedgraph\fi
+\ifdefined\argastark\drawfadedgraph\fi
+\ifdefined\argastarl\drawfadedgraph\fi
+\ifdefined\argastarm\drawfadedgraph\fi
+\ifdefined\argastarn\drawfadedgraph\fi
+\ifdefined\argastaro\drawfadedgraph\fi
+\ifdefined\argastarp\drawfadedgraph\fi
+\ifdefined\argastarq\drawfadedgraph\fi
+\ifdefined\argastarr\drawfadedgraph\fi
+\ifdefined\argastars\drawfadedgraph\fi
 
 %\node[inner sep=0] at (-3.5,1.5) {%
 %   \includegraphics[width=0.2\textwidth]{figs/fridge-intro.png}%
 %};
-
-\node[draw,black!0,rounded corners,minimum height=5cm,minimum width=5cm]
-   (C) at (0,0) {};
-\node[above left=-0.8cm of C] (clab) {$\mathcal{C}$};
 
 \ifdefined\drawfirstfailtraj
    \draw[red,line width=2pt] plot [smooth] coordinates {(-2,0) (1.9,1.4)};
@@ -99,23 +151,18 @@
    \begin{scope}
       \draw[draw=none,clip,rounded corners] \crect;
       \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
-      \draw[line width=3pt,rounded corners,fill=blue!20] \crect;
-      \draw[line width=3pt] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=3pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
+      \draw[line width=3pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\bloba};
    \end{scope}
    %\draw [red] plot [smooth cycle] coordinates {\bloba};
    
    \begin{scope}
       \draw[draw=none,clip,rounded corners] \crect;
       \draw[draw=none,clip] plot [smooth cycle] coordinates {\blobb};
-      \draw[line width=3pt,rounded corners,fill=blue!20] \crect;
-      \draw[line width=3pt] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=3pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
+      \draw[line width=3pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\blobb};
    \end{scope}
    %\draw [red] plot [smooth cycle] coordinates {\blobb};
-
-   %\node[draw,line width=1.5pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
-   %   (Cfreebox) at (-4.0, 0.5) {};
-   %\node[right=0cm of Cfreebox] {$\mathcal{C}_{\mbox{\scriptsize free}}$}; 
-
 \fi
    
 \ifdefined\drawcfreefuzzy
@@ -145,8 +192,10 @@
 \fi
    
 % draw crect itself!
-\draw[rounded corners] \crect;
-
+\ifdefined\drawc
+   \draw[rounded corners,opacity=\drawc] \crect;
+   \node[opacity=\drawc] at (-2.2,2.2) {$\mathcal{C}$};
+\fi
 
 % starts
 \coordinate (st01) at (-2,0);
@@ -217,7 +266,7 @@
    %\end{scope}
 \fi
 
-\ifdefined\argrrtcandidates
+\ifdefined\drawrrtcandidates
    % forward options
    \draw[dashed]
       (-2,0) -- (-1,2)
@@ -230,6 +279,10 @@
       (-1,2) -- (2.1,2)
       (-1,2) -- (2.0,1.4)
       (-1,2) -- (1.4,1.225);
+\fi
+
+\ifdefined\argrrtchosen
+   \draw (-0.5,0.525) -- (-1,2) -- (1.4,1.225);
 \fi
 
 \ifdefined\drawrrtsample
@@ -261,7 +314,7 @@
 \coordinate (gr22) at (-0.5,-2.2);
 \coordinate (gr23) at ( 0.5,-1.9);
 
-\ifdefined\arggraph
+\ifdefined\drawgraph
    \fill[black]
       (gr01) circle (0.07cm)
       (gr02) circle (0.07cm)
@@ -287,7 +340,7 @@
       (gr22) circle (0.07cm)
       (gr23) circle (0.07cm)
       ;
-   \draw[dotted]
+   \draw[\drawgraph]
       (st01) -- (gr01) -- (gr02) -- (gr05) -- (gr06) -- (go02)
       (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
       (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
@@ -307,149 +360,327 @@
 \fi
 
 \ifdefined\arggraphfirst
-   \fill[black]
-      (gr01) circle (0.07cm)
-      (gr02) circle (0.07cm)
-      (gr03) circle (0.07cm)
-      (gr04) circle (0.07cm)
-      (gr05) circle (0.07cm)
-      (gr06) circle (0.07cm)
-      (gr07) circle (0.07cm)
-      (gr08) circle (0.07cm)
-      (gr09) circle (0.07cm)
-      (gr10) circle (0.07cm)
-      (gr11) circle (0.07cm)
-      (gr12) circle (0.07cm)
-      (gr13) circle (0.07cm)
-      (gr14) circle (0.07cm)
-      (gr15) circle (0.07cm)
-      (gr16) circle (0.07cm)
-      (gr17) circle (0.07cm)
-      (gr18) circle (0.07cm)
-      (gr19) circle (0.07cm)
-      (gr20) circle (0.07cm)
-      (gr21) circle (0.07cm)
-      (gr22) circle (0.07cm)
-      (gr23) circle (0.07cm)
-      ;
    \draw
       (st01) -- (gr01) -- (gr02) -- (gr05) -- (gr06) -- (go02);
-   \draw[dotted]
-      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
-      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
-      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
-      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
-      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
-      (gr12) -- (gr11) -- (go04) -- (go05)
-      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
-      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
-      (gr12) -- (gr15)
-      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
-      (gr18) -- (gr13) -- (gr19) -- (gr14)
-      (gr19) -- (gr15) -- (gr20) -- (gr16)
-      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
-      (gr22) -- (gr23)  -- (gr20)
-      ;
 \fi
 
 \ifdefined\arggraphfirstevaled
-   \draw[dotted]
-      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
-      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
-      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
-      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
-      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
-      (gr12) -- (gr11) -- (go04) -- (go05)
-      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
-      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
-      (gr12) -- (gr15)
-      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
-      (gr18) -- (gr13) -- (gr19) -- (gr14)
-      (gr19) -- (gr15) -- (gr20) -- (gr16)
-      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
-      (gr22) -- (gr23)  -- (gr20)
-      ;
    \draw[red,line width=2pt] (gr02) -- (gr05) -- (gr06);
    \draw[line width=2pt]
       (st01) -- (gr01) -- (gr02) (gr06) -- (go02);
-   \fill[black]
-      (gr01) circle (0.07cm)
-      (gr02) circle (0.07cm)
-      (gr03) circle (0.07cm)
-      (gr04) circle (0.07cm)
-      %(gr05) circle (0.07cm)
-      (gr06) circle (0.07cm)
-      (gr07) circle (0.07cm)
-      (gr08) circle (0.07cm)
-      (gr09) circle (0.07cm)
-      (gr10) circle (0.07cm)
-      (gr11) circle (0.07cm)
-      (gr12) circle (0.07cm)
-      (gr13) circle (0.07cm)
-      (gr14) circle (0.07cm)
-      (gr15) circle (0.07cm)
-      (gr16) circle (0.07cm)
-      (gr17) circle (0.07cm)
-      (gr18) circle (0.07cm)
-      (gr19) circle (0.07cm)
-      (gr20) circle (0.07cm)
-      (gr21) circle (0.07cm)
-      (gr22) circle (0.07cm)
-      (gr23) circle (0.07cm)
-      ;
    \fill[red] (gr05) circle (0.07cm);
 \fi
 
 \ifdefined\arggraphfirstnext
-   \draw[dotted]
-      (gr02) -- (gr03) -- (gr04) -- (gr01) -- (gr03)
-      (st01) -- (gr04) -- (gr09) -- (gr03) -- (gr08) -- (gr09)
-      (gr03) -- (gr05) -- (gr07) -- (gr10) -- (gr06) -- (gr07) -- (gr08)
-      (gr10) -- (go01) -- (go02) -- (go03) -- (gr06)
-      (gr02) -- (gr12) -- (gr05) -- (gr11) -- (go03) -- (go04)
-      (gr12) -- (gr11) -- (go04) -- (go05)
-      (st01) -- (gr13) -- (gr14) -- (gr15) -- (gr16) -- (go05)
-      (gr13) -- (gr01) -- (gr14) -- (gr02) -- (gr15) -- (gr11)
-      (gr12) -- (gr15)
-      (gr13) -- (gr17) -- (gr18) -- (gr19) -- (gr20) -- (go05)
-      (gr18) -- (gr13) -- (gr19) -- (gr14)
-      (gr19) -- (gr15) -- (gr20) -- (gr16)
-      (gr17) -- (gr21) -- (gr18) -- (gr22) -- (gr19) -- (gr23)
-      (gr22) -- (gr23)  -- (gr20)
-      ;
    \draw[red,line width=2pt] (gr02) -- (gr05) -- (gr06);
    \draw[line width=2pt]
       (st01) -- (gr01) -- (gr02) (gr06) -- (go02);
-   \fill[black]
-      (gr01) circle (0.07cm)
-      (gr02) circle (0.07cm)
-      (gr03) circle (0.07cm)
-      (gr04) circle (0.07cm)
-      %(gr05) circle (0.07cm)
-      (gr06) circle (0.07cm)
-      (gr07) circle (0.07cm)
-      (gr08) circle (0.07cm)
-      (gr09) circle (0.07cm)
-      (gr10) circle (0.07cm)
-      (gr11) circle (0.07cm)
-      (gr12) circle (0.07cm)
-      (gr13) circle (0.07cm)
-      (gr14) circle (0.07cm)
-      (gr15) circle (0.07cm)
-      (gr16) circle (0.07cm)
-      (gr17) circle (0.07cm)
-      (gr18) circle (0.07cm)
-      (gr19) circle (0.07cm)
-      (gr20) circle (0.07cm)
-      (gr21) circle (0.07cm)
-      (gr22) circle (0.07cm)
-      (gr23) circle (0.07cm)
-      ;
    \fill[red] (gr05) circle (0.07cm);
-   
    \draw
-      (gr02) -- (gr12) -- (gr11) -- (go04);
-   
+      (gr01) -- (gr03) -- (gr08) -- (gr07) -- (gr10) -- (go01);
+\fi
+
+\ifdefined\argastarb
+   \draw[dashed] (st01) -- (go03);
+   \fill[blue] (st01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarc
+   \draw[line width=2pt] (st01) -- (gr04);
+   \fill[blue] (st01) circle (0.1cm);
+\fi
+
+\ifdefined\argastard
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \fill[blue] (st01) circle (0.1cm);
+\fi
+
+\ifdefined\argastare
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \fill[blue] (st01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarf
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[dashed] (gr01) -- (go03);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarg
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarh
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastari
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarj
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastark
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \fill[blue] (gr01) circle (0.1cm);
+\fi
+
+\ifdefined\argastarl
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   % new:
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[dashed] (gr02) -- (go03);
+   \fill[blue] (gr02) circle (0.1cm);
+\fi
+
+\ifdefined\argastarm
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   % new:
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[dashed] (gr12) -- (go03);
+   \fill[blue] (gr12) circle (0.1cm);
+\fi
+
+\ifdefined\argastarn
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   % new:
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   \draw[dashed] (gr03) -- (go02);
+   \fill[blue] (gr03) circle (0.1cm);
+\fi
+
+\ifdefined\argastaro
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   % new:
+   \draw[line width=2pt,red] (gr04) -- (gr09);
+   \draw[dashed] (gr04) -- (go03);
+   \fill[blue] (gr04) circle (0.1cm);
+\fi
+
+\ifdefined\argastarp
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   \draw[line width=2pt,red] (gr04) -- (gr09);
+   % new:
+   \draw[line width=2pt,red] (gr08) -- (gr09);
+   \draw[line width=2pt] (gr08) -- (gr07);
+   \draw[dashed] (gr08) -- (go01);
+   \fill[blue] (gr08) circle (0.1cm);
+\fi
+
+\ifdefined\argastarq
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   \draw[line width=2pt,red] (gr04) -- (gr09);
+   \draw[line width=2pt,red] (gr08) -- (gr09);
+   \draw[line width=2pt] (gr08) -- (gr07);
+   % new:
+   \draw[line width=2pt] (gr07) -- (gr10);
+   \draw[line width=2pt] (gr07) -- (gr06);
+   \draw[line width=2pt,red] (gr07) -- (gr05);
+   \draw[dashed] (gr07) -- (go01);
+   \fill[blue] (gr07) circle (0.1cm);
+\fi
+
+\ifdefined\argastarr
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   \draw[line width=2pt,red] (gr04) -- (gr09);
+   \draw[line width=2pt,red] (gr08) -- (gr09);
+   \draw[line width=2pt] (gr08) -- (gr07);
+   \draw[line width=2pt] (gr07) -- (gr10);
+   \draw[line width=2pt] (gr07) -- (gr06);
+   \draw[line width=2pt,red] (gr07) -- (gr05);
+   % new:
+   \draw[line width=2pt] (gr10) -- (go01);
+   \draw[line width=2pt] (gr10) -- (gr06);
+   \draw[dashed] (gr10) -- (go01);
+   \fill[blue] (gr10) circle (0.1cm);
+\fi
+
+\ifdefined\argastars
+   \draw[line width=2pt] (st01) -- (gr04);
+   \draw[line width=2pt] (st01) -- (gr01);
+   \draw[line width=2pt,red] (st01) -- (gr13);
+   \draw[line width=2pt] (gr01) -- (gr04);
+   \draw[line width=2pt] (gr01) -- (gr03);
+   \draw[line width=2pt] (gr01) -- (gr02);
+   \draw[line width=2pt,red] (gr01) -- (gr14);
+   \draw[line width=2pt,red] (gr01) -- (gr13);
+   \draw[line width=2pt] (gr02) -- (gr03);
+   \draw[line width=2pt,red] (gr02) -- (gr05);
+   \draw[line width=2pt] (gr02) -- (gr12);
+   \draw[line width=2pt,red] (gr02) -- (gr15);
+   \draw[line width=2pt,red] (gr02) -- (gr14);
+   \draw[line width=2pt,red] (gr12) -- (gr05);
+   \draw[line width=2pt,red] (gr12) -- (gr11);
+   \draw[line width=2pt,red] (gr12) -- (gr15);
+   \draw[line width=2pt] (gr03) -- (gr04);
+   \draw[line width=2pt,red] (gr03) -- (gr09);
+   \draw[line width=2pt] (gr03) -- (gr08);
+   \draw[line width=2pt,red] (gr03) -- (gr05);
+   \draw[line width=2pt,red] (gr04) -- (gr09);
+   \draw[line width=2pt,red] (gr08) -- (gr09);
+   \draw[line width=2pt] (gr08) -- (gr07);
+   \draw[line width=2pt] (gr07) -- (gr10);
+   \draw[line width=2pt] (gr07) -- (gr06);
+   \draw[line width=2pt,red] (gr07) -- (gr05);
+   \draw[line width=2pt] (gr10) -- (go01);
+   \draw[line width=2pt] (gr10) -- (gr06);
+   % new:
+   \fill[blue] (go01) circle (0.1cm);
 \fi
 
 %\draw[step=1,black!10,very thin] (-2,-2) grid (2,2);

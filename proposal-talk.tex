@@ -9,6 +9,41 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,decorations.pathreplacing}
 
+% this is from http://tex.stackexchange.com/a/103691
+% taken from manual
+\makeatletter
+\pgfdeclareshape{document}{
+\inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+\inheritanchorborder[from=rectangle]
+\inheritanchor[from=rectangle]{center}
+\inheritanchor[from=rectangle]{north}
+\inheritanchor[from=rectangle]{south}
+\inheritanchor[from=rectangle]{west}
+\inheritanchor[from=rectangle]{east}
+% ... and possibly more
+\backgroundpath{% this is new
+% store lower right in xa/ya and upper right in xb/yb
+\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+% compute corner of ‘‘flipped page’’
+\pgf@xc=\pgf@xb \advance\pgf@xc by-10pt % this should be a parameter
+\pgf@yc=\pgf@yb \advance\pgf@yc by-10pt
+% construct main path
+\pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+\pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+\pgfpathclose
+% add little corner
+\pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+}
+}
+\makeatother
+
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
@@ -250,7 +285,7 @@ Reuse-Informed Optimization of Planning Effort}
    
    add P vs E PLOT
    
-   add PREMISE: planning effort DOMINATED by configuration valitiy checking!s
+   add PREMISE: planning effort DOMINATED by configuration valitiy checking!
 \end{frame}
    
 \begin{frame}
@@ -263,7 +298,7 @@ Reuse-Informed Optimization of Planning Effort}
          {\includegraphics[width=5cm]{figs/fridge-intro.png}};
    
       \node[inner sep=0] at (9,5) {%
-         {\only<1>{\includegraphics{build/talk-act1-2d}}}%
+         {\only<1>{\includegraphics{build/talk-act1-2d,rootsonly}}}%
          {\only<2>{\includegraphics{build/talk-act1-2d,cfree}}}%
          {\only<3>{\includegraphics{build/talk-act1-2d,paths}}}%
       };
@@ -461,6 +496,1344 @@ Reuse-Informed Optimization of Planning Effort}
    \end{tikzpicture}
 \end{frame}
 
+\begin{frame}
+   \frametitle{Graph Search: Run A*!}
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,graph}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,astara}}}%
+         {\only<3>{\includegraphics{build/talk-act1-2d,astarb}}}%
+         {\only<4>{\includegraphics{build/talk-act1-2d,astarc}}}%
+         {\only<5>{\includegraphics{build/talk-act1-2d,astard}}}%
+         {\only<6>{\includegraphics{build/talk-act1-2d,astare}}}%
+         {\only<7>{\includegraphics{build/talk-act1-2d,astarf}}}%
+         {\only<8>{\includegraphics{build/talk-act1-2d,astarg}}}%
+         {\only<9>{\includegraphics{build/talk-act1-2d,astarh}}}%
+         {\only<10>{\includegraphics{build/talk-act1-2d,astari}}}%
+         {\only<11>{\includegraphics{build/talk-act1-2d,astarj}}}%
+         {\only<12>{\includegraphics{build/talk-act1-2d,astark}}}%
+         {\only<13>{\includegraphics{build/talk-act1-2d,astarl}}}%
+         {\only<14>{\includegraphics{build/talk-act1-2d,astarm}}}%
+         {\only<15>{\includegraphics{build/talk-act1-2d,astarn}}}%
+         {\only<16>{\includegraphics{build/talk-act1-2d,astaro}}}%
+         {\only<17>{\includegraphics{build/talk-act1-2d,astarp}}}%
+         {\only<18>{\includegraphics{build/talk-act1-2d,astarq}}}%
+         {\only<19>{\includegraphics{build/talk-act1-2d,astarr}}}%
+         {\only<20-27>{\includegraphics{build/talk-act1-2d,astars}}}%
+      };
+      
+      \node at (3,5.5) {\begin{minipage}{5cm}
+         Execution Effort Model:
+         \begin{equation*}
+            x(e) = \left\{
+            \begin{array}{cl}
+               ||e|| & \mbox{if } {\bf 1}_{\ms{free}}(e) \\
+               \infty & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+         Heuristic:
+         \begin{equation*}
+            {\hat x}(v_a, v_b) = ||v_a - v_b||
+         \end{equation*}
+         \end{minipage}
+      };
+      
+      \only<21-27>{
+         \node at (3,2.25) {Planning Effort Allocation:};
+         \draw[] (1,1.5) rectangle (11,2);
+      }
+      \only<22-27>{
+         \draw[fill=yellow] (1.1,1.5) rectangle (1.45,2);
+         \node[align=center,inner sep=0] at (0.9,0.8) {\small computing};
+         \node[align=center,inner sep=0] at (0.9,0.51) {\small vertex};
+         \node[align=center,inner sep=0] at (0.9,0.2) {\small successors};
+         \draw[->] (1,1) -- (1.25,1.45);
+      }
+      \only<23-27>{
+         \draw[fill=blue] (1.55,1.5) rectangle (1.95,2);
+         \node[align=center,inner sep=0] at (2.8,0.8) {\small sorting};
+         \node[align=center,inner sep=0] at (2.8,0.48) {\small open};
+         \node[align=center,inner sep=0] at (2.8,0.2) {\small list};
+         \draw[->] (2.6,1) -- (1.95,1.45);
+      }
+      \only<24-27>{
+         \draw[fill=red] (2.05,1.5) rectangle (10.9,2);
+         \node[align=center,inner sep=0] at (6,0.65) {\small edge};
+         \node[align=center,inner sep=0] at (6,0.35) {\small evaluations};
+         \draw[->] (6,1) -- (6,1.45);
+      }
+      
+      \only<25-27>{
+         \draw[line width=2pt] (1.275,1.75) circle (0.5cm);
+      }
+      
+      \only<26-27>{\node[align=center,fill=white,opacity=0.95] at (7.3,2.9)
+         {{\footnotesize Weighted A*}\\{\scriptsize (Pohl 1970)}};}
+      \only<27>{\node[align=center,fill=white,opacity=0.95] at (10.2,2.9)
+         {{\footnotesize Partial Expansion A*}\\{\scriptsize(Yoshizumi etal. 2000)}};}
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Graph Search Mismatch}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,7) {\begin{minipage}{12cm}\centering
+         A* efficiently addresses {\bf large graphs}, usually represented {\bf implicitly}
+         (with {\bf inexpensive edge costs}), by expanding the {\bf fewest vertices}.
+      \end{minipage}};
+   
+      \only<2-4>
+      {
+         \node[inner sep=0pt] at (2,4.5) {\includegraphics[width=1in]{figs/rubik.png}};
+         \node[inner sep=0pt,anchor=north] at (2,2.5)
+         {\begin{minipage}{4cm}\centering
+            $4.3 \times 10^{19}$ vertices
+            
+            \tiny{from user Booyabazooka, Wikipedia}
+         \end{minipage}};
+      }
+      
+      \only<3-4>
+      {
+         \node[inner sep=0pt] at (6,4.5) {\includegraphics[width=1in]{figs/15puzzle.png}};
+         \node[inner sep=0pt,anchor=north] at (6,2.5)
+         {\begin{minipage}{4cm}\centering
+            $2.1 \times 10^{13}$ vertices
+         \end{minipage}};
+      }
+      
+      \only<4>
+      {
+         \node[inner sep=0pt] at (10,4.5) {\includegraphics[width=1in]{figs/goldberg-northwest.png}};
+         \node[inner sep=0pt,anchor=north] at (10,2.5)
+         {\begin{minipage}{4cm}\centering
+         
+            1.6M vertices
+            
+            \tiny{
+            Goldberg, Harrelson, Kaplan, Werneck.
+            ``Efficient Point-to-Point Shortest Path Algorithms''
+            }
+         \end{minipage}};
+      }
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Graph Search Mismatch}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,7) {\begin{minipage}{12cm}\centering
+         A* efficiently addresses {\bf large graphs}, usually represented {\bf implicitly}
+         (with {\bf inexpensive edge costs}), by expanding the {\bf fewest vertices}.
+      \end{minipage}};
+      
+      \only<2-3>{
+         \node[inner sep=0pt] at (3.5,4.5) {\includegraphics[width=4cm]{figs/fridge-intro.png}};
+         \node[inner sep=0pt,anchor=north] at (3.5,3)
+         {\begin{minipage}{4cm}\centering
+            Our problem:
+         
+            $\sim10$k vertices
+         \end{minipage}};
+      }
+      
+      \only<3>{
+         \node[inner sep=0pt] at (8.5,4.5) {\includegraphics[width=4cm]{figs/prm.png}};
+         \node[inner sep=0pt,anchor=north] at (8.5,3)
+         {\begin{minipage}{4cm}\centering
+            Probabalistic RoadMap
+            
+            \tiny{Kavraki, Svestka, Latombe, Overmars, 1996}
+            
+         \end{minipage}};
+      }
+      
+      \only<2-3>{
+         \node[inner sep=0pt] at (6,1) {\begin{minipage}{12cm}\centering
+            We can represent our graphs {\bf explicitly};
+            
+            {\bf evaluating graph edges} is expensive,
+            
+            whereas entire {\bf graph search queries} are inexpensive.
+         \end{minipage}};
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Explicit Graphs with Expensive Edge Evaluations}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         {\only<1-4>{\includegraphics{build/talk-act1-2d,astara}}}%
+      };
+      
+      % arg min f(x) highlight
+      \only<4>{\fill[green!30] (0.5,5.65) rectangle (5.5,6.45);}
+      
+      % bfs
+      \node[anchor=north] at (3,7.5) {\begin{minipage}{5cm}
+         Best-first search over paths:
+         \begin{algorithmic}
+         \Loop%
+            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}_x(\pi)$
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+      \end{minipage}};
+      
+      % fx(pi) execution path cost
+      \node[anchor=north,inner sep=0pt] at (3.25,4.5) {\begin{minipage}{6cm}\small{
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}_x(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               x[e] & \mbox{if edge } e \mbox{ evaluated}  \\
+               \hat{x}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+       
+      \node[anchor=north,shape=document,draw,inner sep=0.25cm] at (6,2.25)
+      {\begin{minipage}{8.5cm}\small{
+         Effort model:
+         
+         $x(e)$ : edge evaluation function \emph{(expensive to compute)}
+         
+         ${\hat x}(e)$ : optimistic estimate of value of $x(e)$
+         
+      }\end{minipage}};
+      
+      \only<2>{
+         \node[inner sep=0pt] at (9,2) {Animate this!};
+      }
+      
+      \only<3-4>{
+         \node[inner sep=0pt] at (9,2) {This is the {\bf Lazy PRM}!};
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Challenge 1: The Planning/Execution Tradeoff}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (3.5,5) {\includegraphics[width=4cm]{figs/fridge-intro.png}};
+      \node[inner sep=0pt,anchor=north] at (3.5,3.5)
+         {\begin{minipage}{4cm}\centering
+            Our problem
+            
+            (plan then execute)
+         \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.5,4.5) {\includegraphics{build/ensemble-effort-plot-1}};
+      
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Explicit Graphs with Expensive Edge Evaluations}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         \includegraphics{build/talk-act1-2d,astara}%
+      };
+      
+      % f(x) highlight
+      \only<4-6>{\fill[green!30] (2.65,5.9) rectangle (6.4,6.7);}
+      
+      % bfs
+      \node[anchor=north west,inner sep=0pt] at (0.25,7.6) {Best-first search over paths:};
+      \node[anchor=north,inner sep=0pt] at (3.25,7.0) {\begin{minipage}{6.5cm}\small{
+         \algrenewcommand\algorithmicindent{0.2cm}%
+         \begin{algorithmic}
+         \Loop%
+            \only<1-3>{
+               \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi}
+                  \left[ \hat{f}_x(\pi) \right]$
+            }
+            \only<4-6>{
+               \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi}
+                  \left[ (1-\lambda) \hat{f}_x(\pi) + \lambda \hat{f}_p(\pi) \right]$
+            }
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
+      
+      % fx(pi) execution path cost
+      \node[anchor=north,inner sep=0pt] at (3.25,5.25) {\begin{minipage}{6cm}\small{
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}_x(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               x[e] & \mbox{if edge } e \mbox{ evaluated}  \\
+               \hat{x}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      
+      % fp(pi) execution path cost
+      \only<3-6>{
+      \fill[green!30] (0.1,2.5) rectangle (6.4,3.8);
+      \node[anchor=north,inner sep=0pt] at (3.25,4.00) {\begin{minipage}{6cm}\small{
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}_p(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               0 & \mbox{if edge } e \mbox{ evaluated}  \\
+               \hat{p}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      }
+      
+      % p(e) highlight
+      \only<2-6>{\fill[green!30] (1.5,0.3) rectangle (10.5,0.8);}
+      % ensemble highlight
+      \only<6>{\fill[green!30] (1.6,1.6) rectangle (5.3,2.1);}
+      \node[anchor=north,shape=document,draw,inner sep=0.25cm] at (6,2.25) {\begin{minipage}{8.5cm}\small{
+         \only<1-5>{Effort model:}
+         \only<6>{\emph{Ensemble Effort} model:}
+         
+         $x(e)$ : edge evaluation function \emph{(expensive to compute)}
+         
+         ${\hat x}(e)$ : optimistic estimate of value of $x(e)$
+         
+         \only<2-6>{
+            ${\hat p}(e)$ : optimistic estimate of evaluation cost of $x(e)$
+         }
+         
+      }\end{minipage}};
+      
+      \only<5-6>{
+         \node[fill=white,opacity=0.9] at (9,3) {Animate example!};
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{The E$^8$ Algorithm}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[anchor=north,shape=document,draw,inner sep=0.25cm] at (6,7.75) {\begin{minipage}{8.5cm}\small{
+         Ensemble Effort model:
+         
+         $x(e)$ : execution effort function \emph{(expensive to compute)}
+         
+         ${\hat x}(e)$ : optimistic estimate of execution effort for edge $e$
+         
+         ${\hat p}(e)$ : optimistic estimate of planning effort for edge $e$
+      }\end{minipage}};
+      
+      \draw[->,line width=1pt] (6,5.5) -- (6,5.0);
+      
+      % alg
+      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      at (0,3.75) {\begin{minipage}{3.25cm}\small{
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
+      
+      % f(pi) execution path cost
+      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      at (3.5,3.75) {\begin{minipage}{8.5cm}\small{%
+         \vspace{-0.3cm}
+         \begin{equation*}%
+            \arraycolsep=1.4pt
+            \hat{f}(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               (1-\lambda) x[e] & \mbox{if edge } e \mbox{ evaluated} \\
+               (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      
+      \node[inner sep=0pt] at (6,1.5) {\begin{minipage}{12cm}\centering
+         \emph{Exploiting Ensemble Effort Estimates\\
+         on Explicit graphs\\
+         with Expensive Edge Evaluations}
+      \end{minipage}};
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Example Problem}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=0] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,4.75) {%
+         \only<1>{\includegraphics[width=6cm]{build/e8-world-intro}}%
+         \only<2>{\includegraphics[width=6cm]{build/e8-world-astar}}%
+         \only<3>{\includegraphics[width=6cm]{build/e8-world-wastar}}%
+         \only<4>{\includegraphics[width=6cm]{build/e8-world-e8}}%
+      };
+      
+      \node[inner sep=0pt] at (6,0.75) {\begin{minipage}{6cm}\centering%
+         \only<2>{
+            Planning Effort: 692.3 \\%\worldstatsastarplan\\
+            Execution Effort: 14.2 \\%\worldstatsastarexec\\
+            Total Effort: 706.5
+         }
+         \only<3>{
+            Planning Effort: 390.8 \\%\worldstatswastarplan\\
+            Execution Effort: 18.5 \\%\worldstatswastarexec\\
+            Total Effort: 409.3
+         }
+         \only<4>{
+            Planning Effort: 358.8 \\%\worldstatseEplan\\
+            Execution Effort: 20.5 \\%\worldstatseEexec\\
+            Total Effort: 379.3
+         }
+      \end{minipage}};
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Simplification with Proportional Heuristics}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      % alg
+      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      at (0,6.75) {\begin{minipage}{3.25cm}\small{
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
+      
+      % f(pi) execution path cost
+      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      at (3.5,6.75) {\begin{minipage}{8.5cm}\small{%
+         \vspace{-0.3cm}
+         \begin{equation*}%
+            \arraycolsep=1.4pt
+            \hat{f}(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               (1-\lambda) x[e] & \mbox{if edge } e \mbox{ evaluated} \\
+               (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      
+      % supposition box
+      \node[anchor=north,fill=blue!10,rounded corners] at (6,5.5) {\begin{minipage}{9cm}\small{
+         Suppose ${\hat p}(e) = \alpha {\hat x}(e)$ and $\lambda < 1$.
+         Then:
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}(\pi) \propto \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               x[e] & \mbox{if edge } e \mbox{ evaluated} \\
+               \left[ 1 + \frac{\alpha \lambda}{1-\lambda} \right] \hat{x}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+         
+         Further, suppose \textsc{EvalPath}$(\pi)$ evaluated edges \emph{forward},\\
+         s.t. $\forall \pi \in \Pi$,
+         $\pi = < \pi_1; v_{\ms{frontier}}; \pi_2 >$.
+         Then:
+         \begin{equation*}
+            \hat{f}(\pi) \propto
+            \underbrace{
+               \sum_{e \in \pi_1} x[e]
+            }_{g[v_{\mbox{\tiny frontier}}]}
+            +
+            \underbrace{
+               \left[ 1 + \frac{\alpha \lambda}{1-\lambda} \right]
+            }_{\mbox{\tiny inflation factor } \epsilon}
+            \underbrace{
+               \sum_{e \in \pi_2} \hat{x}(e)
+            }_{h(v_{\mbox{\tiny frontier}})}
+         \end{equation*}
+         
+      }\end{minipage}};
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Algorithm Comparison}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \draw[line width=1pt] (1,7) -- (11,7);
+      
+      \node[align=center] at (2,6.25) {Heuristic\\Estimates};
+      \node[align=center] at (5.5,6.25) {Implicit\\(over vertices)};
+      \node[align=center] at (9.5,6.25) {Explicit\\(over paths)};
+      
+      \draw[line width=0.1pt] (1,5.6) -- (11,5.6);
+      
+      \node[anchor=west] at (1.5,5) {none};
+      \node[anchor=west] at (1.5,4) {${\hat x}$};
+      
+      \draw[line width=0.1pt] (1,1.4) -- (11,1.4);
+      
+      \only<2->{
+         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=3cm]
+            at (5.5,5) {Dijkstra's};
+         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=3cm]
+            at (5.5,4) {A*};
+      }
+      \only<3->{
+         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=3cm]
+            at (9.5,4) {Lazy PRM};
+      }
+      
+      \only<4->{
+         \node[anchor=west] at (1.5,2) {${\hat x}, \; {\hat p}$};
+         \node[fill=black!5,rounded corners,minimum height=1.8cm,minimum width=3cm]
+            at (9.5,2.5) {E$^8$};
+      }
+      
+      \only<5->{
+         \node[anchor=west] at (1.5,3) {${\hat x}, \; {\hat p} \propto {\hat x}$};
+         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=3cm]
+            at (5.5,3) {Weighted A*};
+      }
+      
+      \only<6->{
+         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=3cm]
+            at (5.5,2) {BUGSY$^\dag$};
+         \node at (6,0.5) {\begin{minipage}{9cm}\scriptsize{
+            $^\dag$ W. Ruml and M. B. Do. Best-first Utility-Guided Search.\\
+            International Joint Conference on Artificial Intelligence, 2007.
+         }\end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Na\"{\i}ve Implementation}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+   
+      \only<1-4>{
+         % alg
+         \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=1.8cm,rounded corners]
+         at (0,7) {\begin{minipage}{3.25cm}\small{
+            \algrenewcommand\algorithmicindent{0.0cm}%
+            \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+            \begin{algorithmic}
+            \Loop%
+               \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
+               \State \textsc{EvalPath}$(\pi^*)$
+            \EndLoop
+            \end{algorithmic}
+         }\end{minipage}};
+         
+         % f(pi) execution path cost
+         \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=1.8cm,rounded corners]
+         at (3.5,7) {\begin{minipage}{8.5cm}\small{%
+            \vspace{-0.3cm}
+            \begin{equation*}%
+               \arraycolsep=1.4pt
+               \hat{f}(\pi) = \sum_{e \in \pi} \left\{
+               \begin{array}{cl}
+                  (1-\lambda) x[e] & \mbox{if edge } e \mbox{ evaluated} \\
+                  (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
+               \end{array}
+               \right.
+            \end{equation*}
+         }\end{minipage}};
+      }
+      
+      % research question
+      \only<5>{
+         \node[fill=blue!20,rounded corners] at (6,7) {\begin{minipage}{9cm}
+            {\bf Research Question Q2:}\\
+            How can incremental graph search ideas (e.g. LPA*)\\be used to
+            efficiently implement the E$^8$ algorithm?
+         \end{minipage}};
+      }
+      
+      % procedure background
+      \only<2->{
+         \node[fill=blue!10,rounded corners,minimum height=5.8cm,minimum width=11.4cm] at (6,3) {};
+      }
+      
+      % procedure background highlights
+      \only<3->{\fill[red!30] (0.3,1.375) rectangle (11.7,1.875);}
+      \only<4->{\fill[green!30] (0.3,3.05) rectangle (11.7,3.55);}
+      
+      % procedure itself
+      \only<2->{
+         \node[inner sep=0] at (6,3) {\begin{minipage}{11cm}\small{
+         \begin{algorithmic}[1]
+            \Procedure {E$^8$}{$G,
+               V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
+               \mathcal{M}, \lambda$}
+            \State $x_{\mbox{\scriptsize eval}}[\cdot] \leftarrow$ empty map
+               ($x_{\mbox{\scriptsize eval}} : E \rightarrow \mathbb{R}_0^+$)
+            \ForAll {$e \in G$}
+               \State $e.{\mbox{cost}} \leftarrow
+                  (1 - \lambda) \, \hat{x}(e) + \lambda \, \hat{p}(e)$
+                  \Comment Ensemble effort model
+            \EndFor
+            \Loop
+               \State $\pi^* = \mbox{\sc BiDijkstras}(G,
+                  V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}})$
+               \If {$e \in x_{\mbox{\scriptsize eval}} \;\forall\; e \in \pi^*$}
+                  \State \Return $\pi^*$
+               \EndIf
+               \ForAll {$e \in \pi \;|\; e \notin x_{\mbox{\scriptsize eval}}$}
+                     \Comment In some order
+                  \State $x_{\mbox{\scriptsize eval}}[e] \leftarrow x(e)$
+                     \Comment Evaluate edge (expensive!)
+                  \State $e.{\mbox{cost}} \leftarrow
+                     (1 - \lambda) \, x_{\mbox{\scriptsize eval}}[e]$
+                     \Comment Update ensemble estimate
+                  \If {$x_{\mbox{\scriptsize eval}}[e] > \hat{x}(e)$}
+                     \State \textbf{break}
+                  \EndIf
+               \EndFor
+            \EndLoop
+            \EndProcedure
+         \end{algorithmic}
+         }\end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multiple Queries}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,7.4) {\begin{minipage}{12cm}\centering
+         Implicit algorithms manifest planning effort in
+         {\bf computed g-values}.
+         Explicit algorithms manifest planning effort in
+         {\bf evaluated edges}.
+      \end{minipage}};
+      
+      \begin{scope}[shift={(0,0.8)}]
+         \clip (0,4.5) rectangle (12,6);
+         \node[fill=blue!10,rounded corners,minimum height=5.8cm,minimum width=8.4cm] at (6,3) {};
+         \node[inner sep=0,anchor=north] at (6,5.8) {\begin{minipage}{8cm}\small{
+         \begin{algorithmic}[1]
+            \Procedure {E$^8$}{$G,
+               V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
+               \mathcal{M}, \lambda$}
+            \State $x_{\mbox{\scriptsize eval}}[\cdot] \leftarrow$ empty map
+               ($x_{\mbox{\scriptsize eval}} : E \rightarrow \mathbb{R}_0^+$)
+            \State $\dots$
+            \EndProcedure
+         \end{algorithmic}
+         }\end{minipage}};
+      \end{scope}
+      
+      \node[inner sep=0] at (3,2.6) {
+         \includegraphics{build/talk-act1-2d,astars}
+      };
+      \node[inner sep=0] at (9,2.6) {
+         \includegraphics{build/talk-act1-2d,astars}
+      };
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multiple Queries: Relationship to Experience Graphs}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[anchor=north,fill=blue!10,rounded corners] at (6,7.75) {\begin{minipage}{9cm}\small{
+         E$^8$ objective with ${\hat p}(e) = \alpha {\hat x}(e)$ and $\lambda < 1$:
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}(\pi) \propto \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               x[e] & \mbox{if edge } e \mbox{ evaluated} \\
+               \left[ 1 + \frac{\alpha \lambda}{1-\lambda} \right] \hat{x}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      
+      \node[anchor=north,fill=black!5,rounded corners] at (6,5.5) {\begin{minipage}{10cm}\small{
+         Experience Graphs objective (expressed explicitly):
+         \begin{equation*}
+            \arraycolsep=1.4pt
+            \hat{f}_{\ms{EG}}(\pi) \propto \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               x[e] & \mbox{if edge } e \mbox{ evaluated, this search} \\
+               \epsilon \, x[e] & \mbox{if edge } e \mbox{ evaluated, previous solution} \\
+               \epsilon \, \epsilon^E \, \hat{x}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
+      
+      \node[anchor=north] at (6,2.75) {\begin{minipage}{11.5cm}\small{
+         E$^8$ and E-Graphs are equivalent under the following
+         conditions:
+         \begin{itemize}
+         \item ${\hat p}(e) = \alpha \, {\hat x}(e)$
+         \item $\epsilon^E = 1 + \frac{\alpha \lambda}{1-\lambda},
+            \epsilon = 1, \lambda < 1$
+         \item Only edges from the solution path are kept between queries
+         \end{itemize}
+      }\end{minipage}};
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multiple Queries: Relationship to Experience Graphs}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \draw[line width=1pt] (0.5,7.5) -- (11.5,7.5);
+      
+      \node[align=center] at (3,6.95) {Experience Graphs};
+      \node[align=center] at (9,7) {E$^8$ Search};
+      
+      \draw[line width=0.1pt] (0.5,6.5) -- (11.5,6.5);
+      
+      \node[fill=black!5,rounded corners] at (3,5.75) {\begin{minipage}{4.5cm}\centering\small{
+         Only keeping solutions may introduce helpful bias
+      }\end{minipage}};
+      
+      \node[fill=black!5,rounded corners] at (3,4.5) {\begin{minipage}{4.5cm}\centering\small{
+         More efficient for larger graphs (e.g. shortcuts)
+      }\end{minipage}};
+      
+      \node[fill=blue!10,rounded corners] at (9,5.75) {\begin{minipage}{4.5cm}\centering\small{
+         Keeping all evaluated edges may improve performance
+      }\end{minipage}};
+      
+      \node[fill=blue!10,rounded corners] at (9,4.5) {\begin{minipage}{4.5cm}\centering\small{
+         $\lambda$ and ${\hat{p}}(e)$ may be easier to set than $\epsilon$ and $\epsilon^E$
+      }\end{minipage}};
+      
+      \node[fill=blue!10,rounded corners] at (9,3.1) {\begin{minipage}{4.5cm}\centering\small{
+         Supports non-proportional planning/execution effort heuristics
+      }\end{minipage}};
+      
+      \node[fill=blue!20,rounded corners] at (6,1) {\begin{minipage}{9cm}
+         {\bf Research Question Q3:}\\
+         How does the explicit graph approach of E$^8$ compare to
+         weighted and anytime implicit algorithms?
+      \end{minipage}};
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{E$^8$ Search Summary}
+   \begin{tikzpicture}
+
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+
+      \node[anchor=south,shape=document,draw,inner sep=0.25cm]
+      at (4,4.5) {\begin{minipage}{5cm}\small{
+         Ensemble Effort model $\mathcal{M}$: \\
+         $x(e)$ : edge evaluation function \\
+         ${\hat x}(e)$ : execution effort estimate \\
+         ${\hat p}(e)$ : planning effort estimate
+      }\end{minipage}};
+      
+      \node[anchor=south,shape=document,draw,align=center]
+      at (9,4.5) {
+         Graph G:\\
+         \includegraphics[width=2.5cm]{build/roadmap-2d-simple}
+         %\includegraphics[width=2.5cm]{build/talk-act1-2d,graph}
+         
+      };
+      
+      \draw[->,line width=1pt] (6.3,4.4) -- (6.3,3.9);
+      \draw[->,line width=1pt] (7.8,4.4) -- (7.8,3.9);
+      
+      \node[fill=blue!10,minimum height=1.5cm,minimum width=2.5cm,
+         align=center,rounded corners,inner ysep=0.7cm]
+      at (7,2.5) {
+         E$^8$ Search\\
+         \small{$\min
+         \left[ (1 - \lambda) \hat{f}_x + \lambda \hat{f}_p \right]$}
+      };
+      
+      \node[shape=document,draw,align=center,inner xsep=10pt]
+      at (2.4,3) {
+         Query $V_{s1}$, $V_{g1}$, $\lambda_1$
+      };
+      \draw[->,line width=1pt] (4.5,3) -- (5.0,3);
+      
+      \draw[->,line width=1pt] (9,3) -- (9.5,3);
+      \node[shape=document,draw,align=center,inner xsep=5pt]
+      at (10.1,3) {$\pi^*_1$\;\;};
+      
+      \node[shape=document,draw,align=center,inner xsep=10pt]
+      at (2.4,2) {
+         Query $V_{s2}$, $V_{g2}$, $\lambda_2$
+      };
+      \draw[->,line width=1pt] (4.5,2) -- (5.0,2);
+      
+      \draw[->,line width=1pt] (9,2) -- (9.5,2);
+      \node[shape=document,draw,align=center,inner xsep=5pt]
+      at (10.1,2) {$\pi^*_2$\;\;};
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Continuous Spaces: Ensemble Effort Models}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node at (3,6.75) {e.g. $\mathcal{M} = \mathcal{M}_{\ms{dist}}
+         + \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$};
+      
+      \node[inner sep=0] at (8,6.75) {%
+         \includegraphics[width=2cm]{build/talk-act1-2d,graph}
+      };
+      \node[draw,line width=1.0pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (9.75, 6) {};
+      \node[right=0cm of Cfreebox] {: $\mathcal{C}_{\ms{free}}$}; 
+      
+      \node[inner sep=0pt,anchor=north] at (3,5.5) {
+         \begin{minipage}[t]{5.5cm}%
+            \hrule
+            \vspace{0.1cm}
+            Distance Model $\mathcal{M}_{\ms{dist}}$
+            \begin{algorithmic}[1]
+            \Function {$x_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $|| q_e(1) - q_e(0) ||$
+            \EndFunction
+            \Function {$\hat{x}_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $|| q_e(1) - q_e(0) ||$
+            \EndFunction
+            \Function {$\hat{p}_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $0$
+            \EndFunction
+            \end{algorithmic}
+            \hrule
+         \end{minipage}%
+      };
+      
+      \node[inner sep=0pt,anchor=north] at (9,5.5) {
+         \begin{minipage}[t]{5.5cm}%
+            \hrule
+            \vspace{0.1cm}
+            Set Validity Model $\mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$
+            \begin{algorithmic}[1]
+            \Function {$x_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \If {${\bf 1}_{\ms{free}}[q_e(t)]$}
+                  \State \Return $0$
+               \Else
+                  \State \Return $\infty$
+               \EndIf
+            \EndFunction
+            \Function {$\hat{x}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \State \Return $0$
+            \EndFunction
+            \Function {$\hat{p}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \State \Return $\hat{p}_{\ms{\textup{free}}}[q_e(t)]$
+            \EndFunction
+            \end{algorithmic}
+            \hrule
+         \end{minipage}%
+      };
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Continuous Spaces: E$^8$-PRM}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,7.4) {\begin{minipage}{11.5cm}\centering
+         E$^8$ is agnostic to the type of roadmap used.
+      \end{minipage}};
+      
+      \node[inner sep=0] at (4,5.5) {%
+         \includegraphics[height=2.5cm]{build/roadmap-2d-densified}
+      };
+      
+      \node[inner sep=0] at (8,5.5) {%
+         \includegraphics[height=2.5cm]{figs/halton.png}
+      };
+      
+      % procedure itself
+      \node[fill=blue!10,rounded corners] at (6,2) {\begin{minipage}{11cm}\small{
+         \begin{algorithmic}[1]
+         \State $G \leftarrow \mbox{empty graph}$
+         \State $\mathcal{M} \leftarrow
+            \mathcal{M}_{\ms{dist}}
+            + \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$
+         \Procedure {E$^8$-PRM}{$G,
+            V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
+            N, \mathcal{M}, \lambda$}
+         \State \textsc{AddRoots}($G, V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}}$)
+         \Loop
+            \State \textsc{PRMAddSamples}($G, \mathcal{C}, N$)
+            \State $\pi^* \leftarrow \mbox{E}^8(G,
+               V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
+               \mathcal{M}, \lambda)$
+            \If {$\mathcal{M}.\hat{x}(\pi^*) < \infty$}
+               \State \Return $\pi^*$
+            \EndIf
+         \EndLoop
+         \EndProcedure
+         \end{algorithmic}
+      }\end{minipage}};
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{HERB Example Problem}
+   
+   Woo results!
+\end{frame}
+
+\begin{frame}
+   \frametitle{E$^8$ Search and the E$^8$-PRM}
+   
+   This is a summary slide.
+   
+   $\lambda = 0$ : we only care about execution effort.  Lazy PRM.
+   
+   $\lambda = 1$ : we only care about planning effort.
+\end{frame}
+
+\begin{frame}
+   \frametitle{Revisiting RRTs}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,rrtstart}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,rrtsample}}}%
+         {\only<3-4>{\includegraphics{build/talk-act1-2d,rrtcandidates}}}%
+         {\only<5-6>{\includegraphics{build/talk-act1-2d,rrtchosen}}}%
+      };
+      
+      % legend
+      \node[draw,line width=1.5pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (3.0, 7.0) {};
+      \node[right=0cm of Cfreebox] {: $\mathcal{C}_{\mbox{\scriptsize free}}$}; 
+      \node at (3,6.25) {$\Pi$ : set of candidate paths};
+      
+      \only<3>{\fill[green!30] (0.5,4.1) rectangle (5.5,4.65);}
+      \only<4-6>{\fill[green!30] (0.5,3.4) rectangle (5.5,4.1);}
+
+      
+      % bfs
+      \node at (3,4) {\begin{minipage}{5cm}
+         \begin{algorithmic}
+         \Loop%
+            \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
+            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+         \end{minipage}
+      };
+      
+      \only<6>{\node at (6,1) {RRT-Connect is a $\lambda=1$ planner!};}
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Act 1: Capturing the Planning/Execution Tradeoff}
+   
+   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+   
+   add P vs E PLOT
+   
+   add PREMISE: planning effort DOMINATED by configuration valitiy checking!
+\end{frame}
+
+\begin{frame}
+   \frametitle{Act 2: Planning with C-Space Families}
+
+   Can we just cache everything?
+   
+   Typically, we do exploration in the robot's C-space.
+   Each step is different.
+   Each C-space is \emph{incongruent}.
+
+   Every time you grab or release something,
+   or something in the environment moves,
+   which is all the time.
+   
+   \medskip
+   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Motivation: Structure of Manipulation Problems}
+   
+   \includegraphics[width=\textwidth]{figs/fridge-intro.png}
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Motivation: 2D Example}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (5.5,6.75) {
+         \includegraphics[width=5cm]{figs/alami-intro.png}
+      };
+      
+      \node[inner sep=0] at (0.75,4.25) {\includegraphics[width=1cm]{figs/alami-transit-1.png}};
+      \node[inner sep=0] at (0.75,3.6) {\includegraphics[width=1cm]{figs/alami-intersection.png}};
+      \node[inner sep=0] at (0.75,2.95) {\includegraphics[width=1cm]{figs/alami-transit-4.png}};
+      \node[inner sep=0] at (0.75,2.3) {\includegraphics[width=1cm]{figs/alami-transit-3.png}};
+      \node[inner sep=0] at (0.75,1.65) {\includegraphics[width=1cm]{figs/alami-transit-2.png}};
+      
+      \node at (3.25,4.9) {Transit Slice:};
+      \node[inner sep=0] at (3.5,3.5) {%
+         \only<1>{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+         \only<2>{\includegraphics[width=4cm]{figs/alami-transit-1.png}}%
+         \only<3>{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+         \only<4>{\includegraphics[width=4cm]{figs/alami-transit-4.png}}%
+         \only<5>{\includegraphics[width=4cm]{figs/alami-transit-3.png}}%
+         \only<6>{\includegraphics[width=4cm]{figs/alami-transit-2.png}}%
+         \only<7->{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+      };
+      \node[inner sep=0] at (3.5,1.25) {
+         \includegraphics[width=4cm]{figs/alami-transit-slice.png}
+      };
+      
+      \node[inner sep=0] at (11.25,4.25) {\includegraphics[width=1cm]{figs/alami-transfer-1.png}};
+      \node[inner sep=0] at (11.25,3.6) {\includegraphics[width=1cm]{figs/alami-intersection.png}};
+      \node[inner sep=0] at (11.25,2.95) {\includegraphics[width=1cm]{figs/alami-transfer-2.png}};
+      
+      \node at (8.75,4.9) {Transfer Slice:};
+      \node[inner sep=0] at (8.5,3.5) {%
+         \only<-7>{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+         \only<8>{\includegraphics[width=4cm]{figs/alami-transfer-1.png}}%
+         \only<9>{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+         \only<10>{\includegraphics[width=4cm]{figs/alami-transfer-2.png}}%
+         \only<11>{\includegraphics[width=4cm]{figs/alami-intersection.png}}%
+      };
+      \node[inner sep=0] at (8.5,1.25) {
+         \includegraphics[width=4cm]{figs/alami-transfer-slice.png}
+      };
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Motivation: 2D Example}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,7) {\begin{minipage}{11.5cm}\centering
+         After every grasp and release,
+         the projection of the current manifold of $\Pi\mathcal{C}$ onto
+         $\mathcal{C}_{\ms{R}}$ changes!
+      \end{minipage}};
+
+      \node[inner sep=0] at ( 1.50,5.5) {\includegraphics[width=2cm]{figs/alami-slice-01.png}};
+      \node[inner sep=0] at ( 3.75,5.5) {\includegraphics[width=2cm]{figs/alami-slice-02.png}};
+      \node[inner sep=0] at ( 6.00,5.5) {\includegraphics[width=2cm]{figs/alami-slice-03.png}};
+      \node[inner sep=0] at ( 8.25,5.5) {\includegraphics[width=2cm]{figs/alami-slice-04.png}};
+      \node[inner sep=0] at (10.50,5.5) {\includegraphics[width=2cm]{figs/alami-slice-05.png}};
+      \node[inner sep=0] at ( 1.50,4.0) {\includegraphics[width=2cm]{figs/alami-slice-06.png}};
+      \node[inner sep=0] at ( 3.75,4.0) {\includegraphics[width=2cm]{figs/alami-slice-07.png}};
+      \node[inner sep=0] at ( 6.00,4.0) {\includegraphics[width=2cm]{figs/alami-slice-08.png}};
+      \node[inner sep=0] at ( 8.25,4.0) {\includegraphics[width=2cm]{figs/alami-slice-09.png}};
+      \node[inner sep=0] at (10.50,4.0) {\includegraphics[width=2cm]{figs/alami-slice-10.png}};
+
+      \node[inner sep=0pt] at (6,2.5) {\begin{minipage}{11.5cm}\centering
+         Do we need to build a separate roadmap in each slice?
+      \end{minipage}};
+
+   \end{tikzpicture}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}
+   \frametitle{Multi-object manipulation structure}
+   
+   Talk about full joint configuration space.
+   
+   In the simplest case with prehensile grasping,
+   objects only move when the robot moves.
+   
+   When we project the joint C-space on the robot's dofs,
+   each step of the plan manifests itself as a different Cfree.
+   
+   This motivates the study of planning with families of C-space subsets.
+\end{frame}
+
+\begin{frame}
+   \frametitle{Example}
+   
+   Example of a multi-set situation.
+   
+   Forklift example?
+   
+   \includegraphics{build/figstar-a}
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Subset Relations}
+   
+   Each subset has an indicator function.
+   
+   Insight 2:
+   These subsets are related!
+   
+   Inclusions, intersections.
+\end{frame}
+
+\begin{frame}
+   \frametitle{Example families}
+   
+   Start listing examples in manipulation.
+   
+   Cite lots of prior work!
+   
+   Caching, etc.
+
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Formulation}
+   
+   Formulation!
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set PRM}
+   
+   Use PROPOSITIONAL LOGIC to represent subset relations
+   as part of the ensemble effort model.
+   
+   Block diagram, with E8 PRM and 
+\end{frame}
+
+\begin{frame}
+   \frametitle{How does this fail?}
+   
+   Talk about failure modes!
+   
+   This is a research question.
+\end{frame}
+
+\begin{frame}
+   \frametitle{Act 3: Geometric task planning}
+   
+   Zoom out.
+   
+   How do we plan all these pieces for the COUPLED set of steps
+   that does the task?
+   
+   Talk about the problem of any-to-any for the steps.
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Blah blah CMR}
+   
+   What the heck do I talk about here.
+   
+   Baseline: commit early (e.g. from DRC paper, or HPN?).
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Geometric Task planner proposed work}
+   
+   Insight 3: ??
+   
+   Talk about proposed work for geometric task planner.
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Summary of Research Questions and Evaluations}
+   
+   summary of research questions.
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Contributions}
+   
+   index of contributions.
+   
+   open-source software.
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Timeline}
+   
+   Here is a timeline.
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Last slide.}
+   
+   Summary from title.
+   
+   Brag about how awesome I am.
+   
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+   \frametitle{Best-First Search over Paths: Trajectory Optimization}
+   \begin{center}
+      \includegraphics{build/talk-act1-2d,traja}
+      
+      \begin{minipage}{0.65\textwidth}
+      \begin{algorithmic}
+      \Loop
+         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 1};}
+         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 2};}
+         \State \textsc{EvalPath}$(\pi^*)$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
+      \EndLoop
+      \end{algorithmic}
+      \end{minipage}
+   \end{center}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Best-First Search over Paths: Trajectory Optimization}
+   \begin{center}
+      \includegraphics{build/talk-act1-2d,trajb}
+      
+      \begin{minipage}{0.8\textwidth}
+      \begin{algorithmic}
+      \Loop
+         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
+            \Comment Local neighborhood
+         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 2};}
+         \State \textsc{EvalPath}$(\pi^*)$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
+      \EndLoop
+      \end{algorithmic}
+      \end{minipage}
+   \end{center}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Best-First Search over Paths: Trajectory Optimization}
+   \begin{center}
+      \includegraphics{build/talk-act1-2d,trajc}
+      
+      \begin{minipage}{0.8\textwidth}
+      \begin{algorithmic}
+      \Loop
+         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
+            \Comment Local neighborhood
+         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \Comment $f(\pi):$ fuzzy approx
+         \State \textsc{EvalPath}$(\pi^*)$
+            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
+      \EndLoop
+      \end{algorithmic}
+      \end{minipage}
+   \end{center}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Best-First Search over Paths: Trajectory Optimization}
+   \begin{center}
+      \includegraphics{build/talk-act1-2d,trajd}
+      
+      \begin{minipage}{0.8\textwidth}
+      \begin{algorithmic}
+      \Loop
+         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
+            \Comment Local neighborhood
+         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \Comment $f(\pi):$ fuzzy approx
+         \State \textsc{EvalPath}$(\pi^*)$
+            \Comment Re-linearize
+      \EndLoop
+      \end{algorithmic}
+      \end{minipage}
+   \end{center}
+\end{frame}
 
 \begin{frame}
    \frametitle{Graph Search: Edge Execution Effort Model}
@@ -629,95 +2002,6 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
-   \frametitle{What about OUR planning effort estimate?}
-   \begin{tikzpicture}
-   
-      \draw[step=1,black!10,very thin] (0,0) grid (12,8);
-      
-      \node[draw,line width=1.0pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
-         (Cfreebox) at (8.0, 7.5) {};
-      \node[right=0cm of Cfreebox] {: $\mathcal{C}_{\mbox{\scriptsize free}}$}; 
-      
-      \node[inner sep=0] at (10.75,7) {%
-         \includegraphics[width=2cm]{build/talk-act1-2d,graph}
-      };
-      
-      % bfs
-      %\only<1>{\fill[green!30] (0.5,5.6) rectangle (5.5,6.9);}
-      %\only<2>{\fill[green!30] (0.5,5.6) rectangle (5.5,6.15);}
-      %\only<3>{\fill[green!30] (0.5,6.15) rectangle (5.5,6.9);}
-      \node at (2.5,6.75) {\begin{minipage}{5cm}
-         \begin{algorithmic}
-         \Loop%
-            \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
-            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
-            \State \textsc{EvalPath}$(\pi^*)$
-         \EndLoop
-         \end{algorithmic}
-         \end{minipage}
-      };
-      
-      %\only<2>{
-      %   \fill[green!30] (0.1,3.9) rectangle (5.9,4.9);
-      %   \fill[green!30] (6.1,2.5) rectangle (11.9,4.9);
-      %}
-      \only<2>{
-         \fill[green!30] (0.1,1.9) rectangle (5.9,2.8);
-         \fill[green!30] (6.1,0.5) rectangle (11.9,1.6);
-      }
-      
-      \node[inner sep=0pt,anchor=north] at (3,5.5) {
-         \begin{minipage}[t]{5.5cm}%
-            \hrule
-            \vspace{0.1cm}
-            Distance Model $\mathcal{M}_{\ms{dist}}$
-            \begin{algorithmic}[1]
-            \Function {$x_{\ms{\textup{dist}}}$}{$e$}
-               \State \Return $|| q_e(1) - q_e(0) ||$
-            \EndFunction
-            \Function {$\hat{x}_{\ms{\textup{dist}}}$}{$e$}
-               \State \Return $|| q_e(1) - q_e(0) ||$
-            \EndFunction
-            \only<2>{
-               \Function {$\hat{p}_{\ms{\textup{dist}}}$}{$e$}
-                  \State \Return $0$
-               \EndFunction
-            }
-            \end{algorithmic}
-            \hrule
-         \end{minipage}%
-      };
-      
-      \node[inner sep=0pt,anchor=north] at (9,5.5) {
-         \begin{minipage}[t]{5.5cm}%
-            \hrule
-            \vspace{0.1cm}
-            Set Validity Model $\mathcal{M}_{\ms{valid}}$
-            \begin{algorithmic}[1]
-            \Function {$x_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
-               \If {${\bf 1}_{\ms{free}}[q_e(t)]$}
-                  \State \Return $0$
-               \Else
-                  \State \Return $\infty$
-               \EndIf
-            \EndFunction
-            \Function {$\hat{x}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
-               \State \Return $0$
-            \EndFunction
-            \only<2>{
-               \Function {$\hat{p}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
-                  \State \Return $\hat{p}_{\ms{\textup{free}}}[q_e(t)]$
-               \EndFunction
-            }
-            \end{algorithmic}
-            \hrule
-         \end{minipage}%
-      };
-      
-   \end{tikzpicture}
-\end{frame}
-
-\begin{frame}
    \frametitle{Roadmaps $\rightarrow$ Graphs}
    \begin{tikzpicture}
    
@@ -795,362 +2079,6 @@ Reuse-Informed Optimization of Planning Effort}
          \end{array} \right.
       \end{equation*}
       
-   \end{center}
-\end{frame}
-
-\begin{frame}
-   \frametitle{Focus: Graph-based approaches}
-   
-   Let's search a graph in C-space.
-   
-   For now, assume a graph independent of Cfree,
-   but we'll come back to this. (e.g. RRT, EST, PRM heuristics)
-   
-   (like basic PRM, lattice, FMT or BIT*-like thing)
-   
-   (talk just enough about C-space to give people an idea
-   of the type of problem we're actually solving)
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Graph formulation}
-   
-   Vertices are configurations (aka milestones).
-   
-   Edges are paths (e.g. local planner) and have a true cost.
-   
-   Start node and goal node.
-   
-   Traditional graph search objective: find lowest-cost path.
-   
-   Plot of execution vs planning effort.
-   
-   Talk about budgets and suboptimality guarantees?
-   
-   A*, Dijkstra's alg, Max's stuff?
-
-\end{frame}
-
-\begin{frame}
-   \frametitle{Traditional problems}
-   
-   Huge graphs, so implicit representations.
-   
-   And so goal heuristics.
-   
-   Best-first search.
-   
-   Expanding vertices for successors is expensive (minimize expansions
-   for time and space).
-   
-   Keeping open list sorted is expensive.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Our problem}
-   
-   Insight 1:
-   But in our problem, graphs are SMALL,
-   and edge evaluations are EXPENSIVE!
-   
-   Mention keyholes, we're not doing that!
-   
-   I call this an explicit graph with expensive edge evaluations.
-   
-   (Implicit representations are not necessary,
-   and heuristics can be given the actual graph remaining.)
-   
-   This is one of the primary contribution of the PRM.
-   
-   Also talk about lazy PRM.
-   
-   Best-first over PATHS.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Planning effort objective}
-
-   Relate to initial problem for motivation.
-
-   Reference BUGSY algorithm (for implicit graphs).
-
-   Introduce ensemble effort model.
-   
-   Show 2D example with radar.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Describe E8 algorithm.}
-   
-   Input: ensemble effort model.
-
-   Talk about behaviour?
-\end{frame}
-
-\begin{frame}
-   \frametitle{Simplification with proportional heuristics}
-
-   Sidenote.
-
-   Make equivalence claim to inflated search.
-   
-   Relate to E-graphs.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Return to continuous spaces.}
-
-   Talk about E8 PRM.
-   
-   Independent of what kind of graph (lattice,
-   progressively dense, etc).
-   
-   NAMED graphs that can be easily cached,
-   removing nearest neighbor queries from the algorithm.
-   
-   Talk about parallelism?
-   
-   Show some results?
-\end{frame}
-
-\begin{frame}
-   \frametitle{Sidenote: RRTs minimize planning effort only!}
-   
-   Should I talk about this?
-\end{frame}
-
-\begin{frame}
-   \frametitle{How does this fail?}
-   
-   Talk about failure modes!
-   
-   This is a research question.
-   
-   Why optimistic?
-   
-   Behaviour.  Over-committing.  Similar to inflated heuristics.
-   Behavior: over-commit, add in expectation?
-\end{frame}
-
-\begin{frame}
-   \frametitle{Act 2: Planning with C-Space Families}
-   
-   Zoom out, we talked about each step,
-   now lets talk about BETWEEN steps.
-   
-   We would like to reuse things!
-\end{frame}
-
-\begin{frame}
-   \frametitle{Multi-object manipulation structure}
-   
-   Talk about full joint configuration space.
-   
-   In the simplest case with prehensile grasping,
-   objects only move when the robot moves.
-   
-   When we project the joint C-space on the robot's dofs,
-   each step of the plan manifests itself as a different Cfree.
-   
-   This motivates the study of planning with families of C-space subsets.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Example}
-   
-   Example of a multi-set situation.
-   
-   Forklift example?
-   
-   \includegraphics{build/figstar-a}
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Subset Relations}
-   
-   Each subset has an indicator function.
-   
-   Insight 2:
-   These subsets are related!
-   
-   Inclusions, intersections.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Example families}
-   
-   Start listing examples in manipulation.
-   
-   Cite lots of prior work!
-   
-   Caching, etc.
-
-\end{frame}
-
-\begin{frame}
-   \frametitle{Multi-Set Formulation}
-   
-   Formulation!
-\end{frame}
-
-\begin{frame}
-   \frametitle{Multi-Set PRM}
-   
-   Use PROPOSITIONAL LOGIC to represent subset relations
-   as part of the ensemble effort model.
-   
-   Block diagram, with E8 PRM and 
-\end{frame}
-
-\begin{frame}
-   \frametitle{How does this fail?}
-   
-   Talk about failure modes!
-   
-   This is a research question.
-\end{frame}
-
-\begin{frame}
-   \frametitle{Act 3: Geometric task planning}
-   
-   Zoom out.
-   
-   How do we plan all these pieces for the COUPLED set of steps
-   that does the task?
-   
-   Talk about the problem of any-to-any for the steps.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Blah blah CMR}
-   
-   What the heck do I talk about here.
-   
-   Baseline: commit early (e.g. from DRC paper, or HPN?).
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Geometric Task planner proposed work}
-   
-   Insight 3: ??
-   
-   Talk about proposed work for geometric task planner.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Summary of Research Questions and Evaluations}
-   
-   summary of research questions.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Contributions}
-   
-   index of contributions.
-   
-   open-source software.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Timeline}
-   
-   Here is a timeline.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Last slide.}
-   
-   Summary from title.
-   
-   Brag about how awesome I am.
-   
-\end{frame}
-
-\begin{frame}
-   \frametitle{Best-First Search over Paths: Trajectory Optimization}
-   \begin{center}
-      \includegraphics{build/talk-act1-2d,traja}
-      
-      \begin{minipage}{0.65\textwidth}
-      \begin{algorithmic}
-      \Loop
-         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 1};}
-         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 2};}
-         \State \textsc{EvalPath}$(\pi^*)$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
-      \EndLoop
-      \end{algorithmic}
-      \end{minipage}
-   \end{center}
-\end{frame}
-
-\begin{frame}
-   \frametitle{Best-First Search over Paths: Trajectory Optimization}
-   \begin{center}
-      \includegraphics{build/talk-act1-2d,trajb}
-      
-      \begin{minipage}{0.8\textwidth}
-      \begin{algorithmic}
-      \Loop
-         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
-            \Comment Local neighborhood
-         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 2};}
-         \State \textsc{EvalPath}$(\pi^*)$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
-      \EndLoop
-      \end{algorithmic}
-      \end{minipage}
-   \end{center}
-\end{frame}
-
-\begin{frame}
-   \frametitle{Best-First Search over Paths: Trajectory Optimization}
-   \begin{center}
-      \includegraphics{build/talk-act1-2d,trajc}
-      
-      \begin{minipage}{0.8\textwidth}
-      \begin{algorithmic}
-      \Loop
-         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
-            \Comment Local neighborhood
-         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
-            \Comment $f(\pi):$ fuzzy approx
-         \State \textsc{EvalPath}$(\pi^*)$
-            \Comment \tikz{\node[draw,circle,inner sep=0.7pt]{\scriptsize 3};}
-      \EndLoop
-      \end{algorithmic}
-      \end{minipage}
-   \end{center}
-\end{frame}
-
-\begin{frame}
-   \frametitle{Best-First Search over Paths: Trajectory Optimization}
-   \begin{center}
-      \includegraphics{build/talk-act1-2d,trajd}
-      
-      \begin{minipage}{0.8\textwidth}
-      \begin{algorithmic}
-      \Loop
-         \State $\Pi \leftarrow $ \textsc{GetPaths}$()$
-            \Comment Local neighborhood
-         \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
-            \Comment $f(\pi):$ fuzzy approx
-         \State \textsc{EvalPath}$(\pi^*)$
-            \Comment Re-linearize
-      \EndLoop
-      \end{algorithmic}
-      \end{minipage}
    \end{center}
 \end{frame}
 
