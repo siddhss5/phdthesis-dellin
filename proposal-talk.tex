@@ -4,6 +4,13 @@
 
 \usepackage{multimedia}
 
+% see http://tex.stackexchange.com/a/24491
+% for how to use enumitem with beamer
+\usepackage{enumitem}
+\setitemize{label=\usebeamerfont*{itemize item}%
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}}
+
 % default page size is:
 % \beamer@paperwidth 12.80cm%
 % \beamer@paperheight 9.60cm%
@@ -102,51 +109,109 @@ Reuse-Informed Optimization of Planning Effort}
 % REAL ROBOTS! REAL-WORLD PROBLEMS!
 % overview of manipulation planning problem?
 \begin{frame}
-
-   \begin{columns}
-   \begin{column}{0.33\textwidth}
-   \begin{center}
-      \includegraphics[width=\columnwidth]{images/herb.jpg}
+   \frametitle{Autonomous Manipulation Tasks}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      \node[inner sep=0] at ( 2,5.0) {\includegraphics[width=3.5cm]{images/herb.jpg}};
+      \node[inner sep=0] at ( 6,5.0) {\includegraphics[width=3.5cm]{images/arms.jpg}};
+      \node[inner sep=0] at (10,5.0) {\includegraphics[width=3.5cm]{images/chimp.jpg}};
+      \node at ( 2,2.4) {Herb};
+      \node at ( 6,2.4) {ARM-S};
+      \node at (10,2.4) {CHIMP};
       
-      Herb
-   \end{center}
-   \end{column}%
-   \begin{column}{0.33\textwidth}
-   \begin{center}
-      \includegraphics[width=\columnwidth]{images/arms.jpg}
-      
-      ARM-S
-   \end{center}
-   \end{column}%
-   \begin{column}{0.33\textwidth}
-   \begin{center}
-      \includegraphics[width=\columnwidth]{images/chimp.jpg}
-      
-      Chimp
-   \end{center}
-   \end{column}
-   \end{columns}
-
-   What to say: General description of manipulation tasks.
-
-   (a) Unpredictable world with lots of objects,
-   (b) sensors that build a geometric model,
-   (c) planning motion with onboard computation,
-   (d) executing motion using articulated arms.
-
-   (Takeaway: {\bf Real-world} manipulation tasks.)
-
+      \begin{scope}[font=\footnotesize]
+         \only<2->{
+            \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+               (a) at (1,0.85) {Unknown\\Environment};
+         }
+         
+         \only<3->{
+            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+               (b) at (3,0.85) {Onboard\\Sensors};
+            \draw[->,line width=1pt] (a) -- (b);
+         }
+         
+         \only<4->{
+            \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+               (c) at (5,0.85) {Geometric\\World\\Model};
+            \draw[->,line width=1pt] (b) -- (c);
+         }
+         
+         \only<5->{
+            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+               (d) at (7,0.85) {Onboard\\Motion\\Planner};
+            \draw[->,line width=1pt] (c) -- (d);
+         }
+         
+         \only<6->{
+            \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+               (e) at (9,0.85) {Motion};
+               \draw[->,line width=1pt] (d) -- (e);
+         }
+         
+         \only<7->{
+            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+               (f) at (11,0.85) {Motion\\Execution};
+            \draw[->,line width=1pt] (e) -- (f);
+         }
+      \end{scope}
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   Video collage of these robots (plus PR-2?) performing manipulation tasks.
+   \frametitle{Example Manipulation Tasks}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   All the videos are sped up (10x?).
-   Lots of the time in the video is spent with the robot doing nothing
-   (presumably planning).
+      \node[fill=black,inner sep=1pt] at (3,6.3) {
+         \movie[width=5.333333cm,height=3.00cm,
+            loop,autostart]{}{chimp-trials-debris-fast.mp4}
+      };
+      
+      \node[fill=black,inner sep=1pt] at (9,6.3) {
+         \movie[width=5.333333cm,height=3.00cm,
+            loop,autostart]{}{herb-tableclear-2-fast.mp4}
+      };
+      
+      \node[fill=black,minimum width=4cm, minimum height=3cm,text=white] at (3,3.2) {
+         ARM-S Example?
+      };
+      
+      \node[fill=black,minimum width=4cm, minimum height=3cm,text=white] at (9,3.2) {
+         Other (PR-2) Example?
+      };
+   
+   %\hyperlinkmovie[play]{mylabel}{play}
 
-   Takeaway: total task time is too slow.
-   {\bf Why is that?}
+      \begin{scope}[font=\footnotesize]
+         \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+            (a) at (1,0.85) {Unknown\\Environment};
+         \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            (b) at (3,0.85) {Onboard\\Sensors};
+         \draw[->,line width=1pt] (a) -- (b);
+         \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+            (c) at (5,0.85) {Geometric\\World\\Model};
+         \draw[->,line width=1pt] (b) -- (c);
+         \only<1>{
+            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+               (d) at (7,0.85) {Onboard\\Motion\\Planner};
+         }
+         \only<2>{
+            \node[fill=green!20,rounded corners,align=center,minimum height=1.5cm]
+               (d) at (7,0.85) {Onboard\\Motion\\Planner};
+         }
+         \draw[->,line width=1pt] (c) -- (d);
+         \node[draw,align=center,minimum height=1.2cm,font=\tiny]
+            (e) at (9,0.85) {Motion};
+            \draw[->,line width=1pt] (d) -- (e);
+         \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            (f) at (11,0.85) {Motion\\Execution};
+         \draw[->,line width=1pt] (e) -- (f);
+      \end{scope}
+
+   \end{tikzpicture}
 \end{frame}
 
 %\begin{frame}
@@ -168,149 +233,707 @@ Reuse-Informed Optimization of Planning Effort}
 %\end{frame}
 
 \begin{frame}
-   \frametitle{Example problem, and scope}
+   \frametitle{3 Challenges to Efficient Manipulation Planning}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   %\movie[height=0.3\textwidth,width=0.3\textwidth,
-   %   loop,autostart,label=mylabel]{}{cube.mp4}
-   
-   %\hyperlinkmovie[play]{mylabel}{play}
+   \node[inner sep=0pt] at (6,5.3) {%
+      \only<1-2>{\includegraphics[width=11.5cm]{figs/herb-fridge-a.png}}%
+      \only<3>{\includegraphics[width=11.5cm]{figs/herb-fridge-b.png}}%
+      \only<4>{\includegraphics[width=11.5cm]{figs/herb-fridge-c.png}}%
+      \only<5>{\includegraphics[width=11.5cm]{figs/herb-fridge-a.png}}%
+   };
 
-   \begin{center}
-      VIDEO:
+   % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
       
-      \includegraphics[width=0.7\textwidth]{figs/fridge-intro.png}
+      % root sets
+      \only<3->{
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+      }
+      \only<4->{
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+      }
       
-      %\includegraphics[width=0.8\textwidth]{build/diagram-mutlistep-intro}
-   \end{center}
-   
-   In order to describe why it's so slow,
-   I need to talk a bit about the problem's structure
-   and current approaches to handling it.
-   
-   I will be using this HERB example (removing items from a fridge)
-   throughout the talk.
-   
-   Below, show a 2D diagram of three steps of this plan,
-   which I then reference in the next three challenge slides.
+      % nodes
+      \only<2->
+      {
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      }
+      %\node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+      %\node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+      \only<3->{
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      }
+      \only<4->{
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+      }
+      %\node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+      \only<5->
+      {
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+      }
+      
+      \only<3->{
+         % in S1
+         %\draw[line width=1.5mm,white]
+         %   (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         %\draw[line width=1.5mm,white]
+         %   (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         %\draw
+         %   (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         %\draw
+         %   (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      }
+      
+      \only<4->{
+         % in s2
+         %\draw[line width=1.5mm,white]
+         %   (xg1) -- (4.7,0.6);
+         %\draw[line width=1.5mm,white]
+         %   (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+         %         .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         %\draw
+         %   (xg1) -- (4.7,0.6);
+         %\draw
+         %   (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+         %         .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      }
+      
+      \only<5->{
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      }
+      
+      \only<3->{
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+      }
+      \only<4->{
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+      }
+      
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(0.0,-0.9) -- (2.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in fridge};
 
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(3.1,-0.9) -- (5.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in hand};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle on tray};
+   \end{scope}
+
+   %\node[inner sep=0pt] at (6,2.25) {
+   %   \includegraphics{build/intro-subprob-cspace}
+   %};
+   
+   %In order to describe why it's so slow,
+   %I need to talk a bit about the problem's structure
+   %and current approaches to handling it.
+   %
+   %I will be using this HERB example (removing items from a fridge)
+   %throughout the talk.
+   %
+   %Below, show a 2D diagram of three steps of this plan,
+   %which I then reference in the next three challenge slides.
+   
+   \end{tikzpicture}
 \end{frame}
-
-%\begin{frame}
-%   \frametitle{Structure of multi-step manipulation}
-%   
-%   INSERT IMAGE OF TASK
-%   
-%   \begin{center}
-%   
-%      %\includegraphics[width=0.19\linewidth]{figs/testherb-a.png}
-%      %\includegraphics[width=0.19\linewidth]{figs/testherb-b.png}
-%      %\includegraphics[width=0.19\linewidth]{figs/testherb-c.png}
-%      %\includegraphics[width=0.19\linewidth]{figs/testherb-d.png}
-%      %\includegraphics[width=0.19\linewidth]{figs/testherb-e.png}
-%      
-%      \includegraphics[width=2.5in]{build/diagram-multi-step}
-%
-%   \end{center}
-%   
-%   Overview.
-%   
-%   Challenge 1 is within steps.
-%   
-%   Challenge 2 is between steps.
-%   
-%   Challenge 3 is all steps taken together.
-%\end{frame}
 
 \begin{frame}
    \frametitle{Challenge 1: The Planning vs. Execution Tradeoff}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   \begin{center}
-      \includegraphics[width=0.6\textwidth]{figs/fridge-intro.png}
-   \end{center}
+   \node[inner sep=0pt] at (3,5.3) {%
+      \includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}
+   };
 
-   {\bf Minimize total task effort.}
-   Planning effort is just as important as execution effort.
+   \only<3->{
+      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.5)
+         {\begin{minipage}{5.5cm}
+
+            Configuration space $\mathcal{C}$ is:
+            \only<4->{
+               \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+               \item continuous
+               \only<5->{\item high-dimensional}
+               \end{itemize}
+            }
+         
+            \only<7->{
+               \medskip
+               Valid subset $\mathcal{C}_{\ms{free}}$ is:
+            }
+            \only<8->{
+               \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+               \item induced by complex geometry
+               \only<9->{\item expensive to validate motions}
+               \end{itemize}
+            }
+            
+            \only<10->{
+               \begin{center}
+                  {\bf Planning is expensive!}
+               \end{center}
+            }
+            
+         \end{minipage}};
+   }
    
-   \medskip
-
-   Planning is expensive.
-   Complex geometric models, many degrees of freedom.
-
-   \medskip
+   \only<11->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,3)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            For manipulation tasks,\\
+            planning effort $\approx$ execution effort
+            \end{center}
+         \end{minipage}};
+   }
    
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   
+   \only<12->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,1.75)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            Robot's effort spent planning
+            detracts directly from available
+            task resource budget.
+            \end{center}
+         \end{minipage}};
+   }
+
+   % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
+      
+      % root sets
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xgrasp) at (3,0) {};
+      \node[above=0cm of Xgrasp] {Grasp};
+      
+      % cspace sets (lines only)
+      \only<2->{
+         \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+            (S1) at (1.5,0) {};
+         \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      }
+      
+      % nodes
+      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      
+      % in S1
+      \draw[line width=1.5mm,white]
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      
+      % draw s1 cfree
+      \only<6->{
+         \begin{scope}[even odd rule]
+            \clip[rounded corners] (0.61,-0.89) rectangle (2.39,0.89);
+            \clip[rotate around={10:(1.1,0.5)}] (-3,-3) rectangle (3,3)
+                     (0.6,-0.0) rectangle (1.6,1.0);
+            \fill[blue!15,rotate around={-15:(1.5,-0.5)}] (1.5,-0.5) ellipse (1.4cm and 0.5cm);
+            \fill[blue!15,rotate around={-25:(1.5, 1.0)}] (1.5, 1.0) ellipse (1.4cm and 0.5cm);
+         \end{scope}
+         \node[draw,inner sep=0,fill=blue!20,minimum width=0.5cm,minimum height=0.2cm]
+            (Cfreebox1) at (1.2, -1.2) {};
+         \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free}}$}; 
+      }
+         
+      \draw
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (3,0) {};
+      
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(0.0,-0.9) -- (2.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in fridge};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(3.1,-0.9) -- (5.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in hand};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle on tray};
+   \end{scope}
+
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
    \frametitle{Challenge 2: Incongruent Steps Impede Reuse}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   Can we just cache everything?
-   
-   Typically, we do exploration in the robot's C-space.
-   Each step is different.
+   \node[inner sep=0pt] at (3,5.3) {%
+      \only<1>{\includegraphics[width=5.75cm]{figs/herb-fridge-b-skinny.png}}%
+      \only<2->{\includegraphics[width=5.75cm]{figs/herb-fridge-c-skinny.png}}%
+   };
 
-   Every time you grab or release something,
-   or something in the environment moves,
-   which is all the time.
+   \only<5->{
+      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.5)
+         {\begin{minipage}{5.5cm}
+            $\mathcal{C}_{\ms{free}}$ is dependent on:
+            \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+               \item distribution of all obstacles
+               \item grasp pose of held objects
+               \item robot location
+            \end{itemize}
+         \end{minipage}};
+   }
    
-   \medskip
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+   \only<6->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,5.3)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            For manipulation tasks,\\
+            this subset changes at \emph{every} step!
+            \end{center}
+         \end{minipage}};
+   }
    
+   \only<7->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,4.1)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            How can we reuse precious planning computation?
+            \end{center}
+         \end{minipage}};
+   }
+
+   % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
+      
+      % root sets
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xgrasp) at (3,0) {};
+      \node[above=0cm of Xgrasp] {Grasp};
+      
+      \only<3->{
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+      }
+      
+      % cspace sets
+      \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+         (S1) at (1.5,0) {};
+      \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      
+      \only<4->{
+         \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+            (S1) at (4.5,0) {};
+         \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      }
+      
+      % nodes
+      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      
+      % in S1
+      \draw[line width=1.5mm,white]
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      % draw s1 cfree
+      \begin{scope}[even odd rule]
+         \clip[rounded corners] (0.61,-0.89) rectangle (2.39,0.89);
+         \clip[rotate around={10:(1.1,0.5)}] (-3,-3) rectangle (3,3)
+                  (0.6,-0.0) rectangle (1.6,1.0);
+         \fill[blue!15,rotate around={-15:(1.5,-0.5)}] (1.5,-0.5) ellipse (1.4cm and 0.5cm);
+         \fill[blue!15,rotate around={-25:(1.5, 1.0)}] (1.5, 1.0) ellipse (1.4cm and 0.5cm);
+      \end{scope}
+      \node[draw,inner sep=0,fill=blue!20,minimum width=0.5cm,minimum height=0.2cm]
+            (Cfreebox1) at (1.2, -1.2) {};
+         \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free1}}$}; 
+      \draw
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      
+      % in s2
+      \only<3->{
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \only<4->{
+            % draw s2 cfree
+            \begin{scope}[even odd rule]
+               \clip[rounded corners] (3.61,-0.89) rectangle (5.39,0.89);
+               \clip[rotate around={10:(4.1,0.5)}] (0,-3) rectangle (6,3)
+                     (3.6,-0.0) rectangle (4.6,1.0);
+               \fill[red!15,rotate around={15:(4.5,-0.2)}] (4.5,-0.2) ellipse (1.4cm and 0.5cm);
+            \end{scope}
+            \node[draw,inner sep=0,fill=red!20,minimum width=0.5cm,minimum height=0.2cm]
+               (Cfreebox1) at (4.2, -1.2) {};
+            \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free2}}$};
+         }
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      }
+      
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (3,0) {};
+      \only<3->{
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+      }
+      
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(0.0,-0.9) -- (2.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in fridge};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(3.1,-0.9) -- (5.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in hand};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle on tray};
+   \end{scope}
+
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Challenge 3: Coupled Steps Require More Planning}
+   \frametitle{Challenge 3: Coupled Steps Require Planning Ahead}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   Must plan several steps ahead to keep from getting stuck.
+   \node[inner sep=0pt] at (3,5.3) {%
+      \only<1->{\includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}}%
+      %\only<2->{\includegraphics[width=5.75cm]{figs/herb-fridge-d-skinny.png}}%
+   };
+
+   \only<2->{
+      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.7)
+         {\begin{minipage}{5.5cm}
+            Each step admits several choices:
+            \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+               \item which object
+               \item which grasp/placement
+               \item which IK solution
+            \end{itemize}
+         \end{minipage}};
+   }
    
-   Related to HPN?
+   \only<3->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,5.5)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            For manipulation tasks,\\
+            a bad choice can render ensuing steps \emph{impossible}
+            \only<-4>{\color{blue!10}or \emph{difficult}.}%
+            \only<5->{or \emph{difficult}.}%
+            \end{center}
+         \end{minipage}};
+   }
    
-   DRC kept getting stuck.
-   
-   \medskip
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   
+   \only<10->{
+      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,3.9)
+         {\begin{minipage}{5.5cm}
+            \begin{center}
+            This magnifies the need for efficient motion planning.
+            \end{center}
+         \end{minipage}};
+   }
+
+   % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
+      
+      % root sets
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xgrasp) at (3,0) {};
+      \node[above=0cm of Xgrasp] {Grasp};
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xdrop) at (6,0) {};
+      \node[above=0cm of Xdrop] {Place};
+      
+      % nodes
+      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      
+      \only<2->{
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+      }
+      
+      %\only<2->{
+      %   
+      %}
+      
+      % in S1
+      \only<3->{
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+      }
+      \only<5->{
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+      }
+      \only<7->{
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      }
+      \only<3->{
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+      }
+      \only<5->{
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+      }
+      \only<7->{
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      }
+      
+      % in s2
+      \only<4->{
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+      }
+      \only<6->{
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+      }
+      
+      \only<8->{
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      }
+      
+      \only<9->{
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      }
+      
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (3,0) {};
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (6,0) {};
+      
+   \end{scope}
+
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Outline / Approach / Proposal Objective}
+   \frametitle{Objective of Proposed Work}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-   Planning for manipulation tasks pose three challenges:
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
    
-   \begin{itemize}
-   \item Challenge 1: Planning each step is expensive.
-   \item Challenge 2: Incongruent steps impede reuse.
-   \item Challenge 3: Coupled steps make you get stuck or plan ahead.
-   \end{itemize}
    
-   The proposed work is a framework to address planning for
-   manipulation tasks \emph{efficiently}.
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
    
+      \node[fill=blue!10,rounded corners] at (6,1.5) {\begin{minipage}{10cm}\centering
+         The proposed work is a framework to address\\
+         planning for multi-step manipulation tasks \emph{efficiently}.
+      \end{minipage}};
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Act 1: Capturing the Planning/Execution Tradeoff}
+   \frametitle{Part 1: Capturing the Planning/Execution Tradeoff}
+      \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
    
-   Planning in a continuous high-dof C-space with spatially-correlated
-   valid subset $C_{free}$.
+      \fill[green!20] (0.1,3.7) rectangle (11.9,4.3);
    
-   Very quick overview of approaches to motion planning.
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
    
-   add P vs E PLOT
-   
-   add PREMISE: planning effort DOMINATED by configuration valitiy checking!
+   \end{tikzpicture}
 \end{frame}
    
 \begin{frame}
    \frametitle{Motion Planning in Configuration Space}
    \begin{tikzpicture}
-   
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (3,4)
@@ -1599,32 +2222,173 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Act 1: Capturing the Planning/Execution Tradeoff}
+   \frametitle{Part 1: Capturing the Planning/Execution Tradeoff}
+      \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
    
-   add P vs E PLOT
+      \fill[green!20] (0.1,3.7) rectangle (11.9,4.3);
    
-   add PREMISE: planning effort DOMINATED by configuration valitiy checking!
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Act 2: Planning with C-Space Families}
-
-   Can we just cache everything?
+   \frametitle{Part 2: Reusing Computation Between Steps}
+      \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-   Typically, we do exploration in the robot's C-space.
-   Each step is different.
-   Each C-space is \emph{incongruent}.
-
-   Every time you grab or release something,
-   or something in the environment moves,
-   which is all the time.
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
    
-   \medskip
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
-   \includegraphics[width=0.3\textwidth]{build/talk-challenge1-tradeoff}
+      \fill[green!20] (0.1,3.1) rectangle (11.9,3.7);
    
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
@@ -2038,6 +2802,7 @@ Reuse-Informed Optimization of Planning Effort}
          \begin{minipage}[t]{11cm}%
             \vspace{0.1cm}
             Multi-Set Validitiy Effort Model $\mathcal{M}_{\ms{multi}}$
+            \medskip
             {\algrenewcommand\textproc{}% Used to be \textsc
             \begin{algorithmic}[1]
             \Function {$x_{\ms{multi}}$}{$e, S_u$}
@@ -2059,9 +2824,11 @@ Reuse-Informed Optimization of Planning Effort}
                \EndFor
                \State \Return $0$
             \EndFunction
+            \medskip
             \Function {$\hat{x}_{\ms{multi}}$}{$e, S_u$}
                \State \Return $0$
             \EndFunction
+            \medskip
             \Function {$\hat{p}_{\ms{multi}}$}{$e, S_u$}
                \State $(\mathcal{F}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
                   \leftarrow \mbox{\sc MultiOptCert}(q_e, S_u,
@@ -2229,15 +2996,498 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Act 3: Geometric task planning}
+   \frametitle{Part 2: Reusing Computation Between Steps}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-   Zoom out.
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
    
-   How do we plan all these pieces for the COUPLED set of steps
-   that does the task?
+      \fill[green!20] (0.1,3.1) rectangle (11.9,3.7);
    
-   Talk about the problem of any-to-any for the steps.
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
    
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Part 3: Planning for Multi-Step Problems}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+            opacity=0.1] at (6,0) {};
+         
+      \end{scope}
+   
+      \fill[green!20] (0.1,2.6) rectangle (11.9,3.1);
+   
+      \node[anchor=north] at (6,5) {\begin{minipage}{11.5cm}
+         Planning for manipulation tasks poses three challenges:
+         
+         \begin{itemize}
+         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 2: Incongruent steps impede reuse.
+         \item Challenge 3: Coupled steps make you get stuck or plan ahead.
+         \end{itemize}
+      \end{minipage}};
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Step Decomposition}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      % figure adapted from proposal doc
+      \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
+         
+         % root sets
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+            (Xgrasp) at (3,0) {};
+         \node[above=0cm of Xgrasp] {Grasp};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+            (Xdrop) at (6,0) {};
+         \node[above=0cm of Xdrop] {Place};
+         
+         % nodes
+         \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+         \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+         
+         % grasp choices
+         \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+         % xend 
+         \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+         \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+         
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw[line width=1.5mm,white]
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw
+            (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+         \draw
+            (xstart) .. controls (1.5,0.2) .. (xg2);
+         \draw
+            (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+         \draw[line width=1.5mm,white]
+            (xg1) -- (4.7,0.6);
+         \draw
+            (xg1) -- (4.7,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+                  .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+         % in s3
+         \draw[line width=1.5mm,white]
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         \draw
+            (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+            opacity=0.1] at (3,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+            opacity=0.1] at (6,0) {};
+      \end{scope}
+      
+      % figure adapted from proposal doc
+      % split out version
+      \begin{scope}[font=\scriptsize,shift={(1.5,3.5)}]
+      
+         \only<2->{
+            % root sets
+            \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+               (XgraspL) at (1.9,0) {};
+            
+            % nodes
+            \node[circle,fill=black,inner sep=2] (xstartL) at (-1.1,0) {};
+            
+            % grasp choices
+            \node[circle,fill=black,inner sep=2] (xg1L) at (1.7,0.5) {};
+            \node[circle,fill=black,inner sep=2] (xg2L) at (2.0,0.1) {};
+            \node[circle,fill=black,inner sep=2] (xg3L) at (1.8,-0.5) {};
+            
+            % s1
+            \draw[line width=1.5mm,white]
+               (xstartL) .. controls (-0.1,0.2) and (0.3,0.9) .. (xg1L);
+            \draw[line width=1.5mm,white]
+               (xstartL) .. controls (0.4,0.2) .. (xg2L);
+            \draw[line width=1.5mm,white]
+               (xstartL) .. controls (0.7,-0.6) and (0.5,-0.8) .. (xg3L);
+            \draw
+               (xstartL) .. controls (-0.1,0.2) and (0.3,0.9) .. (xg1L);
+            \draw
+               (xstartL) .. controls (0.4,0.2) .. (xg2L);
+            \draw
+               (xstartL) .. controls (0.7,-0.6) and (0.5,-0.8) .. (xg3L);
+               
+            \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+               opacity=0.1] at (1.9,0) {};
+            
+            % planner instance groups
+            \node[inner sep=0,draw=black!50,rounded corners,fill=black,fill opacity=0.02,
+               minimum width=3.8cm,minimum height=2.6cm]
+               (instance1) at (0.5,-0.2) {};
+            \node[below=-0.5cm of instance1.south] {Planner Instance};
+         }
+         
+         \only<3->{
+            \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+               (Xgrasp) at (3,-0.4) {};
+            \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+               (Xdrop) at (6,-0.4) {};
+            
+            \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.1) {};
+            \node[circle,fill=black,inner sep=2] (xg2) at (3.1,-0.3) {};
+            \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.9) {};
+            % place choices
+            \node[circle,fill=black,inner sep=2] (xd1) at (5.9,-0.1) {};
+            \node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.8) {};
+            
+            % s2
+            \draw[line width=1.5mm,white]
+               (xg1) -- (4.7,0.2);
+            \draw
+               (xg1) -- (4.7,0.2);
+            \draw[line width=1.5mm,white]
+               (xg2) .. controls (4.5,0.6) and (3.5,-1.6) .. (4.5,-0.8)
+                     .. controls (5.5,0.1) and (5.0,-1.7) .. (xd2);
+            \draw
+               (xg2) .. controls (4.5,0.6) and (3.5,-1.6) .. (4.5,-0.8)
+                     .. controls (5.5,0.1) and (5.0,-1.7) .. (xd2);
+            \draw[line width=1.5mm,white]
+               (xg3) .. controls (4.3,-0.2) and (4.5,-0.6) .. (xd1);
+            \draw
+               (xg3) .. controls (4.3,-0.2) and (4.5,-0.6) .. (xd1);
+            
+            \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+               opacity=0.1] at (3,-0.4) {};
+            \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+               opacity=0.1] at (6,-0.4) {};
+            
+            \node[inner sep=0,draw=black!50,rounded corners,fill=black,fill opacity=0.02,
+               minimum width=4.0cm,minimum height=2.6cm]
+               (instance2) at (4.5,-0.6) {};
+            \node[below=-0.5cm of instance2.south] {Planner Instance};
+         }
+         
+         \only<4->{
+            \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+               (XdropR) at (7.1,0) {};
+            
+            \node[circle,fill=black,inner sep=2] (xd1R) at (7.0,0.3) {};
+            \node[circle,fill=black,inner sep=2] (xd2R) at (7.1,-0.4) {};
+            % xend 
+            \node[circle,fill=black,inner sep=2] (xendR) at (10.1,0) {};
+            
+            % in s3
+            \draw[line width=1.5mm,white]
+               (xd1R) .. controls (8.1,0.3) and (8.1,0.1) .. (xendR);
+            \draw
+               (xd1R) .. controls (8.1,0.3) and (8.1,0.1) .. (xendR);
+            
+            \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+               opacity=0.1] at (7.1,0) {};
+               
+            \node[inner sep=0,draw=black!50,rounded corners,fill=black,fill opacity=0.02,
+               minimum width=3.8cm,minimum height=2.6cm]
+               (instance3) at (8.5,-0.2) {};
+            \node[below=-0.5cm of instance3.south] {Planner Instance};
+         }
+            
+         \end{scope}
+         
+         % arrows
+         \only<2->{\draw[->,line width=1pt] (3,5.3) -- (2.7,4.8);}
+         \only<3->{\draw[->,line width=1pt] (6,5.1) -- (6,4.6);}
+         \only<4->{\draw[->,line width=1pt] (9,5.3) -- (9.3,4.8);}
+      
+      \only<5->{
+         \node[fill=blue!10,rounded corners,align=center] at (6,0.75) {
+            What objective should\\each planner instance use?
+         };
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Planner Instance Objectives}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      \begin{scope}[font=\scriptsize,shift={(3.8,6.4)}]
+         % this is centered around 0
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+            (Xgrasp) at (-1.5,0) {};
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
+            (Xdrop) at (1.5,0) {};
+         
+         \node[circle,fill=black,inner sep=2] (xg1) at (-1.7,0.5) {};
+         \node[circle,fill=black,inner sep=2] (xg2) at (-1.4,0.1) {};
+         \node[circle,fill=black,inner sep=2] (xg3) at (-1.6,-0.5) {};
+         % place choices
+         \node[circle,fill=black,inner sep=2] (xd1) at (1.4,0.3) {};
+         \node[circle,fill=black,inner sep=2] (xd2) at (1.5,-0.4) {};
+         
+         % s2
+         \draw[line width=1.5mm,white]
+            (xg1) -- (0.2,0.6);
+         \draw
+            (xg1) -- (0.2,0.6);
+         \draw[line width=1.5mm,white]
+            (xg2) .. controls (0.0,1.0) and (-1.0,-1.2) .. (0.0,-0.4)
+                  .. controls (1.0,0.5) and (0.5,-1.3) .. (xd2);
+         \draw
+            (xg2) .. controls (0.0,1.0) and (-1.0,-1.2) .. (0.0,-0.4)
+                  .. controls (1.0,0.5) and (0.5,-1.3) .. (xd2);
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (-0.2,0.2) and (0.0,-0.2) .. (xd1);
+         \draw
+            (xg3) .. controls (-0.2,0.2) and (0.0,-0.2) .. (xd1);
+         
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+            opacity=0.1] at (-1.5,0) {};
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
+            opacity=0.1] at (1.5,0) {};
+         
+         \node[inner sep=0,draw=black!50,rounded corners,fill=black,fill opacity=0.02,
+            minimum width=4.0cm,minimum height=2.6cm]
+            (instance2) at (0.0,-0.2) {};
+         \node[below=-0.5cm of instance2.south] {Problem with 2 root sets};
+      \end{scope}
+      
+      
+      
+      \begin{scope}[font=\scriptsize,shift={(8.5,7.2)},scale=0.5]
+         \begin{scope}
+         \node[rectangle,draw,rounded corners,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] at (0,0) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1a) at (-0.75,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1b) at (-0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1c) at ( 0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x1d) at ( 0.75,-0.2) {};
+         \end{scope}
+
+         \begin{scope}[shift={(-1.5,-2.7)},rotate=120]
+         \node[rectangle,draw,rounded corners,rotate=120,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] at (0,0) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2a) at (-0.75,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2b) at (-0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2c) at ( 0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x2d) at ( 0.75,-0.2) {};
+         \end{scope}
+
+         \begin{scope}[shift={(1.5,-2.7)},rotate=-120]
+         \node[rectangle,draw,rounded corners,rotate=-120,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] at (0,0) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3a) at (-0.75,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3b) at (-0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3c) at ( 0.25,-0.2) {};
+         \node[circle,inner sep=0,minimum size=0.05in,fill=black] (x3d) at ( 0.75,-0.2) {};
+         \end{scope}
+
+         \draw[white,line width=4] (x1b) .. controls(-0.1,-1.7) .. (x2c);
+         \draw[white,line width=4] (x1b) .. controls( 0.1,-1.7) .. (x3a);
+         \draw[white,line width=4] (x1a) .. controls(-0.6,-1.7) .. (x2c);
+         \draw[white,line width=4] (x3a) .. controls(0.0,-1.8) .. (x2c);
+         \draw (x1b) .. controls(-0.1,-1.7) .. (x2c);
+         \draw[white,line width=4] (x1a) .. controls(-0.4,-1.7) .. (x3a);
+         \draw (x1a) .. controls(-0.4,-1.7) .. (x3a);
+         \draw (x1b) .. controls( 0.1,-1.7) .. (x3a);
+         \draw (x1a) .. controls(-0.6,-1.7) .. (x2c);
+         \draw (x3a) .. controls(0.0,-1.8) .. (x2c);
+         \draw[white,line width=4] (x1d) .. controls( 0.3,-1.7) .. (x3c);
+         \draw (x1d) .. controls( 0.3,-1.7) .. (x3c);
+         
+         \begin{scope}
+            \node[rectangle,rounded corners,fill=black,fill opacity=0.1,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] (x1) at (0,0) {};
+            \node[below] at (x1.north) {$S_1$};
+         \end{scope}
+         \begin{scope}[shift={(-1.5,-2.7)},rotate=120]
+            \node[rectangle,rounded corners,fill=black,fill opacity=0.1,rotate=120,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] (x2) at (0,0) {};
+            \node at (0,0.3) {$S_2$};
+         \end{scope}
+         \begin{scope}[shift={(1.5,-2.7)},rotate=-120]
+            \node[rectangle,rounded corners,fill=black,fill opacity=0.1,rotate=-120,
+               inner sep=0,minimum height=0.3in,minimum width=0.5in] (x3) at (0,0) {};
+            \node at (0,0.3) {$S_3$};
+         \end{scope}
+         
+         \node[inner sep=0,draw=black!50,rounded corners,fill=black,fill opacity=0.02,
+            minimum width=3.5cm,minimum height=3.1cm]
+            (instance) at (0.0,-2.0) {};
+         \node[below=-0.5cm of instance.south] {Problem with 3 root sets};
+      \end{scope}
+      
+      
+   
+      \node[fill=black!5,rounded corners,anchor=north,font=\small] at (6,4.3)
+      {\begin{minipage}{9cm}
+         Conventional ``Any-to-Any'' objective:
+         \begin{equation*}
+            r_{\ms{A2A}} = 1 \mbox{ if } \exists \; q_a,q_b~\text{in different root sets}
+               \;|\; \textsc{Path}(q_a,q_b)
+         \end{equation*}%
+      \end{minipage}};
+      
+      \node[fill=blue!10,rounded corners,anchor=north,font=\small] at (6,2.5)
+      {\begin{minipage}{9cm}
+         Comprehensive Multi-Root objective:
+         \begin{equation*}
+            r_{\ms{CMR}} = \big| \{
+               \textsc{Path}(q_a,q_b) \;|\; q_a,q_b~\text{in different root sets}
+               \} \big|
+         \end{equation*}%
+      \end{minipage}};
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
@@ -2247,6 +3497,19 @@ Reuse-Informed Optimization of Planning Effort}
    
    Baseline: commit early (e.g. from DRC paper, or HPN?).
    
+\end{frame}
+
+\begin{frame}
+   \frametitle{CMR Example}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[draw] at (6,4)
+      {
+         \includegraphics{build/w13-fu1-ec86}
+      };
+   
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
@@ -2268,9 +3531,31 @@ Reuse-Informed Optimization of Planning Effort}
 \begin{frame}
    \frametitle{Contributions}
    
-   index of contributions.
-   
-   open-source software.
+   \begin{itemize}
+   \itemsep-3pt
+   \item A set of insights into the structure of the
+      multi-step manipulation planning problem,
+      including the multi-set and comprehensive multi-root (CMR)
+      formulations.
+   \item The E$^8$ graph search algorithm which explicitly minimizes
+      both planning and execution effort over explicit graphs.
+   \item The E$^8$-PRM, an application of E$^8$ to
+      $\mathcal{C}$-space roadmaps.
+   \item The Multi-Set PRM, an instantiation of the E$^8$-PRM
+      using the multi-set formulation as a planning effort model.
+   \item The {\sc Proteus} task planner,
+      a sequencing planner which submits queries across steps
+      to an instance of the Multi-Set PRM using the CMR objective.
+   \item The {\tt ompl\_multiset} package
+      for the OMPL sampling-based planning framework
+      containing implementations of the E$^8$-PRM and Multi-Set PRM
+      algorithms.
+   \item The {\tt or\_proteus} package for the
+      OpenRAVE simulation framework
+      which implements the {\sc Proteus} task planner.
+   \item An experimental evaluation of the above algorithms against
+      state-of-the-art baseline approaches.
+   \end{itemize}
    
 \end{frame}
 
@@ -2332,8 +3617,11 @@ Reuse-Informed Optimization of Planning Effort}
    
 \end{frame}
 
-
-
+{
+\setbeamercolor{background canvas}{bg=black}
+\begin{frame}
+\end{frame}
+}
 
 \begin{frame}
    \frametitle{Backup Slides?}
