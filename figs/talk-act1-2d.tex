@@ -22,6 +22,7 @@
 \ifdefined\argtraja
    \def\drawc{1.0}
    \def\drawcfree{1.0}
+   \def\drawpaths{}
 \fi
 
 \ifdefined\argtrajb
@@ -86,29 +87,29 @@
 \ifdefined\arggraph
    \def\drawc{1.0}
    \def\drawcfree{1.0}
-   \def\drawgraph{dotted}
+   \def\drawgraph{dashed}
 \fi
 
 \ifdefined\arggraphfirst
-   \def\drawgraph{dotted}
+   \def\drawgraph{dashed}
    \def\drawc{1.0}
    \def\drawcfree{1.0}
 \fi
 
 \ifdefined\arggraphfirstevaled
-   \def\drawgraph{dotted}
+   \def\drawgraph{dashed}
    \def\drawc{1.0}
    \def\drawcfree{1.0}
 \fi
 
 \ifdefined\arggraphfirstnext
-   \def\drawgraph{dotted}
+   \def\drawgraph{dashed}
    \def\drawc{1.0}
    \def\drawcfree{1.0}
 \fi
 
 \def\drawfadedgraph{
-   \def\drawgraph{dotted}
+   \def\drawgraph{dashed}
    \def\drawc{0.2}
    \def\drawcfree{0.2}
 }
@@ -197,9 +198,20 @@
    \node[opacity=\drawc] at (-2.2,2.2) {$\mathcal{C}$};
 \fi
 
+\ifdefined\argtraja
+   \draw[black!30,line width=7pt,line cap=round]
+      plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+   %\draw plot [smooth] coordinates {(-2,0) (2.0,1.4)};
+\fi
+
+\ifdefined\argrrtchosen
+   \draw[black!30,line width=7pt,line cap=round]
+      (-2,0) -- (-0.5,0.525) -- (-1,2) -- (1.4,1.225) -- (2.0,1.4);
+\fi
+
 % starts
 \coordinate (st01) at (-2,0);
-\fill[black] (st01) circle (0.07cm);
+%\fill[black] (st01) circle (0.07cm);
 
 % goals
 \coordinate (go01) at (2.1,2);
@@ -207,11 +219,11 @@
 \coordinate (go03) at (2.0,0.5);
 \coordinate (go04) at (2.1,-0.5);
 \coordinate (go05) at (1.9,-1.5);
-\fill[black] (go01) circle (0.07cm);
-\fill[black] (go02) circle (0.07cm);
-\fill[black] (go03) circle (0.07cm);
-\fill[black] (go04) circle (0.07cm);
-\fill[black] (go05) circle (0.07cm);
+%\fill[black] (go01) circle (0.07cm);
+%\fill[black] (go02) circle (0.07cm);
+%\fill[black] (go03) circle (0.07cm);
+%\fill[black] (go04) circle (0.07cm);
+%\fill[black] (go05) circle (0.07cm);
 
 \ifdefined\drawpaths
    % candidate paths
@@ -220,10 +232,6 @@
    \draw[dashed] plot [smooth] coordinates {(-2,0) (0.5,-0.5) (go02)};
    \draw[dashed] plot [smooth] coordinates {(-2,0) (0,0.5) (go03)};
    \draw[dashed] plot [smooth] coordinates {(-2,0) (0,-1.5) (go05)};
-\fi
-
-\ifdefined\argtraja
-   \draw plot [smooth] coordinates {(-2,0) (2.0,1.4)};
 \fi
 
 \ifdefined\drawtrajneighborhood
@@ -295,10 +303,6 @@
       (-1,2) -- (1.4,1.225)
    % branch options
       (-1,2) -- (1.6,1.7);
-\fi
-
-\ifdefined\argrrtchosen
-   \draw (-0.5,0.525) -- (-1,2) -- (1.4,1.225);
 \fi
 
 \ifdefined\drawrrtsample
@@ -698,6 +702,14 @@
    % new:
    \fill[blue] (go01) circle (0.1cm);
 \fi
+
+% draw starts and goals
+\node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (st01) {};
+\node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (go01) {};
+\node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (go02) {};
+\node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (go03) {};
+\node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (go04) {};
+\node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (go05) {};
 
 %\draw[step=1,black!10,very thin] (-2,-2) grid (2,2);
    
