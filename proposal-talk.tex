@@ -105,6 +105,9 @@ Reuse-Informed Optimization of Planning Effort}
    %\end{columns}
 \end{frame}
 
+\iffalse
+%\iftrue
+
 % first frame:
 % REAL ROBOTS! REAL-WORLD PROBLEMS!
 % overview of manipulation planning problem?
@@ -2306,6 +2309,8 @@ Reuse-Informed Optimization of Planning Effort}
    \end{tikzpicture}
 \end{frame}
 
+\fi
+
 \begin{frame}
    \frametitle{Part 2: Reusing Computation Between Steps}
       \begin{tikzpicture}
@@ -2717,18 +2722,6 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Examples of Multi-Set Problems in Manipulation}
-   \begin{itemize}
-   \item Self-collision checking
-   \item Workcell decomposition
-   \item Dynamic environments
-   \item Grasped objects
-   \item Padded robots
-   \item Multi-fidelity geometric models
-   \end{itemize}
-\end{frame}
-
-\begin{frame}
    \frametitle{Applying the E$^8$-PRM to the Multi-Set Problem}
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
@@ -2794,11 +2787,97 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
+   \frametitle{Multi-Set Reasoning with Propositional Logic}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      \node[inner sep=0pt] at (5,6.15) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,start}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,roadmap}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,straightsol}}%
+         \only<4-5>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,basesets}}%
+         \only<6>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,blackgraph}}%
+         \only<7>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,rightsol}}%
+         \only<8>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,leftspec}}%
+         \only<9>{\includegraphics[width=4.5cm]{build/multiset-roadmap-example,leftsol}}%
+      };
+      
+      \node[font=\scriptsize,anchor=west] at (7.7,7) {%
+         ${\hat p}_u = 2$%
+         \only<5->{, \; ${\hat p}_A = {\hat p}_B = 1$}
+      };
+      
+      \only<2->{
+         \draw[dotted] (7.7,6.5) -- (8.2,6.5);
+         \fill (7.7,6.5) circle (0.04cm);
+         \fill (8.2,6.5) circle (0.04cm);
+         \node[font=\scriptsize,anchor=west] at (8.3,6.5) {unknown};
+      }
+      
+      \only<3->{
+         \draw[color=black!20,line width=5,line cap=round] (7.7,6) -- (8.2,6);
+         \node[font=\scriptsize,anchor=west] at (8.3,6) {candidate path ${\hat \pi}^*$};
+      }
+      
+      \only<4->{
+         \node[font=\scriptsize,anchor=west] at (7.7,5.5) {$S_u = S_A \cap S_B$};
+      }
+      
+      \only<6->{
+         \draw (7.7,5) -- (8.2,5);
+         \fill (7.7,5) circle (0.04cm);
+         \fill (8.2,5) circle (0.04cm);
+         \node[font=\scriptsize,anchor=west] at (8.3,5) {known in $S_A$};
+      }
+      
+      \node[fill=blue!10,rounded corners,font=\scriptsize] at (5,2.1)
+      {\begin{minipage}{8cm}
+         \begin{algorithmic}[1]
+         \Function {MultiOptCert}{$q_e, S_u, P_{\ms{known}}$}
+            \State $\mathcal{T}_{\ms{imply}} \leftarrow \emptyset$
+            \ForAll {$\mathcal{F}_{\ms{cert}} \in \mathcal{P}(\mathcal{F})$}
+                  \label{line:power-set}
+               \State ${\hat p}_{\ms{cert}} \leftarrow \sum_{S \in \mathcal{F}_{\ms{cert}}} \hat{p}_S[q_e]$
+               \ForAll {$b_{\ms{res}} \mbox{ \textbf{s.t.} }
+                     b_{\ms{res}} : \mathcal{F}_{\ms{cert}} \rightarrow \{\mbox{True},\mbox{False}\}$}
+                     \label{line:all-binary-functions}
+                  \State $\arraycolsep=2pt
+                     P_{\ms{res}} \leftarrow
+                     \left\{\left. \begin{array}{rl}
+                     \mathbf{1}_S & \mbox{if } b_{\ms{res}}(S) \\
+                     \lnot \mathbf{1}_S & \mbox{otherwise} \\
+                     \end{array}
+                     \right|
+                     S \in \mathcal{F}_{\ms{cert}}
+                     \right\}$
+                  \If {$P_{\ms{known}} \cup P_{\ms{res}}
+                        \Rightarrow \mathbf{1}_u$ is valid}
+                     \State $\mathcal{T}_{\ms{imply}} \leftarrow
+                        \mathcal{T}_{\ms{imply}} \cup
+                        \{ (\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}}) \}$
+                  \EndIf
+               \EndFor
+            \EndFor
+            \State \Return $(\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}})
+               \in \mathcal{T}_{\ms{imply}}$
+               with lowest ${\hat p}_{\ms{cert}}$
+         \EndFunction
+         \end{algorithmic}
+      \end{minipage}};
+      
+      \draw[->,line width=1pt] (9.3,2.1) -- (9.8,2.1);
+      \node[draw,shape=document,align=center,font=\scriptsize,minimum height=2cm]
+         at (10.9,2.1) {Optimistic\\Edge\\Certificate};
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
    \frametitle{Multi-Set Validitiy Effort Model}
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[draw,shape=document,font=\small] at (6,4) {
+      \node[draw,shape=document,font=\scriptsize] at (6,4) {
          \begin{minipage}[t]{11cm}%
             \vspace{0.1cm}
             Multi-Set Validitiy Effort Model $\mathcal{M}_{\ms{multi}}$
@@ -2844,75 +2923,209 @@ Reuse-Informed Optimization of Planning Effort}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Propositional Logic Engine}
+   \frametitle{Instances of Multi-Set Problems in Manipulation}
+   \begin{itemize}
+   \item Dynamic environments
+   \item Grasped objects
+   \item Workcell decomposition
+   \item Self-collision checking
+   \item Padded robots
+   \item Multi-fidelity geometric models
+   \end{itemize}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Dynamic Environments}
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-
-      \node[fill=blue!10,rounded corners] at (6,4)
-      {\begin{minipage}{11cm}
-         \begin{algorithmic}[1]
-         \Function {MultiOptCert}{$q_e, U, P_{\ms{known}}$}
-            \State $\mathcal{T}_{\ms{imply}} \leftarrow \emptyset$
-            \ForAll {$\mathcal{F}_{\ms{cert}} \in \mathcal{P}(\mathcal{F})$}
-                  \label{line:power-set}
-               \State ${\hat p}_{\ms{cert}} \leftarrow \sum_{S \in \mathcal{F}_{\ms{cert}}} \hat{p}_S[q_e]$
-               \ForAll {$b_{\ms{res}} \mbox{ \textbf{s.t.} }
-                     b_{\ms{res}} : \mathcal{F}_{\ms{cert}} \rightarrow \{\mbox{True},\mbox{False}\}$}
-                     \label{line:all-binary-functions}
-                  \State $\arraycolsep=2pt
-                     P_{\ms{res}} \leftarrow
-                     \left\{\left. \begin{array}{rl}
-                     \mathbf{1}_S & \mbox{if } b_{\ms{res}}(S) \\
-                     \lnot \mathbf{1}_S & \mbox{otherwise} \\
-                     \end{array}
-                     \right|
-                     S \in \mathcal{F}_{\ms{cert}}
-                     \right\}$
-                  \If {$P_{\ms{known}} \cup P_{\ms{res}}
-                        \Rightarrow \mathbf{1}_U$ is valid}
-                     \State $\mathcal{T}_{\ms{imply}} \leftarrow
-                        \mathcal{T}_{\ms{imply}} \cup
-                        \{ (\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}}) \}$
-                  \EndIf
-               \EndFor
-            \EndFor
-            \State \Return $(\mathcal{F}_{\ms{cert}}, b_{\ms{res}}, {\hat p}_{\ms{cert}})
-               \in \mathcal{T}_{\ms{imply}}$
-               with lowest ${\hat p}_{\ms{cert}}$
-         \EndFunction
-         \end{algorithmic}
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-b.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-b.png}}%
+      };
+      
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$ in the presence of an object
+         is a subset of the valid set $S_N$ with the object removed.
       \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dyna}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dynb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dync}}%
+      };
       
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Behavior of the Multi-Set PRM}
-   
-   Sweet examples!
-   
+   \frametitle{Multi-Set Instances: Dynamic Environments}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \begin{scope}[shift={(1,1.2)},font=\small]
+         \node[anchor=south west,inner sep=0] at (0,0)
+           {\includegraphics[width=5.2cm]{figs/chimp-voxels-delta.png}};
+
+         \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+           (debrislab) at (0.7,1.0) {Debris object\\removed};
+         \node[circle,inner sep=2,draw,fill=white] (debris) at (2.2,2.9) {};
+         \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+           (debrislab.north) -- (debris);
+           
+         \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+           (addlab) at (5.0,2.0) {Additional\\voxels seen};
+         \node[circle,inner sep=2,draw,fill=white] (added) at (4.4,5.0) {};
+         \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+           (addlab.north) -- (added);
+      \end{scope}
+      
+      \node[inner sep=0pt] at (9.5,6) {
+         \includegraphics{build/retroactive-a}
+      };
+      
+      \node[inner sep=0pt] at (9.5,2) {
+         \includegraphics{build/retroactive-b}
+      };
+   \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Multi-Set PRM: Self-Collision Checking}
+   \frametitle{Multi-Set Instances: Grasped Objects}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+      };
+      
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$ while grasping an object
+         is a subset of the valid set $S_N$ with the object removed.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dyna}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dynb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dync}}%
+      };
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Self-Collision Checking}
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[inner sep=0pt] at (6,4) {\includegraphics{build/self-collision}};
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-d.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+      };
+
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$
+         is a subset of the valid set $S_R$
+         consisting of robot self-collision-free configurations.
+      \end{minipage}};
+
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfa}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfc}}%
+      };
 
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Behavior of the Multi-Set-PRM: Padding}
+   \frametitle{Multi-Set Instances: Conservative Obstacle Volumes}
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-h.png}}%
+         \only<2-3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-e.png}}%
+      };
+      
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_O$ in the presence of an object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,outside}}%
+         \only<2->{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,inside}}%
+      };
+      
+      \only<3->{
+         \node[anchor=north,fill=black!10,rounded corners,font=\small]
+         at (8.8,2) {\begin{minipage}{6cm}
+            Extreme case: Leven/Hutchinson workcell decomposition.
+         \end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
 
-      \node[inner sep=0] at (6,4) {%
-         \only<1>{\includegraphics{build/broadphase-single}}%
-         \only<2>{\includegraphics{build/broadphase-multi}}%
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Grasped Volumes}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-i.png}}%
+      };
+      
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_O$ while grabbing the object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,outside}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,inside}}%
       };
 
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Robot Models}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-j.png}}%
+         \only<2-4>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-k.png}}%
+      };
+      
+      \node[anchor=north,fill=black!10,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_R$ while grabbing the object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,routside}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,rinside}}%
+         \only<3>{\includegraphics[width=6cm]{build/broadphase-single}}%
+         \only<4>{\includegraphics[width=6cm]{build/broadphase-multi}}%
+      };
+   
    \end{tikzpicture}
 \end{frame}
 
@@ -2981,11 +3194,6 @@ Reuse-Informed Optimization of Planning Effort}
 
 
 \begin{frame}
-   to do!
-\end{frame}
-
-
-\begin{frame}
    \frametitle{How does this fail?}
    
    Talk about failure modes!
@@ -3004,10 +3212,10 @@ Reuse-Informed Optimization of Planning Effort}
       \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
          
          % root sets
-         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
             (Xgrasp) at (3,0) {};
          \node[above=0cm of Xgrasp] {Grasp};
-         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
             (Xdrop) at (6,0) {};
          \node[above=0cm of Xdrop] {Place};
          
@@ -3058,9 +3266,9 @@ Reuse-Informed Optimization of Planning Effort}
          \draw
             (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
          
-         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
             opacity=0.1] at (3,0) {};
-         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
             opacity=0.1] at (6,0) {};
          
       \end{scope}
@@ -3089,10 +3297,10 @@ Reuse-Informed Optimization of Planning Effort}
       \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
          
          % root sets
-         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
             (Xgrasp) at (3,0) {};
          \node[above=0cm of Xgrasp] {Grasp};
-         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm]
             (Xdrop) at (6,0) {};
          \node[above=0cm of Xdrop] {Place};
          
@@ -3143,9 +3351,9 @@ Reuse-Informed Optimization of Planning Effort}
          \draw
             (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
          
-         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
             opacity=0.1] at (3,0) {};
-         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=0.7cm,
             opacity=0.1] at (6,0) {};
          
       \end{scope}

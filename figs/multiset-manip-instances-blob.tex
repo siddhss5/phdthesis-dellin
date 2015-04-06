@@ -1,0 +1,60 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\begin{document}
+\begin{tikzpicture}
+
+\draw (0,0.2) rectangle (5.8,4.7);
+\node (clab) at (0.3,4.4) {$\mathcal{C}$};
+
+\begin{scope}[scale=0.8,shift={(3.6,2)}]
+   \def\bloba{(-3,1) (-2,1.5) (0,3) (3,3) (3,0.8)   (1,0.5) (0.5,0) (-3,-0.5)}
+   
+   \ifdefined\argoutside
+      \draw [ultra thick] plot [smooth cycle] coordinates {\bloba};
+   \fi
+   \ifdefined\argroutside
+      \draw [ultra thick] plot [smooth cycle] coordinates {\bloba};
+   \fi
+   
+   \ifdefined\arginside
+      \draw [dashed] plot [smooth cycle] coordinates {\bloba};
+   \fi
+   \ifdefined\argrinside
+      \draw [dashed] plot [smooth cycle] coordinates {\bloba};
+   \fi
+\end{scope}
+
+\ifdefined\argoutside
+   \node (flab) at (2.9,3.7) {$S_O$};
+\fi
+\ifdefined\arginside
+   \node (flab) at (2.9,3.7) {$S_O$};
+\fi
+\ifdefined\argroutside
+   \node (flab) at (2.9,3.7) {$S_R$};
+\fi
+\ifdefined\argrinside
+   \node (flab) at (2.9,3.7) {$S_R$};
+\fi
+
+\begin{scope}[shift={(1,1)},rotate=20]
+   %\ifdefined\argoutside
+   %   \draw [dashed] (0,0.3) rectangle (4.5,1.3);
+   %\fi
+   \ifdefined\arginside
+      \draw [ultra thick] (0,0.3) rectangle (4.5,1.3);
+   \fi
+   \ifdefined\argrinside
+      \draw [ultra thick] (0,0.3) rectangle (4.5,1.3);
+   \fi
+\end{scope}
+\ifdefined\arginside
+   \node at (4.6,3.3) {$S_B$};
+\fi
+\ifdefined\argrinside
+   \node at (4.6,3.3) {$S_B$};
+\fi
+
+\end{tikzpicture}%
+\end{document}
