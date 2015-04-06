@@ -18,6 +18,12 @@ proposal.pdf: ch01-intro.tex
 proposal.pdf: chxx-proposed-framework.tex
 proposal.pdf: ch11-proposed.tex
 
+proposal-talk.pdf: proposal-talk-intro.tex
+proposal-talk.pdf: proposal-talk-act1.tex
+proposal-talk.pdf: proposal-talk-act2.tex
+proposal-talk.pdf: proposal-talk-act3.tex
+proposal-talk.pdf: proposal-talk-backup.tex
+
 # hardcoded stuff fast-manip.pdf: figs/chimp-voxels-delta.png
 fast-manip.pdf: figs/simple-table-clearing-task.png
 fast-manip.pdf: figs/testherb-a.png
@@ -50,6 +56,9 @@ proposal.pdf: build/pairwise-labels-dot.tex
 
 STANDALONES += broadphase-single
 STANDALONES += broadphase-multi
+STANDALONES += cmr-queue-intro
+STANDALONES += cmr-simpleex-classical
+STANDALONES += cmr-simpleex-colored
 STANDALONES += diagram-multi-step
 STANDALONES += diagram-mutlistep-intro
 STANDALONES += e8-exgraph-edge-eval
@@ -85,6 +94,12 @@ STANDALONES += figstar-traj1
 STANDALONES += figstar-traj1-inc
 STANDALONES += figstar-w-abc
 STANDALONES += figstar-wo-abc
+STANDALONES += herb-mugbin-plot-1
+STANDALONES += herb-mugbin-plot-2
+STANDALONES += herb-mugbin-plot-3
+STANDALONES += herb-mugbin-plot-1-eprm
+STANDALONES += herb-mugbin-plot-2-eprm
+STANDALONES += herb-mugbin-plot-3-eprm
 STANDALONES += intro-cost-axis
 STANDALONES += intro-cost-chimp
 STANDALONES += intro-cost-herb

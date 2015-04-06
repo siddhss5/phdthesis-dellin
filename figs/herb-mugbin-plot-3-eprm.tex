@@ -1,0 +1,50 @@
+
+   \documentclass{standalone}
+   \usepackage{tikz}
+   %\usetikzlibrary{positioning,shapes}
+   \usepackage{pgfplots}
+   \begin{document}
+   \begin{tikzpicture}
+   
+   \begin{axis}[
+      xlabel=Planning Time (s),
+      ylabel=Solution Length (rad),
+      ylabel near ticks,
+      xlabel near ticks,
+      xmin=0,xmax=20,
+      ymin=5,ymax=25]
+   
+   \addplot[mark=*,red] plot coordinates {
+     (16.7673695087,7.3242179756)
+  (10.102419424,8.46383884964)
+  (11.9565801859,8.36755111384)
+  (12.7000402927,10.0409246794)
+  (12.3211734772,11.7079088994)
+  (10.8328934431,10.85582116)
+  (9.10966339112,12.8635726876)
+  (10.9054726839,12.0799615229)
+  (7.83025419713,14.0200152361)
+  (5.88109991551,12.8640084226)
+  (4.06455712318,13.1553436093)
+  (4.20631098747,14.1887453311)
+  (4.54932506084,13.4733451222)
+  (5.16229887009,18.2881624958)
+
+   };
+   \addlegendentry{RRT Connect}
+   
+   \addplot[mark=*,blue] plot coordinates {
+     (14.1501514196,10.2897866493)
+  (13.6496914864,10.381351282)
+  (13.2208489656,10.8997604855)
+  (11.4035658598,11.5373957412)
+  (10.9726590395,13.966562752)
+
+   };
+   \addlegendentry{Multi-Set PRM}
+   
+   \end{axis}
+   
+   \end{tikzpicture}
+   \end{document}
+   

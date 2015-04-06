@@ -151,16 +151,16 @@
    \begin{scope}
       \draw[draw=none,clip,rounded corners] \crect;
       \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
-      \draw[line width=3pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
-      \draw[line width=3pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\bloba};
+      \draw[line width=1.5pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
+      \draw[line width=1.5pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\bloba};
    \end{scope}
    %\draw [red] plot [smooth cycle] coordinates {\bloba};
    
    \begin{scope}
       \draw[draw=none,clip,rounded corners] \crect;
       \draw[draw=none,clip] plot [smooth cycle] coordinates {\blobb};
-      \draw[line width=3pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
-      \draw[line width=3pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\blobb};
+      \draw[line width=1.5pt,rounded corners,fill=blue!20,opacity=\drawcfree] \crect;
+      \draw[line width=1.5pt,opacity=\drawcfree] plot [smooth cycle] coordinates {\blobb};
    \end{scope}
    %\draw [red] plot [smooth cycle] coordinates {\blobb};
 \fi
@@ -215,11 +215,11 @@
 
 \ifdefined\drawpaths
    % candidate paths
-   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,2) (2.1,2)};
-   \draw[dashed] plot [smooth] coordinates {(-2,0) (2.0,1.4)};
-   \draw[dashed] plot [smooth] coordinates {(-2,0) (0.5,-0.5) (1.9,1.4)};
-   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,0.5) (2.0,0.5)};
-   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,-1.5) (1.9,-1.5)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,2) (go01)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (go02)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0.5,-0.5) (go02)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,0.5) (go03)};
+   \draw[dashed] plot [smooth] coordinates {(-2,0) (0,-1.5) (go05)};
 \fi
 
 \ifdefined\argtraja
@@ -255,10 +255,19 @@
       (-1.0,0.35) circle (0.07cm)
       (-0.5,0.525) circle (0.07cm)
       ( 0.0,0.7) circle (0.07cm);
+   % forward branches
+   \draw[line width=2pt] plot coordinates {(-2,0) (-1.9,0.5)};
+   \fill[black] (-1.9,0.5) circle (0.07cm);
+   \draw[line width=2pt] plot coordinates {(-1.0,0.35) (-0.6,0.1) (-0.1,0.1)};
+   \fill[black] (-0.6,0.1) circle (0.07cm);
+   \fill[black] (-0.1,0.1) circle (0.07cm);
 
    % reverse tree
    \draw[line width=2pt] plot coordinates {(1.4,1.225) (2.0,1.4)};
    \fill[black] (1.4,1.225) circle (0.07cm);
+   % reverse branches
+   \draw[line width=2pt] plot coordinates {(2.0,1.4) (1.6,1.7)};
+   \fill[black] (1.6,1.7) circle (0.07cm);
    
    %\begin{scope}
    %   \draw[draw=none,clip] plot [smooth cycle] coordinates {\bloba};
@@ -273,12 +282,19 @@
       (-1.5,0.175) -- (-1,2)
       (-1.0,0.35) -- (-1,2)
       (-0.5,0.525) -- (-1,2)
-      ( 0.0,0.7) -- (-1,2);
+      ( 0.0,0.7) -- (-1,2)
+   % branch options
+      (-1.9,0.5) -- (-1,2)
+      (-0.6,0.1) -- (-1,2)
+      (-0.1,0.1) -- (-1,2);
+      
    % reverse options
    \draw[dashed]
       (-1,2) -- (2.1,2)
       (-1,2) -- (2.0,1.4)
-      (-1,2) -- (1.4,1.225);
+      (-1,2) -- (1.4,1.225)
+   % branch options
+      (-1,2) -- (1.6,1.7);
 \fi
 
 \ifdefined\argrrtchosen
