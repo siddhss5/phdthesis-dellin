@@ -74,7 +74,7 @@
          Planning for manipulation tasks poses three challenges:
          
          \begin{itemize}
-         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 1: Capturing the planning/execution tradeoff..
          \item Challenge 2: Incongruent steps impede reuse.
          \item Challenge 3: Coupled steps require long planning horizons.
          \end{itemize}
@@ -100,10 +100,11 @@
          \includegraphics[width=5cm]{figs/alami-intro.png}
       };
       
-      \node[inner sep=0pt] at (6,0.5) {\begin{minipage}{11.5cm}\small{
-         Alami, Simeon, and Laumond, ``A Geometrical Approach to Planning Manipulation Tasks,'' ISRR 1990.
+      \node[inner sep=0pt] at (6,0.5) {\begin{minipage}{7.75cm}\scriptsize{
+         $^\dag$\PaperPortrait\;  Alami, Simeon, and Laumond,
+         ``A Geometrical Approach to Planning Manipulation Tasks,'' ISRR 1990.
       }\end{minipage}};
-
+      
    \end{tikzpicture}
 \end{frame}
 
@@ -197,7 +198,9 @@
          \node[inner sep=0pt] at (9,7) {\begin{minipage}{5.5cm}\centering
             Query C-Space Subsets:
             
-            $S_x \subseteq \mbox{SE}(2)$
+            $S_{12} \subseteq \mathcal{C}$
+            
+            $S_{23} \subseteq \mathcal{C}$
          \end{minipage}};
       }
       
@@ -253,7 +256,7 @@
 
       % procedure itself
       \only<2->{
-         \node[fill=blue!10,rounded corners,anchor=north] at (6,5.5) {\begin{minipage}{5cm}\small{
+         \node[fill=blue!20,rounded corners,anchor=north] at (6,5.5) {\begin{minipage}{5cm}\small{
             {\bf C-Space Set Union Property}$^\dag$
             
             {\bf If} $W_A = W_B \cup W_C$,
@@ -261,15 +264,15 @@
             {\bf Then} $S_A = S_B \cap S_C$.
          }\end{minipage}};
       
-         \node[inner sep=0pt] at (6,0.5) {\begin{minipage}{11.5cm}\scriptsize{
-            $^\dag$W. S. Newman and M. S. Branicky.
+         \node[inner sep=0pt] at (6,0.5) {\begin{minipage}{10.5cm}\scriptsize{
+            $^\dag$\PaperPortrait\;  W. S. Newman and M. S. Branicky.
             ``Real-time configuration space transforms for obstacle avoidance.''
             The International Journal of Robotics Research, 1991.
          }\end{minipage}};
       }
       
       \only<3->{
-         \node[fill=blue!10,rounded corners,anchor=north] at (6,3.5) {\begin{minipage}{7cm}\small{
+         \node[fill=blue!20,rounded corners,anchor=north] at (6,3.5) {\begin{minipage}{7cm}\small{
             {\bf Example Workspace Decomposition}
             
             {\bf Given} $W_{12}$ {\bf and} $W_{23}$,
@@ -358,7 +361,10 @@
       
       % left again
       \only<4->{
-      
+         \node at (3,5.25) {\includegraphics[width=4.5cm]{build/example-2d-s12-wtraj}};
+      }
+      \only<5->{
+         \node at (3,2.75) {\includegraphics[width=4.5cm]{build/example-2d-s23-wtraj}};
       }
       
    \end{tikzpicture}
@@ -377,7 +383,7 @@
          \end{minipage}};
       \node at (9,3.5) {\includegraphics{build/figstar-w-abc}};
       
-      \node[fill=blue!10,rounded corners] at (3,5.5)
+      \node[fill=blue!20,rounded corners] at (3,5.5)
       {\begin{minipage}{5cm}
          {\setlength{\tabcolsep}{2pt}
          \begin{tabular}{ccl}
@@ -394,7 +400,7 @@
          \end{tabular}}
       \end{minipage}};
       
-      \node[fill=blue!10,rounded corners] at (3,2)
+      \node[fill=blue!20,rounded corners] at (3,2)
       {\begin{minipage}{5cm}
          Validity checking model:
          
@@ -413,7 +419,7 @@
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[fill=blue!10,align=center,rounded corners,
+      \node[fill=blue!20,align=center,rounded corners,
          inner sep=5pt] at (1.5,5.3) {
          Propositional\\
          Logic Solver
@@ -438,7 +444,7 @@
       \draw[->,line width=1pt] (6.3,4.4) -- (6.3,3.9);
       \draw[->,line width=1pt] (7.8,4.4) -- (7.8,3.9);
       
-      \node[fill=blue!10,minimum height=1.5cm,minimum width=2.5cm,
+      \node[fill=blue!20,minimum height=1.5cm,minimum width=2.5cm,
          align=center,rounded corners,inner ysep=0.7cm]
       at (7,2.5) {
          E$^8$-PRM\\
@@ -517,7 +523,7 @@
          \node[font=\scriptsize,anchor=west] at (8.3,5) {known in $S_A$};
       }
       
-      \node[fill=blue!10,rounded corners,font=\scriptsize] at (5,2.1)
+      \node[fill=blue!20,rounded corners,font=\scriptsize] at (5,2.1)
       {\begin{minipage}{8cm}
          \begin{algorithmic}[1]
          \Function {MultiOptCert}{$q_e, S_u, P_{\ms{known}}$}
@@ -906,7 +912,7 @@
       \only<2->{
          \node[fill=blue!20,rounded corners,anchor=north]
          at (6,3.5) {\begin{minipage}{9.5cm}
-            {\bf Research Question Q6:}
+            {\bf Research Question Q3:}
             
             \smallskip
             Perform a comprehensive literature survey to identify
@@ -928,7 +934,7 @@
    \begin{tikzpicture}
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-      \node[fill=blue!10,rounded corners,font=\scriptsize] at (5,5.6)
+      \node[fill=blue!20,rounded corners,font=\scriptsize] at (5,5.6)
       {\begin{minipage}{8cm}
          \begin{algorithmic}[1]
          \Function {MultiOptCert}{$q_e, S_u, P_{\ms{known}}$}
@@ -970,7 +976,7 @@
       \only<2->{
          \node[fill=blue!20,rounded corners,anchor=north]
          at (6,3.2) {\begin{minipage}{10.5cm}
-            {\bf Research Question Q7:}
+            {\bf Research Question Q4:}
             
             \smallskip
             How should the planner manage the potential explosion
@@ -1016,7 +1022,7 @@
       \only<2->{
          \node[fill=blue!20,rounded corners,anchor=north]
          at (6,1.7) {\begin{minipage}{10.5cm}
-            {\bf Research Question Q8:}\\
+            {\bf Research Question Q5:}\\
             Extend experimental evaluation to (a) more problem instances,
             (b) more platforms, (c) more baseline approaches.
          \end{minipage}};
@@ -1101,7 +1107,7 @@
          Planning for manipulation tasks poses three challenges:
          
          \begin{itemize}
-         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 1: Capturing the planning/execution tradeoff..
          \item Challenge 2: Incongruent steps impede reuse.
          \item Challenge 3: Coupled steps require long planning horizons.
          \end{itemize}

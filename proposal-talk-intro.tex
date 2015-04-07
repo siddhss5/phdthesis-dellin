@@ -27,7 +27,7 @@
          }
          
          \only<3->{
-            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
                (b) at (3,0.85) {Onboard\\Sensors};
             \draw[->,line width=1pt] (a) -- (b);
          }
@@ -39,7 +39,7 @@
          }
          
          \only<5->{
-            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
                (d) at (7,0.85) {Onboard\\Motion\\Planner};
             \draw[->,line width=1pt] (c) -- (d);
          }
@@ -51,7 +51,7 @@
          }
          
          \only<7->{
-            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
                (f) at (11,0.85) {Motion\\Execution};
             \draw[->,line width=1pt] (e) -- (f);
          }
@@ -76,6 +76,9 @@
          \movie[width=5.333333cm,height=3.00cm,
             loop,autostart]{}{herb-tableclear-2-fast.mp4}
       };
+      
+      \node at (5.5,2.7) {10x};
+      \node at (11.2,2.7) {10x};
 
       %\node[fill=black,inner sep=1pt] at (3,6.3) {
       %   \movie[width=5.333333cm,height=3.00cm,
@@ -100,25 +103,25 @@
       \begin{scope}[font=\footnotesize]
          \node[draw,align=center,minimum height=1.2cm,font=\tiny]
             (a) at (1,0.85) {Unknown\\Environment};
-         \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+         \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
             (b) at (3,0.85) {Onboard\\Sensors};
          \draw[->,line width=1pt] (a) -- (b);
          \node[draw,align=center,minimum height=1.2cm,font=\tiny]
             (c) at (5,0.85) {Geometric\\World\\Model};
          \draw[->,line width=1pt] (b) -- (c);
          \only<1>{
-            \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+            \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
                (d) at (7,0.85) {Onboard\\Motion\\Planner};
          }
-         \only<2>{
-            \node[fill=green!50,rounded corners,align=center,minimum height=1.5cm]
-               (d) at (7,0.85) {Onboard\\Motion\\Planner};
-         }
+         %\only<2>{
+         %   \node[fill=green!50,rounded corners,align=center,minimum height=1.5cm]
+         %      (d) at (7,0.85) {Onboard\\Motion\\Planner};
+         %}
          \draw[->,line width=1pt] (c) -- (d);
          \node[draw,align=center,minimum height=1.2cm,font=\tiny]
             (e) at (9,0.85) {Motion};
             \draw[->,line width=1pt] (d) -- (e);
-         \node[fill=blue!10,rounded corners,align=center,minimum height=1.5cm]
+         \node[fill=blue!20,rounded corners,align=center,minimum height=1.5cm]
             (f) at (11,0.85) {Motion\\Execution};
          \draw[->,line width=1pt] (e) -- (f);
       \end{scope}
@@ -315,7 +318,7 @@
    }
    
    \only<11->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,3)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,3)
          {\begin{minipage}{5.5cm}
             \begin{center}
             For manipulation tasks,\\
@@ -325,7 +328,7 @@
    }
    
    \only<12->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,1.75)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,1.75)
          {\begin{minipage}{5.5cm}
             \begin{center}
             Robot's effort spent planning
@@ -418,7 +421,7 @@
    }
    
    \only<6->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,5.3)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,5.3)
          {\begin{minipage}{5.5cm}
             \begin{center}
             For manipulation tasks,\\
@@ -428,7 +431,7 @@
    }
    
    \only<7->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,4.1)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,4.1)
          {\begin{minipage}{5.5cm}
             \begin{center}
             How can we reuse precious planning computation?
@@ -533,7 +536,7 @@
       \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
    \node[inner sep=0pt] at (3,5.3) {%
-      \only<1->{\includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}}%
+      \only<1->{\includegraphics[width=5.75cm]{figs/herb-fridge-d-skinny.png}}%
       %\only<2->{\includegraphics[width=5.75cm]{figs/herb-fridge-d-skinny.png}}%
    };
 
@@ -550,19 +553,19 @@
    }
    
    \only<3->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,5.5)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,5.5)
          {\begin{minipage}{5.5cm}
             \begin{center}
             For manipulation tasks,\\
             a bad choice can render ensuing steps \emph{impossible}
-            \only<-4>{\color{blue!10}or \emph{difficult}.}%
+            \only<-4>{\color{blue!20}or \emph{difficult}.}%
             \only<5->{or \emph{difficult}.}%
             \end{center}
          \end{minipage}};
    }
    
    \only<10->{
-      \node[fill=blue!10,rounded corners,font=\small,anchor=north] at (9,3.9)
+      \node[fill=blue!20,rounded corners,font=\small,anchor=north] at (9,3.9)
          {\begin{minipage}{5.5cm}
             \begin{center}
             This magnifies the need for efficient motion planning.
@@ -744,13 +747,13 @@
          Planning for manipulation tasks poses three challenges:
          
          \begin{itemize}
-         \item Challenge 1: Planning each step is expensive.
+         \item Challenge 1: Capturing the planning/execution tradeoff..
          \item Challenge 2: Incongruent steps impede reuse.
          \item Challenge 3: Coupled steps require long planning horizons.
          \end{itemize}
       \end{minipage}};
    
-      \node[fill=blue!10,rounded corners] at (6,1.5) {\begin{minipage}{10cm}\centering
+      \node[fill=blue!20,rounded corners] at (6,1.5) {\begin{minipage}{10cm}\centering
          The proposed work is a framework to address\\
          planning for multi-step manipulation tasks \emph{efficiently}.
       \end{minipage}};

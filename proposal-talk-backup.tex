@@ -1,4 +1,279 @@
 \begin{frame}
+   \frametitle{Motion Planning in Configuration Space}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (3,4)
+         {\includegraphics[width=5cm]{figs/fridge-intro.png}};
+   
+      \node[inner sep=0] at (9,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,rootsonly}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,cfree}}}%
+         %{\only<3>{\includegraphics{build/talk-act1-2d,paths}}}%
+      };
+      
+      % legend
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (7.05, 2.0) {};
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (7.5, 2.0) {};
+      \node[anchor=west] at (7.9,2.0) {start, goal configs};
+      \only<2->{
+         \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+            (Cfreebox) at (6.9, 1.5) {};
+         \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
+      }
+      
+      %\only<1>{\node at (6,1) {High-dimensional C-space (cite TLP).};}
+      %\only<2>{\node at (6,1.3) {\begin{minipage}{11cm}\begin{center}
+      %   \begin{equation*}
+      %      f_x(\pi) = x(\pi)
+      %   \end{equation*}
+      %   Lots of possible paths.
+      %
+      %   {\bf How to find low-cost paths quickly?}%
+      %   \end{center}\end{minipage}
+      %};}
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Motion Planning as Best-First Search over Paths}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,cfree}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,paths}}}%
+         {\only<3>{\includegraphics{build/talk-act1-2d,traja}}}%
+         {\only<4>{\includegraphics{build/talk-act1-2d,firstfail}}}%
+         {\only<5>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
+      };
+      
+      % legend
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (7.05, 2.0) {};
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (7.5, 2.0) {};
+      \node[anchor=west] at (7.9,2.0) {start, goal configs};
+      \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (6.9, 1.5) {};
+      \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
+      \only<2->{
+         \draw[dashed,thick] (6.9,1.0) -- (7.65,1.0);
+         \node[anchor=west] at (7.9,1.0) {candidate paths $\Pi$};
+      }
+      \only<3->{
+         \draw[black!30,line width=7pt,line cap=round] (6.9,0.5) -- (7.65,0.5);
+         \node[anchor=west] at (7.9,0.5) {path to evaluate ${\hat \pi}^*$};
+      }
+
+      % bfs background
+      \node[anchor=north,fill=black!5,rounded corners,inner sep=0.2cm,minimum height=3cm,
+      minimum width=5.9cm]
+      at (3.2,7.5) {};
+      
+      % bfs highlights
+      \only<2,5>{\fill[green!30] (0.25,5.8) rectangle (6.15,6.35);}
+      \only<3,5>{\fill[green!30] (0.25,5.1) rectangle (6.15,5.8);}
+      \only<4>{\fill[green!30] (0.25,4.6) rectangle (6.15,5.1);}
+      
+      % bfs text
+      \node[anchor=north,inner sep=0.2cm,minimum height=3cm]
+      at (3.2,7.5) {\begin{minipage}{5.5cm}
+         Best First Search over paths:
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \State $\Pi \leftarrow \mbox{\textsc{GetCandidatePaths}}()$
+            \State ${\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \State \textsc{EvalPath}$({\hat \pi}^*)$
+         \EndLoop
+         \end{algorithmic}
+      \end{minipage}};
+      
+      %\only<2>{\node at (6,1) {Select best candidate path.};}
+      %\only<3>{\node at (6,1) {Evaluate.};}
+   
+   \end{tikzpicture}
+\end{frame}
+
+%\begin{frame}
+%   \frametitle{Best-First Search over Paths}
+%   \begin{tikzpicture}
+%   
+%      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%      
+%      \node[inner sep=0] at (9,5) {%
+%         {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
+%      };
+%      
+%      % legend
+%      \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+%         (Cfreebox) at (6.9, 1.9) {};
+%      \node[anchor=west] at (7.9,1.9) {$\mathcal{C}_{\mbox{\scriptsize free}}$}; 
+%      \draw[dashed,thick] (6.9,1.3) -- (7.65,1.3);
+%      \node[anchor=west] at (7.9,1.3) {candidate paths $\Pi$};
+%      
+%      % bfs background
+%      \node[anchor=north,fill=black!5,rounded corners,inner sep=0.2cm,minimum height=3cm,
+%      minimum width=5.9cm]
+%      at (3.2,7.5) {};
+%      
+%      % bfs highlights
+%      \only<1>{\fill[green!30] (0.25,5.8) rectangle (6.15,6.35);}
+%      %\only<2,4>{\fill[green!30] (0.25,5.1) rectangle (6.15,5.8);}
+%      %\only<3>{\fill[green!30] (0.25,4.6) rectangle (6.15,5.1);}
+%      
+%      % bfs text
+%      \node[anchor=north,inner sep=0.2cm,minimum height=3cm]
+%      at (3.2,7.5) {\begin{minipage}{5.5cm}
+%         Best First Search over paths:
+%         \algrenewcommand\algorithmicindent{0.0cm}%
+%         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+%         \begin{algorithmic}
+%         \Loop%
+%            \State $\Pi \leftarrow \mbox{\textsc{GetCandidatePaths}}()$
+%            \State ${\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+%            \State \textsc{EvalPath}$({\hat \pi}^*)$
+%         \EndLoop
+%         \end{algorithmic}
+%      \end{minipage}};
+%      
+%   \end{tikzpicture}
+%\end{frame}
+
+
+\begin{frame}
+   \frametitle{Best-First Search over Paths: Roadmaps}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
+         %{\only<1>{\includegraphics{build/talk-act1-2d,paths}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,graph}}}%
+         %{\only<2>{\includegraphics{build/talk-act1-2d,graphfirst}}}%
+         %{\only<3>{\includegraphics{build/talk-act1-2d,graphfirstevaled}}}%
+         %{\only<4>{\includegraphics{build/talk-act1-2d,graphfirstnext}}}%
+         %{\only<5>{\includegraphics{build/talk-act1-2d,graph}}}%
+         {\only<3>{\includegraphics{build/talk-act1-2d,astara}}}%
+      };
+      
+      % legend
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (7.05, 2.0) {};
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (7.5, 2.0) {};
+      \node[anchor=west] at (7.9,2.0) {start, goal configs};
+      \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (6.9, 1.5) {};
+      \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
+      \draw[dashed,thick] (6.9,1.0) -- (7.65,1.0);
+      \node[anchor=west] at (7.9,1.0) {candidate paths $\Pi$};
+      
+      % bfs background
+      \node[anchor=north,fill=black!5,rounded corners,inner sep=0.2cm,minimum height=3cm,
+      minimum width=5.9cm]
+      at (3.2,7.5) {};
+      
+      % bfs highlights
+      \only<2>{\fill[green!30] (0.25,5.8) rectangle (6.15,6.35);}
+      %\only<2,4>{\fill[green!30] (0.25,5.1) rectangle (6.15,5.8);}
+      %\only<3>{\fill[green!30] (0.25,4.6) rectangle (6.15,5.1);}
+      
+      % bfs text
+      \node[anchor=north,inner sep=0.2cm,minimum height=3cm]
+      at (3.2,7.5) {\begin{minipage}{5.5cm}
+         Best First Search over paths:
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \only<1>{\State $\Pi \leftarrow \mbox{\textsc{GetCandidatePaths}}()$}
+            \only<2-3>{\State $\Pi \leftarrow \mbox{\textsc{GetRoadmapPaths}}()$}
+            \State ${\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi} f(\pi)$
+            \State \textsc{EvalPath}$({\hat \pi}^*)$
+         \EndLoop
+         \end{algorithmic}
+      \end{minipage}};
+      
+      %\only<1-4>{
+      %   \node at (6,1) {E.g. Probabalistic RoadMap, state lattice, etc.};
+      %}
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{RRTs as Best-First Search over Paths}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9.4,5) {%
+         {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
+         {\only<2>{\includegraphics{build/talk-act1-2d,rrtstart}}}%
+         {\only<3>{\includegraphics{build/talk-act1-2d,rrtsample}}}%
+         {\only<4-5>{\includegraphics{build/talk-act1-2d,rrtcandidates}}}%
+         {\only<6->{\includegraphics{build/talk-act1-2d,rrtchosen}}}%
+      };
+      
+      % legend
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (7.05, 2.0) {};
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (7.5, 2.0) {};
+      \node[anchor=west] at (7.9,2.0) {start, goal configs};
+      \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (6.9, 1.5) {};
+      \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
+      \draw[dashed,thick] (6.9,1.0) -- (7.65,1.0);
+      \node[anchor=west] at (7.9,1.0) {candidate paths $\Pi$};
+      \only<6->{
+         \draw[black!30,line width=7pt,line cap=round] (6.9,0.5) -- (7.65,0.5);
+         \node[anchor=west] at (7.9,0.5) {path to evaluate ${\hat \pi}^*$};
+      }
+      
+      % bfs background
+      \node[anchor=north,fill=black!5,rounded corners,inner sep=0.2cm,minimum height=3cm,
+      minimum width=6.6cm]
+      at (3.4,7.5) {};
+      
+      % bfs highlights
+      \only<4>{\fill[green!30] (0.1,5.9) rectangle (6.7,6.35);}
+      \only<5->{\fill[green!30] (0.1,5.15) rectangle (6.7,6.0);}
+      %\only<3>{\fill[green!30] (0.25,4.6) rectangle (6.15,5.15);}
+      
+      % bfs text
+      \node[anchor=north,inner sep=0.1cm,minimum height=3cm]
+      at (3.4,7.5) {\begin{minipage}{6.3cm}\small{
+         Best First Search over paths:
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \only<1>{\State $\Pi \leftarrow \mbox{\textsc{GetCandidatePaths}}()$}
+            \only<2->{\State $\Pi \leftarrow \mbox{\textsc{GetRRTPaths}}()$}
+            \State ${\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi}
+               \left[ (1-\lambda) \hat{f}_x(\pi) + \lambda \hat{f}_p(\pi) \right]$
+            \State \textsc{EvalPath}$({\hat \pi}^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
+      
+      %\only<2>{\node at (6,1) {Select best candidate path.};}
+      %\only<3>{\node at (6,1) {Evaluate.};}
+      
+      \only<7>{
+         \node[anchor=north,fill=blue!20,rounded corners,inner sep=0.2cm,
+            minimum width=5.9cm,align=center]
+         at (3.4,4)
+         {
+            \bf RRT-Connect is a\\\bf $\lambda=1$ planner!
+         };
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
    \frametitle{Best-First Search over Paths: Trajectory Optimization}
    \begin{center}
       \includegraphics{build/talk-act1-2d,traja}
@@ -503,5 +778,370 @@
          \end{minipage}};
       }
    
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Roadmaps: Accounting for Spatial Coherence in $\mathcal{C}_{\ms{free}}$}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9.4,5) {
+         \includegraphics{build/talk-act1-2d,graphfirstevaled}
+      };
+      
+      \node[anchor=north,fill=black!5,rounded corners]
+      at (3.4,7.5) {\begin{minipage}{6.3cm}\small{
+         Best First Search over paths:
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \State $\Pi \leftarrow \mbox{\textsc{GetRoadmapPaths}}()$
+            \State ${\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi}
+               \left[ (1-\lambda) \hat{f}_x(\pi) + \lambda \hat{f}_p(\pi) \right]$
+            \State \textsc{EvalPath}$({\hat \pi}^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
+      
+      \only<2->{
+         \node[anchor=north,fill=blue!20,rounded corners]
+         at (3.4,4.7) {\begin{minipage}{6.3cm}\small{
+            \begin{itemize}
+            \item Roadmap: maintain sparsity
+            \item BFS: be optimistic
+            \item Densify roadmap on failure
+            \end{itemize}
+         }\end{minipage}};
+      }
+      
+      \only<3->{
+         \node[anchor=north,inner sep=0.3cm,fill=blue!20,rounded corners]
+         at (6,2.2) {\begin{minipage}{10cm}\small{\centering
+            {\bf What if we optimized ensemble effort \emph{in expectation}?}
+            \begin{equation*}
+               {\hat \pi}^* \leftarrow \argmin\limits_{\pi \in \Pi}
+                  \mbox{E} \left[ (1-\lambda) \hat{f}_x(\pi) + \lambda \hat{f}_p(\pi) \right]
+            \end{equation*}
+         }\end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Alternative: Optimization in Expectation}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,6)
+         {\includegraphics{build/example-in-expectation}};
+      
+      \only<2->{
+         \node[anchor=north,fill=blue!20,rounded corners] at (6,4) {\begin{minipage}{10cm}
+            {\bf Research Question Q5:}\\
+            Is there a sufficiently expressive and efficient probabilistic
+            model of $\mbox{P}_{\ms{free}}(q)$ to allow for minimization
+            of ensemble effort in expectation at each iteration?
+            
+            \medskip
+            Starting point: Gaussian Processes for binary classification.
+         \end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Efficiency in Graph Search}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      % example (FIRST) problems
+      \only<4-14>
+      {
+         \node[inner sep=0pt] at (6.5,7) {\includegraphics[width=1.5cm]{figs/rubik.png}};
+         \node[inner sep=0pt,anchor=north,align=center,font=\scriptsize] at (6.5,6) {$4.3 \times 10^{19}$\\vertices};
+      }
+      
+      \only<5-14>
+      {
+         \node[inner sep=0pt] at (8.5,7) {\includegraphics[width=1.5cm]{figs/15puzzle.png}};
+         \node[inner sep=0pt,anchor=north,align=center,font=\scriptsize] at (8.5,6) {$2.1 \times 10^{13}$\\vertices};
+      }
+      
+      \only<6-14>
+      {
+         \node[inner sep=0pt] at (10.5,7) {\includegraphics[width=1.5cm]{figs/goldberg-northwest.png}};
+         \node[inner sep=0pt,anchor=north,align=center,font=\scriptsize] at (10.5,6) {1.6M\\vertices};
+      }
+      
+      % example problems SECOND
+      \only<17->
+      {
+         \node[inner sep=0pt] at (2.0,7) {\includegraphics[width=2.5cm]{figs/fridge-intro.png}};
+         \node[inner sep=0pt,anchor=north,align=center,font=\scriptsize] at (2.0,6) {$\sim10$k\\vertices};
+      }
+      \only<18->
+      {
+         \node[inner sep=0pt] at (5.0,7) {\includegraphics[width=2.5cm]{figs/prm.png}};
+         \node[inner sep=0pt,anchor=north,align=center,font=\scriptsize] at (5.0,6)
+            {Motivation: PRM};
+         % cite
+         %\node[anchor=east,font=\scriptsize] at (12,0.5)
+         %   {$^\dag$ Kavraki, Svestka, Latombe, Overmars, 1996.};
+      }
+      
+      % draw graph box
+      \only<1-2>{
+         \node[draw,align=center,minimum height=1.3cm,anchor=south east] at (5,3.5) {
+            Graph\\$G = (V,E)$\\\includegraphics[width=1cm]{build/roadmap-2d-simple}
+         };
+      }
+      \only<3-15>{
+         \node[draw,align=center,minimum height=1.3cm,anchor=south east] at (5,3.5) {
+            Graph\\$G = (V,E)$\\\includegraphics[width=3cm]{build/roadmap-2d-simple}
+         };
+      }
+      % grow using a*!
+      \only<7-14>{
+         \fill[white,fill opacity=0.9] (1.8,3.6) rectangle (4.9,6.7);
+         \begin{scope}
+            \clip (1.8,3.6) rectangle (4.9,6.7);
+            \only<7>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (0.5cm and 0.25cm);}
+            \only<8>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (1.0cm and 0.50cm);}
+            \only<9>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (1.4cm and 0.70cm);}
+            \only<10>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (1.6cm and 0.80cm);}
+            \only<11>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (1.9cm and 0.85cm);}
+            \only<12>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (2.1cm and 1.05cm);}
+            \only<13-14>{\clip[rotate around={15:(2.0,4.8)}] (2.0,4.8) ellipse (2.2cm and 1.10cm);}
+            \node[align=center,minimum height=1.3cm,anchor=south east] at (5,3.5) {
+               \includegraphics[width=3cm]{build/roadmap-2d-simple}};
+            \only<14>{\draw[rotate around={15:(2.0,4.8)},line width=4pt]
+               (2.0,4.8) ellipse (2.2cm and 1.10cm);}
+         \end{scope}
+      }
+      \only<16->{
+         \node[draw,align=center,minimum height=1.3cm,anchor=south east,font=\scriptsize] at (5,3.5) {
+            Graph\\$G = (V,E)$\\\includegraphics[width=0.5cm]{build/roadmap-2d-simple}
+         };
+      }
+      
+      % draw edge eval box
+      \only<1-2>{
+         \node[draw,align=center,anchor=south west] at (7,3.5)
+            {\\Edge Weight\\$x : E \rightarrow \mathbb{R}^+$\\};
+      }
+      \only<3-15>{
+         \begin{scope}[font=\tiny]
+            \node[draw,align=center,anchor=south west] at (7,3.5)
+               {\\Edge Weight\\$x : E \rightarrow \mathbb{R}^+$\\};
+         \end{scope}
+      }
+      \only<16->{
+         \node[draw,align=center,anchor=south west,inner sep=1cm] at (7,3.5)
+            {\\Edge Weight\\$x : E \rightarrow \mathbb{R}^+$\\};
+      }
+      
+      \draw[->,line width=1pt] (4,3.25) -- (4,2.75);
+      \draw[->,line width=1pt] (8,3.25) -- (8,2.75);
+      \node[draw,align=center,minimum height=1.0cm,minimum width=5cm,anchor=north]
+         at (6,2.5) {\\$GS(G,x)$};
+
+      % clocks
+      \only<2-13>{
+         % graph
+         \node[fill=white,circle,inner sep=-2pt] at (5,3.5) {\LARGE%
+            \only<2-6>{\showclock{0}{0}}%
+            \only< 7>{\showclock{0}{10}}%
+            \only< 8>{\showclock{0}{20}}%
+            \only< 9>{\showclock{0}{30}}%
+            \only<10>{\showclock{0}{40}}%
+            \only<11>{\showclock{0}{50}}%
+            \only<12>{\showclock{1}{00}}%
+            \only<13>{\showclock{1}{10}}%
+         };
+         % edge weight
+         \node[fill=white,circle,inner sep=-2pt] at (7,3.5) {\LARGE%
+            \only<2-6>{\showclock{0}{0}}%
+            \only< 7>{\showclock{0}{5}}%
+            \only< 8>{\showclock{0}{10}}%
+            \only< 9>{\showclock{0}{15}}%
+            \only<10>{\showclock{0}{20}}%
+            \only<11>{\showclock{0}{25}}%
+            \only<12>{\showclock{0}{30}}%
+            \only<13>{\showclock{0}{35}}%
+         };
+         % graph search
+         \node[fill=white,circle,inner sep=-2pt] at (6,2.5) {\LARGE%
+            \only<2-6>{\showclock{0}{0}}%
+            \only< 7>{\showclock{0}{5}}%
+            \only< 8>{\showclock{0}{10}}%
+            \only< 9>{\showclock{0}{20}}%
+            \only<10>{\showclock{0}{40}}%
+            \only<11>{\showclock{1}{20}}%
+            \only<12>{\showclock{2}{40}}%
+            \only<13>{\showclock{5}{20}}%
+         };
+      }
+      \only<14>{
+         % graph
+         \node[fill=green,circle,inner sep=-2pt] at (5,3.5) {\LARGE\showclock{1}{10}};
+         % edge weight
+         \node[fill=white,circle,inner sep=-2pt] at (7,3.5) {\LARGE\showclock{0}{35}};
+         % graph search
+         \node[fill=white,circle,inner sep=-2pt] at (6,2.5) {\LARGE\showclock{5}{20}};
+      }
+      \only<15-18>{
+         % graph
+         \node[fill=white,circle,inner sep=-2pt] at (5,3.5) {\LARGE\showclock{0}{0}};
+         % edge weight
+         \node[fill=white,circle,inner sep=-2pt] at (7,3.5) {\LARGE\showclock{0}{0}};
+         % graph search
+         \node[fill=white,circle,inner sep=-2pt] at (6,2.5) {\LARGE\showclock{0}{0}};
+      }
+      \only<19->{
+         % graph
+         \node[fill=white,circle,inner sep=-2pt] at (5,3.5) {\LARGE\showclock{0}{0}};
+         % edge weight
+         \node[fill=green,circle,inner sep=-2pt] at (7,3.5) {\LARGE\showclock{0}{0}};
+         % graph search
+         \node[fill=white,circle,inner sep=-2pt] at (6,2.5) {\LARGE\showclock{0}{0}};
+      }
+      
+      \node[draw,align=center,shape=document] at (1.5,2) {Query\;\;\;};
+      \draw[->,line width=1pt] (2.5,2) -- (3.25,2);
+      \draw[->,line width=1pt] (8.75,2) -- (9.50,2);
+      \node[draw,align=center,shape=document] at (10.15,2) {$\pi^*$\;\;\;};
+
+      \only<14>{
+         \node at (6,0.75) {A* is {\bf optimally efficient} w.r.t
+            the number of {\bf vertices considered}.};
+      }
+      \only<19>{
+         \node at (6,0.75) {A* is {\bf not optimally efficient} w.r.t
+            the number of {\bf edges evaluated}.
+         };
+      }
+      \only<20>{
+         \node[align=center] at (6,0.75) {
+            The {\bf E$^4$} graph search problem:\\
+            \emph{Explicit graphs with Expensive Edge Evaluations}
+         };
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multiple Queries: Relationship to Experience Graphs}
+   \begin{tikzpicture}
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \draw[line width=1pt] (0.5,7.5) -- (11.5,7.5);
+      
+      \node[align=center] at (3,6.95) {Experience Graphs};
+      \node[align=center] at (9,7) {E$^8$ Search};
+      
+      \draw[line width=0.1pt] (0.5,6.5) -- (11.5,6.5);
+      
+      \only<2->{
+         \node[fill=black!5,rounded corners] at (3,5.75) {\begin{minipage}{4.5cm}\centering\small{
+            Only keeping solutions may introduce helpful bias
+         }\end{minipage}};
+         
+         \node[fill=blue!20,rounded corners] at (9,5.75) {\begin{minipage}{4.5cm}\centering\small{
+            Keeping all evaluated edges may improve performance
+         }\end{minipage}};
+      }
+      
+      \only<3->{
+         \node[fill=black!5,rounded corners] at (3,4.5) {\begin{minipage}{4.5cm}\centering\small{
+            More efficient for larger graphs (e.g. shortcuts)
+         }\end{minipage}};
+      }
+      
+      \only<4->{
+         \node[fill=blue!20,rounded corners] at (9,4.5) {\begin{minipage}{4.5cm}\centering\small{
+            $\lambda$ and ${\hat{p}}(e)$ may be easier to set than $\epsilon$ and $\epsilon^E$
+         }\end{minipage}};
+      }
+      
+      \only<5->{
+         \node[fill=blue!20,rounded corners] at (9,3.1) {\begin{minipage}{4.5cm}\centering\small{
+            Supports non-proportional planning/execution effort heuristics
+         }\end{minipage}};
+      }
+      
+      \only<6->{
+         \node[fill=blue!20,rounded corners] at (6,1) {\begin{minipage}{9cm}
+            {\bf Research Question Q3:}\\
+            How does the explicit graph approach of E$^8$ compare to
+            weighted and anytime implicit algorithms?
+         \end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Continuous Spaces: Ensemble Effort Models}
+   \begin{tikzpicture}
+   
+      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node at (3,6.75) {e.g. $\mathcal{M} = \mathcal{M}_{\ms{dist}}
+         + \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$};
+      
+      \node[inner sep=0] at (8,6.75) {%
+         \includegraphics[width=2cm]{build/talk-act1-2d,graph}
+      };
+      \node[draw,line width=1.0pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (9.75, 6) {};
+      \node[right=0cm of Cfreebox] {: $\mathcal{C}_{\ms{free}}$}; 
+      
+      \node[draw,shape=document,anchor=north] at (3,5.5) {
+         \begin{minipage}[t]{5.5cm}%
+            \vspace{0.1cm}
+            Distance Model $\mathcal{M}_{\ms{dist}}$
+            \begin{algorithmic}[1]
+            \Function {$x_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $|| q_e(1) - q_e(0) ||$
+            \EndFunction
+            \Function {$\hat{x}_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $|| q_e(1) - q_e(0) ||$
+            \EndFunction
+            \Function {$\hat{p}_{\ms{\textup{dist}}}$}{$e$}
+               \State \Return $0$
+            \EndFunction
+            \end{algorithmic}
+         \end{minipage}%
+      };
+      
+      \node[draw,shape=document,anchor=north] at (9,5.5) {
+         \begin{minipage}[t]{5.5cm}%
+            \vspace{0.1cm}
+            Set Validity Model $\mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$
+            \begin{algorithmic}[1]
+            \Function {$x_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \If {${\bf 1}_{\ms{free}}[q_e(t)]$}
+                  \State \Return $0$
+               \Else
+                  \State \Return $\infty$
+               \EndIf
+            \EndFunction
+            \Function {$\hat{x}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \State \Return $0$
+            \EndFunction
+            \Function {$\hat{p}_{\ms{\textup{valid}}}$}{$e, \mathcal{C}_{\ms{free}}$}
+               \State \Return $\hat{p}_{\ms{\textup{free}}}[q_e(t)]$
+            \EndFunction
+            \end{algorithmic}
+         \end{minipage}%
+      };
+      
    \end{tikzpicture}
 \end{frame}
