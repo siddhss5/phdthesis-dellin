@@ -1,7 +1,7 @@
 \begin{frame}
    \frametitle{Part 1: Capturing the Planning/Execution Tradeoff}
       \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       % figure adapted from proposal doc
       \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
@@ -94,7 +94,7 @@
 \begin{frame}
    \frametitle{The Planning vs. Execution Tradeoff on Roadmaps}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          %{\only<1>{\includegraphics{build/talk-act1-2d,rootsonly}}}%
@@ -112,7 +112,7 @@
       \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
       
       \only<2->{
-         \node[anchor=north,fill=black!10,rounded corners] at (3,7.5)
+         \node[anchor=north,fill=black!15,rounded corners] at (3,7.5)
          {\bf Focus: Roadmap methods};
       }
       
@@ -143,8 +143,6 @@
          2. Research questions
          
          - graphs in C-space
-         
-         - preliminary results
          \end{minipage}};
       }
    
@@ -155,7 +153,7 @@
    \frametitle{Efficiency in Graph Search}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       % example (FIRST) problems
       \only<4-14>
@@ -344,14 +342,14 @@
 \begin{frame}
    \frametitle{Explicit Graphs with Expensive Edge Evaluations}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9.25,5) {%
          \includegraphics{build/talk-act1-2d,astara}%
       };
       
       % f(x) highlight
-      \node[inner sep=0pt,fill=black!5,minimum height=2.8cm,minimum width=6.3cm,rounded corners]
+      \node[inner sep=0pt,fill=black!15,minimum height=2.8cm,minimum width=6.3cm,rounded corners]
          at (3.25,6.3) {};
       \only<2>{
          \fill[green!30] (0.1,5.85) rectangle (6.4,6.7);
@@ -413,11 +411,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       %\draw[dashed] (7.5,7.75) -- (7.5,1.25);
@@ -437,28 +435,28 @@
       %\node[align=center,font=\scriptsize]
       %   at (2.2,1.5) {Expressiveness\\of heuristics};
 
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,5.9) {none};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,5.9) {Dijkstra's};
 
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,4.9) {${\hat x}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
       %   at (6.5,4.9) {(E)PEA*\\OGA*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,3.9) {Weighted A*};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,2.9) {${\hat x}, {\hat p}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,2.9) {BUGSY};
       %\node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (9.5,2.9) {E$^8$};
@@ -485,7 +483,7 @@
    \item<3-> Allows for more flexible path evaluation strategies
    \begin{center}
       \begin{tikzpicture}
-         \draw[step=1,black!10,very thin,opacity=0] (0,0) grid (8,2);
+         \draw[step=1,black!15,very thin,opacity=0] (0,0) grid (8,2);
          
          \only<28>{\node[inner sep=0pt,rounded corners,fill=blue!20,
             minimum width=2.7cm,minimum height=1.7cm] at (1.5,1) {};}
@@ -536,7 +534,7 @@
    \item<26-> Admits more natural expression of our path objective
    \begin{center}
       \begin{tikzpicture}
-         \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+         \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
             at (0,6.75) {\begin{minipage}{3.25cm}\small{
             \algrenewcommand\algorithmicindent{0.0cm}%
             \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
@@ -557,11 +555,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       \only<3>{
@@ -585,30 +583,30 @@
       %\node[align=center,font=\scriptsize]
       %   at (2.2,1.5) {Expressiveness\\of heuristics};
 
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,5.9) {none};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,5.9) {Dijkstra's};
 
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,4.9) {${\hat x}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
       \only<2>{\node[fill=blue!20,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};}
-      \only<3>{\node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      \only<3>{\node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};}
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,3.9) {Weighted A*};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,2.9) {${\hat x}, {\hat p}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,2.9) {BUGSY};
       %\node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (9.5,2.9) {E$^8$};
@@ -642,7 +640,7 @@
    \frametitle{Challenge 1: The Planning/Execution Tradeoff}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (3.5,5.5) {\includegraphics[width=4cm]{figs/fridge-intro.png}};
       \node[inner sep=0pt,anchor=north] at (3.5,4.0)
@@ -669,11 +667,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       \draw[dashed] (7.6,7.75) -- (7.6,1.25);
@@ -699,34 +697,34 @@
       }
 
       \only<4->{
-         \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+         \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
             at (1,5.9) {none};
-         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+         \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
             at (4,5.9) {Dijkstra's};
       }
 
       \only<3->{
-         \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+         \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,4.9) {${\hat x}$};
       }
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,3.9) {Weighted A*};
       
       \only<6->{
-         \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+         \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
             at (1,2.9) {${\hat x}, {\hat p}$};
       }
       \only<7->{
-         \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+         \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
             at (4,2.9) {BUGSY$^\dag$};
       }
       %\node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
@@ -756,14 +754,14 @@
    \frametitle{Explicit Graphs with Expensive Edge Evaluations}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9.25,5) {%
          \includegraphics{build/talk-act1-2d,astara}%
       };
       
       % f(x) highlight
-      \node[inner sep=0pt,fill=black!5,minimum height=2.8cm,minimum width=6.3cm,rounded corners]
+      \node[inner sep=0pt,fill=black!15,minimum height=2.8cm,minimum width=6.3cm,rounded corners]
          at (3.25,6.3) {};
       \only<4-6>{\fill[green!30] (2.65,5.9) rectangle (6.4,6.7);}
       
@@ -845,7 +843,7 @@
    \frametitle{The E$^8$ Algorithm}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[anchor=north,shape=document,draw,inner sep=0.25cm] at (6,7.75) {\begin{minipage}{8.5cm}\small{
          Ensemble Effort model:
@@ -860,7 +858,7 @@
       \draw[->,line width=1pt] (6,5.5) -- (6,5.0);
       
       % alg
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (0,3.75) {\begin{minipage}{3.25cm}\small{
          \algrenewcommand\algorithmicindent{0.0cm}%
          \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
@@ -873,7 +871,7 @@
       }\end{minipage}};
       
       % f(pi) execution path cost
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (3.5,3.75) {\begin{minipage}{8.5cm}\small{%
          \vspace{-0.3cm}
          \begin{equation*}%
@@ -899,11 +897,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       \draw[dashed] (7.6,7.75) -- (7.6,1.25);
@@ -925,28 +923,28 @@
       \node[align=center,font=\scriptsize]
          at (2.2,1.5) {Expressiveness\\of heuristics};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,5.9) {none};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,5.9) {Dijkstra's};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,4.9) {${\hat x}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
-      %\node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      %\node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
       %   at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
-      %\node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      %\node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
       %   at (4,3.9) {Weighted A*};
       
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,2.9) {${\hat x}, {\hat p}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,2.9) {BUGSY};
       \only<2>{
          \node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
@@ -960,10 +958,10 @@
    \frametitle{Simplification with Proportional Heuristics}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       % alg
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (0,6.75) {\begin{minipage}{3.25cm}\small{
          \algrenewcommand\algorithmicindent{0.0cm}%
          \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
@@ -976,7 +974,7 @@
       }\end{minipage}};
       
       % f(pi) execution path cost
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (3.5,6.75) {\begin{minipage}{8.5cm}\small{%
          \vspace{-0.3cm}
          \begin{equation*}%
@@ -1033,10 +1031,10 @@
    \frametitle{Guarantee of Suboptimality in Execution Effort}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       % alg
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (0,6.75) {\begin{minipage}{3.25cm}\small{
          \algrenewcommand\algorithmicindent{0.0cm}%
          \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
@@ -1049,7 +1047,7 @@
       }\end{minipage}};
       
       % f(pi) execution path cost
-      \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=2cm,rounded corners]
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=2cm,rounded corners]
       at (3.5,6.75) {\begin{minipage}{8.5cm}\small{%
          \vspace{-0.3cm}
          \begin{equation*}%
@@ -1093,11 +1091,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       \draw[dashed] (7.6,7.75) -- (7.6,1.25);
@@ -1119,30 +1117,30 @@
       \node[align=center,font=\scriptsize]
          at (2.2,1.5) {Expressiveness\\of heuristics};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,5.9) {none};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,5.9) {Dijkstra's};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,4.9) {${\hat x}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
       \only<2>{
-         \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+         \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
             at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
          \node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
             at (4,3.9) {Weighted A*};
       }
       
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,2.9) {${\hat x}, {\hat p}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,2.9) {BUGSY};
       \node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,2.9) {E$^8$};
@@ -1161,7 +1159,7 @@
    \frametitle{Example Problem}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (6,4.75) {%
          \only<1>{\includegraphics[width=5cm]{build/e8-world-intro}}%
@@ -1197,7 +1195,7 @@
 %\begin{frame}
 %   \frametitle{Multiple Queries}
 %   \begin{tikzpicture}
-%      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 %      
 %      \node[inner sep=0pt] at (6,7.4) {\begin{minipage}{12cm}\centering
 %         Implicit algorithms manifest planning effort in
@@ -1235,11 +1233,11 @@
 \begin{frame}
    \frametitle{Survey of Graph Search Algorithms}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      \node[align=center,fill=black!10,minimum width=4.8cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=4.8cm,rounded corners]
          at (4.85,7.25) {BFS over Vertices\\(implicit graphs)};
-      \node[align=center,fill=black!10,minimum width=3cm,rounded corners]
+      \node[align=center,fill=black!15,minimum width=3cm,rounded corners]
          at (9.5,7.25) {BFS over Paths\\(explicit graphs)};
       
       \draw[dashed] (7.6,7.75) -- (7.6,1.25);
@@ -1261,32 +1259,32 @@
       \node[align=center,font=\scriptsize]
          at (2.2,1.5) {Expressiveness\\of heuristics};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,5.9) {none};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,5.9) {Dijkstra's};
 
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,4.9) {${\hat x}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,4.9) {A*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,font=\scriptsize,align=center]
          at (6.5,4.9) {(E)PEA*\\OGA*};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,4.9) {Lazy PRM};
       
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,3.9) {${\hat x}, {\hat p} \propto {\hat x}$};
-      \node[fill=black!10,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,3.9) {Weighted A*};
       \only<2>{
          \node[fill=blue!20,rounded corners,minimum height=0.8cm]
             at (6.5,3.9) {E-Graphs$^\dag$};
       }
       
-      \node[align=center,fill=black!10,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
+      \node[align=center,fill=black!15,rounded corners,minimum width=1.8cm,minimum height=0.4cm]
          at (1,2.9) {${\hat x}, {\hat p}$};
-      \node[fill=black!5,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
+      \node[fill=black!15,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (4,2.9) {BUGSY};
       \node[fill=blue!20,rounded corners,minimum height=0.8cm,minimum width=2.8cm]
          at (9.5,2.9) {E$^8$};
@@ -1312,7 +1310,7 @@
 \begin{frame}
    \frametitle{Multiple Queries: Relationship to Experience Graphs}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[anchor=north,fill=blue!20,rounded corners] at (6,7.75) {\begin{minipage}{9cm}\small{
          E$^8$ objective with ${\hat p}(e) = \alpha {\hat x}(e)$ and $\lambda < 1$:
@@ -1328,7 +1326,7 @@
       }\end{minipage}};
       
       \only<2->{
-         \node[anchor=north,fill=black!5,rounded corners] at (6,5.5) {\begin{minipage}{10cm}\small{
+         \node[anchor=north,fill=black!15,rounded corners] at (6,5.5) {\begin{minipage}{10cm}\small{
             Experience Graphs$^\dag$ objective, expressed explicitly over paths:
             \begin{equation*}
                \arraycolsep=1.4pt
@@ -1371,7 +1369,7 @@
    \frametitle{E$^8$ Search Summary}
    \begin{tikzpicture}
 
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
       \node[anchor=south,shape=document,draw,inner sep=0.25cm]
       at (4,4.5) {\begin{minipage}{5cm}\small{
@@ -1426,7 +1424,7 @@
 \begin{frame}
    \frametitle{The Planning vs. Execution Tradeoff on Roadmaps}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          %{\only<1>{\includegraphics{build/talk-act1-2d,rootsonly}}}%
@@ -1443,7 +1441,7 @@
          (Cfreebox) at (6.9, 1.5) {};
       \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
       
-      \node[anchor=north,fill=black!10,rounded corners] at (3,7.5)
+      \node[anchor=north,fill=black!15,rounded corners] at (3,7.5)
       {\bf Focus: Roadmap methods};
       
       \only<2>{
@@ -1473,8 +1471,6 @@
          2. Research questions
          
          - graphs in C-space
-         
-         - preliminary results
          \end{minipage}};
       }
       \only<2>{
@@ -1483,8 +1479,6 @@
          2. Research questions
          
          - graphs in C-space
-         
-         - preliminary results
          \end{minipage}};
       }
    
@@ -1494,46 +1488,35 @@
 \begin{frame}
    \frametitle{Na\"{\i}ve Implementation}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
-      \only<1-4>{
-         % alg
-         \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=1.8cm,rounded corners]
-         at (0,6.85) {\begin{minipage}{3.25cm}\small{
-            \algrenewcommand\algorithmicindent{0.0cm}%
-            \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
-            \begin{algorithmic}
-            \Loop%
-               \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
-               \State \textsc{EvalPath}$(\pi^*)$
-            \EndLoop
-            \end{algorithmic}
-         }\end{minipage}};
-         
-         % f(pi) execution path cost
-         \node[anchor=west,inner xsep=0pt,fill=black!5,minimum height=1.8cm,rounded corners]
-         at (3.5,6.85) {\begin{minipage}{8.5cm}\small{%
-            \vspace{-0.3cm}
-            \begin{equation*}%
-               \arraycolsep=1.4pt
-               \hat{f}(\pi) = \sum_{e \in \pi} \left\{
-               \begin{array}{cl}
-                  (1-\lambda) x(e) & \mbox{if edge } e \mbox{ evaluated} \\
-                  (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
-               \end{array}
-               \right.
-            \end{equation*}
-         }\end{minipage}};
-      }
+      % alg
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=1.8cm,rounded corners]
+      at (0,6.85) {\begin{minipage}{3.25cm}\small{
+         \algrenewcommand\algorithmicindent{0.0cm}%
+         \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+         \begin{algorithmic}
+         \Loop%
+            \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
+            \State \textsc{EvalPath}$(\pi^*)$
+         \EndLoop
+         \end{algorithmic}
+      }\end{minipage}};
       
-      % research question
-      \only<5>{
-         \node[fill=blue!20,rounded corners] at (6,6.85) {\begin{minipage}{9cm}
-            {\bf Research Question Q1:}\\
-            How can incremental graph search (e.g. LPA*$^\dag$)
-            \\be used to efficiently implement the E$^8$ algorithm?
-         \end{minipage}};
-      }
+      % f(pi) execution path cost
+      \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=1.8cm,rounded corners]
+      at (3.5,6.85) {\begin{minipage}{8.5cm}\small{%
+         \vspace{-0.3cm}
+         \begin{equation*}%
+            \arraycolsep=1.4pt
+            \hat{f}(\pi) = \sum_{e \in \pi} \left\{
+            \begin{array}{cl}
+               (1-\lambda) x(e) & \mbox{if edge } e \mbox{ evaluated} \\
+               (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
+            \end{array}
+            \right.
+         \end{equation*}
+      }\end{minipage}};
       
       % procedure background
       \only<2->{
@@ -1578,21 +1561,13 @@
          }\end{minipage}};
       }
       
-      \only<5>{
-         \node at (6,0.3) {\begin{minipage}{11.5cm}\scriptsize{
-            $^\dag$\PaperPortrait\; Koenig, Likhachev, Furcy.
-            ``Lifelong Planning A*.''
-            Artificial Intelligence Journal, 2004.
-         }\end{minipage}};
-      }
-      
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
    \frametitle{Continuous Spaces: E$^8$-PRM}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (6,7.4) {\begin{minipage}{11.5cm}\centering
          The E$^8$-PRM is agnostic to the type of roadmap used.
@@ -1636,7 +1611,7 @@
 \begin{frame}
    \frametitle{Behavior of the E$^8$-PRM: Solution Paths}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       \node[draw,color=black!25,inner sep=1pt] (lambda0) at (3,6) {
          \includegraphics[width=5cm]{figs/bean-allpaths-lambda0.png}
@@ -1682,9 +1657,154 @@
 \end{frame}
 
 \begin{frame}
+   \frametitle{Na\"{\i}ve Implementation}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      \only<1>{
+         % alg
+         \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=1.8cm,rounded corners]
+         at (0,6.85) {\begin{minipage}{3.25cm}\small{
+            \algrenewcommand\algorithmicindent{0.0cm}%
+            \algrenewcommand\algorithmicloop{\!\!\!\!\textbf{loop}}
+            \begin{algorithmic}
+            \Loop%
+               \State $\pi^* \leftarrow \argmin\limits_{\pi \in \Pi} \hat{f}(\pi)$
+               \State \textsc{EvalPath}$(\pi^*)$
+            \EndLoop
+            \end{algorithmic}
+         }\end{minipage}};
+         
+         % f(pi) execution path cost
+         \node[anchor=west,inner xsep=0pt,fill=black!15,minimum height=1.8cm,rounded corners]
+         at (3.5,6.85) {\begin{minipage}{8.5cm}\small{%
+            \vspace{-0.3cm}
+            \begin{equation*}%
+               \arraycolsep=1.4pt
+               \hat{f}(\pi) = \sum_{e \in \pi} \left\{
+               \begin{array}{cl}
+                  (1-\lambda) x(e) & \mbox{if edge } e \mbox{ evaluated} \\
+                  (1-\lambda) \hat{x}(e) + \lambda \hat{p}(e) & \mbox{otherwise} \\
+               \end{array}
+               \right.
+            \end{equation*}
+         }\end{minipage}};
+      }
+      
+      % research question
+      \only<2>{
+         \node[fill=blue!20,rounded corners] at (6,6.85) {\begin{minipage}{9cm}
+            {\bf Research Question Q1:}\\
+            How can incremental graph search (e.g. LPA*$^\dag$)
+            \\be used to efficiently implement the E$^8$ algorithm?
+         \end{minipage}};
+      }
+      
+      % procedure background
+      \node[fill=blue!20,rounded corners,minimum height=5.1cm,minimum width=11.4cm]
+      at (6,3.2) {};
+      
+      % procedure background highlights
+      \fill[red!30] (0.3,1.175) rectangle (11.7,1.675);
+      \fill[green!30] (0.3,2.90) rectangle (11.7,3.40);
+      
+      % procedure itself
+      \node[inner sep=0] at (6,3.2) {\begin{minipage}{11cm}\small{
+      \begin{algorithmic}[1]
+         \Procedure {E$^8$}{$G,
+            V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}},
+            \mathcal{M}, \lambda$}
+         \State $x_{\mbox{\scriptsize eval}}[\cdot] \leftarrow$ empty map
+            ($E \rightarrow \mathbb{R}_0^+$)
+         \ForAll {$e \in G$}
+            \State $e.{\mbox{cost}} \leftarrow
+               (1 - \lambda) \, \hat{x}(e) + \lambda \, \hat{p}(e)$
+               \Comment Ensemble effort model
+         \EndFor
+         \Loop
+            \State $\pi^* = \mbox{\sc BiDijkstras}(G,
+               V_{\mbox{\scriptsize start}}, V_{\mbox{\scriptsize goal}})$
+            \State $e \leftarrow \mbox{select from } \pi
+               \;|\; e \notin x_{\mbox{\scriptsize eval}}$
+            \If {$e = \mbox{\bf nil}$}
+               \State \Return $\pi^*$
+            \EndIf
+            \State $x_{\mbox{\scriptsize eval}}[e] \leftarrow x(e)$
+               \Comment Evaluate edge (expensive!)
+            \State $e.{\mbox{cost}} \leftarrow
+               (1 - \lambda) \, x_{\mbox{\scriptsize eval}}[e]$
+               \Comment Update ensemble estimate
+         \EndLoop
+         \EndProcedure
+      \end{algorithmic}
+      }\end{minipage}};
+      
+      \only<2>{
+         \node at (6,0.3) {\begin{minipage}{11.5cm}\scriptsize{
+            $^\dag$\PaperPortrait\; Koenig, Likhachev, Furcy.
+            ``Lifelong Planning A*.''
+            Artificial Intelligence Journal, 2004.
+         }\end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{The Planning vs. Execution Tradeoff on Roadmaps}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0] at (9,5) {
+         \includegraphics{build/talk-act1-2d,graph}
+      };
+      
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=red!50] at (7.05, 2.0) {};
+      \node[draw,circle,inner sep=2pt,ultra thick,fill=green!50] at (7.5, 2.0) {};
+      \node[anchor=west] at (7.9,2.0) {start, goal configs};
+      \node[anchor=west,draw,line width=1pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
+         (Cfreebox) at (6.9, 1.5) {};
+      \node[anchor=west] at (7.9,1.5) {$\mathcal{C}_{\mbox{\scriptsize free}}$};
+      
+      \node[anchor=north,fill=black!15,rounded corners] at (3,7.5)
+      {\bf Focus: Roadmap methods};
+      
+      \node[anchor=north,fill=blue!20,rounded corners] at (3,6.5)
+      {\begin{minipage}{5.5cm}
+      1. Searching roadmap graphs
+      
+      - survey of search methods
+      
+      - propose new algorithm E$^8$
+      \end{minipage}};
+      
+      \only<1>{
+         \node[anchor=north,fill=green!20,rounded corners] at (3,4.5)
+         {\begin{minipage}{5.5cm}
+         2. Research questions
+         
+         - graphs in C-space
+         \end{minipage}};
+      }
+      \only<2>{
+         \node[anchor=north,fill=blue!20,rounded corners] at (3,4.5)
+         {\begin{minipage}{5.5cm}
+         2. Research questions
+         
+         - graphs in C-space
+         \end{minipage}};
+         
+         \node[anchor=north,fill=black!15,rounded corners] at (3,3.0)
+            {Comparison to RRT?};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
    \frametitle{Behavior of the E$^8$-PRM: Maze RRT Comparison}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       % e8 prm on left side top
       \fill[blue!50] (0.1,2.8) rectangle (2.7,7.9);
@@ -1734,7 +1854,7 @@
 \begin{frame}
    \frametitle{HERB Example Problem}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       \node[inner sep=0pt]
          at ( 1.50,6.5) {\includegraphics[width=2cm]{figs/testherb-a.png}};
@@ -1760,7 +1880,7 @@
 \begin{frame}
    \frametitle{Experiments in 2D and 7D}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       \node[anchor=north,fill=blue!20,rounded corners] at (6,7) {\begin{minipage}{10cm}
          {\bf Research Question Q2:}\\
@@ -1794,7 +1914,7 @@
 \begin{frame}
    \frametitle{Part 1: Capturing the Planning/Execution Tradeoff}
       \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       % figure adapted from proposal doc
       \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]

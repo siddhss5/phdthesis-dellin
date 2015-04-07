@@ -1,7 +1,7 @@
 \begin{frame}
    \frametitle{Motion Planning in Configuration Space}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (3,4)
          {\includegraphics[width=5cm]{figs/fridge-intro.png}};
@@ -40,7 +40,7 @@
    \frametitle{Motion Planning as Best-First Search over Paths}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          {\only<1>{\includegraphics{build/talk-act1-2d,cfree}}}%
@@ -101,7 +101,7 @@
 %   \frametitle{Best-First Search over Paths}
 %   \begin{tikzpicture}
 %   
-%      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 %      
 %      \node[inner sep=0] at (9,5) {%
 %         {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
@@ -147,7 +147,7 @@
    \frametitle{Best-First Search over Paths: Roadmaps}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
@@ -207,7 +207,7 @@
    \frametitle{RRTs as Best-First Search over Paths}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9.4,5) {%
          {\only<1>{\includegraphics{build/talk-act1-2d,firstfailnext}}}%
@@ -357,7 +357,7 @@
    \frametitle{Graph Search: Edge Execution Effort Model}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[draw,line width=1.0pt,fill=blue!20,minimum width=0.75cm,minimum height=0.10cm]
          (Cfreebox) at (8.0, 7.5) {};
@@ -464,7 +464,7 @@
    \frametitle{Why Not Just Run A* Graph Search?}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[anchor=north] at (6,7.5)
       {
@@ -523,7 +523,7 @@
    \frametitle{Roadmaps $\rightarrow$ Graphs}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          {\only<1-4>{\includegraphics{build/talk-act1-2d,graph}}}%
@@ -609,7 +609,7 @@
    \begin{tikzpicture}
       \tikzset{>=latex} % arrow heads
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9,5) {%
          {\only<1>{\includegraphics{build/talk-act1-2d,graph}}}%
@@ -692,7 +692,7 @@
    \frametitle{Graph Search Mismatch}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (6,7) {\begin{minipage}{12cm}\centering
          A* efficiently addresses {\bf large graphs}, usually represented {\bf implicitly}
@@ -740,7 +740,7 @@
    \frametitle{Graph Search Mismatch}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (6,7) {\begin{minipage}{12cm}\centering
          A* efficiently addresses {\bf large graphs}, usually represented {\bf implicitly}
@@ -785,7 +785,7 @@
    \frametitle{Roadmaps: Accounting for Spatial Coherence in $\mathcal{C}_{\ms{free}}$}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0] at (9.4,5) {
          \includegraphics{build/talk-act1-2d,graphfirstevaled}
@@ -834,7 +834,7 @@
 \begin{frame}
    \frametitle{Alternative: Optimization in Expectation}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node[inner sep=0pt] at (6,6)
          {\includegraphics{build/example-in-expectation}};
@@ -858,7 +858,7 @@
    \frametitle{Efficiency in Graph Search}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       % example (FIRST) problems
       \only<4-14>
@@ -1039,7 +1039,7 @@
 \begin{frame}
    \frametitle{Multiple Queries: Relationship to Experience Graphs}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \draw[line width=1pt] (0.5,7.5) -- (11.5,7.5);
       
@@ -1091,7 +1091,7 @@
    \frametitle{Continuous Spaces: Ensemble Effort Models}
    \begin{tikzpicture}
    
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
       \node at (3,6.75) {e.g. $\mathcal{M} = \mathcal{M}_{\ms{dist}}
          + \mathcal{M}_{\ms{valid}}(\mathcal{C}_{\ms{free}})$};
@@ -1145,3 +1145,113 @@
       
    \end{tikzpicture}
 \end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Robot Models}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-j.png}}%
+         \only<2-4>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-k.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_R$ while grabbing the object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,routside}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,rinside}}%
+         \only<3>{\includegraphics[width=6cm]{build/broadphase-single}}%
+         \only<4>{\includegraphics[width=6cm]{build/broadphase-multi}}%
+      };
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Validitiy Effort Model}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      \node[draw,shape=document,font=\scriptsize] at (6,4) {
+         \begin{minipage}[t]{11cm}%
+            \vspace{0.1cm}
+            Multi-Set Validitiy Effort Model $\mathcal{M}_{\ms{multi}}$
+            \medskip
+            {\algrenewcommand\textproc{}% Used to be \textsc
+            \begin{algorithmic}[1]
+            \Function {$x_{\ms{multi}}$}{$e, S_u$}
+               \State $(\mathcal{F}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
+                  \leftarrow \mbox{\sc MultiOptCert}(q_e, S_u,
+                  P_{\ms{global}} \cup e.P_{\ms{eval}})$
+               \ForAll {$S \in \mathcal{F}_{\ms{cert}}$}
+                  \State $b_{\ms{eval}} \leftarrow \mathbf{1}_S[q_e]$
+                  \State $\arraycolsep=2pt
+                     e.P_{\ms{eval}} \leftarrow e.P_{\ms{eval}} \cup
+                     \left\{\begin{array}{rl}
+                     \mathbf{1}_S & \mbox{if } b_{\ms{eval}} \\
+                     \lnot \mathbf{1}_S & \mbox{otherwise} \\
+                     \end{array}
+                     \right\}$
+                  \If {$b_{\ms{eval}} \neq b_{\ms{cert}}(S)$}
+                     \State \Return $\infty$
+                  \EndIf
+               \EndFor
+               \State \Return $0$
+            \EndFunction
+            \medskip
+            \Function {$\hat{x}_{\ms{multi}}$}{$e, S_u$}
+               \State \Return $0$
+            \EndFunction
+            \medskip
+            \Function {$\hat{p}_{\ms{multi}}$}{$e, S_u$}
+               \State $(\mathcal{F}_{\ms{cert}}, b_{\ms{cert}}, {\hat p}_{\ms{cert}})
+                  \leftarrow \mbox{\sc MultiOptCert}(q_e, S_u,
+                  P_{\ms{global}} \cup e.P_{\ms{eval}})$
+               \State \Return ${\hat p}_{\ms{cert}}$
+            \EndFunction
+            \end{algorithmic}
+            } %textproc
+         \end{minipage}%
+      };
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{CMR as an Edge Queue}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (6,6.5)
+         {\includegraphics{build/cmr-queue-intro}};
+      
+      \draw[thick] (1.5,5.3) -- (10.5,5.3);
+      \node[inner sep=0pt] at (6,4.0)
+         {\includegraphics{build/cmr-simpleex-classical}};
+      \draw[thin] (1.5,2.7) -- (10.5,2.7);
+      \node[inner sep=0pt] at (6,1.4)
+         {\includegraphics{build/cmr-simpleex-colored}};
+      \draw[thick] (1.5,0.1) -- (10.5,0.1);
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{CMR Example}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[draw] at (6,4)
+      {
+         \includegraphics{build/w13-fu1-ec86}
+      };
+   
+   \end{tikzpicture}
+\end{frame}
+

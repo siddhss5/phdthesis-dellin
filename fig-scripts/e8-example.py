@@ -246,9 +246,9 @@ fp.write(r'''\documentclass{standalone}
 \begin{document}
 \begin{tikzpicture}[scale=0.4]
 
-\draw[black!10] (-0.5,-0.5) rectangle (10.5,10.5);
+\draw[black!20] (-0.5,-0.5) rectangle (10.5,10.5);
 
-\draw[step=1cm,black!10,very thin] (0,0) grid (10,10);
+\draw[step=1cm,black!20,very thin] (0,0) grid (10,10);
 
 % radars
 \begin{scope}

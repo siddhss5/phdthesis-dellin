@@ -11,7 +11,7 @@
 \begin{frame}
    \frametitle{Autonomous Manipulation Tasks}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       \node[inner sep=0] at ( 2,5.0) {\includegraphics[width=3.5cm]{images/herb.jpg}};
       \node[inner sep=0] at ( 6,5.0) {\includegraphics[width=3.5cm]{images/arms.jpg}};
@@ -63,7 +63,7 @@
 \begin{frame}
    \frametitle{Example Manipulation Tasks}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
       \fill[black!80] (0.1,3.0) rectangle (11.9,6.6);
 
@@ -150,7 +150,7 @@
 \begin{frame}
    \frametitle{3 Challenges to Efficient Manipulation Planning}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
    \node[inner sep=0pt] at (6,5.3) {%
       \only<1-2>{\includegraphics[width=11.5cm]{figs/herb-fridge-a.png}}%
@@ -279,14 +279,14 @@
 \begin{frame}
    \frametitle{Challenge 1: The Planning vs. Execution Tradeoff}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
    \node[inner sep=0pt] at (3,5.3) {%
       \includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}
    };
 
    \only<3->{
-      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.5)
+      \node[fill=black!15,rounded corners,font=\small,anchor=north] at (9,7.5)
          {\begin{minipage}{5.5cm}
 
             Configuration space $\mathcal{C}$ is:
@@ -401,7 +401,7 @@
 \begin{frame}
    \frametitle{Challenge 2: Incongruent Steps Impede Reuse}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
    \node[inner sep=0pt] at (3,5.3) {%
       \only<1>{\includegraphics[width=5.75cm]{figs/herb-fridge-b-skinny.png}}%
@@ -409,7 +409,7 @@
    };
 
    \only<5->{
-      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.5)
+      \node[fill=black!15,rounded corners,font=\small,anchor=north] at (9,7.5)
          {\begin{minipage}{5.5cm}
             $\mathcal{C}_{\ms{free}}$ is dependent on:
             \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
@@ -533,7 +533,7 @@
 \begin{frame}
    \frametitle{Challenge 3: Coupled Steps Require Planning Ahead}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
    \node[inner sep=0pt] at (3,5.3) {%
       \only<1->{\includegraphics[width=5.75cm]{figs/herb-fridge-d-skinny.png}}%
@@ -541,7 +541,7 @@
    };
 
    \only<2->{
-      \node[fill=black!5,rounded corners,font=\small,anchor=north] at (9,7.7)
+      \node[fill=black!15,rounded corners,font=\small,anchor=north] at (9,7.7)
          {\begin{minipage}{5.5cm}
             Each step admits several choices:
             \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
@@ -675,7 +675,7 @@
 \begin{frame}
    \frametitle{Objective of Proposed Work}
    \begin{tikzpicture}
-      \draw[step=1,black!10,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    
       % figure adapted from proposal doc
       \begin{scope}[font=\scriptsize,shift={(1.5,6.25)}]
