@@ -1255,3 +1255,197 @@
    \end{tikzpicture}
 \end{frame}
 
+\begin{frame}
+   \frametitle{Multi-Set Instances: Dynamic Environments}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-b.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-b.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$ in the presence of an object
+         is a subset of the valid set $S_N$ with the object removed.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dyna}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dynb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dync}}%
+      };
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Dynamic Environments}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \begin{scope}[shift={(1,1.2)},font=\small]
+         \node[anchor=south west,inner sep=0] at (0,0)
+           {\includegraphics[width=5.2cm]{figs/chimp-voxels-delta.png}};
+
+         \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+           (debrislab) at (0.7,1.0) {Debris object\\removed};
+         \node[circle,inner sep=2,draw,fill=white] (debris) at (2.2,2.9) {};
+         \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+           (debrislab.north) -- (debris);
+           
+         \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+           (addlab) at (5.0,2.0) {Additional\\voxels seen};
+         \node[circle,inner sep=2,draw,fill=white] (added) at (4.4,5.0) {};
+         \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+           (addlab.north) -- (added);
+      \end{scope}
+      
+      \node[inner sep=0pt] at (9.5,6) {
+         \includegraphics{build/retroactive-a}
+      };
+      
+      \node[inner sep=0pt] at (9.5,2) {
+         \includegraphics{build/retroactive-b}
+      };
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Grasped Objects}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$ while grasping an object
+         is a subset of the valid set $S_N$ with the object removed.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dyna}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dynb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,dync}}%
+      };
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Self-Collision Checking}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-d.png}}%
+         \only<3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-a.png}}%
+      };
+
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_A$
+         is a subset of the valid set $S_R$
+         consisting of robot self-collision-free configurations.
+      \end{minipage}};
+
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfa}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfb}}%
+         \only<3>{\includegraphics[width=4.5cm]{build/multiset-manip-instances,selfc}}%
+      };
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Obstacle Volumes}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-h.png}}%
+         \only<2-3>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-e.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_O$ in the presence of an object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,outside}}%
+         \only<2->{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,inside}}%
+      };
+      
+      \only<3->{
+         \node[anchor=north,fill=black!15,rounded corners,font=\small]
+         at (8.8,2) {\begin{minipage}{6cm}
+            Extreme case: Leven/Hutchinson workcell decomposition.
+         \end{minipage}};
+      }
+      
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Grasped Volumes}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-c.png}}%
+         \only<2>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-i.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_O$ while grabbing the object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,outside}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,inside}}%
+      };
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Multi-Set Instances: Conservative Robot Models}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] at (2.8,4) {%
+         \only<1>{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-j.png}}%
+         \only<2->{\includegraphics[height=7.5cm]{figs/herb-fridge-sets-k.png}}%
+      };
+      
+      \node[anchor=north,fill=black!15,rounded corners,font=\small]
+      at (8.8,7.75) {\begin{minipage}{6cm}
+         The valid set $S_R$ while grabbing the object
+         can be conservatively bounded by a simpler geometry
+         yielding $S_B$.
+      \end{minipage}};
+      
+      \node[inner sep=0pt] at (8.8,4) {%
+         \only<1>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,routside}}%
+         \only<2>{\includegraphics[width=4.5cm]{build/multiset-manip-instances-blob,rinside}}%
+      };
+   
+   \end{tikzpicture}
+\end{frame}
+
+

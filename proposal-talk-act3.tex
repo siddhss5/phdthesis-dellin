@@ -384,26 +384,37 @@
          \node[below=-0.5cm of instance.south] {Problem with 3 root sets};
       \end{scope}
       
+      \only<2->{
+         \node[fill=black!15,rounded corners,anchor=north,font=\small] at (6,4.4)
+         {\begin{minipage}{9cm}
+            Conventional ``Any-to-Any'' objective:
+            \begin{equation*}
+               r_{\ms{A2A}} = 1 \mbox{ if } \exists \; q_a,q_b~\text{in different root sets}
+                  \;|\; \textsc{Path}(q_a,q_b)
+            \end{equation*}%
+         \end{minipage}};
+      }
       
-   
-      \node[fill=black!15,rounded corners,anchor=north,font=\small] at (6,4.3)
-      {\begin{minipage}{9cm}
-         Conventional ``Any-to-Any'' objective:
-         \begin{equation*}
-            r_{\ms{A2A}} = 1 \mbox{ if } \exists \; q_a,q_b~\text{in different root sets}
-               \;|\; \textsc{Path}(q_a,q_b)
-         \end{equation*}%
-      \end{minipage}};
+      \only<3->{
+         \node[fill=blue!20,rounded corners,anchor=north,font=\small] at (6,2.7)
+         {\begin{minipage}{9cm}
+            Comprehensive Multi-Root objective:
+            \begin{equation*}
+               r_{\ms{CMR}} = \big| \{
+                  \textsc{Path}(q_a,q_b) \;|\; q_a,q_b~\text{in different root sets}
+                  \} \big|
+            \end{equation*}%
+         \end{minipage}};
+      }
       
-      \node[fill=blue!20,rounded corners,anchor=north,font=\small] at (6,2.5)
-      {\begin{minipage}{9cm}
-         Comprehensive Multi-Root objective:
-         \begin{equation*}
-            r_{\ms{CMR}} = \big| \{
-               \textsc{Path}(q_a,q_b) \;|\; q_a,q_b~\text{in different root sets}
-               \} \big|
-         \end{equation*}%
-      \end{minipage}};
+      \only<4->{
+         \node at (6,0.5) {\begin{minipage}{11.5cm}\scriptsize{
+            \PaperPortrait\; Dellin, Srinivasa.
+            ``A General Technique for Fast Comprehensive Multi-Root
+            Planning on Graphs by Coloring Vertices and Deferring Edges.''
+            ICRA 2015.
+         }\end{minipage}};
+      }
    
    \end{tikzpicture}
 \end{frame}
