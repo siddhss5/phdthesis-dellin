@@ -1,18 +1,4 @@
 all: proposal.pdf proposal-talk.pdf
-#all: fast-manip.pdf proposal.pdf
-
-fast-manip.pdf: ch01-intro.tex
-fast-manip.pdf: chxx-proposed-framework.tex
-fast-manip.pdf: ch02-subprobs.tex
-fast-manip.pdf: ch03-e8.tex
-fast-manip.pdf: ch04-continuous.tex
-fast-manip.pdf: ch05-multiset.tex
-fast-manip.pdf: ch06-multisetprm.tex
-fast-manip.pdf: ch07-cmr.tex
-fast-manip.pdf: ch08-taskplanning.tex
-fast-manip.pdf: ch09-experiments.tex
-fast-manip.pdf: ch10-conclusion.tex
-fast-manip.pdf: ch11-proposed.tex
 
 proposal.pdf: ch01-intro.tex
 proposal.pdf: chxx-proposed-framework.tex
@@ -24,22 +10,7 @@ proposal-talk.pdf: proposal-talk-act2.tex
 proposal-talk.pdf: proposal-talk-act3.tex
 proposal-talk.pdf: proposal-talk-backup.tex
 
-# hardcoded stuff fast-manip.pdf: figs/chimp-voxels-delta.png
-fast-manip.pdf: figs/simple-table-clearing-task.png
-fast-manip.pdf: figs/testherb-a.png
-fast-manip.pdf: figs/testherb-b.png
-fast-manip.pdf: figs/testherb-c.png
-fast-manip.pdf: figs/testherb-d.png
-fast-manip.pdf: figs/testherb-e.png
-# other wacky figures to generate
-fast-manip.pdf: build/e8-world-intro.pdf
-fast-manip.pdf: build/e8-world-astar.pdf
-fast-manip.pdf: build/e8-world-wastar.pdf
-fast-manip.pdf: build/e8-world-e8.pdf
-# other
-fast-manip.pdf: build/pairwise-labels-dot.tex
-
-# hardcoded stuff fast-manip.pdf: figs/chimp-voxels-delta.png
+# hardcoded stuff proposal.pdf: figs/chimp-voxels-delta.png
 proposal.pdf: figs/simple-table-clearing-task.png
 proposal.pdf: figs/testherb-a.png
 proposal.pdf: figs/testherb-b.png
@@ -194,7 +165,6 @@ STANDALONES += w13-fs1-ec86
 STANDALONES += w13-fu1-ei344
 STANDALONES += w13-fs1-ei344
 
-fast-manip.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 proposal.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 proposal-talk.pdf: $(foreach s,$(STANDALONES),build/$s.pdf)
 
@@ -234,17 +204,15 @@ build/%-dot.tex: figs/%.dot
 	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
 
 # how to make a pdf from a tex
-fast-manip.pdf: fast-manip.tex pr-refs.bib
-	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' fast-manip
-proposal.pdf: proposal.tex pr-refs.bib
+proposal.pdf: proposal.tex references.bib
 	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal
 proposal-talk.pdf: proposal-talk.tex
 	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal-talk
 
 # how to clean after latex
-EXTS = aux bbl blg dvi fdb_latexmk log out pdf ps toc
+EXTS = aux bbl blg dvi fdb_latexmk log nav out pdf ps snm toc
 .PHONY: clean
 clean:
 	rm -rf build/
 	rm -f ch*.aux
-	rm -f $(foreach p,fast-manip proposal,$(foreach e,$(EXTS),$p.$e))
+	rm -f $(foreach p,proposal proposal-talk,$(foreach e,$(EXTS),$p.$e))
