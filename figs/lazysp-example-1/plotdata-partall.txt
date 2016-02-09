@@ -1,0 +1,13 @@
+pathid numalready numeval_trues numeval_falses numremaining numalready_cum numevals_cum
+0 0 0 1 6 0 1
+1 0 1 1 5 0 3
+2 1 1 1 5 1 5
+3 2 0 1 5 3 6
+4 2 0 1 5 5 7
+5 2 1 1 4 7 9
+6 2 0 1 5 9 10
+7 3 0 1 4 12 11
+8 3 0 1 5 15 12
+9 2 0 1 6 17 13
+10 2 0 1 7 19 14
+11 2 8 0 0 21 22

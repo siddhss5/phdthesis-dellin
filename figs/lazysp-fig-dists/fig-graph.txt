@@ -1,0 +1,491 @@
+vertex 0
+vertex 1
+vertex 2
+vertex 3
+vertex 4
+vertex 5
+vertex 6
+vertex 7
+vertex 8
+vertex 9
+vertex 10
+vertex 11
+vertex 12
+vertex 13
+vertex 14
+vertex 15
+vertex 16
+vertex 17
+vertex 18
+vertex 19
+vertex 20
+vertex 21
+vertex 22
+vertex 23
+vertex 24
+vertex 25
+vertex 26
+vertex 27
+vertex 28
+vertex 29
+vertex 30
+vertex 31
+vertex 32
+vertex 33
+vertex 34
+vertex 35
+vertex 36
+vertex 37
+vertex 38
+vertex 39
+vertex 40
+vertex 41
+vertex 42
+vertex 43
+vertex 44
+vertex 45
+vertex 46
+vertex 47
+vertex 48
+vertex 49
+vertex 50
+vertex 51
+vertex 52
+vertex 53
+vertex 54
+vertex 55
+vertex 56
+vertex 57
+vertex 58
+vertex 59
+vertex 60
+vertex 61
+vertex 62
+vertex 63
+vertex 64
+vertex 65
+vertex 66
+vertex 67
+vertex 68
+vertex 69
+vertex 70
+vertex 71
+vertex 72
+vertex 73
+vertex 74
+vertex 75
+vertex 76
+vertex 77
+vertex 78
+vertex 79
+vertex 80
+vertex 81
+vertex 82
+vertex 83
+vertex 84
+vertex 85
+vertex 86
+vertex 87
+vertex 88
+vertex 89
+vertex 90
+vertex 91
+vertex 92
+vertex 93
+vertex 94
+vertex 95
+vertex 96
+vertex 97
+vertex 98
+vertex 99
+edge 0 source 16 target 13
+edge 1 source 17 target 11
+edge 2 source 18 target 12
+edge 3 source 19 target 1
+edge 4 source 20 target 2
+edge 5 source 26 target 2
+edge 6 source 27 target 3
+edge 7 source 27 target 9
+edge 8 source 27 target 23
+edge 9 source 28 target 4
+edge 10 source 28 target 10
+edge 11 source 28 target 24
+edge 12 source 29 target 5
+edge 13 source 29 target 8
+edge 14 source 30 target 6
+edge 15 source 31 target 7
+edge 16 source 31 target 19
+edge 17 source 32 target 0
+edge 18 source 32 target 5
+edge 19 source 32 target 20
+edge 20 source 32 target 29
+edge 21 source 33 target 1
+edge 22 source 33 target 21
+edge 23 source 34 target 22
+edge 24 source 35 target 11
+edge 25 source 35 target 17
+edge 26 source 36 target 0
+edge 27 source 36 target 12
+edge 28 source 36 target 18
+edge 29 source 37 target 1
+edge 30 source 37 target 13
+edge 31 source 38 target 2
+edge 32 source 38 target 14
+edge 33 source 39 target 3
+edge 34 source 39 target 15
+edge 35 source 40 target 4
+edge 36 source 40 target 13
+edge 37 source 40 target 16
+edge 38 source 41 target 5
+edge 39 source 41 target 9
+edge 40 source 41 target 27
+edge 41 source 42 target 6
+edge 42 source 42 target 10
+edge 43 source 42 target 28
+edge 44 source 43 target 7
+edge 45 source 43 target 25
+edge 46 source 44 target 2
+edge 47 source 44 target 8
+edge 48 source 44 target 20
+edge 49 source 45 target 0
+edge 50 source 45 target 9
+edge 51 source 45 target 21
+edge 52 source 46 target 10
+edge 53 source 46 target 22
+edge 54 source 47 target 11
+edge 55 source 47 target 23
+edge 56 source 48 target 12
+edge 57 source 48 target 21
+edge 58 source 48 target 24
+edge 59 source 48 target 45
+edge 60 source 49 target 13
+edge 61 source 49 target 25
+edge 62 source 49 target 43
+edge 63 source 50 target 14
+edge 64 source 50 target 18
+edge 65 source 51 target 1
+edge 66 source 51 target 15
+edge 67 source 51 target 19
+edge 68 source 51 target 33
+edge 69 source 52 target 16
+edge 70 source 52 target 34
+edge 71 source 53 target 8
+edge 72 source 53 target 17
+edge 73 source 53 target 29
+edge 74 source 54 target 14
+edge 75 source 54 target 18
+edge 76 source 54 target 30
+edge 77 source 54 target 50
+edge 78 source 55 target 1
+edge 79 source 55 target 15
+edge 80 source 55 target 19
+edge 81 source 55 target 31
+edge 82 source 55 target 51
+edge 83 source 56 target 2
+edge 84 source 56 target 8
+edge 85 source 56 target 20
+edge 86 source 56 target 29
+edge 87 source 56 target 32
+edge 88 source 56 target 44
+edge 89 source 57 target 9
+edge 90 source 57 target 21
+edge 91 source 57 target 33
+edge 92 source 57 target 45
+edge 93 source 58 target 10
+edge 94 source 58 target 22
+edge 95 source 58 target 34
+edge 96 source 58 target 46
+edge 97 source 59 target 5
+edge 98 source 59 target 9
+edge 99 source 59 target 11
+edge 100 source 59 target 23
+edge 101 source 59 target 27
+edge 102 source 59 target 41
+edge 103 source 60 target 6
+edge 104 source 60 target 10
+edge 105 source 60 target 12
+edge 106 source 60 target 24
+edge 107 source 60 target 28
+edge 108 source 60 target 42
+edge 109 source 61 target 13
+edge 110 source 61 target 16
+edge 111 source 61 target 25
+edge 112 source 61 target 40
+edge 113 source 62 target 26
+edge 114 source 62 target 38
+edge 115 source 63 target 3
+edge 116 source 63 target 23
+edge 117 source 63 target 39
+edge 118 source 64 target 4
+edge 119 source 64 target 13
+edge 120 source 64 target 24
+edge 121 source 64 target 37
+edge 122 source 64 target 40
+edge 123 source 65 target 5
+edge 124 source 65 target 11
+edge 125 source 65 target 17
+edge 126 source 65 target 41
+edge 127 source 65 target 59
+edge 128 source 66 target 6
+edge 129 source 66 target 12
+edge 130 source 66 target 18
+edge 131 source 66 target 42
+edge 132 source 66 target 60
+edge 133 source 67 target 7
+edge 134 source 67 target 19
+edge 135 source 67 target 31
+edge 136 source 67 target 43
+edge 137 source 67 target 55
+edge 138 source 68 target 0
+edge 139 source 68 target 20
+edge 140 source 68 target 32
+edge 141 source 68 target 36
+edge 142 source 68 target 56
+edge 143 source 69 target 1
+edge 144 source 69 target 21
+edge 145 source 69 target 33
+edge 146 source 69 target 37
+edge 147 source 69 target 57
+edge 148 source 70 target 22
+edge 149 source 70 target 34
+edge 150 source 70 target 58
+edge 151 source 71 target 11
+edge 152 source 71 target 35
+edge 153 source 71 target 47
+edge 154 source 72 target 0
+edge 155 source 72 target 12
+edge 156 source 72 target 36
+edge 157 source 72 target 45
+edge 158 source 72 target 48
+edge 159 source 73 target 1
+edge 160 source 73 target 13
+edge 161 source 73 target 37
+edge 162 source 73 target 49
+edge 163 source 74 target 2
+edge 164 source 74 target 14
+edge 165 source 74 target 38
+edge 166 source 74 target 50
+edge 167 source 75 target 1
+edge 168 source 75 target 3
+edge 169 source 75 target 33
+edge 170 source 75 target 39
+edge 171 source 75 target 51
+edge 172 source 76 target 4
+edge 173 source 76 target 34
+edge 174 source 76 target 40
+edge 175 source 76 target 52
+edge 176 source 77 target 0
+edge 177 source 77 target 5
+edge 178 source 77 target 9
+edge 179 source 77 target 32
+edge 180 source 77 target 41
+edge 181 source 77 target 45
+edge 182 source 78 target 6
+edge 183 source 78 target 10
+edge 184 source 78 target 42
+edge 185 source 78 target 46
+edge 186 source 79 target 7
+edge 187 source 80 target 8
+edge 188 source 80 target 29
+edge 189 source 80 target 53
+edge 190 source 80 target 56
+edge 191 source 81 target 5
+edge 192 source 81 target 9
+edge 193 source 81 target 27
+edge 194 source 81 target 41
+edge 195 source 81 target 57
+edge 196 source 81 target 59
+edge 197 source 82 target 6
+edge 198 source 82 target 10
+edge 199 source 82 target 28
+edge 200 source 82 target 42
+edge 201 source 82 target 58
+edge 202 source 82 target 60
+edge 203 source 83 target 11
+edge 204 source 83 target 17
+edge 205 source 83 target 35
+edge 206 source 83 target 47
+edge 207 source 83 target 59
+edge 208 source 83 target 65
+edge 209 source 83 target 71
+edge 210 source 84 target 12
+edge 211 source 84 target 18
+edge 212 source 84 target 36
+edge 213 source 84 target 48
+edge 214 source 84 target 60
+edge 215 source 84 target 66
+edge 216 source 84 target 72
+edge 217 source 85 target 13
+edge 218 source 85 target 37
+edge 219 source 85 target 49
+edge 220 source 85 target 61
+edge 221 source 85 target 64
+edge 222 source 85 target 73
+edge 223 source 86 target 14
+edge 224 source 86 target 38
+edge 225 source 86 target 50
+edge 226 source 86 target 54
+edge 227 source 86 target 74
+edge 228 source 87 target 3
+edge 229 source 87 target 15
+edge 230 source 87 target 39
+edge 231 source 87 target 51
+edge 232 source 87 target 55
+edge 233 source 87 target 75
+edge 234 source 88 target 4
+edge 235 source 88 target 16
+edge 236 source 88 target 40
+edge 237 source 88 target 52
+edge 238 source 88 target 61
+edge 239 source 88 target 76
+edge 240 source 89 target 17
+edge 241 source 89 target 29
+edge 242 source 89 target 53
+edge 243 source 90 target 14
+edge 244 source 90 target 18
+edge 245 source 90 target 30
+edge 246 source 90 target 50
+edge 247 source 90 target 54
+edge 248 source 91 target 1
+edge 249 source 91 target 19
+edge 250 source 91 target 33
+edge 251 source 91 target 51
+edge 252 source 91 target 55
+edge 253 source 91 target 73
+edge 254 source 92 target 2
+edge 255 source 92 target 20
+edge 256 source 92 target 44
+edge 257 source 92 target 56
+edge 258 source 92 target 74
+edge 259 source 93 target 21
+edge 260 source 93 target 45
+edge 261 source 93 target 48
+edge 262 source 93 target 57
+edge 263 source 93 target 72
+edge 264 source 94 target 22
+edge 265 source 94 target 46
+edge 266 source 94 target 58
+edge 267 source 95 target 23
+edge 268 source 95 target 47
+edge 269 source 95 target 63
+edge 270 source 96 target 21
+edge 271 source 96 target 24
+edge 272 source 96 target 48
+edge 273 source 96 target 64
+edge 274 source 96 target 69
+edge 275 source 96 target 93
+edge 276 source 97 target 25
+edge 277 source 97 target 43
+edge 278 source 97 target 49
+edge 279 source 98 target 2
+edge 280 source 98 target 26
+edge 281 source 98 target 38
+edge 282 source 98 target 44
+edge 283 source 98 target 74
+edge 284 source 98 target 92
+edge 285 source 99 target 3
+edge 286 source 99 target 23
+edge 287 source 99 target 27
+edge 288 source 99 target 39
+edge 289 source 99 target 63
+edge 290 source 99 target 75
+vprop 0 state 0.5 0.3333333333333333
+vprop 1 state 0.25 0.6666666666666666
+vprop 2 state 0.75 0.1111111111111111
+vprop 3 state 0.125 0.4444444444444444
+vprop 4 state 0.625 0.7777777777777777
+vprop 5 state 0.375 0.2222222222222222
+vprop 6 state 0.875 0.5555555555555556
+vprop 7 state 0.0625 0.8888888888888888
+vprop 8 state 0.5625 0.037037037037037035
+vprop 9 state 0.3125 0.37037037037037035
+vprop 10 state 0.8125 0.7037037037037037
+vprop 11 state 0.1875 0.14814814814814814
+vprop 12 state 0.6875 0.48148148148148145
+vprop 13 state 0.4375 0.8148148148148147
+vprop 14 state 0.9375 0.25925925925925924
+vprop 15 state 0.03125 0.5925925925925926
+vprop 16 state 0.53125 0.9259259259259258
+vprop 17 state 0.28125 0.07407407407407407
+vprop 18 state 0.78125 0.4074074074074074
+vprop 19 state 0.15625 0.7407407407407407
+vprop 20 state 0.65625 0.18518518518518517
+vprop 21 state 0.40625 0.5185185185185185
+vprop 22 state 0.90625 0.8518518518518517
+vprop 23 state 0.09375 0.2962962962962963
+vprop 24 state 0.59375 0.6296296296296297
+vprop 25 state 0.34375 0.9629629629629629
+vprop 26 state 0.84375 0.012345679012345678
+vprop 27 state 0.21875 0.345679012345679
+vprop 28 state 0.71875 0.6790123456790123
+vprop 29 state 0.46875 0.12345679012345678
+vprop 30 state 0.96875 0.4567901234567901
+vprop 31 state 0.015625 0.7901234567901234
+vprop 32 state 0.515625 0.2345679012345679
+vprop 33 state 0.265625 0.5679012345679013
+vprop 34 state 0.765625 0.9012345679012346
+vprop 35 state 0.140625 0.04938271604938271
+vprop 36 state 0.640625 0.38271604938271603
+vprop 37 state 0.390625 0.7160493827160495
+vprop 38 state 0.890625 0.16049382716049382
+vprop 39 state 0.078125 0.49382716049382713
+vprop 40 state 0.578125 0.8271604938271604
+vprop 41 state 0.328125 0.2716049382716049
+vprop 42 state 0.828125 0.6049382716049383
+vprop 43 state 0.203125 0.9382716049382716
+vprop 44 state 0.703125 0.08641975308641975
+vprop 45 state 0.453125 0.41975308641975306
+vprop 46 state 0.953125 0.7530864197530864
+vprop 47 state 0.046875 0.19753086419753085
+vprop 48 state 0.546875 0.5308641975308641
+vprop 49 state 0.296875 0.8641975308641974
+vprop 50 state 0.796875 0.30864197530864196
+vprop 51 state 0.171875 0.6419753086419753
+vprop 52 state 0.671875 0.9753086419753085
+vprop 53 state 0.421875 0.024691358024691357
+vprop 54 state 0.921875 0.35802469135802467
+vprop 55 state 0.109375 0.691358024691358
+vprop 56 state 0.609375 0.13580246913580246
+vprop 57 state 0.359375 0.4691358024691358
+vprop 58 state 0.859375 0.802469135802469
+vprop 59 state 0.234375 0.24691358024691357
+vprop 60 state 0.734375 0.5802469135802469
+vprop 61 state 0.484375 0.9135802469135802
+vprop 62 state 0.984375 0.06172839506172839
+vprop 63 state 0.0078125 0.3950617283950617
+vprop 64 state 0.5078125 0.7283950617283951
+vprop 65 state 0.2578125 0.1728395061728395
+vprop 66 state 0.7578125 0.5061728395061729
+vprop 67 state 0.1328125 0.839506172839506
+vprop 68 state 0.6328125 0.2839506172839506
+vprop 69 state 0.3828125 0.6172839506172839
+vprop 70 state 0.8828125 0.9506172839506172
+vprop 71 state 0.0703125 0.09876543209876543
+vprop 72 state 0.5703125 0.43209876543209874
+vprop 73 state 0.3203125 0.7654320987654321
+vprop 74 state 0.8203125 0.20987654320987653
+vprop 75 state 0.1953125 0.5432098765432098
+vprop 76 state 0.6953125 0.8765432098765431
+vprop 77 state 0.4453125 0.32098765432098764
+vprop 78 state 0.9453125 0.654320987654321
+vprop 79 state 0.0390625 0.9876543209876543
+vprop 80 state 0.5390625 0.00411522633744856
+vprop 81 state 0.2890625 0.33744855967078186
+vprop 82 state 0.7890625 0.6707818930041152
+vprop 83 state 0.1640625 0.11522633744855966
+vprop 84 state 0.6640625 0.44855967078189296
+vprop 85 state 0.4140625 0.7818930041152262
+vprop 86 state 0.9140625 0.22633744855967078
+vprop 87 state 0.1015625 0.5596707818930041
+vprop 88 state 0.6015625 0.8930041152263374
+vprop 89 state 0.3515625 0.0411522633744856
+vprop 90 state 0.8515625 0.3744855967078189
+vprop 91 state 0.2265625 0.7078189300411523
+vprop 92 state 0.7265625 0.1522633744855967
+vprop 93 state 0.4765625 0.48559670781893
+vprop 94 state 0.9765625 0.8189300411522632
+vprop 95 state 0.0234375 0.2633744855967078
+vprop 96 state 0.5234375 0.5967078189300411
+vprop 97 state 0.2734375 0.9300411522633744
+vprop 98 state 0.7734375 0.07818930041152262
+vprop 99 state 0.1484375 0.4115226337448559

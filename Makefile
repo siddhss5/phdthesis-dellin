@@ -1,4 +1,4 @@
-all: proposal.pdf proposal-talk.pdf
+all: thesis.pdf proposal.pdf proposal-talk.pdf
 
 proposal.pdf: ch01-intro.tex
 proposal.pdf: chxx-proposed-framework.tex
@@ -191,7 +191,7 @@ comma := ,
 build/%.pdf: figs/$$(*1).tex
 	@echo first is $(*1)
 	@echo after is $(*2)
-	mkdir -p build
+	mkdir -p `dirname $@`
 	#pdflatex -halt-on-error -output-directory=build --jobname=$* figs/$(*1)
 	pdflatex -halt-on-error -output-directory=build --jobname="$*" "\def\arg$(*2){}\input{figs/$(*1)}"
 
@@ -204,6 +204,9 @@ build/%-dot.tex: figs/%.dot
 	dot2tex --figonly figs/$*.dot > build/$*-dot.tex
 
 # how to make a pdf from a tex
+thesis.pdf: thesis.tex references.bib
+	latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -use-make thesis \
+	   || (rm -f $(PAPER).fdb_latexmk; pdflatex -halt-on-error -output-directory /tmp thesis)
 proposal.pdf: proposal.tex references.bib
 	latexmk -pdf -e '$$pdflatex="pdflatex -halt-on-error"' proposal
 proposal-talk.pdf: proposal-talk.tex

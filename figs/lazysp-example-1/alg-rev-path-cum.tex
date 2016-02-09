@@ -1,0 +1,21 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+      ticks=none,
+      axis line style=black!20,
+      width=3.97cm,
+      bar width=3.1,
+      ymin=-45, ymax=45,
+      max space between ticks=100,
+      xmin=-2,xmax=20]
+   \addplot[domain=-2:20,black!40] {0};
+   \addplot[domain=-2:20,black!20] {10};
+   \node[circle,fill=white,inner sep=0pt,text=black!20] at (axis cs:-0.5,10) {\tiny 10};
+   \addplot[thick] table [x=pathid,y=numevals_cum] {figs/lazysp-example-1/plotdata-rev.txt};
+   \addplot[thick] table [x=pathid,y expr=-\thisrow{numalready_cum}] {figs/lazysp-example-1/plotdata-rev.txt};
+\end{axis}
+\end{tikzpicture}
+\end{document}
