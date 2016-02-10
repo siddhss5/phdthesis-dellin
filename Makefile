@@ -218,4 +218,4 @@ EXTS = aux bbl blg dvi fdb_latexmk log nav out pdf ps snm toc
 clean:
 	rm -rf build/
 	rm -f ch*.aux
-	rm -f $(foreach p,proposal proposal-talk,$(foreach e,$(EXTS),$p.$e))
+	rm -f $(foreach p,thesis proposal proposal-talk,$(foreach e,$(EXTS),$p.$e))

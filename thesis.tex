@@ -333,15 +333,15 @@ when the graph is represented implicitly,
 e.g. for domains with large graphs
 such as the 15-puzzle or Rubik's cube.
 It is with respect to vertex expansions
-that A* \cite{hart1968astar} is optimally efficient.
+that A* \citep{hart1968astar} is optimally efficient.
 
 A second source of computational cost consists of maintaining
 ordered data structures inside the algorithm itself,
 which is especially important for problems with large branching
 factors.
 For such domains,
-approaches such as partial expansion \cite{yoshizumi2000peastar}
-or iterative deepening \cite{korf1985idastar}
+approaches such as partial expansion \citep{yoshizumi2000peastar}
+or iterative deepening \citep{korf1985idastar}
 significantly reduce the number of vertices generated and stored
 by either selectively filtering surplus vertices from the frontier,
 or by not storing the frontier at all.
@@ -352,7 +352,7 @@ but instead from evaluating the edge weight function $w$
 (i.e. we treat discovering an out-edge and determining its weight
 separately).
 Consider for example the problem of articulated robotic motion planning
-using roadmap methods \cite{kavrakietal1996prm}.
+using roadmap methods \citep{kavrakietal1996prm}.
 While these graphs are often quite small
 (fewer than $10^5$ vertices),
 determining the weight of each edge requires performing many
@@ -372,7 +372,7 @@ to answer shortest-path queries?
 We make three primary contributions.
 First,
 inspired by lazy collision checking techniques from 
-robotic motion planning \cite{bohlin2000lazyprm},
+robotic motion planning \citep{bohlin2000lazyprm},
 we formulate a class of shortest-path algorithms 
 that is well-suited to problem domains with expensive edge evaluations.
 Second,
@@ -518,18 +518,6 @@ hold for any choice of $\epsilon$,
 for clarity our examples and experimental results
 focus on cases with $\epsilon = 1$.
 
-%\ssnote{I wonder if it might be better to talk about optimality first 
-%before talking about bounded suboptimality, to make things less confusing:
-%\begin{theorem}[Optimality of LazyShortestPath]
-%If $w_{\ms{est}}$ underestimates $w$, i.e. $w_{\ms{est}}(e) \leq \, w(e)$, and
-%\textsc{LazyShortestPath} (Algorithm~\ref{alg:lazy-outline}) terminates
-%with some path $p_{\ms{ret}}$,
-%then $\mbox{len}(p_{\ms{ret}}, w) = \ell^*$
-%with $\ell^*$ the length of an optimal path.
-%\label{thm:lazy-optimality}
-%\end{theorem}
-%}
-
 \subsection{The Edge Selector: Key to Efficiency}
 
 \begin{algorithm}[t]
@@ -577,7 +565,7 @@ focus on cases with $\epsilon = 1$.
 
 The LazySP algorithm exhibits a rough similarity to optimal
 replanning algorithms such as
-D* \cite{stentz1994dstar}
+D* \citep{stentz1994dstar}
 which plan a sequence of shortest paths for a mobile robot
 as new edge weights are discovered during its traverse.
 D* treats edge changes
@@ -611,14 +599,14 @@ The Alternate selector simply alternates between Forward
 and Reverse on each iteration.
 This can be motivated by both bidirectional search algorithms
 as well as motion planning algorithms such as
-RRT-Connect \cite{kuffner2000rrtconnect}
+RRT-Connect \citep{kuffner2000rrtconnect}
 which tend to perform well w.r.t. state evaluations.
 
 The Bisection selector
 chooses among those unevaluated edges
 the one furthest from an evaluated edge on the candidate path.
 This selector is roughly analogous to the collision checking strategy
-employed by the Lazy PRM \cite{bohlin2000lazyprm}
+employed by the Lazy PRM \citep{bohlin2000lazyprm}
 as applied to our problem on abstract graphs.
 
 In the following section,
@@ -849,7 +837,7 @@ The most simple may be
    \label{eqn:h_est}
 \end{equation}
 Note that the value of this heuristic could be computed as a
-pre-processing step using Dijkstra's algorithm \cite{dijkstra1959anote}
+pre-processing step using Dijkstra's algorithm \citep{dijkstra1959anote}
 before iterations begin.
 However,
 in order for the equivalences to hold,
@@ -903,7 +891,7 @@ We will use the goal heuristic $h_{\ms{lazy}}$ from (\ref{eqn:h_lazy}).
 Note that if an admissible edge weight estimator $\hat{w}$ exists
 (that is, $\hat{w} \leq w$),
 then our A* can approximate the Weighted A* algorithm
-\cite{pohl1970weightedastar}
+\citep{pohl1970weightedastar}
 with parameter $\epsilon$
 by using $w_{\ms{est}} = \epsilon \, \hat{w}$,
 and the suboptimality bound from
@@ -1016,9 +1004,9 @@ the cost of the edge and the value of the heuristic.
 If either of these components is expensive to evaluate,
 an algorithm can defer its computation by maintaining the successor
 on the frontier with an approximate cost until it is expanded.
-The Fast Downward algorithm \cite{helmert2006fastdownward} is motivated
+The Fast Downward algorithm \citep{helmert2006fastdownward} is motivated
 by expensive heuristic evaluations in planning,
-whereas the Lazy Weighted A* (LWA*) algorithm \cite{cohen2014narms}
+whereas the Lazy Weighted A* (LWA*) algorithm \citep{cohen2014narms}
 is motivated by expensive edge evaluations in robotics.
 
 We show that the LazySP-Forward algorithm
@@ -1086,7 +1074,7 @@ duplicate vertices on OPEN with different parents
 and the $conf(v)$ test for identifying such duplicates.
 This presentation also highlights the similarity between LWA*
 and the inner loop of the Batch Informed Trees (BIT*) algorithm
-\cite{gammell2015bitstar}.
+\citep{gammell2015bitstar}.
 
 The second difference is that the edge usefulness test
 (line 12 of the original algorithm)
@@ -1145,7 +1133,7 @@ the beginning or the end of the candidate path at each iteration.
 We conjecture that an alternating version of the Expand selector
 is edge-equivalent to the
 Bidirectional Heuristic Front-to-Front Algorithm
-\cite{sint1977bhffa}
+\citep{sint1977bhffa}
 for appropriate lazy vertex pair heuristic,
 and that LazySP-Alternate is edge-equivalent
 to a bidirectional LWA*.
@@ -1469,7 +1457,7 @@ implementation.\footnote{%
 Link to implementation hidden for double-blind review.
 }
 Motion planning results were implemented using
-OMPL \cite{sucan2012ompl}.
+OMPL \citep{sucan2012ompl}.
 
 \textbf{Random partially-connected graphs.}
 We tested on a set of 1000 randomly-generated undirected graphs
@@ -1750,7 +1738,8 @@ this need not the case for a particular instance.
 For example,
 the start of ArmPlan1 and the goal of ArmPlan3 consist
 of the arm's single home configuration in a relatively confined space.
-As shown in the table in Figure~\ref{subfig:table-results},
+As shown in the table in
+Figure~\ref{fig:results}\subref{subfig:table-results},
 it appears that the better selector on these problems attempts
 to solve the more constrained side of the problem first.
 While it may be difficult to determine a priori which part of the
@@ -1805,6 +1794,13 @@ exploring this solution may yield useful approximations or insights.
 \chapter{Incremental Bidirectional Shortest-Path Search}
 \label{chap:ibid}
 
+Solving the dynamic single-pair shortest path (SPSP) problem.
+AKA two-terminal shortest-path problem.
+
+Bidirectional approach:
+Partially solve a single-source shortest-path (SSSP) problem
+and the complementary single-destination shortest-path problem (SDSP).
+
 Motivate this with LazySP.
 What if your heuristic is not that great?
 
@@ -1812,17 +1808,223 @@ Combine bidirectional search,
 heuristic-guided search,
 and incremental search.
 
+Solve the Bellman-Ford equations in the correct order.
+
+This is a relatively straightforward integration of incremental search
+(DynamicSWSF-FP \citep{ramalingam1996})
+and bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}.
+The most subtle part of the algorthm is getting the termination
+condition right.
+The benefit of bidirectional search for an problem that is
+uninformed by a heuristic
+is that it tends to explore a smaller subset of the graph
+(view bubbles).
+We have found that some problems with weak heuristics,
+it outperforms LPA*.
+See some plots below.
+
+\begin{table}
+\centering
+\begin{tabular}{ccc}
+   \toprule
+   & Unidirectional & Bidirectional \\
+   \midrule
+   \addlinespace[0.2em]
+   Complete
+      & Dijkstra \citep{dijkstra1959anote}
+      & Bidirectional Dijkstra \citep{luby1989bidijk} \\
+   \addlinespace[-0.2em]
+   \emph{(Heuristic)}
+      & \emph{A* \citep{hart1968astar}}
+      & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
+   \addlinespace[0.3em]
+   Incremental
+      & DynamicSWSF-FP \citep{ramalingam1996}
+      & \multirow{2}{*}{IBID}  \\
+   \addlinespace[-0.2em]
+   \emph{(Heuristic)}
+      & \emph{Lifelong Planning A* \citep{koenig2004lpastar}}
+      & \\
+   \addlinespace[0.2em]
+   \bottomrule
+\end{tabular}
+\caption{A table.}
+\end{table}
+
+We are not interested in domains that are chiefly memory-constrained,
+so no need to consider iterative-deepening approaches,
+including bidirectional variants as proposed by
+Kaindl and Kainz, ``Bidirectional Heuristic Search Reconsidered,''
+Journal of AI Research 1997.
+
+\section{Termination Conditions}
+
+What happens upon an encounter between the forward and reverse searches?
+Goldberg \citep{goldberg2005spexternalmemory}
+discusses the correct termination condition for the 
+Bidirectional Dijkstra algorithm.
+
+\section{Prioritizing Directions}
+
+So, we can conduct expansions from the queues for either direction.
+How should we proceed?
+We do so via what (Pohl 1971) called a ``cardinality criterion''.
+
+\section{The Algorithm}
+
+The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
+IBiD conducts two independent DynamicSWSF-FP searches
+(Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
+
+\begin{algorithm}[t]
+   \caption{IBiD Outline}
+   \label{alg:ibid}
+   \begin{algorithmic}[1]
+      \Procedure {Main} {\,}
+         \State $\mbox{\sc InitializeSource}(); \; \mbox{\sc InitializeTarget}()$
+         \State $Q_c \gets \emptyset$
+            \Comment $\mbox{ key for } (u,v): d_s(u) + w(u,v) + d_t(v)$
+         \Loop
+            \While {not $\mbox{\sc TerminationCondition}()$}
+               \If {$Q_s.\mbox{TopKey} < Q_t.\mbox{TopKey}$}
+                     \Comment prioritize arbitrarily
+                  \State $\mbox{\sc ProcessSourceQueue}(u)$
+               \Else
+                  \State $\mbox{\sc ProcessTargetQueue}(u)$
+               \EndIf
+               \State Ensure $(u,v) \in Q_c$ iff
+                  $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
+            \EndWhile
+            \State $(u_c,v_c) \gets Q_c.\mbox{Top}$
+            \State $\pi \gets
+               ( \mbox{walk } d_s \mbox{ from } u_c \mbox{ to } s )
+               \cup
+               ( \mbox{walk } d_t \mbox{ from } v_c \mbox{ to } t )$
+            \State wait for edges $(u,v) \in E_{\ms{delta}}$ with changed weights $w(u,v)$
+            \State $\mbox{\sc NotifyWeightChanges}(E_{\ms{delta}})$
+         \EndLoop
+      \EndProcedure
+      \Function {TerminationCondition} {\,}
+         \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
+            \Comment return False if $Q_c$ empty
+         \If {$Q_s.\mbox{TopKey} + Q_t.\mbox{TopKey} < d_s(u_c) + w(u_c,v_c) + d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \If {$Q_s.\mbox{TopKey} < d_s(u_c)$
+               \mbox{\bf or} $Q_t.\mbox{TopKey} < d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \State \Return True
+      \EndFunction
+      \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
+         \ForAll {$(u,v) \in E_{\ms{delta}}$}
+            \State $\mbox{\sc UpdateSourceDistance}(v)$
+            \State $\mbox{\sc UpdateTargetDistance}(u)$
+         \EndFor
+         \State Ensure $(u,v) \in Q_c$ iff
+            $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
+      \EndProcedure
+   \end{algorithmic}
+\end{algorithm}
+
+{\floatevery{algorithm}{\setlength\hsize{16.85cm}}
+\begin{algorithm}[t]
+   \caption{As a bidirectional algorithm,
+      IBiD conducts two independent DynamicSWSF-FP searches,
+      one computing distance from the source vertex,
+      and the other computing distance to the target vertex.}
+   \label{alg:ibid-two-dynamicswsffps}
+   \begin{minipage}[t]{8.2cm}
+      \begin{algorithmic}[1]
+         \Procedure {InitializeSource} {\,\!}
+            \ForAll {$v \in V$}
+               \State $d_s(v) \gets \infty; \;\; r_s(v) \gets \infty$
+            \EndFor
+            \State $r_s(s) \gets 0$
+            \State $Q_s \gets \{ s \}$
+               \Comment $\mbox{ key for } v: \min\big(r_s(v),d_s(v)\big)$
+         \EndProcedure
+         \Procedure {UpdateSourceDistance} {$v$}
+            \If {$v \neq s$}
+               \State $r_s(v) \gets \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)}
+                  \big( d_s(u) + w(u,v) \big)$
+            \EndIf
+            \State Ensure $v \in Q_s$ iff $d_s(v) \neq r_s(v)$
+         \EndProcedure
+         \Procedure {ProcessSourceQueue} {\,\!}
+            \State $u \gets Q_s.\mbox{Pop}$
+            \If {$r_s(u) < d_s(u)$}
+                  \Comment over-consistent
+               \State $d_s(u) \gets r_s(u)$
+               \ForAll {$v \in \mbox{Succ}(u)$}
+                  \State $\mbox{\sc UpdateSourceDistance}(v)$
+               \EndFor
+            \Else
+                  \Comment under-consistent
+               \State $d_s(u) \gets \infty$
+               \ForAll {$v \in \mbox{Succ}(u) \cup u$}
+                  \State $\mbox{\sc UpdateSourceDistance}(v)$
+               \EndFor
+            \EndIf
+         \EndProcedure
+         \algstore{ibid-two-dynamicswsffps}
+      \end{algorithmic}
+   \end{minipage}
+   \quad
+   \begin{minipage}[t]{8.2cm}
+      \begin{algorithmic}[1]
+         \algrestore{ibid-two-dynamicswsffps}
+         \Procedure {InitializeTarget} {\,\!}
+            \ForAll {$v \in V$}
+               \State $d_t(v) \gets \infty; \;\; r_t(v) \gets \infty$
+            \EndFor
+            \State $r_t(t) \gets 0$
+            \State $Q_t \gets \{ t \}$
+               \Comment $\mbox{ key for } v: \min\big(r_t(v),d_t(v)\big)$
+         \EndProcedure
+         \Procedure {UpdateTargetDistance} {$u$}
+            \If {$u \neq t$}
+               \State $r_t(u) \gets \displaystyle\min_{v \in \mbox{\scriptsize Succ}(u)}
+                  \big( w(u,v) + d_t(v) \big)$
+            \EndIf
+            \State Ensure $u \in Q_t$ iff $d_t(u) \neq r_t(u)$
+         \EndProcedure
+         \Procedure {ProcessTargetQueue} {\,\!}
+            \State $v \gets Q_t.\mbox{Pop}$
+            \If {$r_t(v) < d_t(v)$}
+                  \Comment over-consistent
+               \State $d_t(v) \gets r_t(v)$
+               \ForAll {$u \in \mbox{Pred}(v)$}
+                  \State $\mbox{\sc UpdateTargetDistance}(u)$
+               \EndFor
+            \Else
+                  \Comment under-consistent
+               \State $d_t(v) \gets \infty$
+               \ForAll {$u \in \mbox{Pred}(v) \cup v$}
+                  \State $\mbox{\sc UpdateTargetDistance}(u)$
+               \EndFor
+            \EndIf
+         \EndProcedure
+      \end{algorithmic}
+   \end{minipage}
+\end{algorithm}
+} % floatevery width adjustment
+
+
 \chapter{Maximizing Utility in Motion Planning}
 \label{chap:lemur}
 
 Here, we introduce LEMUR.
 
+
 \chapter{Application: Planning Multi-Step Manipulation Tasks}
 \label{chap:family}
+
 
 \chapter{Conclusion}
 
 Here is a conclusion.
+
 
 \appendix
 
