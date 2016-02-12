@@ -1857,6 +1857,179 @@ including bidirectional variants as proposed by
 Kaindl and Kainz, ``Bidirectional Heuristic Search Reconsidered,''
 Journal of AI Research 1997.
 
+\section{Prior Work}
+
+The \emph{shortest path problem} on graphs has been extensively
+studied over the past six decades.
+Consider a directed graph $G = (V,E)$ and accompanying edge weight
+function $w : E \rightarrow \mathbb{R}$,
+with the length of a path equal to the sum of the weights of its
+constituent edges.
+I include here a brief survey of algorithmic work on the
+\emph{single-pair} (a.k.a. point-to-point) problem,
+where a path of minimal length is sought
+between particular source and target vertices
+$s,t \in V$.
+I also consider only graphs without negative-length cycles.
+
+\subsection{Pathfinding via the Source Distance Function}
+
+The pioneering pathfinding algorithms of the late 1950s address
+the \emph{single-source} problem,
+where shortest paths are calculated from $s$ to all vertices on
+the graph.
+They proceed by calculating the \emph{distance function}
+$d_s : V \rightarrow \mathbb{R}$,
+which is characterized by
+\begin{equation}
+   d_s(s) = 0
+   \quad\mbox{and}\quad
+   \forall v \neq s,\;
+   d_s(v) = \min_{u \in \mbox{\scriptsize Pred}(v)} d_s(u) + w(u,v).
+   \label{eqn:distance-function}
+\end{equation}
+The distance function is akin to the \emph{value function}
+in more general decision problems addressed by dynamic programming,
+and (\ref{eqn:distance-function}) is the Bellman equation
+\citep{bellman1958routing}.
+This characterization also follows implicitly from early results for
+the all-pairs problem
+\citep{shimbel1955communicationnets, beckmann1955transportation}.
+A shortest path to a target $t$ can be generated trivially
+by walking backwards to $s$ guided by the function $d_s$.
+
+Algorithms for computing $d_s$ rely on the concept of
+\emph{relaxation}
+as described by Ford \citep{ford1955networkflowtheory}.
+The function $d_s$
+is initialized to the upper bound $\infty$ for $v \neq s$,
+and edges $(u,v)$ for which $d_s(v) > d_s(u) + w(u,v)$,
+thereby violating (\ref{eqn:distance-function}),
+are relaxed by updating $d_s(v)$
+with the reduced value $d_s(u) + w(u,v)$.
+The well-known Bellman-Ford method
+\citep{shimbel1955communicationnets, bellman1958routing,
+moore1959spmaze}
+iterates through all edges repeatedly until convergence
+(at most $|V|$ repetitions are sufficient).
+
+Soon afterwards,
+several researchers
+identified \citep{leyzorek1957modeltechniques, dijkstra1959anote}
+an efficient ordering of edge relaxations
+if $w$ is non-negative.
+Dijkstra's algorithm relaxes edges $(u,v)$
+in increasing order of $d_s(u)$.
+In does this by initially marking all vertices as {\sc Open},
+and at each iteration moving to {\sc Closed}
+the vertex $u$ minimizing $d_s$
+and relaxing all outgoing edges $(u,v)$ from $u$.
+It is guaranteed to consider each vertex
+(and therefore relax each edge) at most once.
+
+\subsection{Bidirectional Search}
+
+The single-pair problem can therefore be solved
+via Dijkstra's algorithm
+by (partially) computing the source distance $d_s$ until it
+includes the target vertex.
+However,
+it was conjectured that a path might be found more efficiently
+by simultaneously calculating the complementary
+target distance function $d_t$
+until the domains of the two functions ``overlap.''
+The first mention of such a bi-directional algorithm
+was proposed by Dantzig \citep{dantzig1963linearprogramming},
+and the first precisely described algorithm was presented by
+Nicholson \citep{nicholson1966shortest}.
+Implementation of a sound and efficient algorithm
+turns on two important questions:
+(a) how to balance the two directions of the search,
+and (b) when and how to terminate with a shortest path.
+
+A correct termination condition is surprisingly subtle,%
+\marginnote{There were early incorrect attempts at a sound
+termination condition
+\citep{berge1965programminggamestransportation}.}
+with several correct variations proposed
+\citep{nicholson1966shortest, dreyfus1969appraisalsp,
+pohl1969bidirectional, goldberg2005spexternalmemory}.
+The difficulty stems from the fact that the first vertex to be
+{\sc Closed} by the searches in both directions
+need not lie on the shortest path.
+
+The general bidirectional algorithm also leaves open the strategy
+used to balance the progression of the two search directions.
+Options based on alternating \citep{dantzig1963linearprogramming},
+or selecting the direction with the smaller {\sc Open} distance
+\citep{nicholson1966shortest}
+or {\sc Open} (and finite) set cardinality
+\citep{pohl1969bidirectional}
+were proposed.
+It was further shown that selecting only from the source direction
+reproduces Dijkstra's algorithm.
+
+\subsection{Heuristic Search}
+
+Heuristic methods such as the Graph Traverser
+\citep{doran1966graphtraverser} were originally
+applied to pathfinding problems in order to find non-optimal
+solutions more economically.
+These unidirectional methods proceed similarly to Dijkstra's algorithm,
+but instead of prioritizing {\sc Open} vertices
+based on their source distance $d_s$,
+they use a target-directed heuristic function $h_t$.
+Hart, Nilsson, and Raphael \citep{hart1968astar} discovered that
+these approaches can be combined ($d_s + h_t$) to yield
+an admissible algorithm (A*) for the shortest-path problem,
+as long as $h_t$ meets certain conditions.
+
+Attempts to provide a bidirectional algorithm which incorporates
+heuristics generally take one of three approaches.
+\cdnote{I need to deep-dive here to write this correctly.}
+
+First,
+front-to-front methods
+could evaluate the heuristic between all pairs in the two
+{\sc Open} sets.
+Expensive.
+
+Second,
+perform two heuristic-informed searches,
+and account for the connection problem via a complex
+termination condition.
+Not necessarily efficient.
+(Pohl cites Berge?)
+Missile analogy.
+
+Third,
+waste (same heuristic function).
+
+Concept of waste \citep{pohl1969bidirectional}.
+I think this subsumes A*.
+
+Talk about the 94 paper \citep{ikeda1994betterroutes}
+expressing A* as a search on
+the waste graph.
+
+As a potential function.
+Also Goldberg \citep{goldberg2005spexternalmemory}.
+
+\subsection{Incremental Search}
+
+This stuff is more modern (1996, 2004).
+
+DynamicSWSF-FP \citep{ramalingam1996}.
+
+Revisit Bellman equation.
+
+Apply waste to incremental search to get
+incremental heuristic search.
+
+\subsection{Incremental Heuristic Search}
+
+Lifelong Planning A* \citep{koenig2004lpastar}.
+
 \section{Termination Conditions}
 
 What happens upon an encounter between the forward and reverse searches?
