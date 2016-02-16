@@ -2185,6 +2185,76 @@ IBiD conducts two independent DynamicSWSF-FP searches
 \end{algorithm}
 } % floatevery width adjustment
 
+\section{Examples}
+
+See Figure~\ref{fig:incbi-lpastar-fig1-heurchange}
+and Figure~\ref{fig:incbi-lpastar-fig1}.
+
+\begin{figure}
+   \centering%
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurnone-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurnone-original}%
+   
+   \vspace{0.2cm}
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurhalf-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurhalf-original}%
+   
+   \vspace{0.2cm}
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurfull-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-original}%
+   
+   \caption{Illustration of behavior of IBiD on a single
+      (non-incremental) shortest path problem.
+      At left, IBiD uses the unidirectional start-side expansion
+      strategy.
+      At right, IBiD uses the bidirectional distance-balanaced
+      expansion strategy.
+      Start and goal heuristic functions are available;
+      the unidirectional search uses a potential function based
+      on the goal heuristic,
+      and the bidirectional search a potential function using
+      the average heuristic.
+      IBiD is run with three different potential function weights:
+      0.0 (top), 0.5 (middle), and 1.0 (bottom).
+      IBiD therefore preforms equivalently to
+      Dijkstra's algorithm (top-left),
+      Bidirectional Dijkstra's (top-right),
+      A* (bottom-left),
+      and Bidirectional A* (bottom-right).}
+   \label{fig:incbi-lpastar-fig1-heurchange}
+\end{figure}
+
+\begin{figure}
+   \centering%
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurfull-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurfull-changed}%
+   
+   \vspace{0.2cm}
+   
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-changed}%
+   
+   \caption{IBiD with only source-side expansions and a goal-side
+      heuristic (top) proceeds identically to Lifelong Planning A*,
+      performing 37 expansions on the original world (left)
+      followed by 18 expansions over 14 vertices on the chanced
+      world (right).
+      IBiD with distance-balanced expansions and an average
+      potential (bottom)
+      performs 30 expansions on the original world
+      followed by 18 expansions over 15 vertices on the changed
+      world.}
+   \label{fig:incbi-lpastar-fig1}
+\end{figure}
 
 \chapter{Maximizing Utility in Motion Planning}
 \label{chap:lemur}
