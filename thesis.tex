@@ -79,6 +79,9 @@
 \usepackage{multirow}
 \usepackage{booktabs}
 
+% see http://tex.stackexchange.com/a/19678
+\newcommand{\specialcell}[2][c]{\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
 % custom title page
 \usepackage{titling}
 
@@ -2118,6 +2121,7 @@ IBiD conducts two independent DynamicSWSF-FP searches
             \State $r_s(s) \gets 0$
             \State $Q_s \gets \{ s \}$
                \Comment $\mbox{ key for } v: \min\big(r_s(v),d_s(v)\big)$
+            \State $\mbox{\sc ProcessSourceQueue}()$
          \EndProcedure
          \Procedure {UpdateSourceDistance} {$v$}
             \If {$v \neq s$}
@@ -2156,6 +2160,7 @@ IBiD conducts two independent DynamicSWSF-FP searches
             \State $r_t(t) \gets 0$
             \State $Q_t \gets \{ t \}$
                \Comment $\mbox{ key for } v: \min\big(r_t(v),d_t(v)\big)$
+            \State $\mbox{\sc ProcessTargetQueue}()$
          \EndProcedure
          \Procedure {UpdateTargetDistance} {$u$}
             \If {$u \neq t$}
@@ -2255,6 +2260,45 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
       world.}
    \label{fig:incbi-lpastar-fig1}
 \end{figure}
+
+\begin{figure*}
+   \centering%
+   
+   \begin{tabular}{ccc}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalnone-balfwd.png}\\556,209 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgnone-baldist.png}\\319,938 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgnone-balcard.png}\\281,413 expansions}
+      \vspace{0.3cm}
+      \\
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalhalf-balfwd.png}\\297,414 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavghalf-baldist.png}\\206,625 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavghalf-balcard.png}\\178,929 expansions}
+      \vspace{0.3cm}
+      \\
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalfull-balfwd.png}\\82,915 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgfull-baldist.png}\\95,759 expansions}
+      &
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgfull-balcard.png}\\69,218 expansions}
+      \vspace{0.5cm}
+   \end{tabular}
+   
+   \caption{Comparison between various heuristic strengths and
+      balancing strageties on a single-pair road network problem.
+      A path with shortest transit time is sought.
+      The heuristic strength varies from no heuristic (top)
+      to a full-strength heuristic (bottom).
+      At left, a foward-only balancer is used, so that the
+      top-left is equivalent to Dijkstra's algorithm,
+      and the bottom-left is equivalent to A*.
+      The middle column uses a balanced distance strategy.
+      The right column uses a balanced cardinality strategy.}
+   \label{fig:incbi-road-ne}
+\end{figure*}
 
 \chapter{Maximizing Utility in Motion Planning}
 \label{chap:lemur}
