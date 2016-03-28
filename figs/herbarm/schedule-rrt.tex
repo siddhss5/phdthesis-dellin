@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\scriptsize]
+
+\begin{axis}[
+      xmin=0, xmax=1,
+      ymin=0, ymax=10.5,
+      width=3.6cm,
+      height=3.6cm,
+      xlabel=$\lambda_U$,
+      ylabel=opt budget (sec),
+      xlabel near ticks,
+      ylabel near ticks,
+      %xmin=0, xmax=1,
+      %ymin=0, ymax=15,
+      xticklabels={,0,,,,,1},
+      ticklabel style={font=\scriptsize},
+      xmajorgrids,
+      y label style={at={(axis description cs:-0.18,0.5)},anchor=south},
+      x label style={at={(axis description cs:0.5,0.0)},anchor=north}]
+   
+   \addplot
+      plot[color=red,very thick,mark options={color=red},mark options={scale=0.5}]
+      table[x=lambda-u,y=param-best]
+      {data/herbarm/stats-schedule-rrtconnect-default-sc.txt};
+
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

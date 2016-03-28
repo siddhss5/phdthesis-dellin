@@ -1,0 +1,202 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\tiny]
+
+\foreach \problem/\xoffset\ymax in {
+   {herbbin-0/0.0/10},
+   {herbbin-1/3.0/10},
+   {herbbin-2/6.0/10}}
+   %{herbbookshelf0/9.0/30},
+   %{herbbookshelf1/12.0/30},
+   %{herbbookshelf2/15.0/30}}
+{
+   \begin{scope}[shift={(\xoffset,0.0)}]
+   \begin{axis}[
+         xmin=0,
+         ymin=0, ymax=16,
+         width=4.1cm,
+         height=3.6cm,
+         xlabel=$p$ (sec),
+         %ylabel=$x$,
+         xlabel near ticks,
+         ylabel near ticks,
+         %xmin=0, xmax=1,
+         %ymin=0, ymax=15,
+         ticklabel style={font=\tiny},
+         x label style={at={(axis description cs:0.5,-0.08)},anchor=north}]
+      
+      %\addplot
+      %   plot[color=red,mark options={color=red},mark options={scale=0.5}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/herbarmmultithread/stats-byparam-\problem -rrtconnect-default.txt};
+      %\addplot
+      %   plot[thick,color=red,mark=*,mark options={scale=0.25}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/herbarmmultithread/stats-byparam-\problem -rrtconnect-default-sc.txt};
+      %\addplot
+      %   plot[thick,color=green,mark=*,mark options={scale=0.25}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/herbarmmultithread/stats-byparam-\problem -bitstar-default-sc.txt};
+      \addplot
+         plot[thick,color=black,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/herbarmmultithread/stats-byparam-\problem -e8haltonoffdens10000,2.0-lambda.txt};
+      \addplot
+         plot[thick,color=cyan,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/herbarmmultithread/stats-byparam-\problem -familyhaltonoffdens10000,2.0-lambda.txt};
+      %\addplot
+      %   plot[thick,color=blue,mark=*,mark options={scale=0.25}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/herbarmmultithread/stats-byparam-\problem -e8nchaltonoffdens10000,2.0-lambda.txt};
+   \end{axis}
+   \end{scope}
+   
+   %\begin{scope}[shift={(\xoffset,-3.2)}]
+   %\begin{axis}[
+   %      width=4.1cm,
+   %      height=4.0cm,
+   %      xlabel=$\lambda_U$,
+   %      %ylabel=$-U$ (sec),
+   %      xlabel near ticks,
+   %      ylabel near ticks,
+   %      xmin=0, xmax=1,
+   %      ymin=0, ymax=\ymax,
+   %      ticklabel style={font=\tiny},
+   %      axis on top=true]
+
+      %\addplot+
+      %   plot[mark=none,color=red!20,fill=red!10,fill opacity=0.5]
+      %   table[x=lambda-u,y=utility-finmean-conloop]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc-scheduled-loop.txt};
+      %\addplot+
+      %   plot[mark=none,color=green!20,fill=green!10,fill opacity=0.5]
+      %   table[x=lambda-u,y=utility-finmean-conloop]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -bitstar-default-sc-scheduled-loop.txt};
+      %\addplot+
+      %   plot[mark=none,color=blue!20,fill=blue!10,fill opacity=0.5]
+      %   table[x=lambda-u,y=utility-finmean-conloop]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -e8-nchaltonoffdens10000,2.0-scheduled-loop.txt};
+   %   \addplot+
+   %      plot[mark=none,color=black!20,fill=black!10,fill opacity=0.5]
+   %      table[x=lambda-u,y=utility-finmean-conloop]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -e8-haltonoffdens10000,2.0-scheduled-loop.txt};
+   %   \addplot+
+   %      plot[mark=none,color=cyan!20,fill=black!10,fill opacity=0.5]
+   %      table[x=lambda-u,y=utility-finmean-conloop]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -family-haltonoffdens10000,2.0-scheduled-loop.txt};
+
+      %\addplot+
+      %   plot[solid,color=red,thick,mark=none]
+      %   table[x=lambda-u,y=neg-utility-mean]
+      %   from {data/herbarmmultithread/stats-paramslices-\problem -rrtconnect-default.txt};
+
+
+      % Hybrid RRT-Connect
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=red!20,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc\scbudget .txt};
+      %}
+      
+      %\addplot+
+      %   plot[solid,thick,color=red,mark=none,error bars/.cd, y dir=both, y explicit]
+      %   table[x=lambda-u,y=utility-finmean,y error expr=\thisrow{utility-stderrfinmean}*1.96]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc-scheduled.txt};
+      %\addplot+
+      %   plot[solid,thick,color=red,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc-scheduled.txt};
+      %\addplot+
+      %   plot[densely dotted,thick,color=red,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc-oracle.txt};
+      
+      
+      % BIT*
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=red!20,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/herbarmmultithread/stats-paramslice-\problem -rrtconnect-default-sc\scbudget .txt};
+      %}
+      %\addplot+
+      %   plot[solid,thick,color=green,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -bitstar-default-sc-scheduled.txt};
+      %\addplot+
+      %   plot[densely dotted,thick,color=green,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -bitstar-default-sc-oracle.txt};
+      
+      
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=green,mark=none]
+      %      table[x=lambda-u,y=neg-utility-mean]
+      %      from {data/herbarm/stats-paramslices-\problem -bitstar-default-sc\scbudget .txt};
+      %}
+
+
+      % LEMUR (without caching)
+      %\foreach \coeffstr in {
+      %   {0.01,0.99,0},%
+      %   {0.10,0.90,0},%
+      %   {0.20,0.80,0},%
+      %   {0.30,0.70,0},%
+      %   {0.40,0.60,0},%
+      %   {0.50,0.50,0},%
+      %   {0.60,0.40,0},%
+      %   {0.70,0.30,0},%
+      %   {0.80,0.20,0},%
+      %   {0.90,0.10,0},%
+      %   {1.00,0.00,0}}%
+      %{
+      %   \addplot+
+      %      plot[solid,color=blue!30,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/herbarmmultithread/stats-paramslice-\problem -e8-nchaltonoffdens10000,2.0-\coeffstr .txt};
+      %}
+      %\addplot+
+      %   plot[solid,color=blue,mark=none,thick]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -e8-nchaltonoffdens10000,2.0-scheduled.txt};
+      %\addplot+
+      %   plot[densely dotted,color=blue,mark=none,thick]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/herbarmmultithread/stats-paramslice-\problem -e8-nchaltonoffdens10000,2.0-oracle.txt};
+      
+      
+      % LEMUR (without family)
+   %   \addplot+
+   %      plot[solid,color=black,mark=none,thick]
+   %      table[x=lambda-u,y=utility-finmean]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -e8-haltonoffdens10000,2.0-scheduled.txt};
+   %   \addplot+
+   %      plot[densely dotted,color=black,mark=none,thick]
+   %      table[x=lambda-u,y=utility-finmean]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -e8-haltonoffdens10000,2.0-oracle.txt};
+      
+      % LEMUR (with family)
+   %   \addplot+
+   %      plot[solid,color=cyan,mark=none,thick]
+   %      table[x=lambda-u,y=utility-finmean]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -family-haltonoffdens10000,2.0-scheduled.txt};
+   %   \addplot+
+   %      plot[densely dotted,color=cyan,mark=none,thick]
+   %      table[x=lambda-u,y=utility-finmean]
+   %      from {data/herbarmmultithread/stats-paramslice-\problem -family-haltonoffdens10000,2.0-oracle.txt};
+
+   %\end{axis}
+   %\end{scope}
+}
+
+\end{tikzpicture}
+\end{document}
+

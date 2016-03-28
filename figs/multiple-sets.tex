@@ -1,12 +1,12 @@
 \documentclass{standalone}
 \usepackage{tikz}
 \usetikzlibrary{calc}
-\begin{document}
+\begin{document}%
 \begin{tikzpicture}
 
 \tikzstyle{every node}=[font=\footnotesize]
 
-\draw (0,0) rectangle (4.0,3.0);
+\draw[black!15,fill=black!2] (0,0) rectangle (4.0,3.0);
 
 \coordinate (a) at (2.0,1.8);
 \coordinate (b) at (1.3,1.3);
@@ -71,12 +71,12 @@
 \end{scope}
 
 \node at (0.2,2.8) {$\mathcal{C}$};
-\node at ($ (a) + (0,0.8) $) {$A$};
-\node at ($ (b) + (-0.6,-0.6) $) {$B$};
-\node at ($ (c) + ( 0.6,-0.6) $) {$C$};
+\node at ($ (a) + (0,0.8) $) {$\mathcal{C}_1$}; % A
+\node at ($ (b) + (-0.6,-0.6) $) {$\mathcal{C}_2$}; % B
+\node at ($ (c) + ( 0.6,-0.6) $) {$\mathcal{C}_3$}; % C
 
-\node[circle,inner sep=1pt,fill=white,fill opacity=0.9]
-  at (2.4,1.6) {$X_q$};
+\node[circle,inner sep=1pt,fill=black!2,fill opacity=0.9]
+  at (2.4,1.6) {$\mathcal{C}_q$}; % X_q
 
 \end{tikzpicture}%
-\end{document}
+\end{document}%
