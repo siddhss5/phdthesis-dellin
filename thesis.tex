@@ -127,9 +127,9 @@
 \newenvironment{proof}[1][Proof]{\begin{trivlist}
    \item[\hskip \labelsep {\bfseries #1}]}{\hfill$\square$\end{trivlist}}
 
-\title{Efficient Manipulation Task Planning via\\
-   Reuse-Informed Optimization of Planning Effort
-   \cdnote{need new title!}}
+% Efficient Manipulation Task Planning via
+% Reuse-Informed Optimization of Planning Effort
+\title{Completing Motion Tasks Efficiently in Complex Environments}
 \author{Christopher M. Dellin}
 \date{\today}
 %\date{March 28, 2015}
@@ -169,8 +169,6 @@ Lydia Kavraki, Rice University\\
 
 \vspace{0.2in}
 
-\cdnote{todo: rewrite abstract}
-
 In order to assist humans
 with dangerous or menial tasks,
 autonomous robots will need to
@@ -178,7 +176,7 @@ act under significant time and energy constraints.
 At task time,
 the amount of effort a robot spends planning directly
 detracts from its total performance.
-Manipulation tasks, however, present challenges
+Tasks such as manipulation, however, present challenges
 to efficient motion planning.
 They are often tightly coupled --
 while moving an object can be decomposed into
@@ -220,7 +218,7 @@ Our insights yield complementary components
 which, taken together,
 constitute an efficient approach to planning manipulation tasks.
 
-This thesis proposes a heavy emphasis on experimental evaluation
+This dissertation places an emphasis on experimental evaluation
 of the individual constituent algorithms
 and the approach as a whole.
 We will compare against
@@ -230,6 +228,8 @@ in applications from home table clearing
 to remote disaster response.
 We also provide open-source implementations of our algorithms.
 
+\cdnote{Add acknowledgements!}
+
 \end{adjustwidth}
 \end{fullwidth}
 %\end{abstract}
@@ -238,13 +238,94 @@ We also provide open-source implementations of our algorithms.
 
 \chapter{Introduction}
 
-Outline of contributions:
-\begin{itemize}
-\item LazySP (Chapter~\ref{chap:lazysp})
-\item IBID (Chapter~\ref{chap:ibid})
-\item LEMUR (Chapter~\ref{chap:lemur})
-\item Planning with C-Space Families (Chapter~\ref{chap:family})
-\end{itemize}
+\cdnote{Add mega-outline-figure?}
+
+Problem description.
+Concise statement of objectives.
+
+Semi-structured (some things stay the same)
+Collision checking is expensive.
+
+What makes the problem difficult?
+
+Outline of approach.
+
+\paragraph{Roadmaps}
+Focus on roadmap methods.
+Can be used to initialize optimization methods.
+Amenable to caching and parallelization.
+
+\paragraph{LazySP}
+Challenge: validity checking on a roadmap is expensive.
+Suppose we commit to a graph -- how should we search it?
+In Chapter~\ref{chap:lazysp}, we discuss the Lazy Shortest Path
+algorithm.
+Briefly discuss edge selectors.
+Build on ideas such as D* and the Lazy PRM.
+
+\paragraph{Efficient Incremental Search}
+We need to search our roadmaps efficiently,
+especially for lazy algorithms where there are small changes
+between searches.
+Introduce incremental bidirectional search (IBID) in 
+Chapter~\ref{chap:ibid}.
+This is important because lazy approaches decouple the search
+from the evaluation.
+
+\paragraph{Maximizing Utility in Motion Planning}
+Utility/LEMUR (Chapter~\ref{chap:lemur}).
+Get back to the planning vs execution cost tradeoff.
+How can a planner reason about this?
+
+\paragraph{Planning with C-Space Families}
+Steps are incongruent.
+See Chapter~\ref{chap:family}.
+Partial evaluation.
+Optimistic family graphs.
+Propositional logic.
+
+\section{Review of Experimental Platforms}
+
+Throughout, we will run experiments on three experimental platforms:
+HERB, PR2, and CHIMP.
+
+\chapter{Review of Roadmap Methods for Motion Planning}
+
+Intro: focus on configuration-space planning (not kinodynamic planning).
+
+Discretation of configuration space.
+
+Probabalistic vs. deterministic.
+\citep{branicky2002detvsprobroadmaps}.
+\citep{lavalle2002gridprms}.
+
+\citep{janson2015deterministicsampling}.
+
+FMT* \citep{janson2015fmtstar}.
+
+\citep{cheng2004rescomplete}.
+
+\section{Completeness and Optimality}
+
+RRT* \citep{karaman2010rrtstar}.
+Karaman/Frazzoli \citep{karaman2011samplingoptimal}.
+
+RGGs.
+
+Central point: densified roadmap strategy with good properties.
+
+\section{Obstacle Sensitivty vs. Obstacle Agnosticism}
+
+Talk about sampling heuristics.
+The original PRM.
+Lots of other things.
+
+Central point: by staying obstacle-agnostic, it's easier to cache
+things that apply across problem instances.
+
+\section{TODO}
+
+ESTs. Expansive spaces. \citep{hsu1997expansive}.
 
 \include{thesis-ch02-lazysp}
 
@@ -252,11 +333,107 @@ Outline of contributions:
 
 \include{thesis-ch04-lemur}
 
-\chapter{Application: Planning Multi-Step Manipulation Tasks}
+\chapter{Planning over Configuration Space Families}
 \label{chap:family}
 
+\begin{figure}
+   \centering
+   \hspace{0.2cm}
+   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step0.png}%
+   \;
+   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step1.png}%
+   \;
+   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step2.png}%
+   
+   \includegraphics{build/herbarmmultithread/master-fig}
+   \caption[]{
+      Results from a motion planning experiment for manipulation
+      planning in which the robot must move to grasp the mug
+      and place it into a bin at its side
+      before returning to its initial configuration.
+      In the course of planning the first step to the grasp point,
+      the planner has discovered a number of edges known to be
+      valid.
+      After the grasp, the robot must find a motion to transfer the
+      mug -- any edges known to be valid in the previous step
+      can be used after only checking that the grasped mug does not
+      collide with the environment.
+      Compared with a sequence of single-query calls to LEMUR
+      with model $\mathcal{C}_{\ms{simple}}$
+      \protect\tikz{\protect\node[fill=black!80,draw=black]{};},
+      LEMUR armed with the $\mathcal{M}_{\ms{family}}$ ensemble
+      cost model
+      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}
+      can guide the planner to use edges that are less
+      expensive to validate.}
+   \label{fig:herbarmmultithread-master}
+\end{figure}
 
-\chapter{Conclusion}
+When addressing multi-step tasks
+such as the table clearing task in
+Figure~\ref{fig:herbarmmultithread-master},
+the robot's valid subset $\mathcal{C}_{\ms{free}}$
+changes each time an object is grasped or placed,
+or when people or obstacles move.
+Over the course of a planning episode,
+these changing subsets constitute a family of related sets over
+$\mathcal{C}$.
+Approaches which adapt a graph or tree structure
+\citep{ferguson2006drrt, gayle2007lazyreconfigforest}
+do not reason about this structure directly.
+LEMUR relies on a domain-specific ensemble cost model
+$\mathcal{M}$ to provide it with planning and execution cost
+estimates for prospective edges.
+This allows it to exploit this domain-specific structure.
+
+For example,
+consider the case where the robot has already evaluated a number
+of roadmap edges in order to find a valid path to grasp the red mug.
+Once grasped, the active valid subset $\mathcal{C}_{\ms{free}}$
+has changed.
+However,
+any edge known to be valid for the previous step
+can be validated in the new subset by simply checking the grasped
+mug against the environment.
+
+We capture this structure via an ensemble cost model
+$\mathcal{M}_{\ms{family}}$.
+The model maintains
+(a) a family $\mathcal{F}$ of $\mathcal{C}$-subsets
+relevant to the problem,
+(b) the inclusion/intersection relations between them,
+and (c) the set of validity checks that have been performed
+for each edge.
+This knowledge enables it to implement an edge
+planning cost estimator $\grave{p}_{\ms{family}}(e)$
+which determines the minimum set of collision checks necessary
+to validate an edge within a target subset.
+
+We show preliminary results of applying LEMUR to planning over
+such $\mathcal{C}$-space families on the sequential
+three-step task in
+Figure~\ref{fig:herbarmmultithread-master}.
+Such a planner can be seen as a generalization of self-collision checked
+\citep{leven2002changing} or dynamic \citep{jaillet2004dynamicprm}
+roadmaps to a larger number of subsets.
+
+\section{Sources of Configuration Space Families}
+
+\section{Optimistic Checks via the Family Graph}
+
+\chapter{Application: Caching Invariant Geometry}
+
+\begin{figure*}
+   \centering   
+   \includegraphics{build/family-sq-caching/pvxs}
+   \caption[]{Results.}
+\end{figure*}
+
+\chapter{Application: Multi-Step Manipulation Tasks}
+
+\chapter{Application: Exploiting Conservative Geometric Approximations}
+
+\chapter{Discussion}
 
 Here is a conclusion.
 

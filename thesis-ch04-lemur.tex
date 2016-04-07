@@ -200,7 +200,7 @@ in Section~\ref{sec:experiments}.
 
 LEMUR's ability to accept an arbitrary planning effort model
 enables it to be customized to different domains.
-In Section \ref{sec:family-planning},
+In Chapter \ref{chap:family},
 we discuss such a model specific to problems over a family of
 C-space subsets.
 A prime example of this is multi-step manipulation tasks
@@ -995,7 +995,7 @@ yielding a multi-query planner
 that is similar to the Lazy PRM or
 Experience graphs \citep{phillips2012egraphs}.
 We briefly discuss how to accommodate a changing configuration space in
-Section~\ref{sec:family-planning}.
+Chapter~\ref{chap:family}.
 
 \begin{figure}
    \centering
@@ -1159,90 +1159,6 @@ This condition also corresponds to the behavior of the Lazy PRM.
 Across the six motion planning instances,
 we found that LEMUR placed consistently among the best performers
 across the range of utility functions.
-
-\section{Planning over C-Space Families}
-\label{sec:family-planning}
-
-\begin{figure}
-   \centering
-   \hspace{0.2cm}
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step0.png}%
-   \;
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step1.png}%
-   \;
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step2.png}%
-   
-   \includegraphics{build/herbarmmultithread/master-fig}
-   \caption[]{
-      Results from a motion planning experiment for manipulation
-      planning in which the robot must move to grasp the mug
-      and place it into a bin at its side
-      before returning to its initial configuration.
-      In the course of planning the first step to the grasp point,
-      the planner has discovered a number of edges known to be
-      valid.
-      After the grasp, the robot must find a motion to transfer the
-      mug -- any edges known to be valid in the previous step
-      can be used after only checking that the grasped mug does not
-      collide with the environment.
-      Compared with a sequence of single-query calls to LEMUR
-      with model $\mathcal{C}_{\ms{simple}}$
-      \protect\tikz{\protect\node[fill=black!80,draw=black]{};},
-      LEMUR armed with the $\mathcal{M}_{\ms{family}}$ ensemble
-      cost model
-      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}
-      can guide the planner to use edges that are less
-      expensive to validate.}
-   \label{fig:herbarmmultithread-master}
-\end{figure}
-
-When addressing multi-step tasks
-such as the table clearing task in
-Figure~\ref{fig:herbarmmultithread-master},
-the robot's valid subset $\mathcal{C}_{\ms{free}}$
-changes each time an object is grasped or placed,
-or when people or obstacles move.
-Over the course of a planning episode,
-these changing subsets constitute a family of related sets over
-$\mathcal{C}$.
-Approaches which adapt a graph or tree structure
-\citep{ferguson2006drrt, gayle2007lazyreconfigforest}
-do not reason about this structure directly.
-LEMUR relies on a domain-specific ensemble cost model
-$\mathcal{M}$ to provide it with planning and execution cost
-estimates for prospective edges.
-This allows it to exploit this domain-specific structure.
-
-For example,
-consider the case where the robot has already evaluated a number
-of roadmap edges in order to find a valid path to grasp the red mug.
-Once grasped, the active valid subset $\mathcal{C}_{\ms{free}}$
-has changed.
-However,
-any edge known to be valid for the previous step
-can be validated in the new subset by simply checking the grasped
-mug against the environment.
-
-We capture this structure via an ensemble cost model
-$\mathcal{M}_{\ms{family}}$.
-The model maintains
-(a) a family $\mathcal{F}$ of $\mathcal{C}$-subsets
-relevant to the problem,
-(b) the inclusion/intersection relations between them,
-and (c) the set of validity checks that have been performed
-for each edge.
-This knowledge enables it to implement an edge
-planning cost estimator $\grave{p}_{\ms{family}}(e)$
-which determines the minimum set of collision checks necessary
-to validate an edge within a target subset.
-
-We show preliminary results of applying LEMUR to planning over
-such $\mathcal{C}$-space families on the sequential
-three-step task in
-Figure~\ref{fig:herbarmmultithread-master}.
-Such a planner can be seen as a generalization of self-collision checked
-\citep{leven2002changing} or dynamic \citep{jaillet2004dynamicprm}
-roadmaps to a larger number of subsets.
 
 \section{Discussion}
 \label{sec:discussion}

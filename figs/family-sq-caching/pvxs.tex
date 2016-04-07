@@ -1,0 +1,72 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}[font=\small]
+
+
+\foreach \problem/\xoffset\yoffset in {
+   {herbbin0/0.0/0.0},
+   {herbbin1/3.0/0.0},
+   {herbbin1nom/6.0/0.0},
+   {herbbin2/9.0/0.0},
+   {herbbin2nom/12.0/0.0},
+   {herbbookshelf0/0.0/-4.0},
+   {herbbookshelf1nom/6.0/-4.0},
+   {herbbookshelf2/9.0/-4.0}}
+{
+   \begin{scope}[shift={(\xoffset,\yoffset)}]
+   \begin{axis}[
+      title={\problem},
+      width=4.1cm,
+      height=3.5cm,
+      xlabel=$p$ (sec),
+      %ylabel=$x$,
+      xlabel near ticks,
+      ylabel near ticks,
+      ]
+      
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -lemur-ode-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -lemur-ode-nrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -lemur-fcl-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -lemur-fcl-nrc.txt};
+      
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -family-ode-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -family-ode-nrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -family-fcl-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -family-fcl-nrc.txt};
+      
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -familysc-ode-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -familysc-ode-nrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -familysc-fcl-wrc.txt};
+      \addplot
+         table[x=python-totaltime-finmean, y=path-length-finmean]
+         {data/family-sq-caching/stats-byparam-\problem -familysc-fcl-nrc.txt};
+   \end{axis}
+   \end{scope}
+}
+\end{tikzpicture}
+\end{document}

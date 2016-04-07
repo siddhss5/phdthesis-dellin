@@ -1,0 +1,12 @@
+problem planner-seedless path-length-numfin path-length-finmean python-totaltime-numfin python-totaltime-finmean
+herbbookshelf0 familysc-ode-nrc-0.01,0.99,0 50 8.757322543112398 50 5.6975766706468
+herbbookshelf0 familysc-ode-nrc-0.10,0.90,0 50 8.757322543112398 50 5.6070615673058
+herbbookshelf0 familysc-ode-nrc-0.20,0.80,0 50 8.757322543112398 50 5.565373950004202
+herbbookshelf0 familysc-ode-nrc-0.30,0.70,0 50 8.757322543112398 50 5.714100604056999
+herbbookshelf0 familysc-ode-nrc-0.40,0.60,0 50 8.757322543112398 50 5.6564184188842
+herbbookshelf0 familysc-ode-nrc-0.50,0.50,0 50 8.757322543112398 50 5.7232013082502
+herbbookshelf0 familysc-ode-nrc-0.60,0.40,0 50 8.757322543112398 50 5.758978009224201
+herbbookshelf0 familysc-ode-nrc-0.70,0.30,0 50 8.757322543112398 50 5.6300062322611995
+herbbookshelf0 familysc-ode-nrc-0.80,0.20,0 50 8.757322543112398 50 5.718971929549801
+herbbookshelf0 familysc-ode-nrc-0.90,0.10,0 50 8.757322543112398 50 5.743784189224001
+herbbookshelf0 familysc-ode-nrc-1.00,0.00,0 50 5.1751993239758 50 6.624468755722001

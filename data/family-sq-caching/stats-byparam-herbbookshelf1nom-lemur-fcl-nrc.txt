@@ -1,0 +1,12 @@
+problem planner-seedless path-length-numfin path-length-finmean python-totaltime-numfin python-totaltime-finmean
+herbbookshelf1nom lemur-fcl-nrc-0.01,0.99,0 50 12.568483905030599 50 68.0731762838046
+herbbookshelf1nom lemur-fcl-nrc-0.10,0.90,0 50 8.621592465735198 50 70.26906143665741
+herbbookshelf1nom lemur-fcl-nrc-0.20,0.80,0 50 7.8509980121539975 50 74.683955492962
+herbbookshelf1nom lemur-fcl-nrc-0.30,0.70,0 50 7.696409772058197 50 81.493299241078
+herbbookshelf1nom lemur-fcl-nrc-0.40,0.60,0 50 7.651396631297996 50 87.62013792037301
+herbbookshelf1nom lemur-fcl-nrc-0.50,0.50,0 50 7.597494917480798 50 94.77811411382397
+herbbookshelf1nom lemur-fcl-nrc-0.60,0.40,0 50 7.594847237791997 50 99.3387091160282
+herbbookshelf1nom lemur-fcl-nrc-0.70,0.30,0 50 7.594139111079797 50 102.6697582435252
+herbbookshelf1nom lemur-fcl-nrc-0.80,0.20,0 50 7.591509348681998 50 108.02015264985783
+herbbookshelf1nom lemur-fcl-nrc-0.90,0.10,0 50 7.5865072068855985 50 110.34205753329421
+herbbookshelf1nom lemur-fcl-nrc-1.00,0.00,0 50 7.585320736848399 50 111.81145582200739
