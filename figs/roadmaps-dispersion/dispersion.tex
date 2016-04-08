@@ -1,0 +1,30 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+\begin{loglogaxis}[
+   width=10cm,
+   height=6cm,
+   xlabel=Number of Points,
+   ylabel=Dispersion,
+   xlabel near ticks,
+   ylabel near ticks,
+   xmin=1, xmax=1e7,
+   ymax=1
+   ]
+
+\addplot [sharp plot,mark=none,red] table[x=npoints, y=dispersion]
+   {data/roadmaps-dispersion/stats-2d-uniform0.txt};
+\addlegendentry{Uniform(0)}
+
+\addplot [sharp plot,mark=none,blue] table[x=npoints, y=dispersion]
+   {data/roadmaps-dispersion/stats-2d-halton2,3.txt};
+\addlegendentry{Halton(2,3)}
+
+\addplot [domain=10:10000000, samples=101, black!20]{3*(1/x)^(1/2)};
+\addplot [domain=10:10000000, samples=101, black!20]{3*(ln(x)/x)^(1/2)};
+
+\end{loglogaxis}
+\end{tikzpicture}
+\end{document}
