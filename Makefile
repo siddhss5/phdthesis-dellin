@@ -46,7 +46,7 @@ build/%.pdf: figs/$$(*1).tex
 	mkdir -p `dirname $@`
 	pdflatex -halt-on-error -output-directory=build --jobname="$*" "\def\arg$(*2){}\input{figs/$(*1)}"
 
-build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
-	mkdir -p build
-	python3 fig-scripts/e8-example.py --fn=$* --output_tikz=build/e8-world-$*.tex --output_stats=build/e8-world-$*-stats.tex
-	pdflatex -halt-on-error -output-directory=build build/e8-world-$*
+#build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
+#	mkdir -p build
+#	python3 fig-scripts/e8-example.py --fn=$* --output_tikz=build/e8-world-$*.tex --output_stats=build/e8-world-$*-stats.tex
+#	pdflatex -halt-on-error -output-directory=build build/e8-world-$*
