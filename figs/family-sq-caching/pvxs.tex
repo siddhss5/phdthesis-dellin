@@ -25,46 +25,36 @@
       %ylabel=$x$,
       xlabel near ticks,
       ylabel near ticks,
+      xmin=0,
       ]
       
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -lemur-ode-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -lemur-ode-nrc.txt};
-      \addplot
+      %\addplot
+      %   table[x=python-totaltime-finmean, y=path-length-finmean]
+      %   {data/family-sq-caching/stats-byparam-\problem -lemur-ode-wrc.txt};
+      \addplot[mark=*,mark size=0.5,color=red]
          table[x=python-totaltime-finmean, y=path-length-finmean]
          {data/family-sq-caching/stats-byparam-\problem -lemur-fcl-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -lemur-fcl-nrc.txt};
       
-      \addplot
+      %\addplot
+      %   table[x=python-totaltime-finmean, y=path-length-finmean]
+      %   {data/family-sq-caching/stats-byparam-\problem -family-ode-wrc.txt};
+      %\addplot
+      %   table[x=python-totaltime-finmean, y=path-length-finmean]
+      %   {data/family-sq-caching/stats-byparam-\problem -family-fcl-wrc.txt};
+      \addplot[mark=*,mark size=0.5,color=blue]
          table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -family-ode-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -family-ode-nrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -family-fcl-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -family-fcl-nrc.txt};
+         {data/family-sq-caching/stats-byparam-\problem -family-fclbaked-wrc.txt};
       
-      \addplot
+      %\addplot
+      %   table[x=python-totaltime-finmean, y=path-length-finmean]
+      %   {data/family-sq-caching/stats-byparam-\problem -familysc-ode-wrc.txt};
+      %\addplot
+      %   table[x=python-totaltime-finmean, y=path-length-finmean]
+      %   {data/family-sq-caching/stats-byparam-\problem -familysc-fcl-wrc.txt};
+         \addplot[mark=*,mark size=0.5,color=green]
          table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -familysc-ode-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -familysc-ode-nrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -familysc-fcl-wrc.txt};
-      \addplot
-         table[x=python-totaltime-finmean, y=path-length-finmean]
-         {data/family-sq-caching/stats-byparam-\problem -familysc-fcl-nrc.txt};
+         {data/family-sq-caching/stats-byparam-\problem -familysc-fclbaked-wrc.txt};
+      
    \end{axis}
    \end{scope}
 }

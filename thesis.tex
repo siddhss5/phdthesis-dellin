@@ -169,6 +169,10 @@ Lydia Kavraki, Rice University\\
 
 \vspace{0.2in}
 
+\cdnote{I need to rewrite this -- while multi-step tasks
+(e.g. arising from manipulation problems) are a well-suited application,
+I think the thesis contributions are more broadly applicable.}
+
 In order to assist humans
 with dangerous or menial tasks,
 autonomous robots will need to
@@ -238,51 +242,65 @@ We also provide open-source implementations of our algorithms.
 
 \chapter{Introduction}
 
+\cdnote{I should pull a lot of the intro stuff from my proposal document.}
+
 \cdnote{Add mega-outline-figure?}
 
 Problem description.
 Concise statement of objectives.
 
-Semi-structured (some things stay the same)
-Collision checking is expensive.
+\noindent
+Problem characterization:
+\begin{itemize}
+\item Semi-structured (some things stay the same).
+\item Collision checking is expensive.
+\end{itemize}
 
 What makes the problem difficult?
 
 Focus on evaluation on real-world problems,
 not contrived examples or asymptotic complexity.
 
-Outline of approach.
+\section{Outline of Approach}
 
-\paragraph{Roadmaps}
-Focus on roadmap methods.
-Can be used to initialize optimization methods.
+Here is a broad outline of the thesis document.
+
+\paragraph{Roadmap Methods for Motion Planning
+   (Chapter~\ref{chap:roadmaps})}
+Summarize the motion planning problem (C-space, etc).
+We focus on roadmap methods.
+Discuss recent results in assymptotic optimality.
 Amenable to caching and parallelization.
+\cdnote{This chapter is mostly about summarizing prior work.}
 
-\paragraph{LazySP}
+\paragraph{Fast Pathfinding on Graphs via Lazy Evaluation
+   (Chapter~\ref{chap:lazysp})}
 Challenge: validity checking on a roadmap is expensive.
 Suppose we commit to a graph -- how should we search it?
-In Chapter~\ref{chap:lazysp}, we discuss the Lazy Shortest Path
+We discuss the Lazy Shortest Path (LazySP)
 algorithm.
 Briefly discuss edge selectors.
 Build on ideas such as D* and the Lazy PRM.
+\cdnote{This is mostly from the ICAPS paper.}
 
-\paragraph{Efficient Incremental Search}
+\paragraph{Efficient Incremental Search
+   (Chapter~\ref{chap:ibid})}
 We need to search our roadmaps efficiently,
 especially for lazy algorithms where there are small changes
 between searches.
-Introduce incremental bidirectional search (IBID) in 
-Chapter~\ref{chap:ibid}.
+Introduce incremental bidirectional search (IBID)..
 This is important because lazy approaches decouple the search
 from the evaluation.
 
-\paragraph{Maximizing Utility in Motion Planning}
-Utility/LEMUR (Chapter~\ref{chap:lemur}).
+\paragraph{Maximizing Utility in Motion Planning
+   (Chapter~\ref{chap:utility})}
 Get back to the planning vs execution cost tradeoff.
 How can a planner reason about this?
+\cdnote{This is mostly from the LEMUR RSS paper.}
 
-\paragraph{Planning with C-Space Families}
+\paragraph{Planning over Configuration Space Families
+   (Chapter~\ref{chap:family})}
 Steps are incongruent.
-See Chapter~\ref{chap:family}.
 Partial evaluation.
 Optimistic family graphs.
 Propositional logic.
@@ -293,6 +311,7 @@ Throughout, we will run experiments on three experimental platforms:
 HERB, PR2, and CHIMP.
 
 \chapter{Roadmap Methods for Motion Planning}
+\label{chap:roadmaps}
 
 The motion planning problem is a fundamental problem in robotics.
 This chapter describes the motion planning problem,
@@ -591,7 +610,16 @@ roadmaps to a larger number of subsets.
 \begin{figure*}
    \centering   
    \includegraphics{build/family-sq-caching/pvxs}
-   \caption[]{Results.}
+   \caption[]{LEMUR single-query results on several HERB problems.
+      Using standard OpenRAVE checking calls
+      (\protect\tikz{\protect\draw[thick,red] (0,0) -- (0.15,0.15);}),
+      baked calls
+      (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
+      or baked calls with self-checked caching
+      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).
+      Note that the baked checks don't use an accurate planning cost
+      estimate, so the nice $\lambda_U$ shape isn't yet apparent
+      (new experiments currently running).}
 \end{figure*}
 
 \section{Multi-Step Manipulation Tasks}
