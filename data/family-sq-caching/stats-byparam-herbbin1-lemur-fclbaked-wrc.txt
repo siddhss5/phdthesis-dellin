@@ -1,0 +1,6 @@
+problem planner-seedless path-length-numfin path-length-finmean python-totaltime-numfin python-totaltime-finmean
+herbbin1 lemur-fclbaked-wrc-0.01,0.99,0 50 5.654270782121402 50 0.7469985818863598
+herbbin1 lemur-fclbaked-wrc-0.20,0.80,0 50 4.5269716463470004 50 0.8692556381223799
+herbbin1 lemur-fclbaked-wrc-0.50,0.50,0 50 4.369148777701801 50 1.0511580610271205
+herbbin1 lemur-fclbaked-wrc-0.80,0.20,0 50 4.3512948242776 50 1.08766126155808
+herbbin1 lemur-fclbaked-wrc-1.00,0.00,0 50 4.35014117783 50 1.1217001771928599

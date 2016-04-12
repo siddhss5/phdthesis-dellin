@@ -1,0 +1,6 @@
+problem planner-seedless path-length-numfin path-length-finmean python-totaltime-numfin python-totaltime-finmean
+herbbookshelf2 familysc-fclbaked-wrc-0.01,0.99,0 50 13.227998535492201 50 3.4415933942796006
+herbbookshelf2 familysc-fclbaked-wrc-0.20,0.80,0 50 7.217396020608999 50 4.189703712463619
+herbbookshelf2 familysc-fclbaked-wrc-0.50,0.50,0 50 6.729711818481402 50 4.94772817611502
+herbbookshelf2 familysc-fclbaked-wrc-0.80,0.20,0 50 6.691888505236401 50 6.120128235816561
+herbbookshelf2 familysc-fclbaked-wrc-1.00,0.00,0 50 6.686336872627801 50 6.62570669650706

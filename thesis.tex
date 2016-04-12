@@ -610,16 +610,14 @@ roadmaps to a larger number of subsets.
 \begin{figure*}
    \centering   
    \includegraphics{build/family-sq-caching/pvxs}
-   \caption[]{LEMUR single-query results on several HERB problems.
-      Using standard OpenRAVE checking calls
-      (\protect\tikz{\protect\draw[thick,red] (0,0) -- (0.15,0.15);}),
-      baked calls
+   \caption[]{LEMUR single-query results on several HERB problems,
+      all using baked calls.
+      Traces are LEMUR
+      (\protect\tikz{\protect\draw[thick,black] (0,0) -- (0.15,0.15);}),
+      the family planner (no caching)
       (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
-      or baked calls with self-checked caching
-      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).
-      Note that the baked checks don't use an accurate planning cost
-      estimate, so the nice $\lambda_U$ shape isn't yet apparent
-      (new experiments currently running).}
+      or the family planner with self-checked caching
+      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).}
 \end{figure*}
 
 \section{Multi-Step Manipulation Tasks}

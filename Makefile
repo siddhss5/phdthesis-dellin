@@ -1,7 +1,8 @@
 # makefile for thesis
 # requirements: GNU make, latexmk, pdflatex
 
-DOCS = proposal proptalk thesis
+#DOCS = proposal proptalk thesis
+DOCS = thesis
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
 all: $(DOCPDFS)
