@@ -1,6 +1,45 @@
 \chapter{Planning over Configuration Space Families}
 \label{chap:family}
 
+\cdnote{Introduction text.}
+So far, we've been dealing with problems in a configuration space
+with a fixed valid subset $\mathcal{C}_{\ms{free}}$.
+In Chapter~\ref{chap:lazysp},
+we described a lazy search algorithm which treats belief over edge
+state in a binary fasion -- evaluated or unevaluated.
+Chapter~\ref{chap:utility} introduced the concept of utility to
+motion planning,
+and showed examples of its application to single-query motion
+planning problems.
+
+However,
+many applications exhibit structure beyond simple binary belief over
+configuration validity.
+In this chapter,
+we introduce the \emph{family motion planning problem},
+a generalization of the motion planning problem to a family of sets
+over $\mathcal{C}$.
+Since LEMUR accepts an arbitrary utility function.
+
+\section{Family Problems in Manipulation Planning}
+
+Here, I discuss motion and manipulation planning problems with
+multiple moveable and graspable objects.
+Discuss the composite configuration space.
+Project everything down onto the robot's configuration space.
+
+Use the workcell problem as an example.
+Show images of each of the sets.
+Forward-link to the experimental section later for full results.
+
+\section{The Family Motion Planning Problem}
+
+\cdnote{Add a formal problem definition here.}
+
+The problem is really about beliefs over states.
+Talk about the family graph.
+The belief space is $\mathcal{B}$,
+so we're really planning over $\mathcal{B} \times \mathcal{C}$.
 
 
 
@@ -8,7 +47,7 @@
 
 
 
-
+\section{Old Stuff}
 
 When addressing multi-step tasks
 such as the table clearing task in

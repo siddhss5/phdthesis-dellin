@@ -7,6 +7,10 @@ DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 #all: $(DOCPDFS)
 all: thesis.pdf
 
+.PHONY: www-upload
+www-upload:
+	scp thesis.pdf linux.gp.cs.cmu.edu:/afs/cs.cmu.edu/user/cdellin/www/
+
 proposal.pdf: proposal-intro.tex
 proposal.pdf: proposal-framework.tex
 proposal.pdf: proposal-summary.tex
