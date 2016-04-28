@@ -22,7 +22,10 @@
    {data/roadmaps-dispersion/stats-2d-halton2,3.txt};
 \addlegendentry{Halton(2,3)}
 
-\addplot [domain=10:10000000, samples=101, black!20]{3*(1/x)^(1/2)};
+%\addplot [domain=10:10000000, samples=101, black!20]{3*(1/x)^(1/2)};
+\addplot [black!20] table[x=npoints, y=dispersion]
+   {data/roadmaps-dispersion/stats-unit2d-halton.txt};
+
 \addplot [domain=10:10000000, samples=101, black!20]{3*(ln(x)/x)^(1/2)};
 
 \end{loglogaxis}

@@ -1,0 +1,25 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{major grid style={black!10}}
+\pgfplotsset{minor grid style={black!10}}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+\begin{loglogaxis}[
+   width=10cm,
+   height=6cm,
+   xlabel=Number of Points,
+   ylabel=Dispersion Bound (rad),
+   xlabel near ticks,
+   ylabel near ticks,
+   xmin=1, xmax=1e8,
+   xmajorgrids,
+   yminorgrids,
+   ]
+
+\addplot [black] table[x=npoints, y=dispersion]
+   {data/roadmaps-dispersion/stats-herb-halton.txt};
+
+\end{loglogaxis}
+\end{tikzpicture}
+\end{document}

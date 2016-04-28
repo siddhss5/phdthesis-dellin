@@ -1,0 +1,27 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+\begin{axis}[
+   width=10cm,
+   height=6cm,
+   xlabel=$p$ (sec),
+   ylabel=$x$ (rad),
+   xlabel near ticks,
+   ylabel near ticks,
+   ]
+      
+   \addplot
+      plot[color=blue,mark options={color=blue},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-lemurhaltonofflldens10000,2.0-lambda.txt};
+   
+   \addplot
+      plot[color=green,mark options={color=green},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-familyhaltonofflldens10000,2.0-lambda.txt};
+
+\end{axis}
+\end{tikzpicture}
+\end{document}
