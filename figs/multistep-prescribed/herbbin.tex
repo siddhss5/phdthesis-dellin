@@ -10,6 +10,7 @@
    ylabel=$x$ (rad),
    xlabel near ticks,
    ylabel near ticks,
+   xmin=0,
    ]
       
    \addplot
@@ -21,6 +22,11 @@
       plot[color=green,mark options={color=green},mark options={scale=0.5}]
       table[x=python-totaltime-finmean,y=path-length-finmean]
       {data/multistep-prescribed/stats-byparam-herbbin-familyhaltonofflldens10000,2.0-lambda.txt};
+
+   \addplot
+      plot[color=red,mark options={color=green},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-rrtconnect-default.txt};
 
 \end{axis}
 \end{tikzpicture}
