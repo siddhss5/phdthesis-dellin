@@ -203,6 +203,35 @@ RGGs.
 
 Central point: densified roadmap strategy with good properties.
 
+\begin{equation}
+   \gamma^*_{\mathcal{C}}
+      = 2 \left( \left[ 1 + \frac{1}{d} \right]
+         \frac{\lambda_d(\mathcal{C})}{\zeta_d} \right)^{1/d}
+\end{equation}
+
+with $\lambda_d(\cdot)$ the Lebesgue measure of a $d$-dimensional
+space.
+
+Scaling radii:
+
+\begin{equation}
+   r_1(n) = \gamma_{\mathcal{C}} \left( \frac{\log(n)}{n} \right)^{1/d}
+\end{equation}
+
+\begin{equation}
+   r_2(n) = \gamma_{\mathcal{C}} \left( \frac{\log(\log(n))}{n} \right)^{1/d}
+\end{equation}
+
+\begin{verbatim}
+robot: HERB (n=10000)
+radius log_n: 2.825833
+radius loglog_n: 2.306115
+
+robot: IRB4400 (n=10000)
+radius log_n: 2.413850
+radius loglog_n: 1.904293
+\end{verbatim}
+
 \subsection{Dispersion}
 
 Deterministic sampling and dispersion:

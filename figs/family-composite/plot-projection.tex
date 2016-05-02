@@ -1,0 +1,29 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{patchplots}
+\begin{document}
+\begin{tikzpicture}
+
+\begin{axis}[
+   title=g manifold projection,
+   width=10cm, height=10cm,
+   xmin=0, xmax=1,
+   ymin=0, ymax=1,
+   grid=both,
+   minor tick num=3,
+   ]
+   \addplot[thick] table[x=x, y=y] {g-boundary.txt};
+   \addplot[thick] table[x=x, y=y] {g-oe-intersection.txt};
+   \addplot[thick] table[x=x, y=y] {g-ro-intersection.txt};
+
+   \addplot[thick,blue] table[x=x, y=y] {pbottom-ro-intersection.txt};
+   \addplot[thick,blue] table[x=x, y=y] {ptop-ro-intersection.txt};
+
+   \addplot[thick,green] coordinates {
+      (1,1) (1,0.5) (0.8,0.5) (0.8,1) (1,1)
+   };
+
+\end{axis}
+
+\end{tikzpicture}
+\end{document}
