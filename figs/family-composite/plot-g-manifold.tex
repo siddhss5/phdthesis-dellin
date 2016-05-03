@@ -1,19 +1,66 @@
 \documentclass{standalone}
 \usepackage{pgfplots}
+\usetikzlibrary{arrows}
 \usepgfplotslibrary{patchplots}
+
 \begin{document}
 \begin{tikzpicture}
 
 \begin{axis}[
+   width=6.5cm,
+   height=8cm,
    %xlabel=x,
    %ylabel=y,
-   xmin=0, xmax=1,
-   ymin=0, ymax=1,
-   zmin=0, zmax=1,
+   xmin=-0.05, xmax=1.05,
+   ymin=-0.05, ymax=1.05,
+   zmin=-1.5, zmax=1,
    xtick=\empty, ytick=\empty, ztick=\empty,
-   view={-30}{45},
+   view={-30}{25},
    %view={0}{0},
+   axis lines=none,
    ]
+   
+   % projected surface
+   \draw[black]
+      (axis cs:0,0,-1.5) -- (axis cs:0,1,-1.5)
+      -- (axis cs:1,1,-1.5) -- (axis cs:1,0,-1.5) -- cycle;
+      
+   % background projection lines (BEHIND)
+   \draw[black!50,dotted]
+      (axis cs:0,1,-1.5) -- (axis cs:0,1,0.0)
+      (axis cs:1,0,-1.5) -- (axis cs:1,0,0.0)
+      (axis cs:1,1,-1.5) -- (axis cs:1,1,0.0);
+   
+   \addplot3[thick,fill=green,opacity=0.5] coordinates {
+      (0.8,1.0,-1.5)
+      (1.0,1.0,-1.5)
+      (1.0,0.5,-1.5)
+      (0.8,0.5,-1.5)
+      (0.8,1.0,-1.5)
+   };
+   \addplot3[thick,fill=blue,opacity=0.5] table[x=x, y=y, z expr=-1.5]
+      {figs/family-composite/g-oe-intersection.txt};
+   
+   \addplot3[thick,fill=yellow,opacity=0.5] table[x=x, y=y, z expr=-1.5]
+      {figs/family-composite/g-ro-intersection.txt};
+   
+   \addplot3[thick,smooth] table[x=x, y=y, z expr=-1.5]
+      {figs/family-composite/path-transfer.txt};
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.92,0.4,-1.5) {}; % grasp
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.42,0.37,-1.5) {}; % release
+   
+   % background projection lines (IN FRONT)
+   \draw[black!50,dotted]
+      (axis cs:0,0,-1.5) -- (axis cs:0,0,0.0);
+   
+   % draw composite space bounds (BEHIND)
+   \draw[black!50]
+      (axis cs:0,0,0) -- (axis cs:0,1,0)
+         -- (axis cs:1,1,0) -- (axis cs:1,0,0) -- cycle % bottom
+      (axis cs:0,1,0) -- (axis cs:0,1,1)
+      (axis cs:1,0,0) -- (axis cs:1,0,1)
+      (axis cs:1,1,0) -- (axis cs:1,1,1) % sides
+      (axis cs:0,1,1) -- (axis cs:1,1,1) -- (axis cs:1,0,1); % top
 
    \input{figs/family-composite/gmanifold-oe-topview-draw-under}
    
@@ -189,7 +236,10 @@
    
    \addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/rre-gmanifold-boundary.txt};
    
+   % draw path
    \addplot3[thick,smooth] table[x=x, y=y, z=z] {figs/family-composite/path-transfer.txt};
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.92,0.4,0.65044736) {}; % grasp
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.42,0.37,0.3443095824) {}; % release
 
    %\addplot3[thick,blue] table[x=x, y=y, z=z] {pbottom-ro-intersection.txt};
    %\addplot3[thick,blue] table[x=x, y=y, z=z] {ptop-ro-intersection.txt};

@@ -5,15 +5,58 @@
 \begin{tikzpicture}
 
 \begin{axis}[
+   width=6.5cm,
+   height=8cm,
    %xlabel=x,
    %ylabel=y,
-   xmin=0, xmax=1,
-   ymin=0, ymax=1,
-   zmin=0, zmax=1,
+   xmin=-0.05, xmax=1.05,
+   ymin=-0.05, ymax=1.05,
+   zmin=-1.5, zmax=1,
    xtick=\empty, ytick=\empty, ztick=\empty,
-   view={-30}{45},
+   view={-30}{25},
    %view={0}{0},
+   axis lines=none,
    ]
+
+   % projected surface
+   \draw[black]
+      (axis cs:0,0,-1.5) -- (axis cs:0,1,-1.5)
+      -- (axis cs:1,1,-1.5) -- (axis cs:1,0,-1.5) -- cycle;
+      
+   % background projection lines (BEHIND)
+   \draw[black!50,dotted]
+      (axis cs:0,1,-1.5) -- (axis cs:0,1,0.0)
+      (axis cs:1,0,-1.5) -- (axis cs:1,0,0.0)
+      (axis cs:1,1,-1.5) -- (axis cs:1,1,0.0);
+   
+   \addplot3[thick,fill=green,opacity=0.5] coordinates {
+      (0.8,1.0,-1.5)
+      (1.0,1.0,-1.5)
+      (1.0,0.5,-1.5)
+      (0.8,0.5,-1.5)
+      (0.8,1.0,-1.5)
+   };
+   
+   \addplot3[thick,fill=yellow,opacity=0.5] table[x=x, y=y, z expr=-1.5]
+      {figs/family-composite/ptop-ro-intersection.txt};
+   
+   % draw path
+   \addplot3[thick,smooth] table[x=x, y=y, z expr=-1.5] {figs/family-composite/path-transit1.txt};
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.20,0.80,-1.5) {}; % start
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.92,0.40,-1.5) {}; % grasp
+   
+   % background projection lines (IN FRONT)
+   \draw[black!50,dotted]
+      (axis cs:0,0,-1.5) -- (axis cs:0,0,0.0);
+   
+   % draw composite space bounds (BEHIND)
+   \draw[black!50]
+      (axis cs:0,0,0) -- (axis cs:0,1,0)
+         -- (axis cs:1,1,0) -- (axis cs:1,0,0) -- cycle % bottom
+      (axis cs:0,1,0) -- (axis cs:0,1,1)
+      (axis cs:1,0,0) -- (axis cs:1,0,1)
+      (axis cs:1,1,0) -- (axis cs:1,1,1) % sides
+      (axis cs:0,1,1) -- (axis cs:1,1,1) -- (axis cs:1,0,1); % top
 
 %   \input{figs/family-composite/oe-ro-topview-draw-under}
 
@@ -225,8 +268,11 @@
    % front manifold boundary
    \addplot3[thick,black] coordinates { (0.0,1.0,0.65) (0.0,0.0,0.65) (1.0,0.0,0.65) };
    
-   %\addplot3[thick,red,fill=red!50] table[x=x, y=y, z=z] {figs/family-composite/oe-ro-intersection.txt};
-   %\addplot3[thick,fill=blue,opacity=0.5] table[x=x, y=y, z=z] {figs/family-composite/g-oe-intersection.txt};
+   % draw path
+   \addplot3[thick,smooth] table[x=x, y=y, z=z] {figs/family-composite/path-transit1.txt};
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.20,0.80,0.65) {}; % start
+   \node[inner sep=1pt,fill=black,circle] at (axis cs:0.92,0.40,0.65) {}; % grasp
+   
 
 \end{axis}
 
