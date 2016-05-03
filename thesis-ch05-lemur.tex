@@ -1026,7 +1026,7 @@ Chapter~\ref{chap:family}.
 
 \begin{figure*}
    \centering   
-   \includegraphics{build/lemur-sq/master-fig}
+   \includegraphics{build/lemur-sq/herb-master}
    \caption[]{Experimental results across six single-query motion planning
       instances for a 7-DOF robot arm.
       Top: expected planning cost $p$ (in seconds)
@@ -1048,12 +1048,12 @@ Chapter~\ref{chap:family}.
       \protect\tikz{\protect\node[fill=green,draw=black]{};}\;BIT*,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;LEMUR (no roadmap cache),
       and \protect\tikz{\protect\node[fill=black!80,draw=black]{};}\;LEMUR (with roadmap cache).}
-   \label{fig:herbarm-master}
+   \label{fig:lemur:sq-herb-master}
 \end{figure*}
 
 \begin{figure*}
    \centering
-   \includegraphics{build/lemur-sq/time-breakdown}
+   \includegraphics{build/lemur-sq/herb-timing}
    \caption[]{Time breakdown of LEMUR for each of the six
       experimental problems across various values of $\lambda_p$.
       Cumulative time is shown performing the following operations:
@@ -1064,7 +1064,26 @@ Chapter~\ref{chap:family}.
       The bottom row shows the results of the algorithm over the same
       set of 50 roadmaps when reading the cached roadmap from disk
       to avoid online nearest-neighbor queries.}
-   \label{fig:herbarm-time-breakdown}
+   \label{fig:lemur:sq-herb-timing}
+\end{figure*}
+
+\begin{figure*}
+   \begin{widepage}
+   \centering   
+   \includegraphics{build/lemur-sq/workcell-master}
+   \end{widepage}
+   \caption{$p$-vs-$x$ and utility results for each step in the
+      workcell problem.}
+   \label{fig:lemur:sq-workcell-master}
+\end{figure*}
+
+\begin{figure*}
+   \begin{widepage}
+   \centering   
+   \includegraphics{build/lemur-sq/workcell-timing}
+   \end{widepage}
+   \caption{Timing results for each step in the workcell problem.}
+   \label{fig:lemur:sq-workcell-timing}
 \end{figure*}
 
 \begin{figure*}
@@ -1129,11 +1148,11 @@ was learned to maximize average utility across the instances
 
 We ran 50 trials for each planner,
 with different random seeds.
-The results are shown in Figure~\ref{fig:herbarm-master}.
+The results are shown in Figure~\ref{fig:lemur:sq-herb-master}.
 We collected results for versions of LEMUR with and without
 nearest neighbor caching,
 with time breakdowns for each shown in
-Figure~\ref{fig:herbarm-time-breakdown}.
+Figure~\ref{fig:lemur:sq-herb-timing}.
 
 The relative performance between the planners varies
 significantly between the six instances considered.
@@ -1149,7 +1168,7 @@ getting stuck easily.
 As expected,
 loading its roadmap from a cache
 significantly speeds up LEMUR (by 4s - 15s on these instances).
-As shown in Figure~\ref{fig:herbarm-time-breakdown},
+As shown in Figure~\ref{fig:lemur:sq-herb-timing},
 a large majority of the cached algorithm's runtime is spent
 collision checking.
 The path produced by LEMUR is independent of this caching,

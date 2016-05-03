@@ -1,0 +1,144 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}%
+
+\foreach \xoffset/\problem/\ymax/\ymaxnc in {
+    0.0/herbbin0/8/8,
+    3.0/herbbin1nom/8/8,
+    6.0/herbbin2nom/8/8,
+    9.0/herbbookshelf0/9/9,
+   12.0/herbbookshelf1nom/25/25,
+   15.0/herbbookshelf2nom/50/50}
+{
+
+% without caching
+\begin{scope}[shift={(\xoffset,0)}]
+   \begin{axis}[
+      width=4.0cm,
+      height=2.85cm,
+      xbar stacked,
+      bar width=3,
+      xmin=0,xmax=\ymaxnc,
+      ytick pos=bottom,
+      symbolic y coords={%
+         {lemur-nchaltonoffdens10000,0.9-1.00,0.00,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.90,0.10,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.80,0.20,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.70,0.30,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.60,0.40,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.50,0.50,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.40,0.60,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.30,0.70,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.20,0.80,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.10,0.90,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.01,0.99,0},%
+      },
+      ytick={%
+         {lemur-nchaltonoffdens10000,0.9-1.00,0.00,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.90,0.10,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.80,0.20,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.70,0.30,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.60,0.40,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.50,0.50,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.40,0.60,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.30,0.70,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.20,0.80,0},%
+         %{lemur-nchaltonoffdens10000,0.9-0.10,0.90,0},%
+         {lemur-nchaltonoffdens10000,0.9-0.01,0.99,0},%
+      },
+      yticklabels={0,,,,,$\lambda_p$,,,,,1},
+      ytick pos=bottom,
+      xmajorgrids,
+      xmajorticks=false,
+      ticklabel style={font=\tiny}]
+   \addplot
+      plot[color=black,fill=red!20]
+      table[y=planner-seedless,x=planner-dur-roadmapgen-finmean]
+      {data/lemur-sq/stats-lemur-nc-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=blue!20]
+      table[y=planner-seedless,x=planner-dur-search-finmean]
+      {data/lemur-sq/stats-lemur-nc-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=green!20]
+      table[y=planner-seedless,x=planner-dur-eval-finmean]
+      {data/lemur-sq/stats-lemur-nc-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=black!20]
+      table[y=planner-seedless,x expr=\thisrow{planner-dur-total-finmean} - \thisrow{planner-dur-roadmapgen-finmean} - \thisrow{planner-dur-search-finmean} - \thisrow{planner-dur-eval-finmean}]
+      {data/lemur-sq/stats-lemur-nc-timing-\problem.txt};
+   %\node[anchor=north,inner sep=2pt,text=black!40]
+   %   at (axis cs:{lemur-haltonoffdens10000,0.9-0.01,0.99,0},\ymax)
+   %   {\tiny \ymax s};
+   \end{axis}
+\end{scope}
+
+% with caching
+\begin{scope}[shift={(\xoffset,-1.5)}]
+   \begin{axis}[
+      width=4.0cm,
+      height=2.85cm,
+      xbar stacked,
+      bar width=3,
+      xmin=0,xmax=\ymax,
+      ytick pos=bottom,
+      symbolic y coords={%
+         {lemur-haltonoffdens10000,0.9-1.00,0.00,0},%
+         %{lemur-haltonoffdens10000,0.9-0.90,0.10,0},%
+         {lemur-haltonoffdens10000,0.9-0.80,0.20,0},%
+         %{lemur-haltonoffdens10000,0.9-0.70,0.30,0},%
+         %{lemur-haltonoffdens10000,0.9-0.60,0.40,0},%
+         {lemur-haltonoffdens10000,0.9-0.50,0.50,0},%
+         %{lemur-haltonoffdens10000,0.9-0.40,0.60,0},%
+         %{lemur-haltonoffdens10000,0.9-0.30,0.70,0},%
+         {lemur-haltonoffdens10000,0.9-0.20,0.80,0},%
+         %{lemur-haltonoffdens10000,0.9-0.10,0.90,0},%
+         {lemur-haltonoffdens10000,0.9-0.01,0.99,0},%
+      },
+      ytick={%
+         {lemur-haltonoffdens10000,0.9-1.00,0.00,0},%
+         %{lemur-haltonoffdens10000,0.9-0.90,0.10,0},%
+         {lemur-haltonoffdens10000,0.9-0.80,0.20,0},%
+         %{lemur-haltonoffdens10000,0.9-0.70,0.30,0},%
+         %{lemur-haltonoffdens10000,0.9-0.60,0.40,0},%
+         {lemur-haltonoffdens10000,0.9-0.50,0.50,0},%
+         %{lemur-haltonoffdens10000,0.9-0.40,0.60,0},%
+         %{lemur-haltonoffdens10000,0.9-0.30,0.70,0},%
+         {lemur-haltonoffdens10000,0.9-0.20,0.80,0},%
+         %{lemur-haltonoffdens10000,0.9-0.10,0.90,0},%
+         {lemur-haltonoffdens10000,0.9-0.01,0.99,0},%
+      },
+      yticklabels={0,,,,,$\lambda_p$,,,,,1},
+      ytick pos=bottom,
+      xmajorgrids,
+      %xmajorticks=false,
+      xlabel={\tiny $p$ (sec)},
+      xlabel near ticks,
+      ticklabel style={font=\tiny}]
+   \addplot
+      plot[color=black,fill=red!20]
+      table[y=planner-seedless,x=planner-dur-roadmapgen-finmean]
+      {data/lemur-sq/stats-lemur-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=blue!20]
+      table[y=planner-seedless,x=planner-dur-search-finmean]
+      {data/lemur-sq/stats-lemur-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=green!20]
+      table[y=planner-seedless,x=planner-dur-eval-finmean]
+      {data/lemur-sq/stats-lemur-timing-\problem.txt};
+   \addplot
+      plot[color=black,fill=black!20]
+      table[y=planner-seedless,x expr=\thisrow{planner-dur-total-finmean} - \thisrow{planner-dur-roadmapgen-finmean} - \thisrow{planner-dur-search-finmean} - \thisrow{planner-dur-eval-finmean}]
+      {data/lemur-sq/stats-lemur-timing-\problem.txt};
+   %\node[anchor=north,inner sep=2pt,text=black!40]
+   %   at (axis cs:{lemur-haltonoffdens10000,0.9-0.01,0.99,0},\ymax)
+   %   {\tiny \ymax s};
+   \end{axis}
+\end{scope}
+}
+
+\end{tikzpicture}%
+\end{document}

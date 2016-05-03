@@ -1,0 +1,212 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\tiny]
+
+\foreach \problem/\xoffset\ymax in {
+   {workcellab/0.0/5},
+   {workcellbc/2.6/5},
+   {workcellcd/5.2/8},
+   {workcellef/7.8/30},
+   {workcellfg/10.4/10},
+   {workcellgh/13.0/10},
+   {workcellij/15.6/30},
+   {workcellja/18.2/10}}
+{
+   \begin{scope}[shift={(\xoffset,0.0)}]
+   \begin{axis}[
+         xmin=0,
+         ymin=0, ymax=20,
+         width=3.8cm,
+         height=3.5cm,
+         xlabel=$p$ (sec),
+         %ylabel=$x$,
+         xlabel near ticks,
+         ylabel near ticks,
+         %xmin=0, xmax=1,
+         %ymin=0, ymax=15,
+         ticklabel style={font=\tiny},
+         x label style={at={(axis description cs:0.5,-0.08)},anchor=north}]
+      
+      \addplot
+         plot[color=red,mark options={color=red},mark options={scale=0.5}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -rrtconnect-default.txt};
+      \addplot
+         plot[thick,color=red,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -rrtconnect-default-sc.txt};
+      %\addplot
+      %   plot[thick,color=green,mark=*,mark options={scale=0.25}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/lemur-sq/stats-byparam-\problem -bitstar-default-sc.txt};
+      
+      \addplot
+         plot[thick,color=black,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -lemurhaltonoffdens10000,0.9-lambda.txt};
+      \addplot
+         plot[thick,color=blue,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -lemurnchaltonoffdens10000,0.9-lambda.txt};
+         
+      %\addplot
+      %   plot[thick,color=cyan,mark=*,mark options={scale=0.25}]
+      %   table[x=python-totaltime-finmean,y=path-length-finmean]
+      %   {data/lemur-sq/stats-byparam-\problem -lbkpiece1-default.txt};
+         
+   \end{axis}
+   \end{scope}
+   
+   \begin{scope}[shift={(\xoffset,-4.1)}]
+   \begin{axis}[
+         width=3.8cm,
+         height=5cm,
+         xlabel=$\lambda_U$,
+         %ylabel=$-U$ (sec),
+         xlabel near ticks,
+         ylabel near ticks,
+         xmin=0, xmax=1,
+         ymin=0, ymax=\ymax,
+         ticklabel style={font=\tiny},
+         axis on top=true]
+
+      \addplot+
+         plot[mark=none,color=red!20,fill=red!10,fill opacity=0.5]
+         table[x=lambda-u,y=utility-finmean-conloop]
+         from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc-scheduled-loop.txt};
+      %\addplot+
+      %   plot[mark=none,color=green!20,fill=green!10,fill opacity=0.5]
+      %   table[x=lambda-u,y=utility-finmean-conloop]
+      %   from {data/lemur-sq/stats-paramslice-\problem -bitstar-default-sc-scheduled-loop.txt};
+      \addplot+
+         plot[mark=none,color=blue!20,fill=blue!10,fill opacity=0.5]
+         table[x=lambda-u,y=utility-finmean-conloop]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-scheduled-loop.txt};
+      \addplot+
+         plot[mark=none,color=black!20,fill=black!10,fill opacity=0.5]
+         table[x=lambda-u,y=utility-finmean-conloop]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-scheduled-loop.txt};
+
+      %\addplot+
+      %   plot[solid,color=red,thick,mark=none]
+      %   table[x=lambda-u,y=neg-utility-mean]
+      %   from {data/lemur-sq/stats-paramslices-\problem -rrtconnect-default.txt};
+
+
+      % Hybrid RRT-Connect
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=red!20,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc\scbudget .txt};
+      %}
+      
+      %\addplot+
+      %   plot[solid,thick,color=red,mark=none,error bars/.cd, y dir=both, y explicit]
+      %   table[x=lambda-u,y=utility-finmean,y error expr=\thisrow{utility-stderrfinmean}*1.96]
+      %   from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc-scheduled.txt};
+      \addplot+
+         plot[solid,thick,color=red,mark=none]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc-scheduled.txt};
+      \addplot+
+         plot[densely dotted,thick,color=red,mark=none]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc-oracle.txt};
+      
+      
+      % BIT*
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=red!20,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/lemur-sq/stats-paramslice-\problem -rrtconnect-default-sc\scbudget .txt};
+      %}
+      %\addplot+
+      %   plot[solid,thick,color=green,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/lemur-sq/stats-paramslice-\problem -bitstar-default-sc-scheduled.txt};
+      %\addplot+
+      %   plot[densely dotted,thick,color=green,mark=none]
+      %   table[x=lambda-u,y=utility-finmean]
+      %   from {data/lemur-sq/stats-paramslice-\problem -bitstar-default-sc-oracle.txt};
+      
+      
+      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
+      %{
+      %   \addplot+
+      %      plot[solid,very thin,color=green,mark=none]
+      %      table[x=lambda-u,y=neg-utility-mean]
+      %      from {data/lemur-sq/stats-paramslices-\problem -bitstar-default-sc\scbudget .txt};
+      %}
+
+
+      % LEMUR (without caching)
+      %\foreach \coeffstr in {
+      %   {0.01,0.99,0},%
+      %   {0.10,0.90,0},%
+      %   {0.20,0.80,0},%
+      %   {0.30,0.70,0},%
+      %   {0.40,0.60,0},%
+      %   {0.50,0.50,0},%
+      %   {0.60,0.40,0},%
+      %   {0.70,0.30,0},%
+      %   {0.80,0.20,0},%
+      %   {0.90,0.10,0},%
+      %   {1.00,0.00,0}}%
+      %{
+      %   \addplot+
+      %      plot[solid,color=blue!30,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-\coeffstr .txt};
+      %}
+      \addplot+
+         plot[solid,color=blue,mark=none,thick]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-scheduled.txt};
+      \addplot+
+         plot[densely dotted,color=blue,mark=none,thick]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-oracle.txt};
+      
+      
+      % LEMUR (with caching)
+      %\foreach \coeffstr in {
+      %   {0.01,0.99,0},%
+      %   {0.10,0.90,0},%
+      %   {0.20,0.80,0},%
+      %   {0.30,0.70,0},%
+      %   {0.40,0.60,0},%
+      %   {0.50,0.50,0},%
+      %   {0.60,0.40,0},%
+      %   {0.70,0.30,0},%
+      %   {0.80,0.20,0},%
+      %   {0.90,0.10,0},%
+      %   {1.00,0.00,0}}%
+      %{
+      %   \addplot+
+      %      plot[solid,color=black!30,mark=none]
+      %      table[x=lambda-u,y=utility-finmean]
+      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-\coeffstr .txt};
+      %}
+      \addplot+
+         plot[solid,color=black,mark=none,thick]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-scheduled.txt};
+      \addplot+
+         plot[densely dotted,color=black,mark=none,thick]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-oracle.txt};
+      
+
+   \end{axis}
+   \end{scope}
+}
+
+\end{tikzpicture}
+\end{document}
+

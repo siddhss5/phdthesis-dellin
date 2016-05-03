@@ -5,18 +5,20 @@
 \begin{tikzpicture}%
 
 \foreach \xoffset/\problem/\ymax/\ymaxnc in {
-    0.0/herbbin0/8/8,
-    3.0/herbbin1nom/8/8,
-    6.0/herbbin2nom/8/8,
-    9.0/herbbookshelf0/9/9,
-   12.0/herbbookshelf1nom/50/50,
-   15.0/herbbookshelf2/19/19}
+    0.0/workcellab/5/5,
+    2.6/workcellbc/5/5,
+    5.2/workcellcd/7/7,
+    7.8/workcellef/30/30,
+   10.4/workcellfg/6/6,
+   13.0/workcellgh/8/8,
+   15.6/workcellij/30/30,
+   18.2/workcellja/6/6}
 {
 
 % without caching
 \begin{scope}[shift={(\xoffset,0)}]
    \begin{axis}[
-      width=4.0cm,
+      width=3.8cm,
       height=2.85cm,
       xbar stacked,
       bar width=3,
@@ -78,7 +80,7 @@
 % with caching
 \begin{scope}[shift={(\xoffset,-1.5)}]
    \begin{axis}[
-      width=4.0cm,
+      width=3.8cm,
       height=2.85cm,
       xbar stacked,
       bar width=3,
