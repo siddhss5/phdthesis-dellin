@@ -254,3 +254,27 @@ Deterministic sampling and dispersion:
    \includegraphics{build/roadmaps-dispersion/dispersion-irb4400}
    \caption{IRB4400 dispersion plot.}
 \end{figure}
+
+\subsection{Batch Size}
+
+\begin{figure}
+   \centering
+   \begin{tikzpicture}
+   \begin{axis}[
+         xmode=log,
+         xlabel={Batch Size},
+         ylabel={LazySP Time (s)},
+         xlabel near ticks,
+         ylabel near ticks,
+         ]
+      \addplot coordinates {
+         (100, 0.2407595708)
+         (250, 0.27367886569999994)
+         (1000, 0.2165730066)
+         (2500, 0.3836524094)
+         (10000, 0.47772694290000006)
+      };
+   \end{axis}
+   \end{tikzpicture}
+   \caption{Batch size. {\tt herbbin0}, seeds 1-10, gammafac=1, lambda=0.}
+\end{figure}

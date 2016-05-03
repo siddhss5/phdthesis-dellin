@@ -16,28 +16,70 @@
    ]
 
    \input{figs/family-composite/gmanifold-oe-topview-draw-under}
+   
+   % top of RxO (back, positive y half, in green box)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=9,
+           samples y=7,
+           domain=0.8:1.0,y domain=0:1,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
 
-   % RxRE side surface (domain is z)
+   % TRY ADDING G-MANIFOLD (back, positive y half, inside green obstacle)
    \addplot3[
-      surf,green!50!white,faceted color=green!30!black,
-      samples=21,samples y=21,
-      domain=0:1,y domain=0.5:1.0,
-      z buffer=sort]
-      ({0.8}, {y}, {x});
+           surf,
+           red,
+           opacity=0.5,
+           samples=9,samples y=21,
+           domain=0.8:1,y domain=0.5:1,
+           z buffer=sort]
+       ({x},
+        {y},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-y^2) + (x)*(y^2))});
+
+% RxRE side surface (domain is z)
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!30!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=21,
+   %   domain=0:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({0.8}, {y}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:0.8,0.5,1.0) -- (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,1.0,0.0) -- cycle;
    % RxRE front surface (domain is z)
-   \addplot3[
-      surf,green!50!white,faceted color=green!50!black,
-      samples=21,samples y=9,
-      domain=0:1,y domain=0.8:1.0,
-      z buffer=sort]
-      ({y}, {0.5}, {x});
-   % top front surface
-   \addplot3[
-      surf,green!50!white,faceted color=green!50!black,
-      samples=9,samples y=21,
-      domain=0.8:1,y domain=0.5:1.0,
-      z buffer=sort]
-      ({x}, {y}, {1.0});
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=9,
+   %   domain=0:1,y domain=0.8:1.0,
+   %   z buffer=sort]
+   %   ({y}, {0.5}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,0.5,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:1.0,0.5,0.0) -- (axis cs:0.8,0.5,0.0) -- cycle;
+   % RxRE top surface
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=9,samples y=21,
+   %   domain=0.8:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({x}, {y}, {1.0});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle;
+   % add lines (top)
+   %\draw[green!50!black] ;
+   % add lines (sides)
+   \draw[green!50!black]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle
+      (axis cs:0.8,1.0,0.0) -- (axis cs:0.8,1.0,1.0)
+      (axis cs:1.0,1.0,0.0) -- (axis cs:1.0,1.0,1.0)
+      (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,0.5,1.0)
+      (axis cs:1.0,0.5,0.0) -- (axis cs:1.0,0.5,1.0);
 
    % fix up side/front surfaces with transparent blue
 %   \fill[blue!50,opacity=0.5]
@@ -82,14 +124,24 @@
         {(0.5+0.15*(y))},
         {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
    
-   % TRY ADDING G-MANIFOLD
-   % top of RxO (positive y half)
+   % TRY ADDING G-MANIFOLD (back, positive y half, not over green obstacle)
    \addplot3[
            surf,
            red,
            opacity=0.5,
-           samples=41,
-           domain=0:1,y domain=0:1,
+           samples=33,samples y=21,
+           domain=0:0.8,y domain=0.5:1,
+           z buffer=sort]
+       ({x},
+        {y},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-y^2) + (x)*(y^2))});
+   % TRY ADDING G-MANIFOLD (front, negative y half)
+   \addplot3[
+           surf,
+           red,
+           opacity=0.5,
+           samples=41,samples y=21,
+           domain=0:1,y domain=0:0.5,
            z buffer=sort]
        ({x},
         {y},
@@ -107,32 +159,33 @@
    \input{figs/family-composite/gmanifold-oe-topview-draw-over}
 
    % add green box corner on top
-   \input{figs/family-composite/rre-gmanifold-draw-over}
-   
-   % add ro bump on top!
-   % xc,yc = 0.5,0.5
-   % xrad = 1.0/(3*(2**0.5))
-   % yrad = 0.075
-   \addplot3[
+   %\input{figs/family-composite/rre-gmanifold-draw-over}
+
+
+   \begin{scope}
+      % try a clip ...
+      \input{figs/family-composite/g-ro-intersection-clip}
+      % draw ro top
+      \addplot3[
            surf,
-           opacity=1.0,
-           samples=11, samples y=21,
-           domain=0.0:1, y domain=0:360,
+           opacity = 1.0,
+           samples=41,
+           samples y=13,
+           domain=0:1,y domain=-1:1,
            z buffer=sort]
-   (
-      {0.5+0.235702*x*cos(y)},
-      {0.5+0.075*x*sin(y)},
-      {((8*(0.5+0.235702*x*cos(y))^3
-         - 11*(0.5+0.235702*x*cos(y))^2
-         + 4*(0.5+0.235702*x*cos(y)))*(1-(0.5+0.075*x*sin(y))^2)
-         + (0.5+0.235702*x*cos(y))*((0.5+0.075*x*sin(y))^2))
-         + 0.05*max(0.0000001,(1-x^2))^0.5)}
-   );
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
+   \end{scope}
 
    % g boundary
    \addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-boundary.txt};
    \addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-oe-intersection-noboundary.txt};
+   
+   % bubble outline
    \addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-ro-intersection.txt};
+   
+
    
    \addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/rre-gmanifold-boundary.txt};
    

@@ -1,0 +1,235 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{patchplots}
+\begin{document}
+\begin{tikzpicture}
+
+\begin{axis}[
+   %xlabel=x,
+   %ylabel=y,
+   xmin=0, xmax=1,
+   ymin=0, ymax=1,
+   zmin=0, zmax=1,
+   xtick=\empty, ytick=\empty, ztick=\empty,
+   view={-30}{45},
+   %view={0}{0},
+   ]
+
+%   \input{figs/family-composite/oe-ro-topview-draw-under}
+
+   %%% first, draw stuff inside the green box
+   
+   % part of eo top surface BEHIND (or INSIDE OF) RxO
+   \begin{scope}
+      \clip (axis cs:0.8,1.0,0.25) -- (axis cs:1.0,1.0,0.25) -- (axis cs:1.0,0.5,0.25) -- (axis cs:0.8,0.5,0.25) -- cycle;
+      \input{figs/family-composite/oe-ro-topview-draw-under}
+   \end{scope}
+   
+   % part of pbottom manifold BEHIND (or INSIDE OF) RxO, with boundary
+   \begin{scope}
+      \clip (axis cs:0.8,1.0,0.35) -- (axis cs:1.0,1.0,0.35) -- (axis cs:1.0,0.5,0.35) -- (axis cs:0.8,0.5,0.35) -- cycle;
+      \input{figs/family-composite/pbottom-ro-topview-draw-under}
+      \draw[ultra thick,black] (axis cs:0.0,1.0,0.35) -- (axis cs:1.0,1.0,0.35) -- (axis cs:1.0,0.0,0.35);
+   \end{scope}
+   
+   % top of RxO (back, positive y half, in green box)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=9,
+           samples y=7,
+           domain=0.8:1.0,y domain=0:1,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
+   
+   % part of pbottom manifold IN FRONT OF RxO, with boundary
+   \begin{scope}
+      \clip (axis cs:0.8,1.0,0.35) -- (axis cs:1.0,1.0,0.35) -- (axis cs:1.0,0.5,0.35) -- (axis cs:0.8,0.5,0.35) -- cycle;
+      \input{figs/family-composite/pbottom-ro-topview-draw-over}
+   \end{scope}
+   
+   
+   %%% next, draw green box
+
+   % RxRE side surface (domain is z)
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!30!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=21,
+   %   domain=0:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({0.8}, {y}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:0.8,0.5,1.0) -- (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,1.0,0.0) -- cycle;
+   % RxRE front surface (domain is z)
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=9,
+   %   domain=0:1,y domain=0.8:1.0,
+   %   z buffer=sort]
+   %   ({y}, {0.5}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,0.5,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:1.0,0.5,0.0) -- (axis cs:0.8,0.5,0.0) -- cycle;
+   % RxRE top surface
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=9,samples y=21,
+   %   domain=0.8:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({x}, {y}, {1.0});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle;
+   % add lines (top)
+   %\draw[green!50!black] ;
+   % add lines (sides)
+   \draw[green!50!black]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle
+      (axis cs:0.8,1.0,0.0) -- (axis cs:0.8,1.0,1.0)
+      (axis cs:1.0,1.0,0.0) -- (axis cs:1.0,1.0,1.0)
+      (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,0.5,1.0)
+      (axis cs:1.0,0.5,0.0) -- (axis cs:1.0,0.5,1.0);
+
+   % fix up side/front surfaces with transparent blue
+%   \fill[blue!50,opacity=0.5]
+%      (axis cs:0.8,1,0) -- (axis cs:0.8,1,0.25) -- (axis cs:0.8,0.5,0.25) -- (axis cs:0.8,0.5,0) -- cycle;
+%   \fill[blue!50,opacity=0.5]
+%      (axis cs:0.8,0.5,0.07) -- (axis cs:0.8,0.5,0.25) -- (axis cs:1.0,0.5,0.25) -- (axis cs:1.0,0.5,0.07) -- cycle;
+
+   %%% next, draw stuff OUTSIDE the green box
+   
+   % part of eo top surface BEHIND (or INSIDE OF) RxO
+   \begin{scope}
+      \clip (axis cs:0.0,1.0,0.25) -- (axis cs:0.8,1.0,0.25) -- (axis cs:0.8,0.5,0.25) -- (axis cs:1.0,0.5,0.25)
+         -- (axis cs:1.0,0.0,0.25) -- (axis cs:0.0,0.0,0.25) -- cycle;
+      \input{figs/family-composite/oe-ro-topview-draw-under}
+   \end{scope}
+
+   % part of pbottom manifold BEHIND (or INSIDE OF) RxO
+   \begin{scope}
+      \clip (axis cs:0.0,1.0,0.35) -- (axis cs:0.8,1.0,0.35) -- (axis cs:0.8,0.5,0.35) -- (axis cs:1.0,0.5,0.35)
+         -- (axis cs:1.0,0.0,0.35) -- (axis cs:0.0,0.0,0.35) -- cycle;
+      \input{figs/family-composite/pbottom-ro-topview-draw-under}
+      \draw[ultra thick,black] (axis cs:0.0,1.0,0.35) -- (axis cs:1.0,1.0,0.35) -- (axis cs:1.0,0.0,0.35);
+   \end{scope}
+
+   % bottom of RxO (front, negative y half only)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=21,
+           samples y=21,
+           domain=0:1,y domain=-1:0,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {max(0.0, ((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2))
+           - (0.1 + 0.04*abs(24*x^2 -22*x + 4))*max(0.00001,(1-y^2))^0.5)});
+
+   % top of RxO (back, positive y half)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=33,
+           samples y=7,
+           domain=0:0.8,y domain=0:1,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
+
+   % top of RxO (front, negative y half)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=41,
+           samples y=7,
+           domain=0:1,y domain=-1:0,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
+   
+   % TRY ADDING G-MANIFOLD
+   % top of RxO (positive y half)
+   %\addplot3[
+   %        surf,
+   %        red,
+   %        opacity=0.5,
+   %        samples=41,
+   %        domain=0:1,y domain=0:1,
+   %        z buffer=sort]
+   %    ({x},
+   %     {y},
+   %     {((8*x^3 - 11*x^2 + 4*x)*(1-y^2) + (x)*(y^2))});
+
+   % draw lower box
+   % front
+   \draw[thick,blue,fill=blue!50,opacity=0.5]
+      (axis cs:0,0,0) -- (axis cs:0,0,0.25) -- (axis cs:1,0,0.25) -- (axis cs:1,0,0.0) -- cycle;
+   % side (left)
+   \draw[thick,blue,fill=blue!50,opacity=0.5]
+      (axis cs:0,0,0) -- (axis cs:0,0,0.25) -- (axis cs:0,1,0.25) -- (axis cs:0,1,0.0) -- cycle;
+
+   % part of eo top surface IN FRONT of RxO
+   \input{figs/family-composite/oe-ro-topview-draw-over}
+   
+   % part of pbottom manifold IN FRONT OF RxO
+   \begin{scope}
+      \clip (axis cs:0.0,1.0,0.35) -- (axis cs:0.8,1.0,0.35) -- (axis cs:0.8,0.5,0.35) -- (axis cs:1.0,0.5,0.35)
+         -- (axis cs:1.0,0.0,0.35) -- (axis cs:0.0,0.0,0.35) -- cycle;
+      \input{figs/family-composite/pbottom-ro-topview-draw-over}
+      \draw[ultra thick,black] (axis cs:1.0,0.35,0.35) -- (axis cs:1.0,0.0,0.35); % ugh
+   \end{scope}
+
+   % add green box corner on top
+   %\input{figs/family-composite/rre-gmanifold-draw-over}
+   
+   % add ro bump on top!
+   % xc,yc = 0.5,0.5
+   % xrad = 1.0/(3*(2**0.5))
+   % yrad = 0.075
+   %\addplot3[
+   %        surf,
+   %        opacity=1.0,
+   %        samples=11, samples y=21,
+   %        domain=0.0:1, y domain=0:360,
+   %        z buffer=sort]
+   %(
+   %   {0.5+0.235702*x*cos(y)},
+   %   {0.5+0.075*x*sin(y)},
+   %   {((8*(0.5+0.235702*x*cos(y))^3
+   %      - 11*(0.5+0.235702*x*cos(y))^2
+   %      + 4*(0.5+0.235702*x*cos(y)))*(1-(0.5+0.075*x*sin(y))^2)
+   %      + (0.5+0.235702*x*cos(y))*((0.5+0.075*x*sin(y))^2))
+   %      + 0.05*max(0.0000001,(1-x^2))^0.5)}
+   %);
+
+   % g boundary
+   %\addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-boundary.txt};
+   %\addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-oe-intersection-noboundary.txt};
+   %\addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/g-ro-intersection.txt};
+   %\addplot3[thick] table[x=x, y=y, z=z] {figs/family-composite/rre-gmanifold-boundary.txt};
+   %\addplot3[thick,smooth] table[x=x, y=y, z=z] {figs/family-composite/path-transfer.txt};
+
+
+
+   %\addplot3[thick,blue] table[x=x, y=y, z=z] {figs/family-composite/pbottom-ro-intersection.txt};
+   
+   \addplot3[thick,black] table[x=x, y=y, z=z] {figs/family-composite/pbottom-ro-intersection.txt};
+   % manually draw green box intersection boundary
+   \addplot3[thick,black] coordinates { (0.8,1.0,0.35) (0.8,0.5,0.35) (1.0,0.5,0.35) };
+   % front manifold boundary
+   \addplot3[thick,black] coordinates { (0.0,1.0,0.35) (0.0,0.0,0.35) (1.0,0.0,0.35) };
+   
+   %\addplot3[thick,red,fill=red!50] table[x=x, y=y, z=z] {figs/family-composite/oe-ro-intersection.txt};
+   %\addplot3[thick,fill=blue,opacity=0.5] table[x=x, y=y, z=z] {figs/family-composite/g-oe-intersection.txt};
+
+\end{axis}
+
+
+\end{tikzpicture}
+\end{document}

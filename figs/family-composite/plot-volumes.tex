@@ -17,27 +17,57 @@
 
    \input{figs/family-composite/oe-ro-topview-draw-under}
 
+   % top of RxO (back, positive y half, in green box)
+   \addplot3[
+           surf,
+           opacity = 1.0,
+           samples=9,
+           samples y=7,
+           domain=0.8:1.0,y domain=0:1,
+           z buffer=sort]
+       ({x},
+        {(0.5+0.15*(y))},
+        {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
+
    % RxRE side surface (domain is z)
-   \addplot3[
-      surf,green!50!white,faceted color=green!30!black,
-      samples=21,samples y=21,
-      domain=0:1,y domain=0.5:1.0,
-      z buffer=sort]
-      ({0.8}, {y}, {x});
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!30!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=21,
+   %   domain=0:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({0.8}, {y}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:0.8,0.5,1.0) -- (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,1.0,0.0) -- cycle;
    % RxRE front surface (domain is z)
-   \addplot3[
-      surf,green!50!white,faceted color=green!50!black,
-      samples=21,samples y=9,
-      domain=0:1,y domain=0.8:1.0,
-      z buffer=sort]
-      ({y}, {0.5}, {x});
-   % top front surface
-   \addplot3[
-      surf,green!50!white,faceted color=green!50!black,
-      samples=9,samples y=21,
-      domain=0.8:1,y domain=0.5:1.0,
-      z buffer=sort]
-      ({x}, {y}, {1.0});
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=21,samples y=9,
+   %   domain=0:1,y domain=0.8:1.0,
+   %   z buffer=sort]
+   %   ({y}, {0.5}, {x});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,0.5,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:1.0,0.5,0.0) -- (axis cs:0.8,0.5,0.0) -- cycle;
+   % RxRE top surface
+   %\addplot3[
+   %   surf,green!50!white,faceted color=green!50!black,
+   %   opacity=0.5,
+   %   samples=9,samples y=21,
+   %   domain=0.8:1,y domain=0.5:1.0,
+   %   z buffer=sort]
+   %   ({x}, {y}, {1.0});
+   \fill[green!50,opacity=0.5]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle;
+   % add lines (top)
+   %\draw[green!50!black] ;
+   % add lines (sides)
+   \draw[green!50!black]
+      (axis cs:0.8,1.0,1.0) -- (axis cs:1.0,1.0,1.0) -- (axis cs:1.0,0.5,1.0) -- (axis cs:0.8,0.5,1.0) -- cycle
+      (axis cs:0.8,1.0,0.0) -- (axis cs:0.8,1.0,1.0)
+      (axis cs:1.0,1.0,0.0) -- (axis cs:1.0,1.0,1.0)
+      (axis cs:0.8,0.5,0.0) -- (axis cs:0.8,0.5,1.0)
+      (axis cs:1.0,0.5,0.0) -- (axis cs:1.0,0.5,1.0);
 
    % fix up side/front surfaces with transparent blue
    \fill[blue!50,opacity=0.5]
@@ -58,7 +88,7 @@
         {max(0.0, ((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2))
            - (0.1 + 0.04*abs(24*x^2 -22*x + 4))*max(0.00001,(1-y^2))^0.5)});
 
-   % top of RxO (positive y half)
+   % top of RxO (back, positive y half)
    \addplot3[
            surf,
            opacity = 1.0,
@@ -70,7 +100,7 @@
         {(0.5+0.15*(y))},
         {((8*x^3 - 11*x^2 + 4*x)*(1-(0.5+0.15*(y))^2) + (x)*((0.5+0.15*(y))^2)) + 0.05*(max(0.00001,1-(2*y)^2-2*(3*(x-0.5))^2))^0.5});
 
-   % top of RxO (negative y half)
+   % top of RxO (front, negative y half)
    \addplot3[
            surf,
            opacity = 1.0,
