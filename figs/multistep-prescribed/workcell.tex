@@ -12,22 +12,58 @@
    ylabel near ticks,
    xmin=0,
    ]
-      
+   
+   % old/new rrt results
    \addplot
-      plot[color=blue,mark options={color=blue},mark options={scale=0.5}]
+      plot[color=purple,mark options={color=purple},mark options={scale=0.5}]
       table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-workcell-lemurhaltonofflldens10000,2.5-lambda.txt};
+      {data/multistep-prescribed/old-stats-byparam-workcell-rrtconnect-default.txt};
    
    \addplot
-      plot[color=green,mark options={color=green},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-workcell-familyhaltonofflldens10000,2.5-lambda.txt};
-   
-   \addplot
-      plot[color=red,mark options={color=green},mark options={scale=0.5}]
+      plot[color=red,mark options={color=red},mark options={scale=0.5}]
       table[x=python-totaltime-finmean,y=path-length-finmean]
       {data/multistep-prescribed/stats-byparam-workcell-rrtconnect-default.txt};
-
+   
+   % old incbi results
+   \addplot
+      plot[color=teal,densely dotted,mark options={color=teal},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/old-stats-byparam-workcell-lemurhaltonofflldens10000,2.5-lambda.txt};
+   \addplot
+      plot[color=teal,solid,mark options={color=teal},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/old-stats-byparam-workcell-familyhaltonofflldens10000,2.5-lambda.txt};
+   
+   % incbi results
+   \addplot
+      plot[color=blue,densely dotted,mark options={color=blue},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-incbi-lambda.txt};
+   \addplot
+      plot[color=blue,solid,mark options={color=blue},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-incbi-lambda.txt};
+   
+   % astar results
+   \addplot
+      plot[color=olive,densely dotted,mark options={color=olive},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-astar-lambda.txt};
+   \addplot
+      plot[color=olive,solid,mark options={color=olive},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-astar-lambda.txt};
+   
+   % lpastar results
+   \addplot
+      plot[color=cyan,densely dotted,mark options={color=cyan},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-lpastar-lambda.txt};
+   \addplot
+      plot[color=cyan,solid,mark options={color=cyan},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-lpastar-lambda.txt};
+   
 \end{axis}
 \end{tikzpicture}
 \end{document}
