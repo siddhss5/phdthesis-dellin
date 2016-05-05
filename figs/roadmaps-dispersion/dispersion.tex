@@ -28,6 +28,9 @@
 
 \addplot [domain=10:10000000, samples=101, black!20]{3*(ln(x)/x)^(1/2)};
 
+\addplot [green] table[x=npoints, y=dispersion]
+   {data/roadmaps-dispersion/stats-unit2d-incsukharev.txt};
+
 \end{loglogaxis}
 \end{tikzpicture}
 \end{document}
