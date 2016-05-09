@@ -812,12 +812,12 @@ by the algorithm are a function only of their (constant) lengths.
    \includegraphics{build/multistep-prescribed/workcell}
    \caption[]{Example of planning over families for an industrial
       workcell example problem.
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Individual LEMUR results are dashed
       (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
       while Family-aware results are solid
       (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
       Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
@@ -831,12 +831,12 @@ by the algorithm are a function only of their (constant) lengths.
    \caption[]{OLD VERSION.
       Example of planning over families for an industrial
       workcell example problem.
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Individual LEMUR results are dashed
       (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
       while Family-aware results are solid
       (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
       Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
@@ -878,13 +878,13 @@ by the algorithm are a function only of their (constant) lengths.
    \centering
    \includegraphics{build/multistep-prescribed/herbbin}
    \caption{Example of planning over families for the HERB bin example
-      problem.
+      problem (closest intermediate roots).
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Individual LEMUR results are dashed
       (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
       while Family-aware results are solid
       (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
       Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
@@ -896,19 +896,37 @@ by the algorithm are a function only of their (constant) lengths.
    \centering
    \includegraphics{build/multistep-prescribed/herbbin-r0p9719o}
    \caption{Example of planning over families for the HERB bin example
-      problem.
+      problem (closest intermediate roots).
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Individual LEMUR results are dashed
       (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
       while Family-aware results are solid
       (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
       Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT,
       \protect\tikz{\protect\node[fill=teal,draw=black]{};}\;IncBi-Old,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
       These results use $R=2.0$ scaled by $1/n$.
       Perhaps the IncBi-Old results are from my laptop instead?
+      }
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics{build/multistep-prescribed/herbbookshelfnom}
+   \caption{Example of planning over families for the HERB bookshelf example
+      problem, with nominated intermediate roots.
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+      Individual LEMUR results are dashed
+      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+      while Family-aware results are solid
+      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+      Colors for the inner search algorithm are:
+      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
+      \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
+      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
+      These results use $R\approx2.54$ scaled by $\log(n)/n$.
       }
 \end{figure}
 
