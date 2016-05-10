@@ -914,6 +914,44 @@ by the algorithm are a function only of their (constant) lengths.
 
 \begin{figure}
    \centering
+   \includegraphics{build/multistep-prescribed/herbbinnom}
+   \caption{Example of planning over families for the HERB bin example
+      problem (nominated intermediate roots).
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+      Individual LEMUR results are dashed
+      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+      while Family-aware results are solid
+      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+      Colors for the inner search algorithm are:
+      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
+      \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
+      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
+      These results use $R\approx2.54$ scaled by $\log(n)/n$.
+      }
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics{build/multistep-prescribed/herbbinnom-r0p9719o}
+   \caption{Example of planning over families for the HERB bin example
+      problem (nominated intermediate roots).
+      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+      Individual LEMUR results are dashed
+      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+      while Family-aware results are solid
+      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+      Colors for the inner search algorithm are:
+      \protect\tikz{\protect\node[fill=teal,draw=black]{};}\;IncBi-Old,
+      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IncBi,
+      \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
+      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
+      These results use $R=2.0$ scaled by $1/n$.
+      Perhaps the IncBi-Old results are from my laptop instead?
+      }
+\end{figure}
+
+\begin{figure}
+   \centering
    \includegraphics{build/multistep-prescribed/herbbookshelfnom}
    \caption{Example of planning over families for the HERB bookshelf example
       problem, with nominated intermediate roots.
@@ -927,6 +965,7 @@ by the algorithm are a function only of their (constant) lengths.
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
       These results use $R\approx2.54$ scaled by $\log(n)/n$.
+      NOTE: this was only 49/50 successful!
       }
 \end{figure}
 
