@@ -1,70 +1,52 @@
 \chapter{Efficient Incremental Search}
 \label{chap:ibid}
 
+In Chapter~\ref{chap:lazysp},
+we introduced the Lazy Shortest Path (LazySP) algorithm,
+which addresses domains with expensive edge weight functions
+by interleaving a search phase with an evaluation phase.
+LazySP conducts a sequence of inner queries using an existing
+pathfinding algorithm.
+An appropriate selection of this inner algorithm motivates this 
+
+Intro stuff.
+Connect to the previous chapters (LazySP).
 Solving the dynamic single-pair shortest path (SPSP) problem.
 AKA two-terminal shortest-path problem.
+Pathfinding.
+Difficult parts are near the ends; symmetric.
 
-Bidirectional approach:
-Partially solve a single-source shortest-path (SSSP) problem
-and the complementary single-destination shortest-path problem (SDSP).
+What if you have weak heuristics.
 
-Motivate this with LazySP.
-What if your heuristic is not that great?
+General idea, combine the following.
+All three attempt to reduce the subset of the graph that needs to be
+explored.
 
-Combine bidirectional search,
-heuristic-guided search,
-and incremental search.
+\begin{enumerate}
+\item \emph{Bidirectional Search} -- First.
+   Motivation: explore smaller subset of graph.
+   The most subtle part of the algorthm is getting the termination
+   condition right.
+\item \emph{Heuristic Search} -- Second.
+   Integration with the first.
+   Potential function over vertices.
+   With a strong heuristic, can drastically reduce subset of graph
+   explored.
+\item \emph{Incremental Search} -- Recent.
+   Integrated with heuristic.
+   Reuse structure from previous searches.
+   Only explore the parts that changed.
+\end{enumerate}
 
-Solve the Bellman-Ford equations in the correct order.
-
-This is a relatively straightforward integration of incremental search
-(DynamicSWSF-FP \citep{ramalingam1996})
-and bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}.
-The most subtle part of the algorthm is getting the termination
-condition right.
-The benefit of bidirectional search for an problem that is
-uninformed by a heuristic
-is that it tends to explore a smaller subset of the graph
-(view bubbles).
+The principal contribution is an algorithm which combines all three.
+Generalizes both the heuristic-informed
+bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
 We have found that some problems with weak heuristics,
 it outperforms LPA*.
-See some plots below.
 
-\begin{table}
-\centering
-\begin{tabular}{ccc}
-   \toprule
-   & Unidirectional & Bidirectional \\
-   \midrule
-   \addlinespace[0.2em]
-   Complete
-      & Dijkstra \citep{dijkstra1959anote}
-      & Bidirectional Dijkstra \citep{luby1989bidijk} \\
-   \addlinespace[-0.2em]
-   \emph{(Heuristic)}
-      & \emph{A* \citep{hart1968astar}}
-      & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
-   \addlinespace[0.3em]
-   Incremental
-      & DynamicSWSF-FP \citep{ramalingam1996}
-      & \multirow{2}{*}{IBID}  \\
-   \addlinespace[-0.2em]
-   \emph{(Heuristic)}
-      & \emph{Lifelong Planning A* \citep{koenig2004lpastar}}
-      & \\
-   \addlinespace[0.2em]
-   \bottomrule
-\end{tabular}
-\caption{A table.}
-\end{table}
+\cdnote{Add an outline of this chapter.}
 
-We are not interested in domains that are chiefly memory-constrained,
-so no need to consider iterative-deepening approaches,
-including bidirectional variants as proposed by
-Kaindl and Kainz, ``Bidirectional Heuristic Search Reconsidered,''
-Journal of AI Research 1997.
-
-\section{Prior Work}
+\section{Problem Definition and Prior Work}
 
 The \emph{shortest path problem} on graphs has been extensively
 studied over the past six decades.
@@ -154,6 +136,13 @@ turns on two important questions:
 (a) how to balance the two directions of the search,
 and (b) when and how to terminate with a shortest path.
 
+\cdnote{Partially solve a single-source shortest-path (SSSP) problem
+and the complementary single-destination shortest-path problem (SDSP).
+The benefit of bidirectional search for an problem that is
+uninformed by a heuristic
+is that it tends to explore a smaller subset of the graph
+(view bubbles).}
+
 A correct termination condition is surprisingly subtle,%
 \marginnote{There were early incorrect attempts at a sound
 termination condition
@@ -175,6 +164,12 @@ or {\sc Open} (and finite) set cardinality
 were proposed.
 It was further shown that selecting only from the source direction
 reproduces Dijkstra's algorithm.
+
+We are not interested in domains that are chiefly memory-constrained,
+so no need to consider iterative-deepening approaches,
+including bidirectional variants as proposed by
+Kaindl and Kainz, ``Bidirectional Heuristic Search Reconsidered,''
+Journal of AI Research 1997.
 
 \subsection{Heuristic Search}
 
@@ -251,6 +246,35 @@ Bidirectional Dijkstra algorithm.
 So, we can conduct expansions from the queues for either direction.
 How should we proceed?
 We do so via what (Pohl 1971) called a ``cardinality criterion''.
+
+\begin{table}
+\centering
+\begin{tabular}{ccc}
+   \toprule
+   & Unidirectional & Bidirectional \\
+   \midrule
+   \addlinespace[0.2em]
+   Complete
+      & Dijkstra \citep{dijkstra1959anote}
+      & Bidirectional Dijkstra \citep{luby1989bidijk} \\
+   \addlinespace[-0.2em]
+   \emph{(Heuristic)}
+      & \emph{A* \citep{hart1968astar}}
+      & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
+   \addlinespace[0.3em]
+   Incremental
+      & DynamicSWSF-FP \citep{ramalingam1996}
+      & {IBiD} \\
+   \addlinespace[-0.2em]
+   \emph{(Heuristic)}
+      & \emph{Lifelong Planning A* \citep{koenig2004lpastar}}
+      & \emph{Heuristic IBiD} \\
+   \addlinespace[0.2em]
+   \bottomrule
+\end{tabular}
+\caption{A table.
+This table should be in the prior work section.}
+\end{table}
 
 \section{The Algorithm}
 
