@@ -4,38 +4,54 @@
 In Chapter~\ref{chap:lazysp},
 we introduced the Lazy Shortest Path (LazySP) algorithm,
 which addresses domains with expensive edge weight functions
-by interleaving a search phase with an evaluation phase.
-LazySP conducts a sequence of inner queries using an existing
-pathfinding algorithm.
-An appropriate selection of this inner algorithm motivates this 
+by interleaving the evaluation phase with a sequence of 
+search queries using an existing pathfinding algorithm.
+Because this inner search is conducted many times,
+its efficiency is paramount.
 
-Intro stuff.
-Connect to the previous chapters (LazySP).
-Solving the dynamic single-pair shortest path (SPSP) problem.
-AKA two-terminal shortest-path problem.
-Pathfinding.
-Difficult parts are near the ends; symmetric.
+Most approaches for reducing the computational cost of pathfinding
+attempt to focus each search on a smaller subset of the graph.
+We consider three classes of such techniques that are applicable
+to our problem:
 
-What if you have weak heuristics.
-
-General idea, combine the following.
-All three attempt to reduce the subset of the graph that needs to be
-explored.
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Bidirectional search.]{%
+      \centering %
+      \includegraphics{build/ibid-intro-focus-bidirectional} %
+   }%
+   
+   \subfloat[Heuristic search.]{%
+      \centering %
+      \includegraphics{build/ibid-intro-focus-heuristic} %
+   }%
+   
+   \subfloat[Incremental search.]{%
+      \centering %
+      \includegraphics{build/ibid-intro-focus-incremental} %
+   }%
+   
+   \caption{A figure.}%
+\end{marginfigure}
 
 \begin{enumerate}
 \item \emph{Bidirectional Search} -- First.
    Motivation: explore smaller subset of graph.
    The most subtle part of the algorthm is getting the termination
    condition right.
+   Difficult parts are near the ends; symmetric.
 \item \emph{Heuristic Search} -- Second.
    Integration with the first.
    Potential function over vertices.
    With a strong heuristic, can drastically reduce subset of graph
    explored.
+   Because of LazySP heuristic flexibility (forward reference),
+   this is not the be-all end-all.
 \item \emph{Incremental Search} -- Recent.
    Integrated with heuristic.
    Reuse structure from previous searches.
    Only explore the parts that changed.
+   Solving the dynamic single-pair shortest path (SPSP) problem.
 \end{enumerate}
 
 The principal contribution is an algorithm which combines all three.
@@ -46,7 +62,11 @@ it outperforms LPA*.
 
 \cdnote{Add an outline of this chapter.}
 
+\cdnote{Also note that IBiD is not specific to LazySP!}
+
 \section{Problem Definition and Prior Work}
+
+\cdnote{Focus on the AKA two-terminal shortest-path problem.}
 
 The \emph{shortest path problem} on graphs has been extensively
 studied over the past six decades.
@@ -281,6 +301,12 @@ This table should be in the prior work section.}
 The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
 IBiD conducts two independent DynamicSWSF-FP searches
 (Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
+
+\section{On Roadmaps}
+
+Important caveat: due to roadmap edges sharing vertices,
+edges adjacent to evaluated edges will also change cost!
+
 
 \begin{algorithm}[t]
    \caption{IBiD Outline}

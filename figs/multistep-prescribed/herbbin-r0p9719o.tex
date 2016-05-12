@@ -13,26 +13,11 @@
    xmin=0,
    ]
    
-   % old/new rrt results
-   \addplot
-      plot[color=purple,mark options={color=purple},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/old-stats-byparam-herbbin-rrtconnect-default.txt};
-   
+   % rrt results
    \addplot
       plot[color=red,mark options={color=red},mark options={scale=0.5}]
       table[x=python-totaltime-finmean,y=path-length-finmean]
       {data/multistep-prescribed/stats-byparam-herbbin-rrtconnect-default.txt};
-   
-   % old incbi results
-   \addplot
-      plot[color=teal,densely dotted,mark options={color=teal},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/old-stats-byparam-herbbin-lemurhaltonofflldens10000,2.0-lambda.txt};
-   \addplot
-      plot[color=teal,solid,mark options={color=teal},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/old-stats-byparam-herbbin-familyhaltonofflldens10000,2.0-lambda.txt};
    
    % incbi results
    \addplot
@@ -51,6 +36,24 @@
       plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
       table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
       {data/multistep-prescribed/stats-byparam-herbbin-family-incbi-haltonoffdens10000,0.9719-lambda.txt};
+   
+   % wincbi results
+   \addplot
+      plot[color=purple,densely dotted,mark options={color=purple},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-lemur-wincbi-haltonoffdens10000,0.9719-lambda.txt};
+   \addplot
+      plot[color=purple,solid,mark options={color=purple},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-family-wincbi-haltonoffdens10000,0.9719-lambda.txt};
+   \addplot
+      plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-lemur-wincbi-haltonoffdens10000,0.9719-lambda.txt};
+   \addplot
+      plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-herbbin-family-wincbi-haltonoffdens10000,0.9719-lambda.txt};
    
    % astar results
    \addplot
@@ -71,22 +74,22 @@
       {data/multistep-prescribed/stats-byparam-herbbin-family-astar-haltonoffdens10000,0.9719-lambda.txt};
    
    % lpastar results
-   \addplot
-      plot[color=cyan,densely dotted,mark options={color=cyan},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-herbbin-lemur-lpastar-haltonoffdens10000,0.9719-lambda.txt};
-   \addplot
-      plot[color=cyan,solid,mark options={color=cyan},mark options={scale=0.5}]
-      table[x=python-totaltime-finmean,y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-herbbin-family-lpastar-haltonoffdens10000,0.9719-lambda.txt};
-   \addplot
-      plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
-      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-herbbin-lemur-lpastar-haltonoffdens10000,0.9719-lambda.txt};
-   \addplot
-      plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
-      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
-      {data/multistep-prescribed/stats-byparam-herbbin-family-lpastar-haltonoffdens10000,0.9719-lambda.txt};
+   %\addplot
+   %   plot[color=cyan,densely dotted,mark options={color=cyan},mark options={scale=0.5}]
+   %   table[x=python-totaltime-finmean,y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-herbbin-lemur-lpastar-haltonoffdens10000,0.9719-lambda.txt};
+   %\addplot
+   %   plot[color=cyan,solid,mark options={color=cyan},mark options={scale=0.5}]
+   %   table[x=python-totaltime-finmean,y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-herbbin-family-lpastar-haltonoffdens10000,0.9719-lambda.txt};
+   %\addplot
+   %   plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+   %   table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-herbbin-lemur-lpastar-haltonoffdens10000,0.9719-lambda.txt};
+   %\addplot
+   %   plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+   %   table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-herbbin-family-lpastar-haltonoffdens10000,0.9719-lambda.txt};
 
 \end{axis}
 \end{tikzpicture}
