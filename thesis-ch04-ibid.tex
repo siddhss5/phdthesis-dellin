@@ -11,10 +11,10 @@ its efficiency is paramount.
 
 Most approaches for reducing the computational cost of pathfinding
 attempt to focus each search on a smaller subset of the graph.
-We consider three classes of such techniques that are applicable
-to our problem:
+We consider three classes of such techniques
+(Figure~\ref{fig:ibid:intro-focus}):
 
-\begin{marginfigure}%
+\begin{marginfigure}[5cm]%
    \centering%
    \subfloat[Bidirectional search.]{%
       \centering %
@@ -31,34 +31,39 @@ to our problem:
       \includegraphics{build/ibid-intro-focus-incremental} %
    }%
    
-   \caption{A figure.}%
+   \caption{Illustrations of the three focusing techniques considered
+      on a spatial pathfinding problem.}%
+   \label{fig:ibid:intro-focus}
 \end{marginfigure}
 
 \begin{enumerate}
-\item \emph{Bidirectional Search} -- First.
-   Motivation: explore smaller subset of graph.
-   The most subtle part of the algorthm is getting the termination
-   condition right.
-   Difficult parts are near the ends; symmetric.
-\item \emph{Heuristic Search} -- Second.
-   Integration with the first.
-   Potential function over vertices.
-   With a strong heuristic, can drastically reduce subset of graph
-   explored.
-   Because of LazySP heuristic flexibility (forward reference),
-   this is not the be-all end-all.
-\item \emph{Incremental Search} -- Recent.
-   Integrated with heuristic.
-   Reuse structure from previous searches.
-   Only explore the parts that changed.
-   Solving the dynamic single-pair shortest path (SPSP) problem.
+\item \emph{Bidirectional Search} -- A bidirectional algorithm
+   conducts two concurrent searches,
+   one from the source vertex $s$,
+   and the other from the sink vertex $t$.
+   Such searches are well-suited to roadmaps in ambient spaces that
+   are high-dimensional ambient spaces and/or have
+   obstacles situated close to the source/sink vertices.
+\item \emph{Heuristic Search} -- A heuristic-informed algorithm
+   exploits a sink-directed heuristic function over vertices to bias
+   exploration in the direction of the sink vertex.
+   A strong and admissible such heuristic can drastically speed the
+   search,
+   although the efficacy is reduced for weaker heuristics.
+\item \emph{Incremental Search} -- An incremental algorithm
+   is applied to a sequence of search queries on a graph whose
+   edge weight function changes (partially) between queries.
+   It endeavors to only consider the portion of its data structure
+   affected by the changes.
 \end{enumerate}
 
-The principal contribution is an algorithm which combines all three.
+The principal contribution of this chapter
+is an algorithm which combines these three techniques into a single
+algorithm.
+
 Generalizes both the heuristic-informed
 bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
-We have found that some problems with weak heuristics,
-it outperforms LPA*.
+and DynamicSWSF-FP \citep{ramalingam1996}.
 
 \cdnote{Add an outline of this chapter.}
 
