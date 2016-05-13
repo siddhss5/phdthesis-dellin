@@ -876,7 +876,7 @@ by the algorithm are a function only of their (constant) lengths.
 
 \begin{figure}
    \centering
-   \includegraphics{build/multistep-prescribed/herbbin}
+   \includegraphics{build/multistep-prescribed/herbbin-g1ll}
    \caption{Example of planning over families for the HERB bin example
       problem (closest intermediate roots).
       RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
@@ -888,49 +888,31 @@ by the algorithm are a function only of their (constant) lengths.
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
       \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
       and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R\approx2.54$ scaled by $\log(n)/n$.
+      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
       }
 \end{figure}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/herbbin-r0p9719o}
-   \caption{Example of planning over families for the HERB bin example
-      problem (closest intermediate roots).
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R=2.0$ scaled by $1/n$.
-      }
-\end{figure}
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/herbbin-r0p9719o}
+%   \caption{Example of planning over families for the HERB bin example
+%      problem (closest intermediate roots).
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $R=2.0$ scaled by $1/n$.
+%      }
+%\end{figure}
 
 \begin{figure}
    \centering
-   \includegraphics{build/multistep-prescribed/herbbinnom}
-   \caption{Example of planning over families for the HERB bin example
-      problem (nominated intermediate roots).
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R\approx2.54$ scaled by $\log(n)/n$.
-      }
-\end{figure}
-
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/herbbinnom-r0p9719o}
+   \includegraphics{build/multistep-prescribed/herbbinnom-g1ll}
    \caption{Example of planning over families for the HERB bin example
       problem (nominated intermediate roots).
       RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
@@ -942,13 +924,31 @@ by the algorithm are a function only of their (constant) lengths.
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
       \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
       and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R=2.0$ scaled by $1/n$.
+      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
       }
 \end{figure}
 
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/herbbinnom-r0p9719o}
+%   \caption{Example of planning over families for the HERB bin example
+%      problem (nominated intermediate roots).
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $R=2.0$ scaled by $1/n$.
+%      }
+%\end{figure}
+
 \begin{figure}
    \centering
-   \includegraphics{build/multistep-prescribed/herbbookshelfnom}
+   \includegraphics{build/multistep-prescribed/herbbookshelfnom-g1ll}
    \caption{Example of planning over families for the HERB bookshelf example
       problem, with nominated intermediate roots.
       RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
@@ -960,8 +960,7 @@ by the algorithm are a function only of their (constant) lengths.
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
       \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
       \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
-      These results use $R\approx2.54$ scaled by $\log(n)/n$.
-      NOTE: this was only 49/50 successful!
+      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
       }
 \end{figure}
 
