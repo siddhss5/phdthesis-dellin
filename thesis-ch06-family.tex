@@ -809,7 +809,7 @@ by the algorithm are a function only of their (constant) lengths.
 
 \begin{figure}
    \centering
-   \includegraphics{build/multistep-prescribed/workcell}
+   \includegraphics{build/multistep-prescribed/workcell-g1ll}
    \caption[]{Example of planning over families for an industrial
       workcell example problem.
       RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
@@ -821,28 +821,28 @@ by the algorithm are a function only of their (constant) lengths.
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
       \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
       and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R\approx2.17$ scaled by $\log(n)/n$.}
+      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.}
    \label{fig:family:workcell-pvx}
 \end{figure}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/workcell-r1p3128ll}
-   \caption[]{OLD VERSION.
-      Example of planning over families for an industrial
-      workcell example problem.
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $R=2.5$ scaled by $\log(\log(n))/n$.}
-   \label{fig:family:workcell-pvx}
-\end{figure}
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/workcell-r1p3128ll}
+%   \caption[]{OLD VERSION.
+%      Example of planning over families for an industrial
+%      workcell example problem.
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $R=2.5$ scaled by $\log(\log(n))/n$.}
+%   \label{fig:family:workcell-pvx}
+%\end{figure}
 
 \begin{figure*}[t]
    \centering

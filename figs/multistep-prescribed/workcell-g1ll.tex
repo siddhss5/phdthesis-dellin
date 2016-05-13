@@ -1,0 +1,95 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+\begin{axis}[
+   width=10cm,
+   height=6cm,
+   xlabel=$p$ (sec),
+   ylabel=$x$ (rad),
+   xlabel near ticks,
+   ylabel near ticks,
+   xmin=0,
+   ]
+
+   \addplot
+      plot[color=red,mark options={color=red},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-rrtconnect-default.txt};
+
+   % incbi results
+   \addplot
+      plot[color=blue,densely dotted,mark options={color=blue},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-incbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=blue,solid,mark options={color=blue},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-incbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-incbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-incbi-haltonoffdens10000,1.0-lambda.txt};
+   
+   % wincbi results
+   \addplot
+      plot[color=purple,densely dotted,mark options={color=purple},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-wincbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=purple,solid,mark options={color=purple},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-wincbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-wincbi-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-wincbi-haltonoffdens10000,1.0-lambda.txt};
+   
+   % astar results
+   \addplot
+      plot[color=olive,densely dotted,mark options={color=olive},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-astar-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=olive,solid,mark options={color=olive},mark options={scale=0.5}]
+      table[x=python-totaltime-finmean,y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-astar-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-lemur-astar-haltonoffdens10000,1.0-lambda.txt};
+   \addplot
+      plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+      table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+      {data/multistep-prescribed/stats-byparam-workcell-family-astar-haltonoffdens10000,1.0-lambda.txt};
+   
+   % lpastar results
+   %\addplot
+   %   plot[color=cyan,densely dotted,mark options={color=cyan},mark options={scale=0.5}]
+   %   table[x=python-totaltime-finmean,y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-workcell-lemur-lpastar-haltonoffdens10000,1.0-lambda.txt};
+   %\addplot
+   %   plot[color=cyan,solid,mark options={color=cyan},mark options={scale=0.5}]
+   %   table[x=python-totaltime-finmean,y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-workcell-family-lpastar-haltonoffdens10000,1.0-lambda.txt};
+   %\addplot
+   %   plot[color=black,densely dotted,mark options={color=black},mark options={scale=0.5}]
+   %   table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-workcell-lemur-lpastar-haltonoffdens10000,1.0-lambda.txt};
+   %\addplot
+   %   plot[color=black,solid,mark options={color=black},mark options={scale=0.5}]
+   %   table[x expr=\thisrow{python-totaltime-finmean} - \thisrow{planner-dur-search-finmean},y=path-length-finmean]
+   %   {data/multistep-prescribed/stats-byparam-workcell-family-lpastar-haltonoffdens10000,1.0-lambda.txt};
+   
+\end{axis}
+\end{tikzpicture}
+\end{document}
