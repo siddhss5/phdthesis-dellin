@@ -1,0 +1,59 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+
+\begin{axis}[
+      xmin=0, xmax=1,
+      %ymin=0, ymax=10.5,
+      ymin=0,
+      %width=3.6cm,
+      %height=3.6cm,
+      xlabel=IBiD balancer goal bias,
+      ylabel=search time (sec),
+      %xlabel near ticks,
+      %ylabel near ticks,
+      %xmin=0, xmax=1,
+      %ymin=0, ymax=15,
+      %xticklabels={,0,,,,,1},
+      %ticklabel style={font=\scriptsize},
+      %xmajorgrids,
+      %y label style={at={(axis description cs:-0.18,0.5)},anchor=south},
+      %x label style={at={(axis description cs:0.5,0.0)},anchor=north}
+      ]
+   
+   \addplot
+      plot[color=red,very thick,mark options={color=red},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-herbbookshelf1nom-incbi-alt-gf.txt};
+   \addlegendentry{Alt}
+   
+   \addplot
+      plot[color=blue,very thick,mark options={color=blue},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-herbbookshelf1nom-incbi-bisect-gf.txt};
+   \addlegendentry{Bisect}
+   
+   \addplot
+      plot[color=green,very thick,mark options={color=green},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-herbbookshelf1nom-incbi-even-gf.txt};
+   \addlegendentry{Even}
+   
+   \addplot
+      plot[color=purple,very thick,mark options={color=purple},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-herbbookshelf1nom-incbi-fwd-gf.txt};
+   \addlegendentry{Fwd}
+   
+   \addplot
+      plot[color=cyan,very thick,mark options={color=cyan},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-herbbookshelf1nom-incbi-rev-gf.txt};
+   \addlegendentry{Rev}
+
+\end{axis}
+
+\end{tikzpicture}
+\end{document}
