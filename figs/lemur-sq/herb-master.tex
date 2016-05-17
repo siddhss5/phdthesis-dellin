@@ -43,11 +43,11 @@
       \addplot
          plot[thick,color=black,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
-         {data/lemur-sq/stats-byparam-\problem -lemurhaltonoffdens10000,0.9-lambda.txt};
+         {data/lemur-sq/stats-byparam-\problem -lemurhaltonoffdens10000,1.0-lambda.txt};
       \addplot
          plot[thick,color=blue,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
-         {data/lemur-sq/stats-byparam-\problem -lemurnchaltonoffdens10000,0.9-lambda.txt};
+         {data/lemur-sq/stats-byparam-\problem -lemurnchaltonoffdens10000,1.0-lambda.txt};
          
       %\addplot
       %   plot[thick,color=cyan,mark=*,mark options={scale=0.25}]
@@ -81,11 +81,11 @@
       \addplot+
          plot[mark=none,color=blue!20,fill=blue!10,fill opacity=0.5]
          table[x=lambda-u,y=utility-finmean-conloop]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-scheduled-loop.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,1.0-scheduled-loop.txt};
       \addplot+
          plot[mark=none,color=black!20,fill=black!10,fill opacity=0.5]
          table[x=lambda-u,y=utility-finmean-conloop]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-scheduled-loop.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,1.0-scheduled-loop.txt};
 
       %\addplot+
       %   plot[solid,color=red,thick,mark=none]
@@ -160,16 +160,16 @@
       %   \addplot+
       %      plot[solid,color=blue!30,mark=none]
       %      table[x=lambda-u,y=utility-finmean]
-      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-\coeffstr .txt};
+      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,1.0-\coeffstr .txt};
       %}
       \addplot+
          plot[solid,color=blue,mark=none,thick]
          table[x=lambda-u,y=utility-finmean]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-scheduled.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,1.0-scheduled.txt};
       \addplot+
          plot[densely dotted,color=blue,mark=none,thick]
          table[x=lambda-u,y=utility-finmean]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,0.9-oracle.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-nchaltonoffdens10000,1.0-oracle.txt};
       
       
       % LEMUR (with caching)
@@ -189,16 +189,16 @@
       %   \addplot+
       %      plot[solid,color=black!30,mark=none]
       %      table[x=lambda-u,y=utility-finmean]
-      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-\coeffstr .txt};
+      %      from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,1.0-\coeffstr .txt};
       %}
       \addplot+
          plot[solid,color=black,mark=none,thick]
          table[x=lambda-u,y=utility-finmean]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-scheduled.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,1.0-scheduled.txt};
       \addplot+
          plot[densely dotted,color=black,mark=none,thick]
          table[x=lambda-u,y=utility-finmean]
-         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,0.9-oracle.txt};
+         from {data/lemur-sq/stats-paramslice-\problem -lemur-haltonoffdens10000,1.0-oracle.txt};
       
 
    \end{axis}
