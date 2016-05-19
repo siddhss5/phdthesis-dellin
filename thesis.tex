@@ -243,77 +243,7 @@ We also provide open-source implementations of our algorithms.
 
 \tableofcontents
 
-\chapter{Introduction}
-
-\cdnote{I should pull a lot of the intro stuff from my proposal document.}
-
-\cdnote{Add mega-outline-figure?}
-
-Problem description.
-Concise statement of objectives.
-
-\noindent
-Problem characterization.
-What makes the problem difficult?
-\begin{itemize}
-\item Worlds are semi-structured (some things stay the same).
-\item Collision checking is expensive.
-\item Planning and execution cost are both important.
-\item Must plan several steps ahead.
-\item Words are dynamic (plans must be updated).
-\end{itemize}
-
-Focus on evaluation on real-world problems,
-not contrived examples or asymptotic complexity.
-
-\section{Outline of Approach}
-
-Here is a broad outline of the thesis document.
-
-\paragraph{Roadmap Methods for Motion Planning
-   (Chapter~\ref{chap:roadmaps})}
-Summarize the motion planning problem (C-space, etc).
-We focus on roadmap methods.
-Discuss recent results in assymptotic optimality.
-Amenable to caching and parallelization.
-\cdnote{This chapter is mostly about summarizing prior work.}
-
-\paragraph{Fast Pathfinding on Graphs via Lazy Evaluation
-   (Chapter~\ref{chap:lazysp})}
-Challenge: validity checking on a roadmap is expensive.
-Suppose we commit to a graph -- how should we search it?
-We discuss the Lazy Shortest Path (LazySP)
-algorithm.
-Briefly discuss edge selectors.
-Build on ideas such as D* and the Lazy PRM.
-\cdnote{This is mostly from the ICAPS paper.}
-
-\paragraph{Efficient Incremental Search
-   (Chapter~\ref{chap:ibid})}
-We need to search our roadmaps efficiently,
-especially for lazy algorithms where there are small changes
-between searches.
-Introduce incremental bidirectional search (IBID)..
-This is important because lazy approaches decouple the search
-from the evaluation.
-
-\paragraph{Maximizing Utility in Motion Planning
-   (Chapter~\ref{chap:utility})}
-Get back to the planning vs execution cost tradeoff.
-How can a planner reason about this?
-\cdnote{This is mostly from the LEMUR RSS paper.}
-
-\paragraph{Planning over Configuration Space Families
-   (Chapter~\ref{chap:family})}
-Steps are incongruent.
-Partial evaluation.
-Optimistic family graphs.
-Propositional logic.
-
-\section{Review of Experimental Platforms}
-
-Throughout, we will run experiments on three experimental platforms:
-HERB, CHIMP, and IRB4400.
+\include{thesis-ch01-intro}
 
 \include{thesis-ch02-roadmaps}
 
