@@ -26,6 +26,23 @@ or proving that none exist.
 Intimately related to the geometry of the body and of the obstacles.
 Introduce feasibiliy / infeasibility.
 
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/movers-problem-schwartz-sharir} %
+   \caption{The original mover's problem
+      \citep{schwartzsharir1983pianomovers1}
+      entails finding a collision-free path for a geometric body
+      amongst obstacles,
+      or finding that no path exists.}
+\end{marginfigure}
+
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/c-space} %
+   \caption{The motion planning problem entails finding a continuous
+      path among obstacles in an abstract configuration space.}
+\end{marginfigure}
+
 Originally, for a rigid body
 in a 2D or 3D workspace.
 Various different specifications of types of obstacles (polygonal regions)
@@ -83,11 +100,12 @@ Talk about committing to a resolution to test with,
 which is what we do in this thesis.
 Note that this is only an approximation.
 You should pad your obstacles so you don't plan through wires.
-But also link to C-space bubble stuff.
+But also link to C-space bubble stuff
+\citep{quinlan1994modification}.
 
 Define the path indicator function.
 
-\subsection{Graphs in C-Space}
+\subsection{Roadmap Graphs in C-Space}
 
 Due to the way we test paths for validity,
 it is natural to explore algorithms which build larger paths
@@ -95,10 +113,40 @@ out of smaller ones.
 We focus on algorithms that approximate C-space via graphs.
 Talk about discretizing states.
 
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \node at (0,0) {
+         $x(e) = \left\{ \begin{array}{cl}
+            0 & \mbox{if } e \in \mathcal{C}_{\ms{free}} \\
+            \infty & \mbox{otherwise} \\
+         \end{array} \right.$
+      };
+   \end{tikzpicture}
+   \caption{Edge cost model
+      for the (feasible) motion planning problem.}
+\end{marginfigure}
+
 There are other ways that don't discretize C-Space this way.
-E.g. optimizataion approaches (CHOMP, TrajOpt) which require
-stronger world descriptions (SDFs, convex obstacle decompositions).
-Add cites here.
+E.g. optimizataion approaches
+(e.g. CHOMP \citep{zucker2013chomp},
+TrajOpt \citep{schulman2013trajopt})
+which require stronger world descriptions
+(SDFs, convex obstacle decompositions).
+Also,
+optimizers are commonly used in lower levels to react to local
+changes (e.g. \citep{quinlan1994modification}).
+
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \node at (0,0) {
+         $x(e) = || e ||_2$
+      };
+   \end{tikzpicture}
+   \caption{$L_2$-norm edge cost model
+      for the optimal motion planning problem.}
+\end{marginfigure}
 
 The key point of this section is whether the algorithm commits to
 a discretization a priori,
