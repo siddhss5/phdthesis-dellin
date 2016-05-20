@@ -565,29 +565,30 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
 \section{LazySP Selector Experiments}
 
 \begin{figure}
+   \centering
    \includegraphics{build/incbi-sq/herbbin0}
-   \caption{Problem: \texttt{herbbin0}}
+   \caption{Problem: \texttt{herbbin0}.
+      Lines are:
+      \protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);} no heuristic,
+      \protect\tikz{\protect\draw[densely dashed] (0,0) -- (0.15,0.15);} start heuristic,
+      \protect\tikz{\protect\draw[densely dashdotted] (0,0) -- (0.15,0.15);} avg heuristic,
+      \protect\tikz{\protect\draw[densely dotted] (0,0) -- (0.15,0.15);} goal heuristic.
+      }
 \end{figure}
 
-\begin{figure}
+\begin{figure*}
+   \centering
    \includegraphics{build/incbi-sq/herbbookshelf0}
-   \caption{Problem: \texttt{herbbookshelf0}}
-\end{figure}
-
-\begin{figure}
    \includegraphics{build/incbi-sq/herbbookshelf1nom}
-   \caption{Problem: \texttt{herbbookshelf1nom}}
-\end{figure}
+   \caption{Problems: \texttt{herbbookshelf0} (left), texttt{herbbookshelf1nom} (right).}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
+   \centering
    \includegraphics{build/incbi-sq/workcellef}
-   \caption{Problem: \texttt{workcellef}}
-\end{figure}
-
-\begin{figure}
    \includegraphics{build/incbi-sq/workcellij}
-   \caption{Problem: \texttt{workcellij}}
-\end{figure}
+   \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
+\end{figure*}
 
 \section{Implementation Details}
 
