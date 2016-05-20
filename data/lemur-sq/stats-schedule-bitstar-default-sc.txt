@@ -1,0 +1,12 @@
+lambda-u param-best planner-best
+0.0 10.0 bitstar-default-sc10.00
+0.1 4.0 bitstar-default-sc04.00
+0.2 2.5 bitstar-default-sc02.50
+0.3 1.6 bitstar-default-sc01.60
+0.4 1.0 bitstar-default-sc01.00
+0.5 0.63 bitstar-default-sc00.63
+0.6 0.4 bitstar-default-sc00.40
+0.7 0.0 bitstar-default-sc00.00
+0.8 0.0 bitstar-default-sc00.00
+0.9 0.0 bitstar-default-sc00.00
+1.0 0.0 bitstar-default-sc00.00
