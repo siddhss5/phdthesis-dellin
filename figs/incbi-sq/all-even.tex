@@ -1,0 +1,50 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usepackage{pgfplots}
+\begin{document}%
+\begin{tikzpicture}[font=\small]
+
+\foreach \lambdaval/\yoffset in {
+   {0.00/-0.0},
+   {0.50/-3.5},
+   {0.99/-7.0}}
+{
+   \begin{scope}[shift={(0.0,\yoffset)}]
+   \begin{axis}[
+      ybar=0pt,
+      bar width=0.20cm,
+      width=10cm, height=4cm,
+      ymin=0,
+      ylabel={Search Time ($s$)},
+      xlabel near ticks,
+      ylabel near ticks,
+      %xtick=data,
+      symbolic x coords={herbbin0,herbbookshelf0,herbbookshelf1nom,workcellef,workcellij},
+      xticklabels={x,HBi0,HBo0,HBo1n,Wef,Wij},
+      xtick pos=left,
+      legend pos=north west,
+      ]
+
+   % lpastar
+   \addplot+[draw=black,fill=black!30,postaction={pattern=north west lines}]
+      table[x=problem,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byprob-wincbi-lambda\lambdaval -even-gf0.01-hi1.00.txt};
+
+   \addplot+[draw=black,fill=black!20]
+      table[x=problem,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byprob-wincbi-lambda\lambdaval -even-gf0.50-hi0.50.txt};
+
+   % rlpastar
+   \addplot+[draw=black,fill=black!30,postaction={pattern=north east lines}]
+      table[x=problem,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byprob-wincbi-lambda\lambdaval -even-gf0.99-hi0.00.txt};
+
+   \node at (0.3cm,2cm) {$\lambda = \lambdaval$};
+
+   \end{axis}
+   \end{scope}
+}
+
+\end{tikzpicture}%
+\end{document}

@@ -1,0 +1,106 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\begin{document}
+\begin{tikzpicture}[font=\small]
+
+\begin{axis}[
+      xmin=0, xmax=1,
+      %ymin=0, ymax=10.5,
+      ymin=0,
+      width=8cm,
+      height=8cm,
+      xlabel=IBiD balancer goal bias,
+      ylabel=cumulative search time (sec),
+      xlabel near ticks,
+      ylabel near ticks,
+      %xmin=0, xmax=1,
+      %ymin=0, ymax=15,
+      %xticklabels={,0,,,,,1},
+      %ticklabel style={font=\scriptsize},
+      %xmajorgrids,
+      %y label style={at={(axis description cs:-0.18,0.5)},anchor=south},
+      %x label style={at={(axis description cs:0.5,0.0)},anchor=north}
+      y tick label style={
+         /pgf/number format/.cd,
+            fixed,
+            fixed zerofill,
+            precision=2,
+         /tikz/.cd
+      },
+      ]
+   
+   
+   % incbi
+   
+   \addplot
+      plot[color=red,very thick,mark options={color=red},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-incbi-lambda0.00-even-gf.txt};
+   \addlegendentry{$\lambda = 0.00$}
+   
+   \addplot
+      plot[color=blue,very thick,mark options={color=blue},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-incbi-lambda0.50-even-gf.txt};
+   \addlegendentry{$\lambda = 0.50$}
+   
+   \addplot
+      plot[color=green,very thick,mark options={color=green},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-incbi-lambda0.99-even-gf.txt};
+   \addlegendentry{$\lambda = 0.99$}
+   
+   
+   % wincbi hi0.00
+   
+   \addplot
+      plot[color=red,dashed,mark options={color=red},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.00-even-hi0.00-gf.txt};
+   \addplot
+      plot[color=blue,dashed,mark options={color=blue},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.50-even-hi0.00-gf.txt};
+   \addplot
+      plot[color=green,dashed,mark options={color=green},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.99-even-hi0.00-gf.txt};
+
+
+   % wincbi hi0.50
+
+   \addplot
+      plot[color=red,dashdotted,mark options={color=red},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.00-even-hi0.50-gf.txt};
+   \addplot
+      plot[color=blue,dashdotted,mark options={color=blue},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.50-even-hi0.50-gf.txt};
+   \addplot
+      plot[color=green,dashdotted,mark options={color=green},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.99-even-hi0.50-gf.txt};
+   
+   
+   % wincbi hi1.00
+   
+   \addplot
+      plot[color=red,dotted,mark options={color=red},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.00-even-hi1.00-gf.txt};
+   \addplot
+      plot[color=blue,dotted,mark options={color=blue},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.50-even-hi1.00-gf.txt};
+   \addplot
+      plot[color=green,dotted,mark options={color=green},mark options={scale=0.5}]
+      table[x=gf,y=planner-dur-search-finmean]
+      {data/incbi-sq/stats-byparam-workcellef-wincbi-lambda0.99-even-hi1.00-gf.txt};
+   
+   
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

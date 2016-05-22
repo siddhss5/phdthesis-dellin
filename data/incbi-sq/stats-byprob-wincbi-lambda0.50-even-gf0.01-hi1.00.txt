@@ -1,0 +1,6 @@
+problem planner-seedless planner-dur-search-finmean
+herbbin0 wincbi-lambda0.50-even-gf0.01-hi1.00 0.03797467348
+workcellef wincbi-lambda0.50-even-gf0.01-hi1.00 0.22147870617999998
+herbbookshelf1nom wincbi-lambda0.50-even-gf0.01-hi1.00 0.14936145584000005
+herbbookshelf0 wincbi-lambda0.50-even-gf0.01-hi1.00 0.03718113176
+workcellij wincbi-lambda0.50-even-gf0.01-hi1.00 0.30328322902

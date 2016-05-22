@@ -566,7 +566,22 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
 
 \begin{figure}
    \centering
+   \includegraphics{build/incbi-sq/all-even}
+   \caption{Across a selection of articulated robot planning instances,
+      using the Even edge selector.
+      Algorithms are
+      \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
+      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBid,
+      and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
+      Results shown are cumulative search time.
+      }
+\end{figure}
+
+\begin{figure}
+   \centering
    \includegraphics{build/incbi-sq/herbbin0}
+   
+   \includegraphics{build/incbi-sq/herbbin0-lambda}
    \caption{Problem: \texttt{herbbin0}.
       Lines are:
       \protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);} no heuristic,
@@ -580,6 +595,9 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \centering
    \includegraphics{build/incbi-sq/herbbookshelf0}
    \includegraphics{build/incbi-sq/herbbookshelf1nom}
+   
+   \includegraphics{build/incbi-sq/herbbookshelf0-lambda}
+   \includegraphics{build/incbi-sq/herbbookshelf1nom-lambda}
    \caption{Problems: \texttt{herbbookshelf0} (left), texttt{herbbookshelf1nom} (right).}
 \end{figure*}
 
@@ -587,6 +605,9 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \centering
    \includegraphics{build/incbi-sq/workcellef}
    \includegraphics{build/incbi-sq/workcellij}
+   
+   \includegraphics{build/incbi-sq/workcellef-lambda}
+   \includegraphics{build/incbi-sq/workcellij-lambda}
    \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
 \end{figure*}
 
