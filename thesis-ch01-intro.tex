@@ -1,0 +1,238 @@
+\chapter{Introduction}
+
+% motivation
+
+Technology has automated an increasing variety of
+difficult, dangerous, or menial tasks
+previously performed by humans.
+Computer algorithms now trade our stocks,
+route our telephone calls and packages,
+and fly our planes,
+while simple machines clean our clothes and wash our dishes.
+Recent advances may soon enable real-world nagivation applications
+such as autonomous automobiles and drones.
+
+More complex tasks require robots with many degrees of freedom.
+Manipulation tasks, in particular,
+present challenges in many areas including
+perception, symbolic reasoning, and motion planning.
+Successful applications have so far been largely
+confined to large-scale manufacturing domains
+whose prescribed and structured environments
+allow these challenges to be overcome.
+
+% narrow to motion planning more explicitly?
+But what of applications such as
+home assistance, disaster response, and small-batch manufacturing?
+The robots of tomorrow will be required to plan
+high-dimensional motions
+in the face of geometrically complex and changing environments,
+and do so under significant resource constraints.
+
+% contributions
+
+\begin{adjustwidth}{0.3in}{0.3in}
+\emph{%
+This thesis proposes an
+efficient motion planning approach
+well-suited
+to articulated robots
+performing recurring multi-step manipulation tasks
+in complex, semi-structured environments.
+}
+\end{adjustwidth}
+
+\section{Problem Characterization}
+
+Planning motions for articulated robots in such domains
+presents a number of challenges.
+
+\paragraph{High dimensionality.}
+The continuous configuration spaces induced by robotic arms
+often have higher dimensionality than typical vehicle navigation
+problems.
+Depending on the class of approach used,
+this manifests itself as high branching factors
+or costly nearest-neighbor queries,
+and calls for intelligent discretization schemes.
+
+\paragraph{Expensive validity checking.}
+The robot and its environment are geometrically complex.
+Homes and disaster areas are cluttered,
+and arms with revolute joints render corresponding 
+configuration space obstacles intractible to consider explicitly.
+Further, since manipulation tasks require
+motions that begin and end close to collisions with objects,
+geometric models must have sufficiently high fidelity
+to disambiguate feasible paths from colliding ones.
+Testing candidate motions for collision therefore entails a
+large computational cost during planning.
+
+\paragraph{Planning vs. execution allocation.}
+The robot must allocate its limited resources
+(e.g. time and energy) between planning motions and executing them.
+To maximize task efficiency,
+it is essential that motions be neither under-optimized
+(leading to costly execution)
+nor over-optimized (resulting in long planning pauses).
+This balance is especially important for tasks with or around
+humans,
+who are particularly intolerant of both unpredictible motion
+and planning pauses.
+
+\paragraph{Semi-structured environments.}
+The robot must continually generate planned motions in partially
+changing environments.
+This is especially evident when planning for manipulation tasks,
+where each object grasp and placement changes the collision-free
+subset of configuration space.
+
+A performant motion planner is only one component in a larger
+robotic system,
+which for many tasks must consider uncertainty, constraints,
+motion control, and error recovery.
+
+\section{Outline of Approach}
+
+This thesis develops an approach to motion planning
+for articulated robots
+which addresses these four challenges.
+
+\paragraph{\nameref{chap:roadmaps} (Chapter~\ref{chap:roadmaps})}
+We begin by reviewing the definition of the motion planning problem
+in terms of the robot's configuration space.
+We examine several existing approaches from the literature,
+including commonly-used sampling-based algorithms,
+and discuss their various completeness and optimality properties.
+We motivate our focus on the broad class of \emph{roadmap methods}
+for solving the motion planning problem,
+which allows it to be solved via pathfinding on a sequence of
+progressively densified graphs
+with a particular choice of edge weight function.
+We also discuss the amenability of roadmap methods
+to caching and parallelization.
+
+\paragraph{\nameref{chap:lazysp} (Chapter~\ref{chap:lazysp})}
+While roadmap methods effectively reduce the motion planning problem
+to one of graph search,
+the properties of the graph representation
+(in particular, that evaluating an edge's weight entails costly
+collision checks)
+motivates a lazy approach to pathfinding.
+Inspired by foundational algorithms
+such as D* \citep{stentz1994dstar}
+and the Lazy PRM \citep{bohlin2000lazyprm},
+we introduce the \emph{Lazy Shortest Path (LazySP)} class of algorithms,
+which relies on an inner incremental search algorithm
+and can leverage an edge weight estimator. 
+Importantly,
+LazySP enables the a choice of \emph{edge selector},
+which strongly influences pathfinding performance.
+We introduce and compare various simple and novel selectors,
+and show equivalences with existing algorithms
+such as A* \citep{hart1968astar}
+and Lazy Weighted A* \citep{cohen2014narms}.
+
+\paragraph{\nameref{chap:ibid} (Chapter~\ref{chap:ibid})}
+LazySP relies on an inner incremental search algorithm,
+such as DynamicSWSF-FP \citep{ramalingam1996}
+or Lifelong Planning A* \citep{koenig2004lpastar},
+to nominate candidate paths on each iteration.
+However,
+the choices of selector and estimator strongly influence
+the location of updated edges
+and the vertex heuristic that can be used.
+This motivates the development of a new search algorithm,
+IBiD,
+which combines bidirectional, heuristic, and incremental search
+into a single generalized algorithm.
+
+\paragraph{\nameref{chap:utility} (Chapter~\ref{chap:utility})}
+Motion tasks expose a fundamental tradeoff between planning and
+execution cost.
+We show how conventional motion objective models
+can be augmented to include a planning cost term,
+and how such terms can be combined into a single measure of
+\emph{utility},
+which we can optimize explicitly
+via particular weight/estimator functions using LazySP.
+The resulting algorithm,
+\emph{Lazily Evaluated Marginal Utility Roadmaps (LEMUR)},
+demonstrates improved performance across a range of motion planning
+queries
+when compared to state-of-the-art planners.
+
+\paragraph{\nameref{chap:family} (Chapter~\ref{chap:family})}
+While utility maximization shows benefits in single-query settings,
+many motion tasks (such as manipulation problems)
+comprise multiple queries in a family of related configuration space
+subsets.
+We show how such problems can be formulated naturally via
+augmented cost models with custom planning cost components.
+We demonstrate improved performance in applications such as
+cached checks and multi-step problems.
+
+%Approach limitations: don't consider constraints,
+%interleaved planning and execution, etc.
+%Focus on kinematic problems.
+%No uncertainty or feedback to symbolic planners.
+%Complementary to many things.
+%Deep dive.
+%Part of a larger system.
+
+\section{Summary of Contributions}
+
+\begin{itemize}
+\item The LazySP pathfinding algorithm for graphs with expensive
+   edge evaluations,
+   along with accompanying novel edge selectors.
+\item The IBiD bidirectional, heuristic, incremental search algorithm.
+\item The LEMUR algorithm for maximizing utility
+   in motion planning problems.
+\item Formulation of the C-space family motion planning problem,
+   and application of LEMUR to it.
+\item An experimental evaluation of the above algorithms against a
+   selection of motion planning tasks.
+\item Open-source implementations of the above algorithms for the
+   Boost Graph Library (BGL) \citep{siek2001boostgraph},
+   Open Motion Planning Library (OMPL), \citep{sucan2012ompl}
+   and OpenRAVE \citep{diankov2010openrave} software packages.
+\end{itemize}
+
+%While well-suited for arms,
+%the contributions are relevant more broadly.
+%Other applications.
+%Pathfinding algorithms.
+
+\section{Review of Experimental Platforms and Problem Instances}
+
+AKA evaluation.
+
+Throughout, we will run experiments on three experimental platforms:
+HERB (Figure~\ref{fig:intro:platform-herb}),
+CHIMP (Figure~\ref{fig:intro:platform-chimp}),
+and IRB4400 (Figure~\ref{fig:intro:platform-irb4400}).
+
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=0.45\textwidth]{figs/simple-table-clearing-task.png}
+   \includegraphics[width=0.45\textwidth]{figs/herbarm-traj0-t000.png}
+   \caption{The HERB home robot experimental platform.}
+   \label{fig:intro:platform-herb}
+\end{marginfigure}
+
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{figs/chimp-voxels-delta.png}
+   \caption{The CHIMP disaster response robot.}
+   \label{fig:intro:platform-chimp}
+\end{marginfigure}
+
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=\textwidth]{figs/workcell/config-a.png}
+   \caption{An ABB IRB440 robot.}
+   \label{fig:intro:platform-irb4400}
+\end{marginfigure}
+
+
