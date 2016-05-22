@@ -527,25 +527,25 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \centering%
    
    \begin{tabular}{ccc}
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalnone-balfwd.png}\\556,209 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalnone-balfwd.png}\\556,209 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgnone-baldist.png}\\319,938 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-baldist.png}\\319,938 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgnone-balcard.png}\\281,413 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-balcard.png}\\281,413 expansions}
       \vspace{0.3cm}
       \\
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalhalf-balfwd.png}\\297,414 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalhalf-balfwd.png}\\297,414 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavghalf-baldist.png}\\206,625 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-baldist.png}\\206,625 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavghalf-balcard.png}\\178,929 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-balcard.png}\\178,929 expansions}
       \vspace{0.3cm}
       \\
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pgoalfull-balfwd.png}\\82,915 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalfull-balfwd.png}\\82,915 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgfull-baldist.png}\\95,759 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-baldist.png}\\95,759 expansions}
       &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/pavgfull-balcard.png}\\69,218 expansions}
+      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-balcard.png}\\69,218 expansions}
       \vspace{0.5cm}
    \end{tabular}
    
@@ -571,9 +571,20 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
       using the Even edge selector.
       Algorithms are
       \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
-      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBid,
+      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBiD,
       and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
       Results shown are cumulative search time.
+      }
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics{build/incbi-road-ne/stats}
+   \caption{Road network incremental results.
+      Algorithms are
+      \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
+      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBiD,
+      and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
       }
 \end{figure}
 
