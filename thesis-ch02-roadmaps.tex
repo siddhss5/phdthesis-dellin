@@ -153,6 +153,17 @@ a discretization a priori,
 or whether the graph is built incrementally in response to the
 distribution of valid or costly states.
 
+\subsection{Motion Planning as Pathfinding}
+\label{subsec:roadmaps:planning-as-pathfinding}
+
+Here, talk about how even if there are multiple available
+start or goal configurations
+(e.g. different grasps or inverse kinematics solutions),
+the motion planning problem can still be posed as a
+single-pair shortest path (SSSP) problem
+by augmenting the graph with virtual source sink vertices
+and edges.
+
 \subsection{Resolution and Probabalistic Completeness}
 
 Of course, the discretization is always just an approximation

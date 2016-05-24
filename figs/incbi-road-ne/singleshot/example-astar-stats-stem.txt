@@ -1,0 +1,2 @@
+iepisode num-expansions-start num-expansions-goal num-expansions-total num-vertices-start num-vertices-goal num-vertices-total
+0 532880 1 532881 532880 1 532881

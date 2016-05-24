@@ -10,7 +10,7 @@ Because this inner search is conducted many times,
 its efficiency is paramount.
 
 Most approaches for reducing the computational cost of pathfinding
-attempt to focus each search on a smaller subset of the graph.
+attempt to focus the search on a smaller subset of the graph.
 We consider three classes of such techniques
 (Figure~\ref{fig:ibid:intro-focus}):
 
@@ -42,7 +42,7 @@ We consider three classes of such techniques
    one from the source vertex $s$,
    and the other from the sink vertex $t$.
    Such searches are well-suited to roadmaps in ambient spaces that
-   are high-dimensional ambient spaces and/or have
+   are high-dimensional and/or have
    obstacles situated close to the source/sink vertices.
 \item \emph{Heuristic Search} -- A heuristic-informed algorithm
    exploits a sink-directed heuristic function over vertices to bias
@@ -57,34 +57,85 @@ We consider three classes of such techniques
    affected by the changes.
 \end{enumerate}
 
-The principal contribution of this chapter
-is an algorithm which combines these three techniques into a single
-algorithm.
+The principal contribution of this chapter is IBiD,
+an algorithm which combines these three techniques into a single
+algorithm
+(Table~\ref{tab:ibid:alg-overview}).
+While originally motivated for use with LazySP,
+IBiD is broadly applicable to incremental search problems.
 
-Generalizes both the heuristic-informed
-bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
-and DynamicSWSF-FP \citep{ramalingam1996}.
+\paragraph{Chapter outline.}
+In Section~\ref{sec:ibid:distance-functions},
+we review distance functions and unidirectional methods.
+Section~\ref{sec:ibid:bidirectional} reviews
+bidirectional search methods.
+In Section~\ref{sec:ibid:incremental},
+we review incremental search
+and introduce IBiD,
+an algorithm which combines bidirectional and incremental search.
+In Section~\ref{sec:ibid:heuristic},
+we review heuristic search methods,
+and discuss a heuristic-informed generalization of IBiD.
+The chapter concludes with experimental results and implentation notes.
 
-\cdnote{Add an outline of this chapter.}
+\begin{table}
+   \centering
+   \begin{tabular}{ccc}
+      \toprule
+      & Unidirectional & Bidirectional \\
+      \midrule
+      \addlinespace[0.2em]
+      Complete
+         & Dijkstra \citep{dijkstra1959anote}
+         & Bidirectional Dijkstra \citep{luby1989bidijk} \\
+      \addlinespace[-0.2em]
+      \emph{(Heuristic)}
+         & \emph{A* \citep{hart1968astar}}
+         & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
+      \addlinespace[0.3em]
+      Incremental
+         & DynamicSWSF-FP \citep{ramalingam1996}
+         & {IBiD} \\
+      \addlinespace[-0.2em]
+      \emph{(Heuristic)}
+         & \emph{Lifelong Planning A* \citep{koenig2004lpastar}}
+         & \emph{Heuristic IBiD} \\
+      \addlinespace[0.2em]
+      \bottomrule
+   \end{tabular}
+   \caption{
+   
+   Generalizes both the heuristic-informed
+      bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
+      and DynamicSWSF-FP \citep{ramalingam1996}.}
+   \label{tab:ibid:alg-overview}
+\end{table}
 
-\cdnote{Also note that IBiD is not specific to LazySP!}
+\section{Distance Functions and Bidirectional Search}
+\label{sec:ibid:distance-functions}
 
-\section{Problem Definition and Prior Work}
-
-\cdnote{Focus on the AKA two-terminal shortest-path problem.}
-
+\paragraph{Problem definition.}
 The \emph{shortest path problem} on graphs has been extensively
 studied over the past six decades.
 Consider a directed graph $G = (V,E)$ and accompanying edge weight
 function $w : E \rightarrow \mathbb{R}$,
 with the length of a path equal to the sum of the weights of its
 constituent edges.
+\marginnote{
+The single-pair problem is also called the \emph{two-terminal} or
+\emph{point-to-point} problem.}
 I include here a brief survey of algorithmic work on the
-\emph{single-pair} (a.k.a. point-to-point) problem,
+\emph{single-pair shortest path} (SSSP) problem,
 where a path of minimal length is sought
 between particular source and target vertices
 $s,t \in V$.
 I also consider only graphs without negative-length cycles.
+Note that we can also handle planning problems with multiple
+start/goal configurations as an SSSP problem
+as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.
+
+\paragraph{An example problem.}
+Consider the map of the northeastern United States.
 
 \subsection{Pathfinding via the Source Distance Function}
 
@@ -95,6 +146,9 @@ the graph.
 They proceed by calculating the \emph{distance function}
 $d_s : V \rightarrow \mathbb{R}$,
 which is characterized by
+\marginnote{Once the distance function $d_s$ is computed,
+a shortest path to any target $t$ can be generated trivially
+by walking backwards to $s$ guided by $d_s$.}
 \begin{equation}
    d_s(s) = 0
    \quad\mbox{and}\quad
@@ -109,8 +163,6 @@ and (\ref{eqn:distance-function}) is the Bellman equation
 This characterization also follows implicitly from early results for
 the all-pairs problem
 \citep{shimbel1955communicationnets, beckmann1955transportation}.
-A shortest path to a target $t$ can be generated trivially
-by walking backwards to $s$ guided by the function $d_s$.
 
 Algorithms for computing $d_s$ rely on the concept of
 \emph{relaxation}
@@ -124,24 +176,38 @@ with the reduced value $d_s(u) + w(u,v)$.
 The well-known Bellman-Ford method
 \citep{shimbel1955communicationnets, bellman1958routing,
 moore1959spmaze}
-iterates through all edges repeatedly until convergence
+iterates through all edges repeatedly until no more violations exist
 (at most $|V|$ repetitions are sufficient).
 
 Soon afterwards,
+\marginnote{When solving a single-pair problem
+with $w$ everywhere non-negative,
+this algorithm is guaranteed to consider each vertex
+(and therefore relax each edge) at most once,
+and therefore the algorithm can be terminated early
+once the target vertex is to be considered.}
 several researchers
 identified \citep{leyzorek1957modeltechniques, dijkstra1959anote}
-an efficient ordering of edge relaxations
-if $w$ is non-negative.
+an efficient ordering of edge relaxations.
 Dijkstra's algorithm relaxes edges $(u,v)$
 in increasing order of $d_s(u)$.
 In does this by initially marking all vertices as {\sc Open},
 and at each iteration moving to {\sc Closed}
-the vertex $u$ minimizing $d_s$
+the {\sc Open} vertex $u$ minimizing $d_s$
 and relaxing all outgoing edges $(u,v)$ from $u$.
-It is guaranteed to consider each vertex
-(and therefore relax each edge) at most once.
 
-\subsection{Bidirectional Search}
+\paragraph{Example problem.}
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstra.png}%
+   \caption{A distance function.
+      1,290,820 expansions.}%
+   \label{fig:ibid:example-distance}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-distance}.
+
+\section{Bidirectional Search}
+\label{sec:ibid:bidirectional}
 
 The single-pair problem can therefore be solved
 via Dijkstra's algorithm
@@ -152,6 +218,9 @@ it was conjectured that a path might be found more efficiently
 by simultaneously calculating the complementary
 target distance function $d_t$
 until the domains of the two functions ``overlap.''
+\marginnote{%
+The bidirectional algorithm without heuristics is sometimes called
+bidirectional brute-force search.}
 The first mention of such a bi-directional algorithm
 was proposed by Dantzig \citep{dantzig1963linearprogramming},
 and the first precisely described algorithm was presented by
@@ -198,55 +267,39 @@ Journal of AI Research 1997.
 
 Also see recent survey, \citep{goldberg2007pointtopoint}.
 
-\subsection{Heuristic Search}
+\paragraph{Example problem.}
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}%
+   \caption{Bidirectional search with distance-balanced expansions.
+      1,178,200 expansions.}%
+   \label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-bidirectional}.
 
-Heuristic methods such as the Graph Traverser
-\citep{doran1966graphtraverser} were originally
-applied to pathfinding problems in order to find non-optimal
-solutions more economically.
-These unidirectional methods proceed similarly to Dijkstra's algorithm,
-but instead of prioritizing {\sc Open} vertices
-based on their source distance $d_s$,
-they use a target-directed heuristic function $h_t$.
-Hart, Nilsson, and Raphael \citep{hart1968astar} discovered that
-these approaches can be combined ($d_s + h_t$) to yield
-an admissible algorithm (A*) for the shortest-path problem,
-as long as $h_t$ meets certain conditions.
+\subsection{Termination Conditions}
 
-Attempts to provide a bidirectional algorithm which incorporates
-heuristics generally take one of three approaches.
-\cdnote{I need to deep-dive here to write this correctly.}
+What happens upon an encounter between the forward and reverse searches?
+Goldberg \citep{goldberg2005spexternalmemory}
+discusses the correct termination condition for the 
+Bidirectional Dijkstra algorithm.
 
-First,
-front-to-front methods
-could evaluate the heuristic between all pairs in the two
-{\sc Open} sets.
-Expensive.
+\subsection{Balancing Directions}
 
-Second,
-perform two heuristic-informed searches,
-and account for the connection problem via a complex
-termination condition.
-Not necessarily efficient.
-(Pohl cites Berge?)
-Missile analogy.
+So, we can conduct expansions from the queues for either direction.
+How should we proceed?
+We do so via what (Pohl 1971) called a ``cardinality criterion''.
 
-Third,
-waste (same heuristic function).
+Also, distance criterion.
+Just say briefly what each one is.
 
-Concept of waste \citep{pohl1969bidirectional}.
-I think this subsumes A*.
+The literature says these can be interleaved arbitrarily,
+but there's an important caveat:
+each direction must be selected at least once
+for the algorithm to terminate.
 
-Talk about the 94 paper \citep{ikeda1994betterroutes}
-expressing A* as a search on
-the waste graph.
-
-As a potential function.
-Also Goldberg \citep{goldberg2005spexternalmemory}.
-
-To integrate: \citep{dechter1984bfsastaropt}.
-
-\subsection{Incremental Search}
+\section{Incremental Search}
+\label{sec:ibid:incremental}
 
 This stuff is more modern (1996, 2004).
 
@@ -260,63 +313,11 @@ Revisit Bellman equation.
 Apply waste to incremental search to get
 incremental heuristic search.
 
-\subsection{Incremental Heuristic Search}
-
-Lifelong Planning A* \citep{koenig2004lpastar}.
-
-\section{Termination Conditions}
-
-What happens upon an encounter between the forward and reverse searches?
-Goldberg \citep{goldberg2005spexternalmemory}
-discusses the correct termination condition for the 
-Bidirectional Dijkstra algorithm.
-
-\section{Prioritizing Directions}
-
-So, we can conduct expansions from the queues for either direction.
-How should we proceed?
-We do so via what (Pohl 1971) called a ``cardinality criterion''.
-
-\begin{table}
-\centering
-\begin{tabular}{ccc}
-   \toprule
-   & Unidirectional & Bidirectional \\
-   \midrule
-   \addlinespace[0.2em]
-   Complete
-      & Dijkstra \citep{dijkstra1959anote}
-      & Bidirectional Dijkstra \citep{luby1989bidijk} \\
-   \addlinespace[-0.2em]
-   \emph{(Heuristic)}
-      & \emph{A* \citep{hart1968astar}}
-      & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
-   \addlinespace[0.3em]
-   Incremental
-      & DynamicSWSF-FP \citep{ramalingam1996}
-      & {IBiD} \\
-   \addlinespace[-0.2em]
-   \emph{(Heuristic)}
-      & \emph{Lifelong Planning A* \citep{koenig2004lpastar}}
-      & \emph{Heuristic IBiD} \\
-   \addlinespace[0.2em]
-   \bottomrule
-\end{tabular}
-\caption{A table.
-This table should be in the prior work section.}
-\end{table}
-
-\section{The Algorithm}
+\subsection{The Algorithm}
 
 The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
 IBiD conducts two independent DynamicSWSF-FP searches
 (Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
-
-\section{On Roadmaps}
-
-Important caveat: due to roadmap edges sharing vertices,
-edges adjacent to evaluated edges will also change cost!
-
 
 \begin{algorithm}[t]
    \caption{IBiD Outline}
@@ -454,7 +455,88 @@ edges adjacent to evaluated edges will also change cost!
 \end{algorithm}
 } % floatevery width adjustment
 
-\section{Examples}
+\section{Heuristic Search}
+\label{sec:ibid:heuristic}
+
+Heuristic methods such as the Graph Traverser
+\citep{doran1966graphtraverser} were originally
+applied to pathfinding problems in order to find non-optimal
+solutions more economically.
+These unidirectional methods proceed similarly to Dijkstra's algorithm,
+but instead of prioritizing {\sc Open} vertices
+based on their source distance $d_s$,
+they use a target-directed heuristic function $h_t$.
+Hart, Nilsson, and Raphael \citep{hart1968astar} discovered that
+these approaches can be combined ($d_s + h_t$) to yield
+an admissible algorithm (A*) for the shortest-path problem,
+as long as $h_t$ meets certain conditions.
+
+\paragraph{Example problem.}
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-astar.png}%
+   \caption{A* search.
+      532,880 expansions.}%
+   \label{fig:ibid:example-astar}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-astar}.
+
+Attempts to provide a bidirectional algorithm which incorporates
+heuristics generally take one of three approaches.
+\cdnote{I need to deep-dive here to write this correctly.}
+
+First,
+front-to-front methods
+could evaluate the heuristic between all pairs in the two
+{\sc Open} sets.
+Expensive.
+
+Second,
+perform two heuristic-informed searches,
+and account for the connection problem via a complex
+termination condition.
+Not necessarily efficient.
+(Pohl cites Berge?)
+Missile analogy.
+
+Third,
+waste (same heuristic function).
+
+Concept of waste \citep{pohl1969bidirectional}.
+I think this subsumes A*.
+
+Talk about the 94 paper \citep{ikeda1994betterroutes}
+expressing A* as a search on
+the waste graph.
+
+As a potential function.
+Also Goldberg \citep{goldberg2005spexternalmemory}.
+
+To integrate: \citep{dechter1984bfsastaropt}.
+
+\paragraph{Example problem.}
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-heurbidijkstra.png}%
+   \caption{Bidirectional A* search.
+      515,588 expansions.}%
+   \label{fig:ibid:example-heurbidijkstra}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-heurbidijkstra}.
+
+\subsection{The Zero-Weight Problem}
+
+Talk about how a perfect potential leads to zero waste,
+which breaks incremental search.
+This motivates the lexocraphically sorted key approach.
+
+\subsection{Incremental Heuristic Search}
+
+Lifelong Planning A* \citep{koenig2004lpastar}.
+
+\section{Other Stuff}
+
+\subsection{Examples}
 
 See Figure~\ref{fig:incbi-lpastar-fig1-heurchange}
 and Figure~\ref{fig:incbi-lpastar-fig1}.
@@ -564,7 +646,7 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \label{fig:incbi-road-ne}
 \end{figure*}
 
-\section{LazySP Selector Experiments}
+\subsection{LazySP Selector Experiments}
 
 \begin{figure}
    \centering
@@ -624,7 +706,7 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
 \end{figure*}
 
-\section{Implementation Details}
+\subsection{Implementation Details}
 
 Other implementations:
 \citep{alberts1998softwaredynamicgraph}.

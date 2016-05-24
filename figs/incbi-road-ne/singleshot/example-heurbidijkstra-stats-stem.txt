@@ -1,0 +1,2 @@
+iepisode num-expansions-start num-expansions-goal num-expansions-total num-vertices-start num-vertices-goal num-vertices-total
+0 140053 375535 515588 140053 375535 515588

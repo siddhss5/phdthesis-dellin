@@ -1,0 +1,2 @@
+iepisode num-expansions-start num-expansions-goal num-expansions-total num-vertices-start num-vertices-goal num-vertices-total
+0 719016 459184 1178200 719016 459184 1178200

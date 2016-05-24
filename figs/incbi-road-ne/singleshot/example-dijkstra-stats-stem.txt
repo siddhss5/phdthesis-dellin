@@ -1,0 +1,2 @@
+iepisode num-expansions-start num-expansions-goal num-expansions-total num-vertices-start num-vertices-goal num-vertices-total
+0 1290819 1 1290820 1290819 1 1290820
