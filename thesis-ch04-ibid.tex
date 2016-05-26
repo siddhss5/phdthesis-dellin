@@ -135,7 +135,44 @@ start/goal configurations as an SSSP problem
 as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.
 
 \paragraph{An example problem.}
-Consider the map of the northeastern United States.
+\begin{marginfigure}%
+   \centering%
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+      \node[inner sep=0pt,anchor=south west] {\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-intro.png}};
+      \coordinate (s) at (1.75,0.9);
+      \coordinate (t) at (3.93,2.8);
+      \node (slab) at (2.5,0.6) {$s$};
+      \node (tlab) at (4.0,1.5) {$t$};
+      \draw[->,thick] (slab) -- (s);
+      \draw[->,thick] (tlab) -- (t);
+   \end{tikzpicture}%
+   \caption{A graph of the Northeast USA from the 9th DIMACS
+      Implementation Challenge
+      comprises 1,524,453 vertices and 3,868,020 directed edges.
+      A shortest path problem from a source $s$ in New Jersey
+      to a target $t$ outisde Boston
+      will be used as an example.}%
+   \label{fig:ibid:example-intro}%
+\end{marginfigure}
+We will carry forward an illustrative example problem from
+the 9th DIMACS Implementation Challenge
+\citep{demetrescuetal2006dimacs9}
+(Northeast USA)
+comprising an approximate road network,
+using transit time as the edge weight function
+(Figure~\ref{fig:ibid:example-intro}).
+In this way,
+a shortest path minimizes total transit time between the
+sink and target locations.
+
+\paragraph{Problem Settings.}
+The single-pair problem has been extensively studied.
+There are techniques that are particular to memory-constrained
+settings \citep{kaindl1997biheurreconsidered}
+or to settings where pre-computation is available
+\citep{goldberg2007pointtopoint}.
+The algorithm that we propose is complementary to these approaches.
 
 \subsection{Pathfinding via the Source Distance Function}
 
@@ -179,63 +216,96 @@ moore1959spmaze}
 iterates through all edges repeatedly until no more violations exist
 (at most $|V|$ repetitions are sufficient).
 
-Soon afterwards,
-\marginnote{When solving a single-pair problem
-with $w$ everywhere non-negative,
-this algorithm is guaranteed to consider each vertex
-(and therefore relax each edge) at most once,
-and therefore the algorithm can be terminated early
-once the target vertex is to be considered.}
-several researchers
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstra.png}%
+   \caption{Dijkstra's algorithm computes the start distance function
+      $d_s$ to solve the example shortest path problem.
+      Darker vertices have smaller $d$-values.
+      The algorithm stops upon reaching the target vertex $t$
+      after expanding 1,290,820 vertices.}%
+   \label{fig:ibid:example-distance}%
+\end{marginfigure}
+Soon afterwards, several researchers
 identified \citep{leyzorek1957modeltechniques, dijkstra1959anote}
 an efficient ordering of edge relaxations.
-Dijkstra's algorithm relaxes edges $(u,v)$
-in increasing order of $d_s(u)$.
+Dijkstra's algorithm (Figure~\ref{fig:ibid:example-distance})
+relaxes edges $(u,v)$ in increasing order of $d_s(u)$.
 In does this by initially marking all vertices as {\sc Open},
 and at each iteration moving to {\sc Closed}
 the {\sc Open} vertex $u$ minimizing $d_s$
 and relaxing all outgoing edges $(u,v)$ from $u$.
 
-\paragraph{Example problem.}
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstra.png}%
-   \caption{A distance function.
-      1,290,820 expansions.}%
-   \label{fig:ibid:example-distance}%
-\end{marginfigure}
-See Figure~\ref{fig:ibid:example-distance}.
+When solving a single-pair problem
+with $w$ everywhere non-negative,
+this algorithm is guaranteed to consider each vertex
+(and therefore relax each edge) at most once,
+and therefore the algorithm can be terminated early
+once the target vertex is to be considered.
 
 \section{Bidirectional Search}
 \label{sec:ibid:bidirectional}
 
-The single-pair problem can therefore be solved
-via Dijkstra's algorithm
-by (partially) computing the source distance $d_s$ until it
-includes the target vertex.
-However,
-it was conjectured that a path might be found more efficiently
-by simultaneously calculating the complementary
-target distance function $d_t$
-until the domains of the two functions ``overlap.''
-\marginnote{%
-The bidirectional algorithm without heuristics is sometimes called
-bidirectional brute-force search.}
-The first mention of such a bi-directional algorithm
+One prominent technique for minimizing pathfinding computation for
+single-pair problems
+is bidirectional search.
+In a bidirectional algorithm,
+the distance $d_t$ to the target is calculated in a growing region
+around the target vertex $t$
+concurrently with the conventional source distance $d_s$ around $s$.
+(Figure~\ref{fig:ibid:example-bidirectional}).
+Loosely speaking,
+the search can terminate with a shortest path
+once the two regions intersect.
+The savings relative to a unidirectional search grow with the problem's
+branching factor,
+which for most roadmaps is exponential in
+the dimensionality of the ambient space.
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}%
+   \caption{The bidirectional Dijkatra's algorithm
+      computes $d_s$ around the source vertex
+      and $d_t$ around the target vertex.
+      Darker vertices have smaller $d$-values in their respective
+      regions.
+      The algorithm terminates after expanding a total of
+      1,178,200 vertices using distance to balance expansions.}%
+   \label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+
+The first bidirectional algorithm
 was proposed by Dantzig \citep{dantzig1963linearprogramming},
 and the first precisely described algorithm was presented by
 Nicholson \citep{nicholson1966shortest}.
+
 Implementation of a sound and efficient algorithm
 turns on two important questions:
-(a) how to balance the two directions of the search,
+(a) how to balance expansions from the two directions of the search,
 and (b) when and how to terminate with a shortest path.
 
-\cdnote{Partially solve a single-source shortest-path (SSSP) problem
-and the complementary single-destination shortest-path problem (SDSP).
-The benefit of bidirectional search for an problem that is
-uninformed by a heuristic
-is that it tends to explore a smaller subset of the graph
-(view bubbles).}
+\paragraph{Balancing Directions}
+The general bidirectional algorithm leaves open the strategy
+used to balance the progression of the two search directions.
+Options based on alternating \citep{dantzig1963linearprogramming},
+or selecting the direction with the smaller {\sc Open} distance
+\citep{nicholson1966shortest}
+or {\sc Open} (and finite) set cardinality
+\citep{pohl1969bidirectional}
+have been proposed.
+Note that while some literature asserts that
+these can be interleaved arbitrarily,
+termination of the algorithm requires that each direction
+be expanded at least once.
+Our example problems use the balanced distance criterion.
+
+\subsection{Termination Conditions}
+\label{sec:ibid:bidirectional-termination}
+
+What happens upon an encounter between the forward and reverse searches?
+Goldberg \citep{goldberg2005spexternalmemory}
+discusses the correct termination condition for the 
+Bidirectional Dijkstra algorithm.
 
 A correct termination condition is surprisingly subtle,%
 \marginnote{There were early incorrect attempts at a sound
@@ -246,57 +316,49 @@ with several correct variations proposed
 pohl1969bidirectional, goldberg2005spexternalmemory}.
 The difficulty stems from the fact that the first vertex to be
 {\sc Closed} by the searches in both directions
-need not lie on the shortest path.
+need not lie on the shortest path
+(Figure~\ref{fig:ibid:bidirectional-termination-issue}).
 
-The general bidirectional algorithm also leaves open the strategy
-used to balance the progression of the two search directions.
-Options based on alternating \citep{dantzig1963linearprogramming},
-or selecting the direction with the smaller {\sc Open} distance
-\citep{nicholson1966shortest}
-or {\sc Open} (and finite) set cardinality
-\citep{pohl1969bidirectional}
-were proposed.
-It was further shown that selecting only from the source direction
-reproduces Dijkstra's algorithm.
+Key point, reason about edges!
 
-We are not interested in domains that are chiefly memory-constrained,
-so no need to consider iterative-deepening approaches,
-including bidirectional variants as proposed by
-Kaindl and Kainz, ``Bidirectional Heuristic Search Reconsidered,''
-Journal of AI Research 1997.
+See Algorithm~\ref{alg:ibid:bidirectional-termination}.
 
-Also see recent survey, \citep{goldberg2007pointtopoint}.
+\begin{algorithm}[t]
+   \caption{Bidirectional Termination Condition}
+   \label{alg:ibid:bidirectional-termination}
+   \begin{algorithmic}[1]
+      \State On $u$ expanded in the foward search
+         with $v$ already expanded in the backward search,
+   \end{algorithmic}
+\end{algorithm}
 
-\paragraph{Example problem.}
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}%
-   \caption{Bidirectional search with distance-balanced expansions.
-      1,178,200 expansions.}%
-   \label{fig:ibid:example-bidirectional}%
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+      \node[draw,circle,inner sep=1.5pt] (s) at (0,0) {};
+      \node[draw,circle,inner sep=1.5pt] (a) at (1.5,0) {};
+      \node[draw,circle,inner sep=1.5pt] (b) at (3.0,0) {};
+      \node[draw,circle,inner sep=1.5pt] (t) at (4.5,0) {};
+      \node[draw,circle,inner sep=1.5pt] (c) at (2.25,0.8) {};
+      \draw[->] (s) -- (a) node[midway,fill=white,circle,inner sep=1pt] {3};
+      \draw[->] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {3};
+      \draw[->] (b) -- (t) node[midway,fill=white,circle,inner sep=1pt] {3};
+      \draw[->] (a) -- (c) node[midway,fill=white,circle,inner sep=1pt] {2};
+      \draw[->] (c) -- (b) node[midway,fill=white,circle,inner sep=1pt] {2};
+      \node[below=0.05cm of s] {$s$};
+      \node[below=0.05cm of a] {$a$};
+      \node[below=0.05cm of b] {$b$};
+      \node[below=0.05cm of t] {$t$};
+      \node[above=0.05cm of c] {$c$};
+   \end{tikzpicture}
+   \caption{Simple illustration of a problem case for terminating
+      a bidirectional search.
+      With a balanced distance criterion,
+      $c$ will be the first vertex expanded in both directions,
+      but it does not lie on the shortest path.}
+   \label{fig:ibid:bidirectional-termination-issue}
 \end{marginfigure}
-See Figure~\ref{fig:ibid:example-bidirectional}.
-
-\subsection{Termination Conditions}
-
-What happens upon an encounter between the forward and reverse searches?
-Goldberg \citep{goldberg2005spexternalmemory}
-discusses the correct termination condition for the 
-Bidirectional Dijkstra algorithm.
-
-\subsection{Balancing Directions}
-
-So, we can conduct expansions from the queues for either direction.
-How should we proceed?
-We do so via what (Pohl 1971) called a ``cardinality criterion''.
-
-Also, distance criterion.
-Just say briefly what each one is.
-
-The literature says these can be interleaved arbitrarily,
-but there's an important caveat:
-each direction must be selected at least once
-for the algorithm to terminate.
 
 \section{Incremental Search}
 \label{sec:ibid:incremental}
@@ -313,7 +375,39 @@ Revisit Bellman equation.
 Apply waste to incremental search to get
 incremental heuristic search.
 
-\subsection{The Algorithm}
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}%
+   }%
+   \caption{Initial search: 1,287,897 expansions.
+      Replan: 391,122 expansions.}%
+   %\label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+
+\subsection{Incremental Bidirectional Search: The Algorithm}
+
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
+   }%
+   \caption{Initial search: 1,181,616 expansions.
+      Replan: 262,422 expansions.}%
+   %\label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
 
 The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
 IBiD conducts two independent DynamicSWSF-FP searches
@@ -480,6 +574,11 @@ as long as $h_t$ meets certain conditions.
    \label{fig:ibid:example-astar}%
 \end{marginfigure}
 See Figure~\ref{fig:ibid:example-astar}.
+For the purpose of calculating vertex heuristics,
+geographic coordinates were projected onto a 2D plane using the
+scale at the midpoint latitude ($41.25^\circ$)
+resulting in a projecting error of less than 0.3\%.
+The maximum transit speed is 30.11 m/s.
 
 Attempts to provide a bidirectional algorithm which incorporates
 heuristics generally take one of three approaches.

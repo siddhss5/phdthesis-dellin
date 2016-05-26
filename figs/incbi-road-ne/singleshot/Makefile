@@ -58,6 +58,14 @@ clean:
 # home is vertex 458584
 # olin is vertex 249500
 
+# intro
+all: example-intro.png
+example-intro.png:
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--v-start=458584 --v-goal=249500 --draw-roots \
+		--out-png=$@
+
 all: example-dijkstra.png
 
 example-dijkstra-dstart-0-%.txt example-dijkstra-stats-%.txt:
@@ -86,6 +94,57 @@ example-bidijkstra.png: example-bidijkstra-dstart-0-stem.txt example-bidijkstra-
 		--in-distancestart=example-bidijkstra-dstart-0-stem.txt \
 		--in-distancegoal=example-bidijkstra-dgoal-0-stem.txt \
 		--out-png=$@
+
+
+# incremental examples
+all: example-incuni-0.png
+all: example-incuni-1.png
+example-incuni-dstart-0-%.txt example-incuni-dstart-1-%.txt example-incuni-vexpanded-0-%.txt example-incuni-vexpanded-1-%.txt example-incuni-stats-%.txt:
+	rosrun thesis_experiments incbi-road-ne --v-start=458584 --v-goal=249500 \
+		--use-cardinality=false --balance-frac=0.00001 --potfn-start=0 --potfn-goal=0 \
+		--block-seed=6 --prob-block=0.0002 --prob-unblock=0.0998 --num-episodes=2 \
+		--out-distancestart-fmt='example-incuni-dstart-%d-stem.txt' \
+		--out-vexpanded-fmt='example-incuni-vexpanded-%d-stem.txt' \
+		--out-stats='example-incuni-stats-stem.txt'
+example-incuni-0.png: example-incuni-vexpanded-0-stem.txt example-incuni-dstart-0-stem.txt
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--in-distancestart=example-incuni-dstart-0-stem.txt \
+		--in-vexpanded=example-incuni-vexpanded-0-stem.txt \
+		--out-png=$@
+example-incuni-1.png: example-incuni-vexpanded-1-stem.txt example-incuni-dstart-1-stem.txt
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--in-distancestart=example-incuni-dstart-1-stem.txt \
+		--in-vexpanded=example-incuni-vexpanded-1-stem.txt \
+		--out-png=$@
+
+all: example-incbi-0.png
+all: example-incbi-1.png
+example-incbi-dstart-0-%.txt example-incbi-dstart-1-%.txt example-incbi-dgoal-0-%.txt example-incbi-dgoal-1-%.txt example-incbi-vexpanded-0-%.txt example-incbi-vexpanded-1-%.txt example-incbi-stats-%.txt:
+	rosrun thesis_experiments incbi-road-ne --v-start=458584 --v-goal=249500 \
+		--use-cardinality=false --balance-frac=0.5 --potfn-start=0 --potfn-goal=0 \
+		--block-seed=6 --prob-block=0.0002 --prob-unblock=0.0998 --num-episodes=2 \
+		--out-distancestart-fmt='example-incbi-dstart-%d-stem.txt' \
+		--out-distancegoal-fmt='example-incbi-dgoal-%d-stem.txt' \
+		--out-vexpanded-fmt='example-incbi-vexpanded-%d-stem.txt' \
+		--out-stats='example-incbi-stats-stem.txt'
+example-incbi-0.png: example-incbi-vexpanded-0-stem.txt example-incbi-dstart-0-stem.txt
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--in-distancestart=example-incbi-dstart-0-stem.txt \
+		--in-distancegoal=example-incbi-dgoal-0-stem.txt \
+		--in-vexpanded=example-incbi-vexpanded-0-stem.txt \
+		--out-png=$@
+example-incbi-1.png: example-incbi-vexpanded-1-stem.txt example-incbi-dstart-1-stem.txt
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--in-distancestart=example-incbi-dstart-1-stem.txt \
+		--in-distancegoal=example-incbi-dgoal-1-stem.txt \
+		--in-vexpanded=example-incbi-vexpanded-1-stem.txt \
+		--out-png=$@
+
+# non-incremetal astar examples
 
 all: example-astar.png
 
