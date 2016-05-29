@@ -34,20 +34,24 @@
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -rrtconnect-default.txt};
       \addplot
-         plot[thick,color=red,mark=*,mark options={scale=0.25}]
+         plot[thick,color=red,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -rrtconnect-default-sc.txt};
       \addplot
-         plot[thick,color=green,mark=*,mark options={scale=0.25}]
+         plot[thick,color=green,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -bitstar-default-sc.txt};
+      \addplot
+         plot[thick,color=cyan,solid,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -larastarhaltonoffdens10000,1.0-default-sc.txt};
       
       \addplot
-         plot[thick,color=black,mark=*,mark options={scale=0.25}]
+         plot[thick,color=black,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -lemurhaltonoffdens10000,1.0-lambda.txt};
       \addplot
-         plot[thick,color=blue,mark=*,mark options={scale=0.25}]
+         plot[thick,color=blue,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -lemurnchaltonoffdens10000,1.0-lambda.txt};
          
@@ -80,6 +84,10 @@
          plot[mark=none,color=green!20,fill=green!10,fill opacity=0.5]
          table[x=lambda-u,y=utility-finmean-conloop]
          from {data/lemur-sq/stats-paramslice-\problem -bitstar-default-sc-scheduled-loop.txt};
+      \addplot+
+         plot[mark=none,color=cyan!20,fill=cyan!10,fill opacity=0.5]
+         table[x=lambda-u,y=utility-finmean-conloop]
+         from {data/lemur-sq/stats-paramslice-\problem -larastar-haltonoffdens10000,1.0-sc-scheduled-loop.txt};
       \addplot+
          plot[mark=none,color=blue!20,fill=blue!10,fill opacity=0.5]
          table[x=lambda-u,y=utility-finmean-conloop]
@@ -136,13 +144,15 @@
          from {data/lemur-sq/stats-paramslice-\problem -bitstar-default-sc-oracle.txt};
       
       
-      %\foreach \scbudget in {00.10,00.16,00.25,00.40,00.63,01.00,01.60,02.50,04.00,06.30,10.00}
-      %{
-      %   \addplot+
-      %      plot[solid,very thin,color=green,mark=none]
-      %      table[x=lambda-u,y=neg-utility-mean]
-      %      from {data/lemur-sq/stats-paramslices-\problem -bitstar-default-sc\scbudget .txt};
-      %}
+      % larastar
+      \addplot+
+         plot[solid,thick,color=cyan,mark=none]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -larastar-haltonoffdens10000,1.0-sc-scheduled.txt};
+      \addplot+
+         plot[densely dotted,thick,color=cyan,mark=none]
+         table[x=lambda-u,y=utility-finmean]
+         from {data/lemur-sq/stats-paramslice-\problem -larastar-haltonoffdens10000,1.0-sc-oracle.txt};
 
 
       % LEMUR (without caching)

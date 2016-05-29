@@ -1,0 +1,12 @@
+lambda-u param-best planner-best
+0.0 10.0 larastar-haltonoffdens10000,1.0-sc10.00
+0.1 2.5 larastar-haltonoffdens10000,1.0-sc02.50
+0.2 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.3 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.4 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.5 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.6 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.7 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.8 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+0.9 0.0 larastar-haltonoffdens10000,1.0-sc00.00
+1.0 0.0 larastar-haltonoffdens10000,1.0-sc00.00
