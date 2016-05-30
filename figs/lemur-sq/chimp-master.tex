@@ -27,20 +27,24 @@
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -rrtconnect-default.txt};
       \addplot
-         plot[thick,color=red,mark=*,mark options={scale=0.25}]
+         plot[thick,color=red,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -rrtconnect-default-sc.txt};
       \addplot
-         plot[thick,color=green,mark=*,mark options={scale=0.25}]
+         plot[thick,color=green,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -bitstar-default-sc.txt};
+      \addplot
+         plot[thick,color=cyan,solid,mark=*,mark options={scale=0.25}]
+         table[x=python-totaltime-finmean,y=path-length-finmean]
+         {data/lemur-sq/stats-byparam-\problem -larastarhaltonoffdens10000,1.0-default-sc.txt};
       
       \addplot
-         plot[thick,color=black,mark=*,mark options={scale=0.25}]
+         plot[thick,color=black,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -lemurhaltonoffdens10000,1.0-lambda.txt};
       \addplot
-         plot[thick,color=blue,mark=*,mark options={scale=0.25}]
+         plot[thick,color=blue,solid,mark=*,mark options={scale=0.25}]
          table[x=python-totaltime-finmean,y=path-length-finmean]
          {data/lemur-sq/stats-byparam-\problem -lemurnchaltonoffdens10000,1.0-lambda.txt};
          

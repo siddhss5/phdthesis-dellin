@@ -1,11 +1,11 @@
 # makefile for thesis
 # requirements: GNU make, latexmk, pdflatex
 
-DOCS = proposal proptalk thesis
+DOCS = proposal proptalk thesis lazysptalk
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
 #all: $(DOCPDFS)
-all: thesis.pdf
+all: thesis.pdf lazysptalk.pdf
 
 .PHONY: www-upload
 www-upload:
@@ -20,6 +20,8 @@ proptalk.pdf: proptalk-act1.tex
 proptalk.pdf: proptalk-act2.tex
 proptalk.pdf: proptalk-act3.tex
 proptalk.pdf: proptalk-backup.tex
+
+lazysptalk.pdf: lazysptalk.tex
 
 # latexmk dumps deps
 $(DOCPDFS): %.pdf: %.tex
