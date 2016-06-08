@@ -4,8 +4,8 @@
 DOCS = proposal proptalk thesis lazysptalk
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
-#all: $(DOCPDFS)
-all: thesis.pdf lazysptalk.pdf
+all: $(DOCPDFS)
+#all: thesis.pdf lazysptalk.pdf proptalk.pdf
 
 .PHONY: www-upload
 www-upload:
