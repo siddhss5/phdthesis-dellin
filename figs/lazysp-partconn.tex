@@ -1,0 +1,98 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}%
+\begin{tikzpicture}
+
+\coordinate (v000) at ( 0.9000, 0.0000);
+\coordinate (v015) at ( 0.8693, 0.2329);
+\coordinate (v030) at ( 0.7794, 0.4500);
+\coordinate (v045) at ( 0.6364, 0.6364);
+\coordinate (v060) at ( 0.4500, 0.7794);
+\coordinate (v075) at ( 0.2329, 0.8693);
+\coordinate (v090) at ( 0.0000, 0.9000);
+\coordinate (v105) at (-0.2329, 0.8693);
+\coordinate (v120) at (-0.4500, 0.7794);
+\coordinate (v135) at (-0.6364, 0.6364);
+\coordinate (v150) at (-0.7794, 0.4500);
+\coordinate (v165) at (-0.8693, 0.2329);
+\coordinate (v180) at (-0.9000, 0.0000);
+\coordinate (v195) at (-0.8693,-0.2329);
+\coordinate (v210) at (-0.7794,-0.4500);
+\coordinate (v225) at (-0.6364,-0.6364);
+\coordinate (v240) at (-0.4500,-0.7794);
+\coordinate (v255) at (-0.2329,-0.8693);
+\coordinate (v270) at ( 0.0000,-0.9000);
+\coordinate (v285) at ( 0.2329,-0.8693);
+\coordinate (v300) at ( 0.4500,-0.7794);
+\coordinate (v315) at ( 0.6364,-0.6364);
+\coordinate (v330) at ( 0.7794,-0.4500);
+\coordinate (v345) at ( 0.8693,-0.2329);
+
+\draw (v030) .. controls (0.6062,0.3500) and (0.7000,0.0000) .. (v000);
+\draw (v060) .. controls (0.3500,0.6062) and (0.7000,0.0000) .. (v000);
+\draw (v090) .. controls (0.0000,0.7000) and (0.7000,0.0000) .. (v000);
+\draw (v105) .. controls (-0.1812,0.6761) and (0.6761,0.1812) .. (v015);
+\draw (v105) .. controls (-0.1812,0.6761) and (0.1812,0.6761) .. (v075);
+\draw (v120) .. controls (-0.3500,0.6062) and (0.3500,0.6062) .. (v060);
+\draw (v120) .. controls (-0.3500,0.6062) and (-0.1812,0.6761) .. (v105);
+\draw (v135) .. controls (-0.4950,0.4950) and (0.3500,0.6062) .. (v060);
+\draw (v135) .. controls (-0.4950,0.4950) and (0.0000,0.7000) .. (v090);
+\draw (v165) .. controls (-0.6761,0.1812) and (0.6761,0.1812) .. (v015);
+\draw (v165) .. controls (-0.6761,0.1812) and (-0.4950,0.4950) .. (v135);
+\draw (v180) .. controls (-0.7000,0.0000) and (-0.1812,0.6761) .. (v105);
+\draw (v195) .. controls (-0.6761,-0.1812) and (0.3500,0.6062) .. (v060);
+\draw (v195) .. controls (-0.6761,-0.1812) and (0.0000,0.7000) .. (v090);
+\draw (v195) .. controls (-0.6761,-0.1812) and (-0.7000,0.0000) .. (v180);
+\draw (v210) .. controls (-0.6062,-0.3500) and (0.6761,0.1812) .. (v015);
+\draw (v210) .. controls (-0.6062,-0.3500) and (-0.6761,0.1812) .. (v165);
+\draw (v225) .. controls (-0.4950,-0.4950) and (-0.6062,-0.3500) .. (v210);
+\draw (v240) .. controls (-0.3500,-0.6062) and (0.0000,0.7000) .. (v090);
+\draw (v255) .. controls (-0.1812,-0.6761) and (-0.1812,0.6761) .. (v105);
+\draw (v255) .. controls (-0.1812,-0.6761) and (-0.7000,0.0000) .. (v180);
+\draw (v270) .. controls (-0.0000,-0.7000) and (0.1812,0.6761) .. (v075);
+\draw (v270) .. controls (-0.0000,-0.7000) and (-0.6761,-0.1812) .. (v195);
+\draw (v270) .. controls (-0.0000,-0.7000) and (-0.6062,-0.3500) .. (v210);
+\draw (v270) .. controls (-0.0000,-0.7000) and (-0.1812,-0.6761) .. (v255);
+\draw (v285) .. controls (0.1812,-0.6761) and (0.6761,0.1812) .. (v015);
+\draw (v285) .. controls (0.1812,-0.6761) and (0.4950,0.4950) .. (v045);
+\draw (v300) .. controls (0.3500,-0.6062) and (0.4950,0.4950) .. (v045);
+\draw (v315) .. controls (0.4950,-0.4950) and (0.7000,0.0000) .. (v000);
+\draw (v315) .. controls (0.4950,-0.4950) and (0.3500,0.6062) .. (v060);
+\draw (v315) .. controls (0.4950,-0.4950) and (-0.6761,-0.1812) .. (v195);
+\draw (v330) .. controls (0.6062,-0.3500) and (-0.3500,0.6062) .. (v120);
+\draw (v330) .. controls (0.6062,-0.3500) and (-0.7000,0.0000) .. (v180);
+\draw (v330) .. controls (0.6062,-0.3500) and (-0.6761,-0.1812) .. (v195);
+\draw (v330) .. controls (0.6062,-0.3500) and (-0.1812,-0.6761) .. (v255);
+\draw (v345) .. controls (0.6761,-0.1812) and (0.6062,0.3500) .. (v030);
+\draw (v345) .. controls (0.6761,-0.1812) and (0.0000,0.7000) .. (v090);
+\draw (v345) .. controls (0.6761,-0.1812) and (-0.0000,-0.7000) .. (v270);
+\draw (v345) .. controls (0.6761,-0.1812) and (0.6062,-0.3500) .. (v330);
+
+\node[circle,fill=black,inner sep=0.03cm] at (v000) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v015) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v030) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v045) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v060) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v075) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v090) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v105) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v120) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v135) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v150) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v165) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v180) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v195) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v210) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v225) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v240) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v255) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v270) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v285) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v300) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v315) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v330) {};
+\node[circle,fill=black,inner sep=0.03cm] at (v345) {};
+
+
+\end{tikzpicture}%
+\end{document}
