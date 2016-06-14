@@ -1,0 +1,122 @@
+LazySP talk notes:
+
+Slide 2: The Shortest Path Problem
+- The shortest path problem is domains ranging from puzzle solving and networking to robotic motion planning and traffic routing.
+- In its most most fundamental form, the problem considers a graph G of vertices and edges, and a weight function w mapping each edge to its edge weight.
+- Given these two inputs, a shortest path algorithm accepts a query and returns a path with minimal length.
+
+Slide 3: The Shortest Path Problem
+- Many shortest path algorithms exist, and the most efficient choice depends in part on properties of the underlying domain.
+- Some domains, such as puzzle solving, are characterized by very large graphs, which motivates approaches such as iterative deepening and implicit representations of the graph structure itself.  The weight functions here are often trivial -- such as unity.
+- Other domains, such as optimal motion planning in robotics, require graphs that are much smaller.  On the other hand, determining the weight of each edge entails costly geometric collision checking, often at a fine resolution along the motion.
+- For kino-dynamic planning problems, evaluating the weight of each edge requires solving a costly two-point boundary value problem.
+- And consider a convoy routing problem, in which active satellite reconnaissance is required in order to determine the cost of each route.
+
+Slide 4: Pathfinding with Expensive Edge Evaluations
+- We focus on pathfinding problems in which determining the weights of edges dominates algorithm running time.
+- How can we solve these problems while reducing the number of edges we must evaluate?
+- Discuss outline.
+
+Slide 5: Review of Prior Approaches
+- How can we apply conventional algorithms to this problem?
+- (Approach 0) Of course, the simplest approach is to evaluate all edges in a pre-processing step, and then run a standard pathfinding algorithm. This is very slow.
+- (Approach 1) The next approach runs a conventional algorithm such as A*, but evaluates edges in Just-In-Time fashion, and memoizes each result in case it is needed again.  This is analogous to the implicit successor representation of the graph itself.
+- (Approach 2) A most recent approach is called Lazy Weighted A*, which uses an initial, inexpensive estimate for each edge weight. In this work, we show that LWA* can be reformulate with separate vertex and edge queues -- when popping a vertex from its OPEN list, its adjacent edges are placed onto the edge queue, using only the inexpensive estimate for its priority. Edges are then only evaluated as needed.  Note that many edges are deferred indefinitely, compared to conventional A*.
+
+Slide 6: Lazy Shortest Path: Best-First Search over Paths
+- Our approach, called LazySP, is an algorithm outline which applies this idea of lazy evaluation to entire paths.
+- Like LWA*, it initializes edge weights with inexpensive estimates.
+- It then iteratively performs the following steps.
+- First, it conducts a search on the lazy graph using an inner shortest-path problem.
+- If it is already fully evaluated, then return it.
+- Otherwise, invoke an edge selector function, which returns one or more edges for subsequent evaluation.
+- We will discuss examples of such selectors in the remainder of the talk.
+- First, though, we can show that as long as the weight estimates and InnerSP and EdgeSelector functions satisfy some basic properties, this algorithm is both complete and optimal.
+
+Slide 7: Relation to the Dynamic Traversal Problem
+- In some ways, this problem is similar to the dynamic traversal problem, in which an agent is conducting a traverse across an unknown map and must continually replan an optimal path in response to map updates from its sensors.
+- The well-known D* family of algorithms are commonly used for this problem.
+- The principal difference difference is that while the traversal problem treats edge changes as a part of the problem definition, our problem allows for edges to be evaluated arbitrarily throughout the graph.
+- It is precisely this freedom that LazySP exploits to focus its evaluations via the edge selector.
+
+Slide 8: Simple Edge Selectors and Equivalences
+- Let's review some examples of simple selectors.
+- The Expand selector identifies as the path's frontier vertex the source vertex of the first unevaluated edge on the candidate path.  It then selects for evaluation all adjacent edges of the frontier vertex.
+- We prove that LazySP using this selector is edge-equivalent to the Weighted A* algorithm.
+- (By edge-equivalent, we mean that both algorithms will evaluate the same edges in the same order.)
+- Similarly, consider the Forward selector, which simply selects for evaluation the first unevaluated edge on the candidate path.
+- We show that using this selector is edge-equivalent to the Lazy Weighted A* algorithm.
+
+Slide 9: Other Simple Edge Selectors
+- We also consider other simple selectors.
+- The Reverse selector selects the last unevaluated edge,
+- and the Alternate selector alternates between these two.
+- The Bisect selector identifies the unevaluated edge on the candidate path furthest from an evaluated edge, and is motivated by the intuition that it is helpful to invalidate the candidate path as quickly as possible for domains such as motion planning where edge weights may be spatially correlated.
+
+Slide 10: Novel Selectors: Path Distribution
+- We also propose some novel edge selectors.
+- Given the set of edges evaluated so far,
+- these selectors maintain a distribution over potential paths that are consistent with these known edges.
+- They then select the unevaluated edge on the candidate that is most likely on the path drawn from the distribution.
+
+Slide 11: Path Distribution via Weight Function Sampling
+- There are two ways we propose to maintain this path distribution.
+- The first involves a distribution over potential weight functions w.  In this example, that weight function distribution is derived from sampling from consistent obstacle arrangements.
+- Then, for each weight function sampled, the shortest path on that problem is included as part of the path distribution.
+- The selector then chooses the most likely edge under this path distribution as discussed previously.
+
+Slide 12: Path Distribution via the Partition Function
+- In some domains, sampling weight functions, for example via sampling obstacle arrangements, can be expensive -- perhaps even as expensive as solving the original pathfinding problem.
+- How else can we generate a distribution over potential paths?
+- With P the set of paths between the start and goal vertices,
+- consider the distribution with density function proportional to e-to-the-negative-length.
+- This distribution is borrowed from the partition function in statistical mechanics, with the path's length serving as the relevant potential function.
+- Note that the shortest path in P, which is chosen as the candidate path by LazySP, is most likely in the distribution, ...
+- ... but other paths also have probability mass, with longer paths exponentially less likely.
+
+Slide 13: Path Distribution via the Partition Function
+- The path distribution is a function of the parameter beta, also called the inverse-temperature parameter.
+- So, what does the distribution look like?
+- These examples are for a 2D motion planning problem on a regular lattice.
+- First, note the effect of the temperature parameter in a world with no known obstacles. For large beta, not that almost all probability mass lies only on the shortest potential path, whereas as the temperature is increased, the probability mass is spread more evenly among longer potential paths.
+- Note, however, that in all cases, the edges near the start and goal vertices are more likely to lie on a path, since a larger proportion of potential paths make use of these edges.
+- On the second row, we see a similar example with a known obstacle.  Note that the edges within the corridor are most likely, with probability one, of being on a potential path drawn from the distribution.  As a consequence, these edges will be prioritized and immediately selected for evaluation by the selector.
+
+Slide 14: Partition Function: Incremental Formulation
+- How do we efficiently calculate this probability distribution over paths?
+- Recall that for the set of paths between vertices x and y, the value of the partition function Zxy serves as the normalizer in the distribution.
+- We must maintain this value between the start and goal vertices throughout the evolution of the algorithm, as the lazy weights of various edges is updated.
+- We formulate this recursively as follows. Consider two graphs, G and G', with G' containing one additional directed edge. Suppose that the partition function values Z are know between all vertex pairs for G. What can we say about the values of Z'?
+- This expression relies on the fact that all paths on G' can be partitioned in the following way. First, the sum over all paths that do not use the new edge. Second, the sum over paths that use the new edge exactly once. Third, the sum over paths that use the edge exactly twice.
+- This is a geometric series that can be solved exactly, which allows us to update the partition function values efficiently.
+- Note that this computes the partition function over all paths on the graph G. It may seem advantageous to restrict ourselves to only simple paths -- after all, for pathfinding problems without negative cycles, all shortest path lengths admit witness paths that are simple.  However, there are no known efficient ways to calculate the partition function over only simple paths.
+- Note: One unfortunate consequence of including non-simple paths in the distribution is that for sufficiently hot values of beta, the value of the partition becomes infinite, and the distribution is no longer well defined.  It is therefore necessary to choose a valid parameter value in a domain-specific way.
+
+Slide 15: Illustration of Selectors
+- Here, we show the evolution of each of the seven selectors that we considered on a motion planning problem on the unit square.
+- At top, we see the edges evaluated by LazySP with each selector after having evaluated five edges.
+- At middle, we see the edges evaluated for each after the algorithm terminates.
+- The bottom row shows the path length and number of edges evaluated for each distinct candidate path considered by LazySP for each selector.
+- Note that the Bisect selector focuses its evaluations at the midpoint of the world first; almost all of its early candidate paths result in a single edge checked, before the shortest path is found.
+- Note also that in the bottom plots, with the exception of Expand, which selects edges not on the candidate path itself, the last candidate path considered by all selectors is identical.  This is because all selectors satisfy the sufficient properties for the LazySP algorithm to be optimal.
+
+Slide 16: Experimental Results
+- We evaluated each of the seven selectors across an array of three problem domains.
+- The first domain consists of 1000 partially connected undirected graphs, with each vertex pair connected with 5% probability.
+- The second domain consists of 900 motion planning problems on the unit square, using a Halton graph with 100 vertices.
+- The third domain consists of 50 roadmap instantiations on each of three optimal motion planning problems on a 7-DOF robotic arm, with 1000 vertices on each roadmap.
+- The primary metric we consider is the number of edges evaluated by each selector.
+- More details about the problem domains and results are available in the paper, with full timing results in the extended version on arXiv.
+
+Slide 17: Experimental Results: Edges Evaluated
+- Here, we see the mean and standard error for the number of edges evaluated by each selector across the three problem domains.
+- In all cases, as expected, the Expand selector evaluated the most edges (note that for ArmPlan, it expanded an average of 949 edges).
+- In the case of the PartConn and UnitSquare domains, with a large number of symmetrically generated instances, the Forward and Reverse selectors performed equivalently on average.  The smaller number of ArmPlan instances contributed to the asymmetry there.
+- Note that for the WeightSamp selector on the two motion planning domains, in order to avoid solving repeated shortest path problems at runtime, we modeled the distribution over weight function as i.i.d. for each the collision state of each edge.
+- The novel selectors perform well relative to the simpler selectors, with the Partition selector performing best.
+- However, note that the Partition selector requires a large amount of precomputation in order to calculate the initial pairwise vertex partition function values.  As this one-time cost is independent of both the obstacle arrangements and the query vertices, we included its computation time separately from the online times.
+- We also note that among the simpler selectors, the Alternate selector performs quite well, and may serve as an efficient proxy for the more complex selectors.
+
+
+
+
