@@ -1,4 +1,23 @@
-RUNS = pavgnone-baldist pavgfull-balcard pgoalfull-balfwd pavgfull-baldist pgoalhalf-balfwd pavghalf-balcard pgoalnone-balfwd pavghalf-baldist pavgnone-balcard
+# this makefile produces figures for the thesis document!
+# other files:
+# - thesis-papers/thesis_experiments/scripts/Makefile.incbi-road-ne
+#   - this is for the experiment which randomly selects roots
+# - thesis-papers/thesis_experiments/scripts/Makefile.incbi-roadne-video
+
+# the resulting png files are checked in:
+# - pavgfull-balcard.png
+# - pavgfull-baldist.png
+# - pavghalf-balcard.png
+# - pavghalf-baldist.png
+# - pavgnone-balcard.png
+# - pavgnone-baldist.png
+# - pgoalfull-balfwd.png
+# - pgoalhalf-balfwd.png
+# - pgoalnone-balfwd.png
+
+RUNS = pavgnone-baldist pavgfull-balcard pgoalfull-balfwd \
+       pavgfull-baldist pgoalhalf-balfwd pavghalf-balcard \
+       pgoalnone-balfwd pavghalf-baldist pavgnone-balcardcd
 
 
 .PHONY: all
@@ -54,6 +73,20 @@ clean:
 
 
 # part 2: example figures for chapter 4
+
+# this file produces the incbi-road-ne illustration figures used in chapter 4.
+# examples from the nj-bos route
+
+# the resulting png files are checked in:
+# - example-astar.png
+# - example-bidijkstra.png
+# - example-dijkstra.png
+# - example-heurbidijkstra.png
+# - example-incbi-0.png
+# - example-incbi-1.png
+# - example-incuni-0.png
+# - example-incuni-1.png
+# - example-intro.png
 
 # home is vertex 458584
 # olin is vertex 249500
