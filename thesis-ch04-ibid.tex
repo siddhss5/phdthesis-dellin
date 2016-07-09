@@ -94,7 +94,7 @@ The chapter concludes with experimental results and implentation notes.
          & \emph{Bidirectional A* \citep{ikeda1994betterroutes}} \\
       \addlinespace[0.3em]
       Incremental
-         & DynamicSWSF-FP \citep{ramalingam1996}
+         & DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}
          & {IBiD} \\
       \addlinespace[-0.2em]
       \emph{(Heuristic)}
@@ -104,14 +104,15 @@ The chapter concludes with experimental results and implentation notes.
       \bottomrule
    \end{tabular}
    \caption{
-   
-   Generalizes both the heuristic-informed
+      IBiD generalizes both the heuristic-informed
       bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
-      and DynamicSWSF-FP \citep{ramalingam1996}.}
+      and DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}.
+      There are a great many algorithms that we could place in each cell;
+      we provide only a represetative choice in each.}
    \label{tab:ibid:alg-overview}
 \end{table}
 
-\section{Distance Functions and Bidirectional Search}
+\section{Search via Distance Functions}
 \label{sec:ibid:distance-functions}
 
 \paragraph{Problem definition.}
@@ -125,13 +126,13 @@ constituent edges.
 The single-pair problem is also called the \emph{two-terminal} or
 \emph{point-to-point} problem.}
 I include here a brief survey of algorithmic work on the
-\emph{single-pair shortest path} (SSSP) problem,
+\emph{single-pair shortest path} (SPSP) problem,
 where a path of minimal length is sought
-between particular source and target vertices
+between distinct source and target vertices
 $s,t \in V$.
 I also consider only graphs without negative-length cycles.
 Note that we can also handle planning problems with multiple
-start/goal configurations as an SSSP problem
+start/goal configurations as an SPSP problem
 as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.
 
 \paragraph{An example problem.}
@@ -156,15 +157,15 @@ as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.
    \label{fig:ibid:example-intro}%
 \end{marginfigure}
 We will carry forward an illustrative example problem from
-the 9th DIMACS Implementation Challenge
+the public dataset of the 9th DIMACS Implementation Challenge
 \citep{demetrescuetal2006dimacs9}
 (Northeast USA)
 comprising an approximate road network,
 using transit time as the edge weight function
 (Figure~\ref{fig:ibid:example-intro}).
 In this way,
-a shortest path minimizes total transit time between the
-sink and target locations.
+a shortest path between a pair of sink and target locations
+minimizes the total transit time between them.
 
 \paragraph{Problem Settings.}
 The single-pair problem has been extensively studied.
@@ -172,49 +173,221 @@ There are techniques that are particular to memory-constrained
 settings \citep{kaindl1997biheurreconsidered}
 or to settings where pre-computation is available
 \citep{goldberg2007pointtopoint}.
-The algorithm that we propose is complementary to these approaches.
+While we do not focus on such settings,
+the algorithm we propose is complementary to these techniques.
 
 \subsection{Pathfinding via the Source Distance Function}
 
 The pioneering pathfinding algorithms of the late 1950s address
+a generalization of the SPSP problem called
 the \emph{single-source} problem,
 where shortest paths are calculated from $s$ to all vertices on
 the graph.
-They proceed by calculating the \emph{distance function}
+They proceed by calculating the \emph{source distance function}
 $d_s : V \rightarrow \mathbb{R}$,
-which is characterized by
+which gives the length of the shortest path from $s$
+to each vertex $v$.
+In other words:
 \marginnote{Once the distance function $d_s$ is computed,
 a shortest path to any target $t$ can be generated trivially
 by walking backwards to $s$ guided by $d_s$.}
 \begin{equation}
-   d_s(s) = 0
-   \quad\mbox{and}\quad
-   \forall v \neq s,\;
-   d_s(v) = \min_{u \in \mbox{\scriptsize Pred}(v)} d_s(u) + w(u,v).
-   \label{eqn:distance-function}
+   d_s(v) = \min_{p \in P_{sv}} \mbox{len}(p),
+   \label{eqn:ibid-distance-function-global}
 \end{equation}
+where $P_{sv}$ is the set of all paths from $s$ to $v$.
+Where no paths to $v$ exist,
+we take $d_s(v) = \infty$.
+Note that $d_s$ is only well-defined on graphs with no negative-length
+cycles reachable from $s$.
+
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstraall.png}%
+   \caption{The distance function from the source vertex.}%
+   \label{fig:ibid:example-distance-all}%
+\end{marginfigure}
+
+Importantly, $d_s$ can also be characterized locally by
+\begin{equation}
+   d_s(v) = 
+   \left\{ \begin{array}{cl}
+      0 & \mbox{if } v = s \\
+      \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)} d_s(u) + w(u,v) & \mbox{otherwise,} \\
+   \end{array} \right.
+   \label{eqn:distance-function-char}
+\end{equation}
+where $\mbox{Pred}(v)$ yeilds the predecessor vertices
+of $v$.
+\marginnote{Note that
+while the distance function $d_s$ necessarily satisfies
+the equations (\ref{eqn:distance-function-char}),
+they are not generally a sufficint condition;
+if a reachable cycle of zero length exists,
+(\ref{eqn:distance-function-char}) will not have a unique solution.}
 The distance function is akin to the \emph{value function}
-in more general decision problems addressed by dynamic programming,
-and (\ref{eqn:distance-function}) is the Bellman equation
-\citep{bellman1958routing}.
+in more general decision problems addressed by dynamic programming.
+The equations (\ref{eqn:distance-function-char})
+are the \emph{Bellman equations} \citep{bellman1958routing},
+which rely on the principle of optimality.
 This characterization also follows implicitly from early results for
 the all-pairs problem
 \citep{shimbel1955communicationnets, beckmann1955transportation}.
 
-Algorithms for computing $d_s$ rely on the concept of
+\subsection{Approximating $d_s$ via Tensioned Estimates}
+\label{subsec:ibid-tension}
+
+How can we compute $d_s$ efficently over the graph?
+Consider an approximation $\hat d_s$ of $d_s$ 
+which satisfies the following properties:
+\begin{equation}
+   d_s(v) \leq \hat d_s(v)
+   \mbox{ and }
+   \hat d_s(s) = d_s(s) = 0.
+   \label{eqn:ibid-relaxation-props}
+\end{equation}
+Further, for any approximation $\hat d_s$,
+we can capture its violations of
+(\ref{eqn:distance-function-char})
+via the following labeling:
+\begin{equation}
+   \mbox{edge } (u,v) \mbox{ is \emph{tensioned}}
+   \;\;\mbox{iff}\;\;
+   \hat d_s(u) + w(u,v) < \hat d_s(v)
+   \label{eqn:ibid-relaxation-tensioned}
+\end{equation}
+
+Suppose that we arrive at an approximation $\hat d_s$
+satisfying (\ref{eqn:ibid-relaxation-props})
+with no tensioned edges.
+We can show that this estimate must be correct everywhere
+(i.e. $\hat d_s(v) = d_s(v) \;\forall v$).
+Consider any vertex $x$.
+If $d_s(x) = \infty$,
+then by (\ref{eqn:ibid-relaxation-props}) we must have that
+$\hat d_s(x) = \infty$.
+Otherwise,
+by (\ref{eqn:ibid-distance-function-global}),
+there exists a path $p$ of length $d_s(x)$;
+consider this path.
+The first vertex on $p$ is $s$,
+and by (\ref{eqn:ibid-relaxation-props}),
+$\hat d_s(s) = d_s(s)$.
+For each edge $(u,v)$ on $p$ with $\hat d_s(u) = d_s(u)$,
+we will show that if the edge is not tensioned,
+then $\hat d_s(v) = d_s(v)$.
+First, by (\ref{eqn:ibid-relaxation-props})
+we have that $d_s(v) \leq \hat d_s(v)$.
+Second,
+since $(u,v)$ is not tensioned,
+by (\ref{eqn:ibid-relaxation-tensioned})
+we have that $\hat d_s(v) \leq \hat d_s(u) + w(u,v)$.
+By (\ref{eqn:ibid-relaxation-props})
+we can rewrite as
+$\hat d_s(v) \leq d_s(u) + w(u,v)$,
+which by definition of a shortest path,
+we can write
+$\hat d_s(v) \leq d_s(v)$.
+Therefore $\hat d_s(v) = d_s(v)$,
+and by induction along the path $p$,
+we have that $\hat d_s(x) = d_s(x)$.
+
+\subsection{Determining $d_s$ by Edge Relaxation}
+
+We can initialize an approximation $\hat d_s$ so as to trivially
+satisfy (\ref{eqn:distance-function-char}),
+such as $\hat d_s(v) = \infty \;\forall v \neq s$.
+But how can we improve the approximation in order to
+calculate $d_s$?
+The principal technique relies on the principle of
 \emph{relaxation}
 as described by Ford \citep{ford1955networkflowtheory}.
-The function $d_s$
-is initialized to the upper bound $\infty$ for $v \neq s$,
-and edges $(u,v)$ for which $d_s(v) > d_s(u) + w(u,v)$,
-thereby violating (\ref{eqn:distance-function}),
-are relaxed by updating $d_s(v)$
-with the reduced value $d_s(u) + w(u,v)$.
+An algorithm can iteratively select tensioned edges and
+relax them by setting
+$\hat d_s(v) \leftarrow \hat d_s(u) + w(u,v)$.
+It can be shown that applying this process arbitrarily
+maintains the properties in (\ref{eqn:distance-function-char}).
+
+It can be further shown that for a finite graph,
+the number of edge relaxations needed is also finite.
 The well-known Bellman-Ford method
 \citep{shimbel1955communicationnets, bellman1958routing,
 moore1959spmaze}
-iterates through all edges repeatedly until no more violations exist
-(at most $|V|$ repetitions are sufficient).
+cycles through all edges repeatedly,
+relaxing all tensioned edges found
+(at most $|V|-1$ repetitions are sufficient for convergence).
+
+\subsection{Exploiting A Better Relaxation Ordering}
+
+The need for multiple cycles of Bellman-Ford stems from the fact
+that each edge may need to be relaxed several times.
+Consider the vertices $a \rightarrow b \rightarrow c$,
+with edges $ab$ and $bc$ both in tension;
+if $bc$ is relaxed before $ab$,
+then $bc$ will need to be relaxed a second time.
+This occurrs because relaxing an edge changes the
+$\hat d_s$-value of the target vertex,
+which may newly tension downstream edges.
+
+We can exploit our intution to order relaxations from source to sink
+in the special case where $w \geq 0$
+(note that this requirement is stronger than requiring no reachable
+negative-length cycles).
+In this case,
+let $\hat d_s'$ be the smallest value $\hat d_s(u)$
+for any edge $uv$ currently in tension.
+Then we can show that any vertex $v$ with $\hat d_s(v) \leq \hat d_s'$
+has $\hat d_s(v) = d_s(v)$.
+
+The proof proceeds as follows.
+First, if $\hat d_s' = \infty$,
+then no edges can be in tension,
+and so $\hat d_s = d_s$ everywhere
+as shown in Section~\ref{subsec:ibid-tension}.
+Otherwise,
+suppose that $\hat d_s(x) \neq d_s(x)$
+for some vertex $x$ with $\hat d_s(x) \leq \hat d_s'$.
+By (\ref{eqn:ibid-relaxation-props}),
+it would have to be that $d_s(x) < \hat d_s(x)$.
+Consider a true shortest path $p$ from $s$ to $x$;
+by (\ref{eqn:ibid-relaxation-props})
+such a path exists and has finite length $d_s(x)$.
+By (\ref{eqn:ibid-relaxation-props}),
+we have that $d_s(s) = \hat d_s(s) = 0$
+(and so $s$ and $x$ must be distinct).
+Let $(u,v)$ be the first edge along $p$ such that
+$d_s(u) = \hat d_s(u)$
+but $d_s(v) < \hat d_s(v)$.
+Since $p$ is a shortest path,
+edge $(u,v)$ must therefore be in tension.
+Since $w \geq 0$,
+it must be that $d_s(u) \leq d_s(x)$;
+further, since $d_s(u) = \hat d_s(u)$,
+$d_s(x) < \hat d_s(x)$,
+and $\hat d_s(x) \leq \hat d_s'$
+it must be that $\hat d_s(u) < \hat d_s'$.
+But then edge $(u,v)$ is in tension with lower $\hat d_s(u)$!
+This contradiction implies that every vertex $x$
+with $\hat d_s(x) \leq \hat d_s'$
+must have $\hat d_s(x) = d_s(x)$.
+
+As a result,
+a given value $\hat d_s'$ creates a region of vertices
+with values $\hat d_s(x) \leq \hat d_s'$ that are known to be
+accurate.
+This confers two distinct advantages when designing an algorithm.
+First,
+all tensioned edges $(u,v)$ with $\hat d_s(u) = \hat d_s'$
+(of which there must be at least one if any edges are in tension)
+can be relaxed immediately,
+and will never be retensioned.
+This is exactly the order imposed by the OPEN list in Dijkstra's
+algorithm \citep{dijkstra1959anote}.
+Second,
+if a path is sought only a particular destination vertex $t$,
+the algorithm can be terminated once
+$\hat d_s(t) \leq \hat d_s'$,
+since at that point the true distance to $t$ will be known valid.
 
 \begin{marginfigure}%
    \centering%
@@ -226,22 +399,74 @@ iterates through all edges repeatedly until no more violations exist
       after expanding 1,290,820 vertices.}%
    \label{fig:ibid:example-distance}%
 \end{marginfigure}
-Soon afterwards, several researchers
-identified \citep{leyzorek1957modeltechniques, dijkstra1959anote}
-an efficient ordering of edge relaxations.
-Dijkstra's algorithm (Figure~\ref{fig:ibid:example-distance})
-relaxes edges $(u,v)$ in increasing order of $d_s(u)$.
-In does this by initially marking all vertices as {\sc Open},
-and at each iteration moving to {\sc Closed}
-the {\sc Open} vertex $u$ minimizing $d_s$
-and relaxing all outgoing edges $(u,v)$ from $u$.
 
-When solving a single-pair problem
-with $w$ everywhere non-negative,
-this algorithm is guaranteed to consider each vertex
-(and therefore relax each edge) at most once,
-and therefore the algorithm can be terminated early
-once the target vertex is to be considered.
+\section{Incremental Search}
+\label{sec:ibid:incremental}
+
+How can we adapt the relaxation approach to the incremental setting?
+And how can we recover the original algorithm from the more general one?
+
+This stuff is more modern (1996, 2004).
+
+A review is here: \citep{eppstein1999dynamic},
+\citep{demetrescu2010dynamic}.
+
+Talk about how this is centrally a restatement of the Dijktsra's ordering.
+Bring in the invariant.
+
+DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}.
+
+How about this: \citep{frigioni2000dynamicsp}.
+
+Revisit Bellman equation.
+
+The central idea is that the search maintains the following invariant.
+Note that this is a basic restatement of the distance function
+ordering that underlies Dijkstra's algorithm.
+
+\begin{invariant}
+If $w$ is everywhere positive and $k_{\ms{min}}$ is the key of
+the minimal inconsistent vertex,
+then all vertices with key $k(v) < k_{\ms{min}}$ is consistent
+and correct.
+\end{invariant}
+
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}%
+   }%
+   \caption{Initial search: 1,287,897 expansions.
+      Replan: 391,122 expansions.}%
+   %\label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+
+\subsection{Incremental Bidirectional Search: The Algorithm}
+
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
+   }%
+   \caption{Initial search: 1,181,616 expansions.
+      Replan: 262,422 expansions.}%
+   %\label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+
+
+
 
 \section{Bidirectional Search}
 \label{sec:ibid:bidirectional}
@@ -252,15 +477,16 @@ is bidirectional search.
 In a bidirectional algorithm,
 the distance $d_t$ to the target is calculated in a growing region
 around the target vertex $t$
-concurrently with the conventional source distance $d_s$ around $s$.
+concurrently with the conventional source distance $d_s$ around $s$
 (Figure~\ref{fig:ibid:example-bidirectional}).
 Loosely speaking,
 the search can terminate with a shortest path
 once the two regions intersect.
 The savings relative to a unidirectional search grow with the problem's
-branching factor,
-which for most roadmaps is exponential in
-the dimensionality of the ambient space.
+branching factor.
+For roadmap graphs embedded in an ambient space,
+this branching factor can be linear or exponential in the space's
+dimension.
 \begin{marginfigure}%
    \centering%
    \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}%
@@ -360,54 +586,7 @@ See Algorithm~\ref{alg:ibid:bidirectional-termination}.
    \label{fig:ibid:bidirectional-termination-issue}
 \end{marginfigure}
 
-\section{Incremental Search}
-\label{sec:ibid:incremental}
-
-This stuff is more modern (1996, 2004).
-
-A review is here: \citep{eppstein1999dynamic},
-\citep{demetrescu2010dynamic}.
-
-DynamicSWSF-FP \citep{ramalingam1996}.
-
-Revisit Bellman equation.
-
-Apply waste to incremental search to get
-incremental heuristic search.
-
-\begin{marginfigure}%
-   \centering%
-   \subfloat[Initial search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-0.png}%
-   }
-   
-   \subfloat[Replan search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}%
-   }%
-   \caption{Initial search: 1,287,897 expansions.
-      Replan: 391,122 expansions.}%
-   %\label{fig:ibid:example-bidirectional}%
-\end{marginfigure}
-
-\subsection{Incremental Bidirectional Search: The Algorithm}
-
-\begin{marginfigure}%
-   \centering%
-   \subfloat[Initial search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
-   }
-   
-   \subfloat[Replan search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
-   }%
-   \caption{Initial search: 1,181,616 expansions.
-      Replan: 262,422 expansions.}%
-   %\label{fig:ibid:example-bidirectional}%
-\end{marginfigure}
+\subsection{IBiD}
 
 The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
 IBiD conducts two independent DynamicSWSF-FP searches
@@ -490,7 +669,7 @@ IBiD conducts two independent DynamicSWSF-FP searches
             \State Ensure $v \in Q_s$ iff $d_s(v) \neq r_s(v)$
          \EndProcedure
          \Procedure {ProcessSourceQueue} {\,\!}
-            \State $u \gets Q_s.\mbox{Pop}$
+            \State $u \gets Q_s.\mbox{Pop}()$
             \If {$r_s(u) < d_s(u)$}
                   \Comment over-consistent
                \State $d_s(u) \gets r_s(u)$
@@ -529,7 +708,7 @@ IBiD conducts two independent DynamicSWSF-FP searches
             \State Ensure $u \in Q_t$ iff $d_t(u) \neq r_t(u)$
          \EndProcedure
          \Procedure {ProcessTargetQueue} {\,\!}
-            \State $v \gets Q_t.\mbox{Pop}$
+            \State $v \gets Q_t.\mbox{Pop}()$
             \If {$r_t(v) < d_t(v)$}
                   \Comment over-consistent
                \State $d_t(v) \gets r_t(v)$
@@ -630,6 +809,9 @@ which breaks incremental search.
 This motivates the lexocraphically sorted key approach.
 
 \subsection{Incremental Heuristic Search}
+
+Apply waste to incremental search to get
+incremental heuristic search.
 
 Lifelong Planning A* \citep{koenig2004lpastar}.
 

@@ -17,7 +17,7 @@
 
 RUNS = pavgnone-baldist pavgfull-balcard pgoalfull-balfwd \
        pavgfull-baldist pgoalhalf-balfwd pavghalf-balcard \
-       pgoalnone-balfwd pavghalf-baldist pavgnone-balcardcd
+       pgoalnone-balfwd pavghalf-baldist pavgnone-balcard
 
 
 .PHONY: all
@@ -99,6 +99,21 @@ example-intro.png:
 		--v-start=458584 --v-goal=249500 --draw-roots \
 		--out-png=$@
 
+
+all: example-dijkstraall.png
+
+example-dijkstraall-dstart-0-%.txt:
+	rosrun thesis_experiments incbi-road-ne --v-start=458584 --v-goal=249500 \
+		--use-cardinality=false --balance-frac=0.00001 --potfn-start=0 --potfn-goal=0 \
+		--dijkstra-only=true \
+		--out-distancestart-fmt='example-dijkstraall-dstart-%d-stem.txt' \
+
+example-dijkstraall.png: example-dijkstraall-dstart-0-stem.txt
+	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
+		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
+		--in-distancestart=$^ --out-png=$@
+
+
 all: example-dijkstra.png
 
 example-dijkstra-dstart-0-%.txt example-dijkstra-stats-%.txt:
@@ -111,6 +126,7 @@ example-dijkstra.png: example-dijkstra-dstart-0-stem.txt
 	rosrun thesis_experiments fig-incbi-road-ne-draw.py \
 		--road-d-ne-co=USA-road-d.NE.co --road-t-ne-gr=USA-road-t.NE.gr \
 		--in-distancestart=$^ --out-png=$@
+
 
 all: example-bidijkstra.png
 
