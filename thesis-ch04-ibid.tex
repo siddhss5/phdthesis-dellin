@@ -26,7 +26,7 @@ We consider three classes of such techniques
       \includegraphics{build/ibid-intro-focus-heuristic} %
    }%
    
-   \subfloat[Incremental search.]{%
+   \subfloat[Incremental search. \ssnote{hard to follow}]{%
       \centering %
       \includegraphics{build/ibid-intro-focus-incremental} %
    }%
@@ -42,8 +42,12 @@ We consider three classes of such techniques
    one from the source vertex $s$,
    and the other from the sink vertex $t$.
    Such searches are well-suited to roadmaps in ambient spaces that
-   are high-dimensional and/or have
-   obstacles situated close to the source/sink vertices.
+   are high-dimensional \ssnote{how does this translate to number of nodes
+   or edges or degree?} and/or have
+   obstacles situated close to the source/sink vertices
+   \ssnote{hmm, isn't bidirectional Djikstra best when the searches
+   meet in the middle, so won't it expand a lot more nodes if sources
+   or sinks are harder when compared to both being equally hard?}.
 \item \emph{Heuristic Search} -- A heuristic-informed algorithm
    exploits a sink-directed heuristic function over vertices to bias
    exploration in the direction of the sink vertex.
