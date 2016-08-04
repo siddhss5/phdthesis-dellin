@@ -1,0 +1,391 @@
+\chapter{Appendix: LazySP Proofs}
+\label{sec:appendix-proofs}
+
+\subsection{LazySP}
+
+\begin{proof}[Proof of Theorem \ref{thm:lazy-optimality}]
+Let $p^*$ be an optimal path w.r.t. $w$,
+with $\ell^* = \mbox{len}(p^*, w)$.
+Since $w_{\ms{est}}(e) \leq \epsilon \, w(e)$ and $\epsilon \geq 1$,
+it follows that regardless of which edges are stored in $W_{\ms{eval}}$,
+$w_{\ms{lazy}}(e) \leq \epsilon \, w(e)$,
+and therefore
+$\mbox{len}(p^*, w_{\ms{lazy}}) \leq \epsilon \, \ell^*$.
+Now,
+since the inner \textsc{ShortestPath} algorithm terminated with
+$p_{\ms{ret}}$,
+we know that
+$\mbox{len}(p_{\ms{ret}}, w_{\ms{lazy}}) \leq \mbox{len}(p^*, w_{\ms{lazy}})$.
+Further,
+since the algorithm terminated with $p_{\ms{ret}}$,
+each edge on $p_{\ms{ret}}$ has been evaluated;
+therefore,
+$\mbox{len}(p_{\ms{ret}}, w) = \mbox{len}(p_{\ms{ret}}, w_{\ms{lazy}})$.
+Therefore,
+$\mbox{len}(p_{\ms{ret}}, w) \leq \epsilon \, \ell^*$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:lazy-completeness}]
+In this case,
+the algorithm will evaluate at least unevaluated edge at
+each iteration.
+Since there are a finite number of edges,
+eventually the algorithm will terminate.
+\end{proof}
+
+\subsection{A* Equivalence}
+
+\begin{proof}[Proof of Invariant \ref{inv:astar-cundisc-popen}]
+If $v$ is discovered, then it must either be on OPEN or CLOSED.
+$v$ can be on CLOSED only after it has been expanded,
+in which case $s$ would be discovered (which it is not).
+Therefore, $v$ must be on OPEN.
+\end{proof}
+
+\begin{proof}[Proof of Invariant \ref{inv:astar-wless-popen}]
+Clearly the invariant holds at the beginning of the algorithm,
+with only $v_{\ms{start}}$ on OPEN.
+If the invariant were to no longer hold after some iteration,
+then there must exist some pair of discovered vertices $v$ and $v'$
+with $v$ on CLOSED and $g[v] + w(v,v') < g[v']$.
+Since $v$ is on CLOSED,
+it must have been expanded at some previous iteration,
+immediately after which the inequality could not have held
+because $g[v']$ is updated upon expansion of $v$.
+Therefore,
+the inequality must have newly held after some intervening iteration,
+with $v$ remaining on CLOSED.
+Since the values $g$ are monotonically non-increasing and $w$ is fixed,
+this implies that $g[v]$ must have been updated (lower).
+However,
+if this had happened,
+then $v$ would have been removed from CLOSED and placed on OPEN.
+This contradiction implies that the invariant holds at every iteration.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:astar-equiv-from-lazy}]
+Consider path $p^*_{\ms{lazy}}$ with length $\ell^*_{\ms{lazy}}$
+yielding frontier vertex $v_{\ms{frontier}}$ via \textsc{SelectExpand}.
+Construct a vertex sequence $s$ as follows.
+Initialize $s$ with the vertices on $p^*_{\ms{lazy}}$
+from $v_{\ms{start}}$ to $v_{\ms{frontier}}$, inclusive.
+Let $N$ be the number of consecutive vertices at the start of $s$
+for which $f(v) = \ell^*_{\ms{lazy}}$
+(Note that the first vertex on $p^*_{\ms{lazy}}$, $v_{\ms{start}}$,
+must have $f(v_{\ms{start}}) = \ell^*_{\ms{lazy}}$,
+so $N \geq 1$.)
+Remove from the start of $s$ the first $N-1$ vertices.
+Note that at most the first vertex on $s$ has
+$f(v) = \ell^*_{\ms{lazy}}$,
+and the last vertex on $s$ must be $v_{\ms{frontier}}$.
+
+Now we show that each vertex in this sequence $s$,
+considered by A* in turn,
+exists on OPEN with minimal $f$-value.
+Iteratively consider the following procedure for sequence $s$.
+Throughout,
+we know that there must not be any vertex with
+$f(v) < \ell^*_{\ms{lazy}}$,
+that would imply that a different path through $v_b$ shorter than
+$\ell^*_{\ms{lazy}}$ exists,
+in which case $p^*_{\ms{lazy}}$ could not have been chosen.
+
+If the sequence has length $>1$,
+then consider the first two vertices on $s$, $v_a$ and $v_b$.
+By construction,
+$f(v_a) = \ell^*_{\ms{lazy}}$
+and 
+$f(v_b) \neq \ell^*_{\ms{lazy}}$.
+In fact, from above
+we know that $f(v_b) > \ell^*_{\ms{lazy}}$.
+Therefore,
+we have that $f(v_a) < f(v_b)$,
+therefore and $g[v_a] + w(v_a,v_b) < g[v_b]$.
+By Invariant~\ref{inv:astar-wless-popen},
+$v_a$ must be on OPEN,
+and with $f(v_a) = \ell^*_{\ms{lazy}}$,
+it can therefore be considered by A*.
+After it is expanded,
+$f(v_b) = \ell^*_{\ms{lazy}}$,
+and we can repeat the above procedure
+with the sequence formed by removing the $v_a$ from $s$.
+
+If instead the sequence has length $1$,
+then it must be exactly $(v_{\ms{frontier}})$,
+with $f(v_{\ms{frontier}}) = \ell^*_{\ms{lazy}}$.
+Since the edge after $f(v_{\ms{frontier}})$ is not
+evaluated,
+then by Invariant~\ref{inv:astar-cundisc-popen},
+$v_{\ms{frontier}}$ must be on OPEN,
+and will therefore be expanded next.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:astar-equiv-to-lazy}]
+Given that all vertices in $s_{\ms{candidate}}$ besides the last
+are re-expansions,
+they can be expanded with no edge evaluations.
+Once the last vertex,
+$v_{\ms{frontier}}$,
+is to be expanded by A*,
+suppose it has $f$-value $\ell$.
+
+First,
+we will show that there exists a path with length $\ell$ w.r.t.
+$w_{\ms{lazy}}$
+wherein all edges before $v_{\ms{frontier}}$ have been evaluated,
+and the first edge after $v_{\ms{frontier}}$ has not.
+Let $p_a$ be a shortest path from $v_{\ms{start}}$
+to $v_{\ms{frontier}}$ consisting of only evaluated edges.
+The length of this $p_a$ must be equal to $g[v_{\ms{frontier}}]$;
+if it were not,
+there would be some previous vertex on $p_a$ with lower $f$-value
+than $v_{\ms{frontier}}$,
+which would necessarily have been expanded first.
+Let $p_b$ be the a shortest path from $v_{\ms{frontier}}$
+to $v_{\ms{goal}}$.
+The length of $p_b$ must be $h_{\ms{lazy}}(v_{\ms{frontier}})$
+by definition.
+Therefore, the path $(p_a, p_b)$ must have length $\ell$,
+and since $v_{\ms{frontier}}$ is a new expansion,
+the first edge on $p_b$ must be unevaluated.
+
+Second,
+we will show that there does not exist any path shorter than $\ell$
+w.r.t. $w_{\ms{lazy}}$.
+Suppose $p'$ were such a path, with length $\ell' < \ell$.
+Clearly, $v_{\ms{start}}$ would have $f$-value $\ell'$ (although
+it may not be on OPEN).
+Consider each pair of vertices $(v_a, v_b)$ along $p'$ in turn.
+In each case,
+if $v_b$ were either undiscovered,
+or if $g[v_a] + w(v_a, v_b) < g[v_b]$,
+then $v_a$ would be on OPEN
+(via Invariants \ref{thm:lazy-completeness}
+and \ref{inv:astar-wless-popen}, respectively)
+with $f(v_a) = \ell'$,
+and would therefore have been expanded before $v_{\ms{frontier}}$.
+Otherwise,
+we know that $f(v_b) = \ell'$,
+and we can continue to the next pair on $p'$.
+\end{proof}
+
+\subsection{LWA* Equivalence}
+
+\begin{proof}[Proof of Invariant \ref{inv:lwastar}]
+Clearly the invariant holds at the beginning of the algorithm
+with only $g[v_{\ms{start}}] = 0$,
+since the inequality holds only for the out-edges of $v_{\ms{start}}$,
+with $v_{\ms{start}}$ on $Q_v$.
+Consider each subsequent iteration.
+If a vertex $v$ is popped from $Q_v$,
+then this may invalidate the invariant for all successors of $v$;
+however,
+since all out-edges are immediately added to $Q_e$,
+the invariant must hold.
+Consider instead if an edge $(v, v')$ which satisfies the inequality
+is popped from $Q_e$.
+Due to the inequality,
+we know that $g[v']$ will be recalculated as
+$g[v'] = g[v] + w(v,v')$,
+so that the inequality is no longer satisfied for edge $(v,v')$.
+However,
+reducing the value $g[v']$ may introduce satisfied inequalities across
+subsequent out-edges of $v'$,
+but since $v'$ is added to $Q_v$,
+the invariant continues to hold.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:lwastar-equiv-from-lazy}]
+In the first component of the equivalence,
+we will show that for any path $p$ minimizing $w_{\ms{lazy}}$
+allowable to LazySP-Forward,
+with $(v_a, v_b)$ the first unevaluated edge on $p$,
+there exists a sequence of vertices and edges on
+$Q_v$ and $Q_e$ allowable to LWA*
+such that edge $(v_a, v_b)$ is the first to be newly evaluated.
+Let the length of $p$ w.r.t. $w_{\ms{lazy}}$ be $\ell$.'
+
+We will first show that no vertex on $Q_v$ or edge on $Q_e$
+can have $f(\cdot) < \ell$.
+Suppose such a vertex $v$, or edge $e$ with source vertex $v$,
+exists.
+Then $g[v] + h(v) < \ell$,
+and there must be some path $p'$ consisting of an evaluated segment
+from $v_{\ms{start}}$ to $v$ of length $g[v]$,
+followed a segment from $v$ to $v_{\ms{goal}}$ of length $h(v)$.
+But then this path should have been chosen by LazySP.
+
+Next, we will show a procedure for generating an allowable
+sequence for LWA*.
+We will iteratively consider a sequence of path segments,
+starting with the segment from $v_{\ms{start}}$ to $v_a$,
+and becoming progressively shorter at each iteration by removing the
+first vertex and edge on the path.
+We will show that the first vertex on each segment $v_f$
+has $g[v_f] = \ell - h(v_f)$.
+By definition,
+this is true of the first such segment, since $g[v_{\ms{start}}] = 0$.
+For each but the last such segment,
+consider the first edge, $(v_f, v_s)$.
+If $v_s$ has the correct $g[\cdot]$,
+we can continue to the next segment immediately.
+Otherwise,
+either $v_f$ is on $Q_v$ or $(v_f, v_s)$ is on $Q_e$ by
+Invariant~\ref{inv:lwastar}.
+If the former is true,
+then $v_f$ can be popped from $Q_v$ with $f = \ell$,
+thereby adding $(v_f, v_s)$ to $Q_e$.
+Then,
+$(v_f, v_s)$ can be popped from $Q_e$ with $f = \ell$,
+resulting in $g[v_s] = \ell - h(v_s)$.
+We can then move on to the next segment.
+
+At the end of this process,
+we have the trivial segment $(v_a)$,
+with $g[v_a] = \ell - h(v_a)$.
+If $v_a$ is on $Q_v$, then pop it (with $f(v_a) = \ell$),
+placing $e_{ab}$ on $Q_e$;
+otherwise, since $e_{ab}$ is unevaluated,
+it must already be on $Q_e$.
+Since $f(e_{ab}) = \ell$, we can pop and evaluate it.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:lwastar-equiv-to-lazy}]
+Given that all vertices in $s_{\ms{candidate}}$ entail no edge evaluations,
+and all edges therein are re-expansions,
+they can be considered with no edge evaluations.
+Once the last edge $e_{xy}$ is to be expanded by LWA*,
+suppose it has $f$-value $\ell$.
+
+First,
+we will show that there exists a path with length $\ell$ w.r.t.
+$w_{\ms{lazy}}$
+which traverses unevaluated edge $e_{xy}$
+wherein all edges before $v_x$ have been evaluated.
+Let $p_x$ be a shortest path segment from $v_{\ms{start}}$
+to $v_x$ consisting of only evaluated edges.
+The length of $p_x$ must be equal to $g[v_x]$;
+if it were not,
+there would be some previous vertex on $p_x$ with lower $f$-value
+than $v_x$,
+which would necessarily have been expanded first.
+Let $p_y$ be the a shortest path from $v_y$
+to $v_{\ms{goal}}$.
+The length of $p_y$ must be $h_{\ms{lazy}}(v_y)$
+by definition.
+Therefore, the path $(p_x, e_{xy}, p_y)$ must have length $\ell$.
+
+Second,
+we will show that there does not exist any path shorter than $\ell$
+w.r.t. $w_{\ms{lazy}}$.
+Suppose $p'$ were such a path, with length $\ell' < \ell$,
+and with first unevaluated edge $e'_{xy}$.
+Clearly, $v_{\ms{start}}$ has
+$g[v_{\ms{start}}] = \ell' - h(v_{\ms{start}})$.
+Consider each evaluated edge $e'_{ab}$ along $p'$ in turn.
+In each case,
+if $g[v'_b] \neq \ell' - h(v'_b)$,
+then either $v'_a$ or $e'_{ab}$ would be on $Q_v$ or $Q_e$
+with $f(\cdot) = \ell'$,
+and would therefore be expanded before $e_{xy}$.
+Therefore,
+$e'_{xy}$ would then be popped from $Q_e$ with $f(e'_{xy}) = \ell'$,
+and it would have been evaluated before $e_{xy}$ with $f(e_{xy}) = \ell$.
+\end{proof}
+
+\chapter{Appendix: LazySP Timing Results}
+\label{sec:appendix-timing}
+
+We include an accounting of the cumulative computation time taken by
+each component of LazySP for each of the seven selectors
+for each problem class (Figure~\ref{fig:table-timing-results}).
+
+\begin{figure*}
+   \begin{widepage}
+   \centering
+   {\small%
+   \setlength{\tabcolsep}{0.06cm}%
+   \begin{tabular}{l@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r}
+      \toprule
+         & \multicolumn{3}{c}{Expand} & \multicolumn{3}{c}{Forward} & \multicolumn{3}{c}{Reverse} & \multicolumn{3}{c}{Alternate}
+         & \multicolumn{3}{c}{Bisect} & \multicolumn{3}{c}{WeightSamp} & \multicolumn{3}{c}{Partition} \\
+      \midrule
+      \addlinespace[0.5em]
+      PartConn & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (ms)}    &\bf1.22 &$\pm$&   0.04 &    1.96 &$\pm$&  0.06 &    1.86 &$\pm$&  0.06 &\bf1.20 &$\pm$& 0.03 &  2.41 &$\pm$& 0.06 & 4807.19 &$\pm$& 135.22 &   15.81 &$\pm$&  0.16 \\
+      \;\;\emph{sel-init (ms)} & --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &   12.49 &$\pm$&  0.11 \\
+      \;\;\emph{online (ms)}   &\bf1.22 &$\pm$&   0.04 &    1.96 &$\pm$&  0.06 &    1.86 &$\pm$&  0.06 &\bf1.20 &$\pm$& 0.03 &  2.41 &$\pm$& 0.06 & 4807.19 &$\pm$& 135.22 &    3.32 &$\pm$&  0.10 \\
+      \;\;\emph{search (ms)}   &   0.48 &$\pm$&   0.01 &    1.12 &$\pm$&  0.03 &    1.05 &$\pm$&  0.03 &   0.68 &$\pm$& 0.02 &  1.38 &$\pm$& 0.04 &    0.70 &$\pm$&   0.02 &    0.68 &$\pm$&  0.02 \\
+      \;\;\emph{sel (ms)}      &   0.02 &$\pm$&   0.00 &    0.01 &$\pm$&  0.00 &    0.01 &$\pm$&  0.00 &   0.01 &$\pm$& 0.00 &  0.03 &$\pm$& 0.00 & 4805.64 &$\pm$& 135.18 &    2.07 &$\pm$&  0.06 \\
+      \;\;\emph{eval (ms)}     & --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  --\;\; &     &       \\
+      \;\;\emph{eval (edges)}  &  87.10 &$\pm$&   2.39 &   35.86 &$\pm$&  1.04 &   34.84 &$\pm$&  1.04 &  22.23 &$\pm$& 0.60 & 44.81 &$\pm$& 1.11 &\bf20.66 &$\pm$&   0.57 &\bf20.39 &$\pm$&  0.56 \\
+      \addlinespace[0.5em]
+      UnitSquare & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (ms)}    &\bf0.91 &$\pm$&   0.03 &    1.47 &$\pm$&  0.06 &    1.49 &$\pm$&  0.06 &\bf0.94 &$\pm$& 0.03 &  1.71 &$\pm$& 0.04 & 3864.95 &$\pm$& 117.66 &   15.13 &$\pm$&  0.14 \\
+      \;\;\emph{sel-init (ms)} & --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &   13.41 &$\pm$&  0.12 \\
+      \;\;\emph{online (ms)}   &\bf0.91 &$\pm$&   0.03 &    1.47 &$\pm$&  0.06 &    1.49 &$\pm$&  0.06 &\bf0.94 &$\pm$& 0.03 &  1.71 &$\pm$& 0.04 & 3864.95 &$\pm$& 117.66 &    1.72 &$\pm$&  0.06 \\
+      \;\;\emph{search (ms)}   &   0.35 &$\pm$&   0.01 &    0.79 &$\pm$&  0.03 &    0.82 &$\pm$&  0.03 &   0.51 &$\pm$& 0.02 &  0.92 &$\pm$& 0.02 &    0.75 &$\pm$&   0.02 &    0.45 &$\pm$&  0.01 \\
+      \;\;\emph{sel (ms)}      &   0.01 &$\pm$&   0.00 &    0.01 &$\pm$&  0.00 &    0.01 &$\pm$&  0.00 &   0.01 &$\pm$& 0.00 &  0.02 &$\pm$& 0.00 & 3863.49 &$\pm$& 117.62 &    0.87 &$\pm$&  0.03 \\
+      \;\;\emph{eval (ms)}     & --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  --\;\; &     &       \\
+      \;\;\emph{eval (edges)}  &  69.21 &$\pm$&   2.55 &   27.29 &$\pm$&  1.03 &   27.69 &$\pm$&  1.02 &  17.82 &$\pm$& 0.60 & 32.62 &$\pm$& 0.72 &   15.58 &$\pm$&   0.47 &\bf14.08 &$\pm$&  0.46 \\
+      \addlinespace[0.5em]
+      ArmPlan (avg) & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (s)}    &  269.82 &$\pm$&  17.95 &\bf 5.90 &$\pm$&  0.46 &    8.22 &$\pm$&  0.53 &\bf5.96 &$\pm$& 0.31 &  7.34 &$\pm$& 0.43 & 3402.21 &$\pm$& 172.20 &  496.57 &$\pm$&  5.53 \\
+      \;\;\emph{sel-init (s)} &  --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  490.77 &$\pm$&  5.51 \\
+      \;\;\emph{online (s)}   &  269.82 &$\pm$&  17.95 &\bf 5.90 &$\pm$&  0.46 &    8.22 &$\pm$&  0.53 &\bf5.96 &$\pm$& 0.31 &  7.34 &$\pm$& 0.43 & 3402.21 &$\pm$& 172.20 &\bf 5.80 &$\pm$&  0.28 \\
+      \;\;\emph{search (s)}   &    0.02 &$\pm$&   0.00 &    0.02 &$\pm$&  0.00 &    0.02 &$\pm$&  0.00 &   0.02 &$\pm$& 0.00 &  0.02 &$\pm$& 0.00 &    0.02 &$\pm$&   0.00 &    0.04 &$\pm$&  0.00 \\
+      \;\;\emph{sel (s)}      &    0.00 &$\pm$&   0.00 &    0.00 &$\pm$&  0.00 &    0.00 &$\pm$&  0.00 &   0.00 &$\pm$& 0.00 &  0.00 &$\pm$& 0.00 & 3392.76 &$\pm$& 171.74 &    1.54 &$\pm$&  0.09 \\
+      \;\;\emph{eval (s)}     &  269.78 &$\pm$&  17.95 &    5.87 &$\pm$&  0.45 &    8.20 &$\pm$&  0.52 &   5.94 &$\pm$& 0.31 &  7.31 &$\pm$& 0.43 &    9.39 &$\pm$&   0.57 &    4.21 &$\pm$&  0.22 \\
+      \;\;\emph{eval (edges)} &  949.05 &$\pm$&  63.46 &   63.62 &$\pm$&  4.15 &   74.94 &$\pm$&  5.07 &  55.48 &$\pm$& 2.95 & 68.01 &$\pm$& 3.86 &   56.93 &$\pm$&   3.37 &\bf48.07 &$\pm$&  2.44 \\
+      \addlinespace[0.25em]
+      ArmPlan1 & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (s)}    &  109.09 &$\pm$&  14.15 &\bf 4.81 &$\pm$&  0.49 &   14.81 &$\pm$&  1.45 &   7.03 &$\pm$& 0.63 &  7.91 &$\pm$& 0.70 & 3375.35 &$\pm$& 319.81 &  496.74 &$\pm$&  8.22 \\
+      \;\;\emph{sel-init (s)} &  --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  489.49 &$\pm$&  8.18 \\
+      \;\;\emph{online (s)}   &  109.09 &$\pm$&  14.15 &\bf 4.81 &$\pm$&  0.49 &   14.81 &$\pm$&  1.45 &   7.03 &$\pm$& 0.63 &  7.91 &$\pm$& 0.70 & 3375.35 &$\pm$& 319.81 &    7.25 &$\pm$&  0.66 \\
+      \;\;\emph{search (s)}   &    0.02 &$\pm$&   0.00 &    0.02 &$\pm$&  0.00 &    0.03 &$\pm$&  0.00 &   0.02 &$\pm$& 0.00 &  0.02 &$\pm$& 0.00 &    0.02 &$\pm$&   0.00 &    0.04 &$\pm$&  0.00 \\
+      \;\;\emph{sel (s)}      &    0.00 &$\pm$&   0.00 &    0.00 &$\pm$&  0.00 &    0.00 &$\pm$&  0.00 &   0.00 &$\pm$& 0.00 &  0.00 &$\pm$& 0.00 & 3358.82 &$\pm$& 318.17 &    1.61 &$\pm$&  0.16 \\
+      \;\;\emph{eval (s)}     &  109.07 &$\pm$&  14.15 &    4.78 &$\pm$&  0.49 &   14.77 &$\pm$&  1.44 &   7.01 &$\pm$& 0.63 &  7.88 &$\pm$& 0.70 &   16.47 &$\pm$&   1.68 &    5.59 &$\pm$&  0.51 \\
+      \;\;\emph{eval (edges)} &  344.74 &$\pm$&  39.63 &\bf49.72 &$\pm$&  4.25 &   95.58 &$\pm$&  9.67 &  59.44 &$\pm$& 5.06 & 58.90 &$\pm$& 4.74 &   73.72 &$\pm$&   7.63 &\bf50.66 &$\pm$&  4.43 \\
+      \addlinespace[0.25em]
+      ArmPlan2 & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (s)}    &  166.19 &$\pm$&   9.29 &\bf 3.27 &$\pm$&  0.25 &    7.36 &$\pm$&  0.69 &   5.95 &$\pm$& 0.52 &  5.63 &$\pm$& 0.45 & 4758.04 &$\pm$& 407.56 &  495.21 &$\pm$& 12.65 \\
+      \;\;\emph{sel-init (s)} &  -    - &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  489.22 &$\pm$& 12.64 \\
+      \;\;\emph{online (s)}   &  166.19 &$\pm$&   9.29 &\bf 3.27 &$\pm$&  0.25 &    7.36 &$\pm$&  0.69 &   5.95 &$\pm$& 0.52 &  5.63 &$\pm$& 0.45 & 4758.04 &$\pm$& 407.56 &    5.99 &$\pm$&  0.48 \\
+      \;\;\emph{search (s)}   &    0.01 &$\pm$&   0.00 &    0.01 &$\pm$&  0.00 &    0.02 &$\pm$&  0.00 &   0.01 &$\pm$& 0.00 &  0.01 &$\pm$& 0.00 &    0.02 &$\pm$&   0.00 &    0.03 &$\pm$&  0.00 \\
+      \;\;\emph{sel (s)}      &    0.00 &$\pm$&   0.00 &    0.00 &$\pm$&  0.00 &    0.00 &$\pm$&  0.00 &   0.00 &$\pm$& 0.00 &  0.00 &$\pm$& 0.00 & 4750.16 &$\pm$& 406.98 &    2.03 &$\pm$&  0.22 \\
+      \;\;\emph{eval (s)}     &  166.17 &$\pm$&   9.28 &\bf 3.26 &$\pm$&  0.25 &    7.34 &$\pm$&  0.69 &   5.93 &$\pm$& 0.52 &  5.61 &$\pm$& 0.45 &    7.82 &$\pm$&   0.61 &    3.91 &$\pm$&  0.27 \\
+      \;\;\emph{eval (edges)} &  657.02 &$\pm$&  29.24 &\bf62.24 &$\pm$&  6.12 &   98.54 &$\pm$& 10.89 &  69.96 &$\pm$& 6.98 & 75.88 &$\pm$& 7.47 &\bf66.24 &$\pm$&   6.36 &\bf62.16 &$\pm$&  6.10 \\
+      \addlinespace[0.25em]
+      ArmPlan3 & & & & & & & & & & & & & & & & & & & & & \\
+      \;\;\emph{total (s)}    &  534.16 &$\pm$&  55.64 &    9.61 &$\pm$&  1.33 &\bf 2.50 &$\pm$&  0.23 &   4.91 &$\pm$& 0.56 &  8.47 &$\pm$& 0.99 & 2073.23 &$\pm$& 198.75 &  497.76 &$\pm$& 10.27 \\
+      \;\;\emph{sel-init (s)} &  --\;\; &     &        &  --\;\; &     &       &  --\;\; &     &       & --\;\; &     &      &--\;\; &     &      &  --\;\; &     &        &  493.59 &$\pm$& 10.21 \\
+      \;\;\emph{online (s)}   &  534.16 &$\pm$&  55.64 &    9.61 &$\pm$&  1.33 &\bf 2.50 &$\pm$&  0.23 &   4.91 &$\pm$& 0.56 &  8.47 &$\pm$& 0.99 & 2073.23 &$\pm$& 198.75 &    4.17 &$\pm$&  0.43 \\
+      \;\;\emph{search (s)}   &    0.02 &$\pm$&   0.01 &    0.02 &$\pm$&  0.00 &    0.02 &$\pm$&  0.00 &   0.02 &$\pm$& 0.00 &  0.02 &$\pm$& 0.00 &    0.03 &$\pm$&   0.01 &    0.04 &$\pm$&  0.00 \\
+      \;\;\emph{sel (s)}      &    0.00 &$\pm$&   0.00 &    0.00 &$\pm$&  0.00 &    0.00 &$\pm$&  0.00 &   0.00 &$\pm$& 0.00 &  0.00 &$\pm$& 0.00 & 2069.29 &$\pm$& 198.53 &    0.98 &$\pm$&  0.13 \\
+      \;\;\emph{eval (s)}     &  534.10 &$\pm$&  55.63 &    9.58 &$\pm$&  1.33 &    2.48 &$\pm$&  0.23 &   4.89 &$\pm$& 0.56 &  8.44 &$\pm$& 0.99 &    3.90 &$\pm$&   0.31 &    3.15 &$\pm$&  0.32 \\
+      \;\;\emph{eval (edges)} & 1845.38 &$\pm$& 195.57 &   78.90 &$\pm$& 10.36 &\bf30.70 &$\pm$&  3.62 &  37.04 &$\pm$& 4.59 & 69.26 &$\pm$& 7.97 &\bf30.82 &$\pm$&   3.60 &\bf31.38 &$\pm$&  3.80 \\
+      \addlinespace[0.25em]
+      \bottomrule
+   \end{tabular}%
+   }%
+   \end{widepage}
+   \vspace{0.5cm}
+   \caption{
+      Detailed timing results for each selector.
+      The actual edge weights for the illustrative
+      PartConn and UnitSquare problems were pre-computed,
+      and therefore their timings are not included.
+      The Partition selector requires initialization of the $Z$-values
+      (\ref{eqn:partitionfn}) for the graph using only the estimated
+      edge weights.
+      Since this is not particular to either the actual edge weights
+      (e.g. from the obstacle distribution)
+      or the start/goal vertices from a particular instance,
+      this initialization (\emph{sel-init}) is considered separately.
+      The online running time (\emph{online}) is broken into LazySP's
+      three primary steps: the inner search (\emph{search}),
+      invoking the edge selector (\emph{sel}),
+      and evaluating edges (\emph{eval}).
+      We also show the number of edges evaluated.}
+   \label{fig:table-timing-results}
+\end{figure*}

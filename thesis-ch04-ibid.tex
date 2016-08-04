@@ -69,13 +69,17 @@ While originally motivated for use with LazySP,
 IBiD is broadly applicable to incremental search problems.
 
 \paragraph{Chapter outline.}
-In Section~\ref{sec:ibid:distance-functions},
-we review distance functions and unidirectional methods.
+Finding shortest paths on graphs is a very extensively studied problem.
+This chapter begins with a comprehensive review of 
+methods which solve shortest path problems by computing
+distance functions.
+After defining the problem in Section~\ref{subsec:ibid-probdef},
+we review distance functions and unidirectional methods
+in Section~\ref{sec:ibid:distance-functions}.
 Section~\ref{sec:ibid:bidirectional} reviews
-bidirectional search methods.
-In Section~\ref{sec:ibid:incremental},
-we review incremental search
-and introduce IBiD,
+bidirectional search methods,
+and Section~\ref{sec:ibid:incremental} reviews incremental search.
+Section~\ref{sef:ibid:ibid}, introduces IBiD,
 an algorithm which combines bidirectional and incremental search.
 In Section~\ref{sec:ibid:heuristic},
 we review heuristic search methods,
@@ -116,28 +120,35 @@ The chapter concludes with experimental results and implentation notes.
    \label{tab:ibid:alg-overview}
 \end{table}
 
-\section{Search via Distance Functions}
-\label{sec:ibid:distance-functions}
+\section{Problem Definition}
+\label{subsec:ibid-probdef}
 
-\paragraph{Problem definition.}
 The \emph{shortest path problem} on graphs has been extensively
 studied over the past six decades.
 Consider a directed graph $G = (V,E)$ and accompanying edge weight
-function $w : E \rightarrow \mathbb{R}$,
-with the length of a path equal to the sum of the weights of its
+function $w : E \rightarrow \mathbb{R}$.
+Note that we allow graphs with multiple edges connecting any pair
+of vertices,
+as well as graphs with edges to and from the same vertex.
+
+The length of a path is equal to the sum of the weights of its
 constituent edges.
 \marginnote{
 The single-pair problem is also called the \emph{two-terminal} or
 \emph{point-to-point} problem.}
-I include here a brief survey of algorithmic work on the
-\emph{single-pair shortest path} (SPSP) problem,
-where a path of minimal length is sought
-between distinct source and target vertices
+We consider the \emph{single-pair shortest path} (SPSP) problem,
+in which a path of minimal length is sought
+between distinct start and destination vertices
 $s,t \in V$.
-I also consider only graphs without negative-length cycles.
-Note that we can also handle planning problems with multiple
+(We can also handle planning problems with multiple
 start/goal configurations as an SPSP problem
-as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.
+as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.)
+
+Our review is applicable to problems where $w$ is everywhere finite.
+The algorithms that we consider do not distinguish between non-existant
+and infinite-weight edges,
+and so will return that no path exists in the case where shortest
+paths contain infinite-weight edges.
 
 \paragraph{An example problem.}
 \begin{marginfigure}%
@@ -168,7 +179,7 @@ comprising an approximate road network,
 using transit time as the edge weight function
 (Figure~\ref{fig:ibid:example-intro}).
 In this way,
-a shortest path between a pair of sink and target locations
+a shortest path between a pair of start and destination locations
 minimizes the total transit time between them.
 
 \paragraph{Problem Settings.}
@@ -178,15 +189,28 @@ settings \citep{kaindl1997biheurreconsidered}
 or to settings where pre-computation is available
 \citep{goldberg2007pointtopoint}.
 While we do not focus on such settings,
-the algorithm we propose is complementary to these techniques.
+the algorithm we propose may be complementary to these techniques.
 
-\subsection{Pathfinding via the Source Distance Function}
+\section{Review of Pathfinding with Distance Functions}
+\label{sec:ibid:distance-functions}
+
+This section contains a unified presentation of unidirectional,
+bidirectional, and incremental search stategies
+by examining the properties of the distance functions that they
+maintain.
+These properties and invariants can be established for arbitrary
+distance function approximations.
+Examination of these properties then informs the development of
+algorithms which calculate them,
+which we defer to Section~\ref{sef:ibid:ibid}.
+
+\subsection{Shortest Paths via the Source Distance Function}
 
 The pioneering pathfinding algorithms of the late 1950s address
 a generalization of the SPSP problem called
 the \emph{single-source} problem,
-where shortest paths are calculated from $s$ to all vertices on
-the graph.
+where shortest paths are calculated from the start vertex $s$
+to all vertices on the graph.
 They proceed by calculating the \emph{source distance function}
 $d^* : V \rightarrow \mathbb{R}$,
 which gives the length of the shortest path from $s$
@@ -217,12 +241,12 @@ Importantly, $d^*$ can also be characterized locally by
    d^*(v) = 
    \left\{ \begin{array}{cl}
       0 & \mbox{if } v = s \\
-      \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)} d^*(u) + w(u,v) & \mbox{otherwise,} \\
+      \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)} d^*(u) + w(e_{uv}) & \mbox{otherwise,} \\
    \end{array} \right.
    \label{eqn:distance-function-char}
 \end{equation}
-where $\mbox{Pred}(v)$ yeilds the predecessor vertices
-of $v$.
+where $\mbox{Pred}(v)$ yeilds the predecessor vertices of $v$,
+and a vertex $v$ with no predecessors takes $d^*(v) = \infty$.
 \marginnote{Note that
 while the distance function $d^*$ necessarily satisfies
 the equations (\ref{eqn:distance-function-char}),
@@ -237,8 +261,8 @@ which rely on the principle of optimality.
 This characterization also follows implicitly from early results for
 the all-pairs problem
 \citep{shimbel1955communicationnets, beckmann1955transportation}.
-Note that (\ref{eqn:distance-function-char}) is a necessary condition
-of $d^*$,
+Note that while (\ref{eqn:distance-function-char})
+is a necessary condition of $d^*$,
 it is not sufficient in general.
 In particular,
 if $w$ has cycles of zero length,
@@ -246,65 +270,71 @@ there will be multiple solutions of (\ref{eqn:distance-function-char})
 which are not the well-defined $d^*$.
 
 \paragraph{Reconstructing a Shortest Path from the Distance Function}
-\cdnote{Add note about path reconstruction.
-Problem if there exist zero-length cycles.}
+Calculating the source distance function is only useful for solving
+the SPSP problem if it can be used to efficiently determine
+a shortest path.
+We can show that such a path can be reconstructed by starting at
+the destination $t$ and progressively prepending the predecessor
+edge $e_{uv}$ (and vertex $u$)
+which locally minimizes $d^*(u) + w(e_{uv})$.
+Any path constructed in this way is guaranteed to be a shortest path,
+and this process is gauranteed to terminate if the graph
+contains no zero-length cycles.
 
 \subsection{Approximating $d^*$ via Tensioned Estimates}
 \label{subsec:ibid-tension}
 
 How can we compute $d^*$ efficently over the graph?
 Consider an approximation function $d$
-which satisfies the following properties:
+which satisfies the following four properties:%
 \begin{subequations}%
    \begin{eqnarray}
-      & d^*(v) \leq d(v) & \forall v \in V
+      & d^*(v) \leq d(v) & \forall v
          \label{eqn:ibid-relaxation-props-nounder} \\
-      & d(s) = 0 &
+      & d(v) = 0 & v = s
          \label{eqn:ibid-relaxation-props-ds0} \\
-      & d(u) + w(e_{uv}) \geq d(v) & \forall e_{uv} \in E
+      & \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)}
+         d(u) + w(e_{uv}) \leq d(v)
+         & v \neq s
+         \label{eqn:ibid-relaxation-props-nottoogood} \\
+      & d(u) + w(e_{uv}) \geq d(v) & \forall e_{uv}
          \label{eqn:ibid-relaxation-props-tens}
    \end{eqnarray}%
    \label{eqn:ibid-relaxation-props}%
 \end{subequations}%
+Conditions (\ref{eqn:ibid-relaxation-props-ds0} --
+\ref{eqn:ibid-relaxation-props-tens})
+follow directly from the local characterization
+(\ref{eqn:distance-function-char});
+in particular,
+the case where $v \neq s$ has been split into the two
+equivalent inequalities (\ref{eqn:ibid-relaxation-props-nottoogood})
+and (\ref{eqn:ibid-relaxation-props-tens}).
+In contrast,
+for now we take the global inequality
+(\ref{eqn:ibid-relaxation-props-nounder}) on faith;
+we will later revisit the implications of relying on this assumption.
+
+We can show that any estimate $d$ satisfying these properties
+is the unique distance function $d^*$
+via Theorem~\ref{thm:ibid-relaxation-notension}.
 
 \begin{theorem}
+\marginnote{Proofs for all theorems in this chapter are located in
+Appendix~\ref{chap:appendix-ibid-proofs}.}
 If $d: V \rightarrow \mathbb{R}$
 satisfies (\ref{eqn:ibid-relaxation-props}),
 then $d = d^*$.
 \label{thm:ibid-relaxation-notension}
 \end{theorem}
 
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-notension}]
-Consider any vertex $x$.
-If $d^*(x) = \infty$,
-then by (\ref{eqn:ibid-relaxation-props-nounder}) we must have that
-$d(x) = \infty$.
-Otherwise,
-by (\ref{eqn:ibid-distance-function-global}),
-there exists a path $p^*$ of length $d^*(x)$;
-consider this path.
-The first vertex on $p^*$ is $s$ with $d^*(s) = 0$,
-and by (\ref{eqn:ibid-relaxation-props}),
-$d(s) = d^*(s)$.
-For each edge $e_{uv}$ on $p^*$ with $d(u) = d^*(u)$,
-we will show that $d(v) = d^*(v)$.
-By definition of the shortest path,
-$d^*(u) + w(e_{uv}) = d^*(v)$.
-Therefore $d(u) + w(e_{uv}) = d^*(v)$,
-and by (\ref{eqn:ibid-relaxation-props-tens}),
-we have $d^*(v) \geq d(v)$,
-and by (\ref{eqn:ibid-relaxation-props-nounder})
-we have $d^*(v) = d(v)$.
-By induction along the path $p^*$,
-we have that $d(x) = d^*(x)$.
-\end{proof}
-
-\subsection{Tensioned Estimates and Edge Relaxation}
-
 The principal method for arriving at an approximation
 which satisfies (\ref{eqn:ibid-relaxation-props})
 is via \emph{tensioned estimates}.
-Consider the following labeling on an arbitrary approximation $d$:
+Consider an arbitrary approximation $d$ which satisfies only
+(\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood}),
+and consider the following edge labeling:
 \begin{equation}
    \mbox{edge } e_{uv} \mbox{ is \emph{tensioned}}
    \;\;\mbox{iff}\;\;
@@ -315,25 +345,27 @@ Tensioned edges are therefore those that violate
 (\ref{eqn:ibid-relaxation-props-tens}).
 A restatement of Theorem~\ref{thm:ibid-relaxation-notension}
 is that an approximation $d$
-satisfying (\ref{eqn:ibid-relaxation-props-ds0})
-and (\ref{eqn:ibid-relaxation-props-nounder})
+satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood})
 with no tensioned edges is everywhere correct.
 
+\paragraph{Edge Relaxation.}
 How can we arrive at an approximation
 satisfying Theorem~\ref{thm:ibid-relaxation-notension}?
-We can initialize a $d$ so as to trivially
-satisfy (\ref{eqn:ibid-relaxation-props-ds0})
-and (\ref{eqn:ibid-relaxation-props-nounder}),
+The principal technique treats the properties
+(\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood}) as invariants.
+An initial approximation $d$ is chosen for which the invariants
+trivially hold,
 such as $d(v) = \infty \;\forall v \neq s$,
 which will generally have many edges in tension.
-The principal technique for improving $d$ relies on the principle of
-\emph{relaxation}
-as described by Ford \citep{ford1955networkflowtheory}.
-An algorithm can iteratively select a tensioned edge $e_{uv}$
-and relax it by setting
-$d(v) \leftarrow d(u) + w(e_{uv})$.
+The tensioned approximation $d$ is then iteratively improved
+via \emph{edge relaxation}
+as described by Ford \citep{ford1955networkflowtheory},
+wherein a tensioned edge $e_{uv}$ is selected and relaxed
+by setting $d(v) \leftarrow d(u) + w(e_{uv})$.
 It can be shown that applying this process arbitrarily
-maintains the properties in (\ref{eqn:ibid-relaxation-props}).
+maintains the invariants.
 
 It can be further shown that for a finite graph,
 the number of edge relaxations needed is also finite.
@@ -347,19 +379,84 @@ Note that this does not place any requirements on $G$
 (other than that $d^*$ must exist, so there must not be
 any negative-length cycles reachable from $s$).
 
-\subsection{Soundness, Trust Regions, and an Efficient Ordering}
-
+\paragraph{Approximation Soundness.}
 The need for multiple cycles of Bellman-Ford stems from the fact
 that each edge may need to be relaxed several times.
-Consider the vertices $a \rightarrow b \rightarrow c$,
-with edges $e_{ab}$ and $e_{bc}$ both in tension;
-if $e_{bc}$ is relaxed before $e_{ab}$,
-then $e_{bc}$ will need to be relaxed a second time.
 This occurrs because relaxing an edge changes the
 $d$-value of the target vertex,
-which may newly tension downstream edges.
+which may newly tension downstream edges
+(see Figure~\ref{fig:ibid:bellman-ford-repetitions}).
 
-We can exploit our intution to order relaxations from source to sink
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+
+      \begin{scope}[shift={(0,0)}]
+         \node[fill=black,circle,inner sep=1.2pt] (a) at (0,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (c) at (3.0,0) {};
+         \draw[->,densely dashed] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[->,densely dashed] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+         
+         \node[above=-0.00cm of a] {$a$};
+         \node[above=-0.00cm of b] {$b$};
+         \node[above=-0.00cm of c] {$c$};
+
+         \node[below=0.05cm of a] {$d=0$};
+         \node[below=0.05cm of b] {$d=2$};
+         \node[below=0.05cm of c] {$d=4$};
+      \end{scope}
+
+      \begin{scope}[shift={(0,-1)}]
+         \node[fill=black,circle,inner sep=1.2pt] (a) at (0,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (c) at (3.0,0) {};
+         \draw[->,densely dashed] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[line width=0.10cm,black!10] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[->] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+
+         \node[below=0.05cm of a] {$d=0$};
+         \node[below=0.05cm of b] {$d=2$};
+         \node[below=0.05cm of c] {$d=3$};
+      \end{scope}
+
+      \begin{scope}[shift={(0,-2)}]
+         \node[fill=black,circle,inner sep=1.2pt] (a) at (0,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (c) at (3.0,0) {};
+         \draw[line width=0.10cm,black!10] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[->] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[->,densely dashed] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+         
+         \node[below=0.05cm of a] {$d=0$};
+         \node[below=0.05cm of b] {$d=1$};
+         \node[below=0.05cm of c] {$d=3$};
+      \end{scope}
+
+      \begin{scope}[shift={(0,-3)}]
+         \node[fill=black,circle,inner sep=1.2pt] (a) at (0,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,0) {};
+         \node[fill=black,circle,inner sep=1.2pt] (c) at (3.0,0) {};
+         \draw[->] (a) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[line width=0.10cm,black!10] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+         \draw[->] (b) -- (c) node[midway,fill=white,circle,inner sep=1pt] {1};
+         
+         \node[below=0.05cm of a] {$d=0$};
+         \node[below=0.05cm of b] {$d=1$};
+         \node[below=0.05cm of c] {$d=2$};
+      \end{scope}
+      
+   \end{tikzpicture}
+   \caption{Ordering problems.
+      Consider the vertices $a \rightarrow b \rightarrow c$,
+      with edges $e_{ab}$ and $e_{bc}$ both in tension;
+      if $e_{bc}$ is relaxed before $e_{ab}$,
+      then $e_{bc}$ will need to be relaxed a second time.}
+   \label{fig:ibid:bellman-ford-repetitions}
+\end{marginfigure}
+
+We can exploit our intution to order relaxations from start to destination
 in the special case where $w \geq 0$
 (note that this requirement is stronger than requiring no reachable
 negative-length cycles).
@@ -377,64 +474,33 @@ as described by Theorem~\ref{thm:ibid-relaxation-sound}.
 \end{marginfigure}
 
 \begin{theorem}
-Let $d'$ be the smallest value $d(u)$
-for any edge $e_{uv}$ labeled as in tension
-by (\ref{eqn:ibid-relaxation-tensioned}).
+Consider $d: V \rightarrow \mathbb{R}$
+satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood}),
+and let $k$ be the smallest value $d(u)$
+among all tensioned edges $e_{uv}$
+(or $\infty$ if no such edges exist).
 If $w \geq 0$,
-any vertex $v$ with $d(v) \leq d'$
-has $d(v) = d^*(v)$.
+any vertex $x$ with $d(x) \leq k$
+has $d(x) = d^*(x)$.
 \label{thm:ibid-relaxation-sound}
 \end{theorem}
-
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-sound}]
-The proof proceeds as follows.
-First, if $d' = \infty$,
-then no edges can be in tension,
-and so $d = d^*$ everywhere
-as shown in Section~\ref{subsec:ibid-tension}.
-Otherwise,
-suppose that $d(x) \neq d^*(x)$
-for some vertex $x$ with $d(x) \leq d'$.
-By (\ref{eqn:ibid-relaxation-props}),
-it would have to be that $d^*(x) < d(x)$.
-Consider a true shortest path $p$ from $s$ to $x$;
-by (\ref{eqn:ibid-relaxation-props})
-such a path exists and has finite length $d^*(x)$.
-By (\ref{eqn:ibid-relaxation-props}),
-we have that $d^*(s) = d(s) = 0$
-(and so $s$ and $x$ must be distinct).
-Let $e_{uv}$ be the first edge along $p$ such that
-$d^*(u) = d(u)$
-but $d^*(v) < d(v)$.
-Since $p$ is a shortest path,
-edge $e_{uv}$ must therefore be in tension.
-Since $w \geq 0$,
-it must be that $d^*(u) \leq d^*(x)$;
-further, since $d^*(u) = d(u)$,
-$d^*(x) < d(x)$,
-and $d(x) \leq d'$
-it must be that $d(u) < d'$.
-But then edge $e_{uv}$ is in tension with lower $d(u)$!
-This contradiction implies that every vertex $x$
-with $d(x) \leq d'$
-must have $d(x) = d^*(x)$.
-\end{proof}
-
 As a result,
-a given value $d'$ creates a region of vertices
-with values $d(x) \leq d'$ that are known to be
+a given value $k$ creates a region of vertices
+with values $d(x) \leq k$ that are known to be
 accurate.
-This confers two distinct advantages when designing an algorithm.
-First,
-all tensioned edges $e_{uv}$ with $d(u) = d'$
-(of which there must be at least one if any edges are in tension)
+This confers two distinct advantages when designing an algorithm:
+an efficient relaxation ordering,
+and an early termination condition for single-pair problems.
+
+\paragraph{Efficient Relaxation Ordering.}
+Therefore,
+all tensioned edges $e_{uv}$ with $d(u) = k$
+(of which there must be at least one if any edges are tensioned)
 can be relaxed immediately,
 and will never be retensioned.
 This is exactly the order imposed by the OPEN list in Dijkstra's
 algorithm \citep{dijkstra1959anote}.
-
-\subsection{Completeness and Early Termination}
-\label{subsec:ibid-dijkstra-completeness}
 
 \begin{marginfigure}%
    \centering%
@@ -447,110 +513,85 @@ algorithm \citep{dijkstra1959anote}.
    \label{fig:ibid:example-distance}%
 \end{marginfigure}
 
-If a path is sought only a particular destination vertex $t$,
-it is beneficial to terminate the algorithm before all edges are relaxed.
-The soundness result (Theorem~\ref{thm:ibid-relaxation-sound})
-demonstrates that once $d(t) \leq d'$,
-the value $d(t)$ is known to be correct.
+\paragraph{Early Termination.}
+The soundness result shows that once the destination
+vertex $t$ satisfies $d(t) \leq k$,
+it has the correct start distance.
+Since we are only interested in reconstructing a shortest path to $t$,
+we are interested in terminating computation of the distance
+function as early as possible.
 However,
-proving that a back-reconstructed solution path is correct
-requires a complementary completeness result --
-that it, to show that if a better solution exists,
-it would have been found.
-
-Unfortunately the edge cases for completeness are less strong
-than for soundness.
-See the example in Figure~\ref{fig:ibid:relaxation-completeness-issue}.
-\cdnote{Add note about how in the special case where $d$ is initialized
-to $\infty$ and all $d$-values are thereafter reduced via edge
-relaxations,
-this completeness result also extends to the case of
-$w \geq 0$ and $d^*(x) \leq d'$.
-But this result isn't applicable to incremental settings as we'll
-discuss in Section~\ref{sec:ibid:incremental}.}
-
-\begin{marginfigure}
-   \centering
-   \begin{tikzpicture}
-      \tikzset{>=latex} % arrow heads
-      \node[fill=black,circle,inner sep=1.2pt] (s) at (0,0) {};
-      \node[fill=black,circle,inner sep=1.2pt] (a) at (1.5,0) {};
-      \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,1.2) {};
-      \node[fill=black,circle,inner sep=1.2pt] (x) at (3.0,0) {};
-      \draw[->,densely dashed] (s) -- (a) node[midway,fill=white,circle,inner sep=1pt] {0};
-      \draw[->] (a) -- (x) node[midway,fill=white,circle,inner sep=1pt] {0};
-      \draw[->] (s) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
-      \draw[->] (b) -- (x) node[midway,fill=white,circle,inner sep=1pt] {1};
-
-      \node[above=0.05cm of s] {$s$};
-      \node[above=0.05cm of a] {$a$};
-      \node[below=0.05cm of b] {$b$};
-      \node[above=0.05cm of x] {$x$};
-
-      \node[below=0.05cm of s] {$d=0$};
-      \node[below=0.05cm of a] {$d=3$};
-      \node[above=0.35cm of b] {$d=1$};
-      \node[below=0.05cm of x] {$d=0$};
-
-      \node[below=0.35cm of s] {$d^*=0$};
-      \node[below=0.35cm of a] {$d^*=0$};
-      \node[above=0.05cm of b] {$d^*=1$};
-      \node[below=0.35cm of x] {$d^*=0$};
-   \end{tikzpicture}
-   \caption{Problem case for pathfinding with distance functions.
-      Here, $d$ satisfied a and c, with edge $e_{sa}$ tensioned,
-      and $d' = 0$.
-      While the approximation $d$ is \emph{sound} at $x$
-      ($d(x)$ is correct),
-      reconstructing a shortest path requires \emph{completeness}.}
-   \label{fig:ibid:relaxation-completeness-issue}
-\end{marginfigure}
+Theorem~\ref{thm:ibid-relaxation-sound} by itself is insufficient
+to demonstrate that such a shortest path can be reconstructed.
+This requres a proof of Theorem~\ref{thm:ibid-relaxation-reconstruct}.
 
 \begin{theorem}
-If either $w \geq 0$ and $d^*(x) < d'$,
-or if $w > 0$ and $d^*(x) \leq d'$,
-then $d(x) = d^*(x)$.
-\label{thm:ibid-relaxation-complete}
-\end{theorem}
-
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-complete}]
-Consider a true shortest path $p^*$ of length $d^*(x)$ from $s$ to $x$.
-Due to our conditions,
-all vertices $u$ before $x$ on $p^*$ have $d^*(u) < d'$.
-By (\ref{eqn:ibid-relaxation-props}),
-we have $d(s) = d^*(s) = 0$.
-Consider each edge $e_{uv}$ in turn along $p^*$,
-for which $d^*(u) + w(e_{uv}) = d^*(v)$.
-For each, suppose that $d(u) = d^*(u)$.
-Then we have $d(u) < d'$,
-so that edge $e_{uv}$ must not be in tension.
-Thus $d(v) \leq d(u) + w(e_{uv})$,
-and by (\ref{eqn:ibid-relaxation-props}) we know $d(v) = d^*(v)$.
-Therefore, we have $d(x) = d^*(s)$.
-\end{proof}
-
-\begin{theorem}
-If either $w \geq 0$ and $d^*(x) < d'$,
-or if $w > 0$ and $d^*(x) \leq d'$,
-then a shortest path can be reconstructed backwards from $x$
-by prepending the incoming edge $e_{uv}$ which minimizes
-$d(u) + w(e_{uv})$ until $s$ is reached.
+Consider $d: V \rightarrow \mathbb{R}$
+satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood}),
+and let $k$ be the smallest value $d(u)$
+among all tensioned edges $e_{uv}$
+(or $\infty$ if no such edges exist).
+If $w \geq 0$,
+for any vertex $x$ with $d(x) \leq k$,
+a path reconstructed backwards from $x$ by iteratively selecting a
+predecessor minimizing $d(u) + w(e_{uv})$ until $s$ is reached
+is be a shortest path from $s$ to $x$ of length $d^*(x)$.
 \label{thm:ibid-relaxation-reconstruct}
 \end{theorem}
 
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-reconstruct}]
-We will show that for every such vertex $x$,
-there exist a predecessor $u$ and incident edge $e_{uv}$
-for which $d(u) + w(e_{uv}) = d(x)$.
-It follows that $e_{uv}$ is on a shortest path to $x$.
-This argument can then be applied recursively to $u$,
-which must still satisfy the necessary conditions.
-\end{proof}
+%Unfortunately the edge cases for completeness are less strong
+%than for soundness.
+%See the example in Figure~\ref{fig:ibid:relaxation-completeness-issue}.
+%\cdnote{Add note about how in the special case where $d$ is initialized
+%to $\infty$ and all $d$-values are thereafter reduced via edge
+%relaxations,
+%this completeness result also extends to the case of
+%$w \geq 0$ and $d^*(x) \leq d'$.
+%But this result isn't applicable to incremental settings as we'll
+%discuss in Section~\ref{sec:ibid:incremental}.}
 
-\section{Bidirectional Search}
+%\begin{marginfigure}
+%   \centering
+%   \begin{tikzpicture}
+%      \tikzset{>=latex} % arrow heads
+%      \node[fill=black,circle,inner sep=1.2pt] (s) at (0,0) {};
+%      \node[fill=black,circle,inner sep=1.2pt] (a) at (1.5,0) {};
+%      \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,1.2) {};
+%      \node[fill=black,circle,inner sep=1.2pt] (x) at (3.0,0) {};
+%      \draw[->,densely dashed] (s) -- (a) node[midway,fill=white,circle,inner sep=1pt] {0};
+%      \draw[->] (a) -- (x) node[midway,fill=white,circle,inner sep=1pt] {0};
+%      \draw[->] (s) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+%      \draw[->] (b) -- (x) node[midway,fill=white,circle,inner sep=1pt] {1};
+%
+%      \node[above=0.05cm of s] {$s$};
+%      \node[above=0.05cm of a] {$a$};
+%      \node[below=0.05cm of b] {$b$};
+%      \node[above=0.05cm of x] {$x$};
+%
+%      \node[below=0.05cm of s] {$d=0$};
+%      \node[below=0.05cm of a] {$d=3$};
+%      \node[above=0.35cm of b] {$d=1$};
+%      \node[below=0.05cm of x] {$d=0$};
+%
+%      \node[below=0.35cm of s] {$d^*=0$};
+%      \node[below=0.35cm of a] {$d^*=0$};
+%      \node[above=0.05cm of b] {$d^*=1$};
+%      \node[below=0.35cm of x] {$d^*=0$};
+%   \end{tikzpicture}
+%   \caption{Problem case for pathfinding with distance functions.
+%      Here, $d$ satisfied a and c, with edge $e_{sa}$ tensioned,
+%      and $d' = 0$.
+%      While the approximation $d$ is \emph{sound} at $x$
+%      ($d(x)$ is correct),
+%      reconstructing a shortest path requires \emph{completeness}.}
+%   \label{fig:ibid:relaxation-completeness-issue}
+%\end{marginfigure}
+
+\subsection{Bidirectional Search}
 \label{sec:ibid:bidirectional}
 
-One prominent technique for minimizing pathfinding computation for
+A prominent technique for minimizing pathfinding computation for
 single-pair problems
 is bidirectional search.
 In a bidirectional algorithm,
@@ -583,47 +624,21 @@ The first bidirectional algorithm
 was proposed by Dantzig \citep{dantzig1963linearprogramming},
 and the first precisely described algorithm was presented by
 Nicholson \citep{nicholson1966shortest}.
+%Implementation of a sound and efficient algorithm
+%turns on two important questions:
+%(a) when and how to terminate with a shortest path,
+%and (b) how to balance expansions from the two directions of the
+%search.
 Implementation of a sound and efficient algorithm
-turns on two important questions:
-(a) when and how to terminate with a shortest path,
-and (b) how to balance expansions from the two directions of the
-search.
+turns on when and how to terminate with a shortest path.
 
-\subsection{Termination Conditions}
-\label{sec:ibid:bidirectional-termination}
-
-What is the equivalent to the completeness-based termination condition
-described in Section~\ref{subsec:ibid-dijkstra-completeness}?
-
+\paragraph{A Correct Termination Condition.}
+%\label{sec:ibid:bidirectional-termination}
 What happens upon an encounter between the forward and reverse searches?
-Goldberg \citep{goldberg2005spexternalmemory}
-discusses the correct termination condition for the 
-Bidirectional Dijkstra algorithm.
-
-A correct termination condition is surprisingly subtle,%
-\marginnote{There were early incorrect attempts at a sound
-termination condition
-\citep{berge1965programminggamestransportation}.}
-with several correct variations proposed
-\citep{nicholson1966shortest, dreyfus1969appraisalsp,
-pohl1969bidirectional, goldberg2005spexternalmemory}.
 The difficulty stems from the fact that the first vertex to be
 {\sc Closed} by the searches in both directions
 need not lie on the shortest path
 (Figure~\ref{fig:ibid:bidirectional-termination-issue}).
-
-Key point, reason about edges!
-
-See Algorithm~\ref{alg:ibid:bidirectional-termination}.
-
-\begin{algorithm}[t]
-   \caption{Bidirectional Termination Condition}
-   \label{alg:ibid:bidirectional-termination}
-   \begin{algorithmic}[1]
-      \State On $u$ expanded in the foward search
-         with $v$ already expanded in the backward search,
-   \end{algorithmic}
-\end{algorithm}
 
 \begin{marginfigure}
    \centering
@@ -653,276 +668,371 @@ See Algorithm~\ref{alg:ibid:bidirectional-termination}.
    \label{fig:ibid:bidirectional-termination-issue}
 \end{marginfigure}
 
-\subsection{Balancing Directions}
-The general bidirectional algorithm leaves open the strategy
-used to balance the progression of the two search directions.
-Options based on alternating \citep{dantzig1963linearprogramming},
-or selecting the direction with the smaller {\sc Open} distance
-\citep{nicholson1966shortest}
-or {\sc Open} (and finite) set cardinality
-\citep{pohl1969bidirectional}
-have been proposed.
-Note that while some literature asserts that
-these can be interleaved arbitrarily,
-termination of the algorithm requires that each direction
-be expanded at least once.
-Our example problems use the balanced distance criterion.
+Importantly, is nececessary to consider the \emph{edges} connecting
+the two distance function approximations.
+A correct termination condition is surprisingly subtle,%
+\marginnote{There were early incorrect attempts at a sound
+termination condition
+\citep{berge1965programminggamestransportation}.}
+with several correct variations proposed
+\citep{nicholson1966shortest, dreyfus1969appraisalsp,
+pohl1969bidirectional, goldberg2005spexternalmemory}.
+What is necessary is a bidirectional equivalent to the 
+completeness-based termination condition
+described in Section~\ref{subsec:ibid-dijkstra-completeness}.
 
-\section{Incremental Search}
-\label{sec:ibid:incremental}
-
-How can we adapt the relaxation approach to the incremental setting?
-And how can we recover the original algorithm from the more general one?
-
-We can rely on just the consistency,
-but not the upper bound part.
-So now there are many solutions.
-So we need to further constrain the graph to have
-positive edge weights.
-
-This stuff is more modern (1996, 2004).
-
-A review is here: \citep{eppstein1999dynamic},
-\citep{demetrescu2010dynamic}.
-
-Talk about how this is centrally a restatement of the Dijktsra's ordering.
-Bring in the invariant.
-
-DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}.
-
-How about this: \citep{frigioni2000dynamicsp}.
-
-Revisit Bellman equation.
-
-The central idea is that the search maintains the following invariant.
-Note that this is a basic restatement of the distance function
-ordering that underlies Dijkstra's algorithm.
-
-Define $r$ and $d$,
-what we mean by \emph{consistent},
-and what $k$ is.
-
-In general (no non-positive cycles),
-the algorithm terminates.
-The proof is that key values only increase (somehow).
-
-All of the proofs in this section relate to
-graphs with positive edge weights ($w > 0$),
-with $k_{\ms{min}}$ the minimal key among inconsistent vertices.
-
-\subsection{Approximation Soundness}
-
-The theorems below are basically a soundness proof --
-if our approximation yields values below a certain value,
-they are known to be correct.
-This is soundness of the approximation,
-not of an algorithm per se.
+Suppose $d_s$ and $d_t$ are approximations to $d^*_s$ and $d_t^*$,
+respectively,
+with each satisfying (\ref{eqn:ibid-relaxation-props}).
+Let $D_s$ be the minimum $u$-value among all tensioned edges in $d_s$
+(and likewise for $d_t$).
+Then we can establish the following proof of a correct termination
+condition:
 
 \begin{theorem}
-Any consistent vertex $x$ with $d[x] \leq k_{\ms{min}}$
-has $d[x] = d^*(x)$.
-\label{thm:ibid-dynamicswsffp-sound}
+Define $E_{\ms{conn}}$ as the set of all edges $e_{uv}$ such that
+$d_s(u) \leq D_s$ and $d_t(v) \leq D_t$,
+and define $\ell_e$ s.t. $\ell_e(e_{uv}) = d_s(u) + w(e_{uv}) + d_t(v)$.
+If $w \geq 0$,
+$s \neq t$,
+$E_{\ms{conn}}$ is non-empty,
+and $e^*_{uv}$ minimizes $\ell_e$
+among $E_{\ms{conn}}$ with $\ell_e(e^*_{uv}) \leq D_s + D_t$,
+then $\ell_e(e^*_{uv})$ is the length of the shortest path,
+and $e^*_{uv}$ lies on one such path.
+\label{thm:ibid-bidir-sound}
 \end{theorem}
 
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-dynamicswsffp-sound}]
-The proof relies upon a path construction described by
-Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}.
-We then show that $d[x]$ can be both
-no less than $d^*(x)$
-(Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq})
-and no greater than $d^*(x)$
-(Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}).
-\end{proof}
-
-\begin{lemma}
-For any consistent vertex $x$ with $d[x] \leq k_{\ms{min}}$,
-there exists a path $p$ from $s$ to $x$
-in which each vertex is consistent
-and each edge $e_{uv}$ satisfies $d[u] + w(e_{uv}) = d[v]$.
-\label{lemma:ibid-dynamicswsffp-sound-conpath}
-\end{lemma}
-
-\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}]
-Construct the path $p$ as follows.
-Initialize the path with the single vertex $x$.
-Iteratively consider the first vertex $v$ on the path,
-which is known to be consistent.
-In the first case, if $v \neq s$,
-then there exists a predecessor vertex $u$ and edge $e_{uv}$
-with $d[u] + w(e_{uv}) = r(v)$.
-Since $w > 0$ and $d[v] = r(v)$,
-we have $d[u] < d[v] \leq d[x]$.
-As a consequence,
-$u$ is consistent;
-prepend to the path the vertex $u$ and the edge $e_{uv}$,
-and iterate.
-In the second case, if $v = s$,
-then we finish our construction of $p$.
-Since the values $d[u]$ decrease monotonically
-for all inserted vertices,
-this process will terminate with a path $p$ beginning at $s$.
-\end{proof}
-
-\begin{lemma}
-Any consistent vertex $x$ with $d[x] \leq k_{\ms{min}}$
-has $d[x] \geq d^*(x)$.
-\label{lemma:ibid-dynamicswsffp-sound-geq}
-\end{lemma}
-
-\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq}]
-This follows directly from
-Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}.
-Since all vertices on the path are known consistent,
-we must have $d[s] = 0$.
-Further,
-since the $d$-values across each edge in $p$
-satisfy $d[u] + w(e_{uv}) = d[v]$,
-it follows that $d[x] = \sum_{e \in p} w(e)$.
+In the case where the approximations $d_s$ and $d_t$ are improved
+via edge relaxation,
+since $w \geq 0$,
+by Theorem~\ref{thm:ibid-relaxation-sound}
+once an edge $e_{uv}$ becomes included in
+$E_{\ms{conn}}$,
+its length value $\ell_e(e_{uv})$ will not change.
 Therefore,
-a path exists from $s$ to $x$ of length $d[x]$,
-and so the true distance $d^*(x)$ must be upper-bounded by $d[x]$.
-\end{proof}
+it is sufficient for a relaxation algorithm to consider only edges
+newly added to $E_{\ms{conn}}$ at each iteration,
+and keep track of the best edge $e^*_{uv}$
+with its value $\ell_e(e^*_{uv})$ found so far.
+Note also that Theorem~\ref{thm:ibid-relaxation-reconstruct}
+allows a shortest path to be constructed from $e^*_{uv}$
+buy walking backwards from $u$ to $s$,
+and forwards from $v$ to $t$.
 
-\begin{lemma}
-Any consistent vertex $v$ with $d[x] \leq k_{\ms{min}}$
-has $d[x] \leq d^*(x)$.
-\label{lemma:ibid-dynamicswsffp-sound-leq}
-\end{lemma}
+%\subsection{Balancing Directions}
+%The general bidirectional algorithm leaves open the strategy
+%used to balance the progression of the two search directions.
+%Options based on alternating \citep{dantzig1963linearprogramming},
+%or selecting the direction with the smaller {\sc Open} distance
+%\citep{nicholson1966shortest}
+%or {\sc Open} (and finite) set cardinality
+%\citep{pohl1969bidirectional}
+%have been proposed.
+%Note that while some literature asserts that
+%these can be interleaved arbitrarily,
+%termination of the algorithm requires that each direction
+%be expanded at least once.
+%Our example problems use the balanced distance criterion.
 
-\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}]
-We demonstrate that $d[x] \leq d^*(x)$ by contradiction.
-Suppose a vertex $x$ exists for which $d^*(x) < d[x]$.
-Then there must exist a path $p'$ from $s$ to $x$ of length $d^*(x)$,
-with $d^*(s) = 0$ and $d^*(u) + w(e_{uv}) = d^*(v)$ for each edge
-in $p'$;
-as a consequence,
-we must have $d^*(v) < d[x]$ for all vertices $v$ on $p'$.
-By Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath},
-we know that $s$ is consistent,
-so $d[s] = 0$.
-We will show that walking along
-each edge $e_{uv}$ on $p'$ starting at $s$,
-if $d[u] \leq d^*(u)$,
-then $d[v] \leq d^*(v)$.
+\subsection{Incremental Search for Dynamic Problems}
+\label{sec:ibid:incremental}
 
-By definition,
-we have $d[u] + w(e_{uv}) \geq r[v]$,
-so that $d[u] - d^*(u) \geq r[v] - d^*(v)$.
-Therefore,
-it follows that $r[v] \leq d^*(v)$.
-Since $k[v] \leq d^*(v)$,
-it follows that $v$ is consistent,
-so $d[v] \leq d^*(v)$.
-We can replicate this logic down the path.
-As a result,
-it follows that $d[x] \leq d^*(x)$.
-But this contraducts our supposition that $d^*(x) < d[x]$,
-and therefore such a vertex $x$ cannot exist.
-\end{proof}
+The shortest path on a graph is of course intimately tied to
+the edge weight function $w$.
+If the weight function changes from $w$ to $w'$,
+a shortest path $p$ w.r.t. $w$
+will generally no longer be a shortest path w.r.t. $w'$,
+even if changes are small and localized.
+For example,
+if the weight of edge on $p$ increases,
+or if the weight of some edge not on $p$ decreases,
+then some other path $p'$ may become shorter than $p$.
+The dynamic shortest-path problem considers finding a shortest path
+for each of a sequence of input edge weight functions,
+and algorithms have been proposed to address the dynamic problem.
+
+\cdnote{
+A review is here: \citep{eppstein1999dynamic},
+\citep{demetrescu2010dynamic}.
+Also how about this: \citep{frigioni2000dynamicsp}.
+Also add forward pointer to heuristic stuff.}
 
 \begin{marginfigure}%
    \centering%
-   \subfloat[Initial search]{%
+   \subfloat[Initial episode]{%
       \centering%
       \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-0.png}%
    }
    
-   \subfloat[Replan search]{%
+   \subfloat[Subsequent episode]{%
       \centering%
       \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}%
    }%
-   \caption{Initial search: 1,287,897 expansions.
-      Replan: 391,122 expansions.}%
+   \caption{Initial episode: 1,287,897 expansions.
+      Subsequent episode: 391,122 expansions.}%
    %\label{fig:ibid:example-bidirectional}%
 \end{marginfigure}
 
-\subsection{Approximation Completeness}
+\paragraph{Problem Definition.}
+Consider a directed graph $G = (V,E)$ as described in
+Section~\ref{subsec:ibid-probdef}.
+Consider a sequence of pathfinding episodes
+with different edge weight functions $w^{(1)}, w^{(2)}, \dots$
+with $w^{(i)} : E \rightarrow \mathbb{R}$.
+The dynamic single-pair shortest-path (SPSP) problem
+entails finding shortest paths $p^{(1)}, p^{(2)}, \dots$
+between fixed start and destination vertices $s,t \in V$
+for each episode.
 
-For bidirectional search,
-it's also necessary to be able to prove that you have found
-all vertices within a certain distance of the start.
-Basically, this is a completeness proof --
-if a distance exists below a certain value,
-we will have found it.
-This is completeness of the approximation,
-not of an algorithm per se.
+\paragraph{Approches to the Dynamic Problem.}
+The simplest class of solutions to the dynamic SPSP problem
+entails running a conventional SPSP algorithm to compute a solution
+path for episode in turn.
+Consider, for example, applying the edge relaxation approach
+from Section~\ref{subsec:ibid-tension}
+to compute the start distance function $d_s^{(i)}$ from scratch
+for each episode's edge weight function $w^{(i)}$.
+
+Investigating this approach more closely reveals an opportunity for
+a more efficient algorithm.
+If the changes in the weight function between each episode affect
+only a subset of the edges,
+then it is often the case that the value of the distance function
+computed does not change for a large fraction of the vertices in the
+graph.
+In the face of a change in weight function
+$w^{(i)} \rightarrow w^{(i+1)}$,
+it is the objective of an \emph{incremental} approach
+to adapt a previously computed estimate $d_s^{(i)}$
+to a new one $d_s^{(i+1)}$ with a minimal amount of additional
+computation.
+
+\paragraph{Inapplicability of the Tensioned Estimates Approach.}
+The tensioned estimates approach of Section~\ref{subsec:ibid-tension}
+made use of two clever devices to allow its approximation $d$ to be
+iteratively improved to the true distance function $d^*$.
+First, it relied on a global invariant
+(\ref{eqn:ibid-relaxation-props-nounder})
+to ensure that the approximation was never under-consistent.
+Second, it relied on a decomposition of the local characterization
+(\ref{eqn:distance-function-char})
+into two inequalities
+(\ref{eqn:ibid-relaxation-props-nottoogood})
+and (\ref{eqn:ibid-relaxation-props-tens}),
+the former treated as a second invariant,
+and the latter represented not as a constraint but as a labeling
+of tensioned edges to be iteratively relaxed.
+
+Unfortunately,
+the incremental setting precludes this approach.
+Consider a new episode in which the estimate $d^{(i+1)}$
+is initialized with the preceeding estimate $d^{(i)}$.
+Since the weight function $w^{(i+1)}$ has changed,
+there is no guarantee that either of the invariants
+(\ref{eqn:ibid-relaxation-props-nounder})
+or (\ref{eqn:ibid-relaxation-props-nottoogood}) still hold.
+In particular,
+if edge weights increase,
+it is common for one or both invariants to be violated,
+and we can no longer rely on Theorems~\ref{thm:ibid-relaxation-sound}
+or~\ref{thm:ibid-relaxation-reconstruct} to generate sound
+shortest paths.
+
+\paragraph{A New Approach.}
+The key idea underlying the incremental approach,
+and the DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp} algorithm,
+is to restate the local characterization (\ref{eqn:distance-function-char})
+in a different way.
+In particular:
+\begin{subequations}%
+   \begin{eqnarray}
+      & r(v) = 
+         \left\{ \begin{array}{cl}
+            0 & \mbox{if } v = s \\
+            \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)} d(u) + w(e_{uv}) & \mbox{otherwise} \\
+         \end{array} \right.
+         & \label{eqn:ibid-inc-props-rvalue} \\
+      & d(v) = r(v)
+         & \label{eqn:ibid-inc-props-consistent}
+   \end{eqnarray}%
+   \label{eqn:ibid-inc-props}%
+\end{subequations}%
+(Here, $r(v)$ represents the ``right-hand side'' of
+the local characterization).
+It is easy to see how (\ref{eqn:ibid-inc-props}) taken together
+directly implies (\ref{eqn:distance-function-char}).
+The motivation behind this decomposition is that the former
+(\ref{eqn:ibid-inc-props-rvalue}) can be held as an invariant,
+while the latter (\ref{eqn:ibid-inc-props-consistent})
+can be established iteratively.
+Prior work adopts the following labeling for each vertex $v$:
+if $d(v) = r(v)$, the vertex is \emph{consistent},
+whereas inconsistent vertices are either
+\emph{under-consistent} if $d(v) < r(v)$
+or \emph{over-consistent} if $d(v) > r(v)$.
+
+Importantly,
+the inapplicability of the global invariant
+(\ref{eqn:ibid-relaxation-props-nounder}) between episodes
+has implications on the class of weight functions that can be solved
+by the incremental approach.
+In particular,
+when applied to weight functions with cycles of zero length
+(for which $d^*$ is well-defined),
+there is no guarantee that a distance function $d$
+which satisfies (\ref{eqn:ibid-inc-props-consistent})
+matches $d^*$.
+We therefore restrict the class of weight functions considered
+to those with only positive length cycles.
+
+\cdnote{TODO: show that the algorithm terminates as long as there
+are no cycles with non-positive length.
+Lyaponov function argument?}
+
+\paragraph{Approximation Soundness.}
+In Section~\ref{subsec:ibid-tension},
+we showed that in cases with $w \geq 0$,
+the minimal value $k$ defines a trust region that can be used both
+to order edge relaxations as well as inform a termination condition
+after which a correct path can be reconstructed.
+We can develop a similar argument about the soundness of an
+approximation in the dynamic case.
+In particular,
+given an arbitrary estimate $d$
+(and the corresponding function $r$ as defined by
+(\ref{eqn:ibid-inc-props-rvalue}),
+this argument makes use of a third function $k$ defined as:
+\begin{equation}
+   k(v) = \min\left[ d(v), r(v) \right].
+\end{equation}
+%If we define $V_{\ms{incons}}$ as the set of inconsistent vertices
+%(that is, with $d(v) \neq r(v)$,
+%then we define the value $k_{\ms{min}}$ as:
+%\begin{equation}
+%   k_{\ms{min}} = \displaystyle\min_{v \in V_{\ms{incons}}} \left[ k(v) \right]
+%\end{equation}
+We can then establish the following central soundness result
+for incremental search:
 
 \begin{theorem}
-Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
-has $d[x] = d^*(x)$.
-\label{thm:ibid-dynamicswsffp-complete}
+Consider $d: V \rightarrow \mathbb{R}$,
+with $r$ satisfying (\ref{eqn:ibid-inc-props-rvalue}),
+and let $K$ be the smallest value $k(v)$
+among all inconsistent vertices
+(or $\infty$ if no such vertices exist).
+If $w > 0$,
+any consistent vertex $x$ with $d(x) \leq K$
+has $d(x) = d^*(x)$.
+Further,
+walking backwards from $x$ choosing predecessors that minimize
+$d(u) + w(e_{uv})$ terminates at $s$ with a shortest path
+of length $d^*(x)$.
+\label{thm:ibid-dynamicswsffp-sound}
 \end{theorem}
 
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-dynamicswsffp-complete}]
-We show that $d[x]$ can be both
-no less than $d^*(x)$
-(Lemma~\ref{lemma:ibid-dynamicswsffp-complete-geq})
-and no greater than $d^*(x)$
-(Lemma~\ref{lemma:ibid-dynamicswsffp-complete-leq}).
-\end{proof}
+This theorem enables the same two efficiency advantages as in
+the relaxation approach, in the case where $w > 0$.
+It provides that a vertex rendered consistent during an iteration
+(by setting $d(x) \leftarrow r(x)$) with $d(x) \leq K$
+has the correct value and will never be revisited.
+It also enables an algorithm to terminate early
+once the destination vertex $t$ becomes consistent,
+as exploited by the Lifelong Planning A* algorithm
+\citep{koenig2004lpastar}.
 
-\begin{lemma}
-Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
-has $d[x] \geq d^*(x)$.
-\label{lemma:ibid-dynamicswsffp-complete-geq}
-\end{lemma}
+% I don't need this anymore, subsumed in soundness result!
+%\paragraph{Approximation Completeness.}
+%
+%For bidirectional search,
+%it's also necessary to be able to prove that you have found
+%all vertices within a certain distance of the start.
+%Basically, this is a completeness proof --
+%if a distance exists below a certain value,
+%we will have found it.
+%This is completeness of the approximation,
+%not of an algorithm per se.
+%
+%\begin{theorem}
+%Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
+%has $d(x) = d^*(x)$.
+%\label{thm:ibid-dynamicswsffp-complete}
+%\end{theorem}
+%
+%\begin{proof}[Proof of Theorem~\ref{thm:ibid-dynamicswsffp-complete}]
+%We show that $d(x)$ can be both
+%no less than $d^*(x)$
+%(Lemma~\ref{lemma:ibid-dynamicswsffp-complete-geq})
+%and no greater than $d^*(x)$
+%(Lemma~\ref{lemma:ibid-dynamicswsffp-complete-leq}).
+%\end{proof}
+%
+%\begin{lemma}
+%Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
+%has $d(x) \geq d^*(x)$.
+%\label{lemma:ibid-dynamicswsffp-complete-geq}
+%\end{lemma}
+%
+%\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-complete-geq}]
+%We show this by contradiction.
+%Suppose there exists a vertex $x$ with $d^*(x) < k_{\ms{min}}$
+%for which $d(x) < d^*(x)$.
+%Then $d(x) < k_{\ms{min}}$,
+%so $x$ must be consistent.
+%By Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq},
+%we must have $d(x) \geq d^*(x)$.
+%This contradicts our supposition.
+%\end{proof}
+%
+%\begin{lemma}
+%Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
+%has $d(x) \leq d^*(x)$.
+%\label{lemma:ibid-dynamicswsffp-complete-leq}
+%\end{lemma}
+%
+%\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-complete-leq}]
+%This proof proceeds in a similar way to that for
+%Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}.
+%Construct a true shortest path from $s$ to $x$,
+%with $d^*$-values increasing monotonically from
+%$d^*(s) = 0$ to $d^*(x)$.
+%Consider each edge $e_{uv}$ in turn as follows.
+%Assume that $u$ is consistent,
+%with $d(u) \leq d^*(u)$.
+%Note that this is true for the first edge with $u = s$,
+%since with $0 \leq d^*(x)$,
+%we have $0 < k_{\ms{min}}$,
+%so that $s$ must is consistent with $r(s) = d(s) = d^*(s) = 0$.
+%Since $e_{uv}$ lies on a true shortest path,
+%we must have $d^*(u) + w(e_{uv}) = d^*(v)$,
+%and for all edges $d(u) + w(e_{uv}) \geq r(v)$.
+%Together, this implies that
+%$d^*(u) - d(u) \leq d^*(v) - r(v)$.
+%Our assumption that $d(u) \leq d^*(u)$
+%therefore implies that $r(v) \leq d^*(v)$.
+%Since $d^*(v) \leq d^*(x)$ and $d^*(x) < k_{\ms{min}}$,
+%we know that $v$ is consistent,
+%so we conclude that $d(v) \leq d^*(v)$,
+%and we can proceed to the next edge on the path.
+%We end with $v = x$,
+%so that $d(x) \leq d^*(x)$.
+%\end{proof}
 
-\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-complete-geq}]
-We show this by contradiction.
-Suppose there exists a vertex $x$ with $d^*(x) < k_{\ms{min}}$
-for which $d[x] < d^*(x)$.
-Then $d[x] < k_{\ms{min}}$,
-so $x$ must be consistent.
-By Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq},
-we must have $d[x] \geq d^*(x)$.
-This contradicts our supposition.
-\end{proof}
+\section{Incremental Bidirectional Search: The Algorithm}
+\label{sef:ibid:ibid}
 
-\begin{lemma}
-Any vertex $x$ with $d^*(x) < k_{\ms{min}}$
-has $d[x] \leq d^*(x)$.
-\label{lemma:ibid-dynamicswsffp-complete-leq}
-\end{lemma}
+Important: $s$ and $t$ must be distinct!
 
-\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-complete-leq}]
-This proof proceeds in a similar way to that for
-Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}.
-Construct a true shortest path from $s$ to $x$,
-with $d^*$-values increasing monotonically from
-$d^*(s) = 0$ to $d^*(x)$.
-Consider each edge $e_{uv}$ in turn as follows.
-Assume that $u$ is consistent,
-with $d[u] \leq d^*(u)$.
-Note that this is true for the first edge with $u = s$,
-since with $0 \leq d^*(x)$,
-we have $0 < k_{\ms{min}}$,
-so that $s$ must is consistent with $r[s] = d[s] = d^*(s) = 0$.
-Since $e_{uv}$ lies on a true shortest path,
-we must have $d^*(u) + w(e_{uv}) = d^*(v)$,
-and for all edges $d[u] + w(e_{uv}) \geq r[v]$.
-Together, this implies that
-$d^*(u) - d[u] \leq d^*(v) - r[v]$.
-Our assumption that $d[u] \leq d^*(u)$
-therefore implies that $r[v] \leq d^*(v)$.
-Since $d^*(v) \leq d^*(x)$ and $d^*(x) < k_{\ms{min}}$,
-we know that $v$ is consistent,
-so we conclude that $d[v] \leq d^*(v)$,
-and we can proceed to the next edge on the path.
-We end with $v = x$,
-so that $d[x] \leq d^*(x)$.
-\end{proof}
-
-\subsection{Incremental Bidirectional Search: The Algorithm}
-
-Important: $s$ and $t$ must be distict!
+How can we adapt Theorem~\ref{thm:ibid-bidir-sound}
+to the incremental case?
 
 \begin{theorem}
 Define $E_{\ms{conn}}$ as the set of all edges $e_{uv}$ such that
-$u$ is $s$-consistent with $d[s] \leq k_s$
-and $v$ is $t$-consistent with $d[t] \leq k_t$.
+$u$ is $s$-consistent with $d_s(u) \leq k_s$
+and $v$ is $t$-consistent with $d_t(v) \leq k_t$.
 If $k_s > 0$, $k_t > 0$,
 and
-$\min_{e \in E_{\ms{conn}}} \left( d_s[u] + w(e_{uv}) + d_t[v] \right)
+$\min_{e \in E_{\ms{conn}}} \left( d_s(u) + w(e_{uv}) + d_t(v) \right)
    \leq k_s + k_t$,
 then the path through $e_{uv}$ is a shortest path.
 \label{thm:ibid-sound}
@@ -931,7 +1041,7 @@ then the path through $e_{uv}$ is a shortest path.
 \begin{proof}[Proof of Theorem~\ref{thm:ibid-sound}]
 We will prove this by contradiction.
 Suppose that a path $p'$ exists with
-$\mbox{len}(p') < \min_{e \in E_{\ms{conn}}} \left( d_s[u] + w(e_{uv}) + d_t[v] \right)$.
+$\mbox{len}(p') < \min_{e \in E_{\ms{conn}}} \left( d_s(u) + w(e_{uv}) + d_t(v) \right)$.
 Then it must also be that
 $\mbox{len}(p') < k_s + k_t$.
 We will consider two cases.
@@ -942,12 +1052,12 @@ In this case,
 the last edge $e_{ut}'$ on $p'$
 has $d_s^*(u') < d_s^*(t) < k_s$;
 by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$u'$ is therefore $s$-consistent with $d_s[u'] = d_s^*(u')$.
+$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
 In addition,
 since $k_t > 0$,
-$t$ must be $t$-consistent with $d_t[t] = 0$.
+$t$ must be $t$-consistent with $d_t(t) = 0$.
 Therefore,
-it follows that $d_s^*(u') + w(e_{ut}') < d_s[u'] + w(e_{ut}')$,
+it follows that $d_s^*(u') + w(e_{ut}') < d_s(u') + w(e_{ut}')$,
 which contradicts the supposition.
 
 In the second case with $k_s \leq \mbox{len}(p')$,
@@ -956,7 +1066,7 @@ such that $d_s^*(u') < k_s \leq d_s^*(v')$.
 (Since $k_s > 0$, this edge will exist.)
 Since $d_s^*(u') < k_s$,
 by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$u'$ is therefore $s$-consistent with $d_s[u'] = d_s^*(u')$.
+$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
 Consider our supposition that
 $d_s^*(u') + w(e_{uv}') + d_t^*(v') < k_s + k_t$.
 Since $d_s^*(u') + w(e_{uv}') = d_s^*(v')$
@@ -965,12 +1075,12 @@ it follows that
 $d_t^*(v') < k_t$.
 Therefore,
 by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$v'$ is $t$-consistent with $d_t[v'] = d_t^*(v')$.
+$v'$ is $t$-consistent with $d_t(v') = d_t^*(v')$.
 As a consequence,
 the edge $e'_{uv}$ must be in $E_{\ms{conn}}$.
 Therefore,
 $d_s^*(u') + w(e_{uv}') + d_t^*(v')
-   < d_s[u'] + w(e_{uv}') + d_t[v']$,
+   < d_s(u') + w(e_{uv}') + d_t(v')$,
 which is a contradiction.
 \end{proof}
 
