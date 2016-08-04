@@ -1,0 +1,250 @@
+\chapter{Appendix: IBiD Proofs}
+\label{chap:appendix-ibid-proofs}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-notension}]
+Consider any vertex $x$.
+If $d^*(x) = \infty$,
+then by (\ref{eqn:ibid-relaxation-props-nounder}) we must have that
+$d(x) = \infty$.
+Otherwise,
+by (\ref{eqn:ibid-distance-function-global}),
+there exists a path $p^*$ of length $d^*(x)$;
+consider this path.
+The first vertex on $p^*$ is $s$ with $d^*(s) = 0$,
+and by (\ref{eqn:ibid-relaxation-props}),
+$d(s) = d^*(s)$.
+For each edge $e_{uv}$ on $p^*$ with $d(u) = d^*(u)$,
+we will show that $d(v) = d^*(v)$.
+By definition of the shortest path,
+$d^*(u) + w(e_{uv}) = d^*(v)$.
+Therefore $d(u) + w(e_{uv}) = d^*(v)$,
+and by (\ref{eqn:ibid-relaxation-props-tens}),
+we have $d^*(v) \geq d(v)$,
+and by (\ref{eqn:ibid-relaxation-props-nounder})
+we have $d^*(v) = d(v)$.
+By induction along the path $p^*$,
+we have that $d(x) = d^*(x)$.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-sound}]
+The proof proceeds as follows.
+First, if $d' = \infty$,
+then no edges can be in tension,
+and so $d = d^*$ everywhere
+as shown in Section~\ref{subsec:ibid-tension}.
+Otherwise,
+suppose that $d(x) \neq d^*(x)$
+for some vertex $x$ with $d(x) \leq d'$.
+By (\ref{eqn:ibid-relaxation-props}),
+it would have to be that $d^*(x) < d(x)$.
+Consider a true shortest path $p$ from $s$ to $x$;
+by (\ref{eqn:ibid-relaxation-props})
+such a path exists and has finite length $d^*(x)$.
+By (\ref{eqn:ibid-relaxation-props}),
+we have that $d^*(s) = d(s) = 0$
+(and so $s$ and $x$ must be distinct).
+Let $e_{uv}$ be the first edge along $p$ such that
+$d^*(u) = d(u)$
+but $d^*(v) < d(v)$.
+Since $p$ is a shortest path,
+edge $e_{uv}$ must therefore be in tension.
+Since $w \geq 0$,
+it must be that $d^*(u) \leq d^*(x)$;
+further, since $d^*(u) = d(u)$,
+$d^*(x) < d(x)$,
+and $d(x) \leq d'$
+it must be that $d(u) < d'$.
+But then edge $e_{uv}$ is in tension with lower $d(u)$!
+This contradiction implies that every vertex $x$
+with $d(x) \leq d'$
+must have $d(x) = d^*(x)$.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-relaxation-reconstruct}]
+For any vertex $x$ with $d(x) \leq k$,
+consider the following construction of a path from $s$ to $x$.
+Initialize the path $p \leftarrow \{ x \}$;
+note that by Theorem~\ref{thm:ibid-relaxation-sound},
+the first vertex $v$ on $p$ has $d(v) = d^*(v)$.
+
+At each iteration, terminate construction if $v=s$.
+Otherwise,
+let $u^*$ be the predecessor of $v$ which minimizes
+$d(u) + w(e_{uv})$,
+and prepend $u^*$ to $p$.
+By (\ref{eqn:ibid-relaxation-props-nottoogood}),
+it follows that $d(u^*) + w(e_{uv}^*) \leq d(v)$,
+and since $d(v) = d^*(v)$ and
+$d^*(v) \leq d^*(u) + w(e_{uv}^*)$
+by definition of the distance function,
+it follows that $d(u^*) \leq d^*(u^*)$.
+In combination with (\ref{eqn:ibid-relaxation-props-nounder}),
+this implies $d(u^*) = d^*(u^*)$,
+and we can iterate.
+
+The result of this construction is a path $p$ from $s$ to $x$
+on which all vertices have $d(v) = d^*(v)$.
+Therefore $p$ is a shortest path of length $d^*(x)$.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-bidir-sound}]
+Note first that since $d_s(u) \leq D_s$,
+by Theorem~\ref{thm:ibid-relaxation-sound},
+$d_s(u) = d^*_s(u)$,
+and so there exists a path from $s$ to $u$ of length $d_s(u)$.
+Similarly, there exists a path from $v$ to $t$ of length $d_t(v)$,
+and as a result,
+there exists a path through $e^*_{uv}$ with length $\ell_e(e^*_{uv})$.
+
+We will prove that this constitutes a shortest path by contradiction.
+Suppose that a different shortest path $p'$ exists with
+$\mbox{len}(p') < \ell_e(e^*_{uv})$.
+Then it must also be that
+$\mbox{len}(p') < D_s + D_t$.
+Note that since $s \neq t$, $p'$ contains at least one edge.
+We will consider two cases.
+
+First, consider the case where $\mbox{len}(p') < D_s$,
+so that $d_s^*(t) < D_s$.
+In this case,
+the last edge $e_{ut}'$ on $p'$
+has $d_s^*(u') \leq d_s^*(t) < D_s$;
+by Theorem~\ref{thm:ibid-relaxation-sound},
+$u'$ therefore has $d_s(u') = d_s^*(u')$.
+In addition,
+since $D_t > 0$,
+$t$ must be $t$-consistent with $d_t(t) = 0$.
+Therefore,
+it follows that $d_s^*(u') + w(e_{ut}') < d_s(u') + w(e_{ut}')$,
+which contradicts the supposition.
+
+In the second case with $D_s \leq \mbox{len}(p')$,
+identify on $p'$ the edge $e'_{uv}$ adjoining the vertices $u'$, $v'$
+such that $d_s^*(u') < D_s \leq d_s^*(v')$.
+(Since $D_s > 0$, this edge will exist.)
+Since $d_s^*(u') < D_s$,
+by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
+$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
+Consider our supposition that
+$d_s^*(u') + w(e_{uv}') + d_t^*(v') < D_s + D_t$.
+Since $d_s^*(u') + w(e_{uv}') = d_s^*(v')$
+and $D_s \leq d_s^*(v')$,
+it follows that
+$d_t^*(v') < D_t$.
+Therefore,
+by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
+$v'$ is $t$-consistent with $d_t(v') = d_t^*(v')$.
+As a consequence,
+the edge $e'_{uv}$ must be in $E_{\ms{conn}}$.
+Therefore,
+$d_s^*(u') + w(e_{uv}') + d_t^*(v')
+   < d_s(u') + w(e_{uv}') + d_t(v')$,
+which is a contradiction.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-dynamicswsffp-sound}]
+The proof relies upon a path construction from $s$ to $x$
+described by Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}.
+Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq} then demonstrates
+that the length of the path is $d(x)$,
+and therefore that $d(x)$ can be no less than $d^*(x)$.
+Finally,
+Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}
+shows that $d(x)$ can be no greater than $d^*(x)$.
+As a result,
+the value $d(x)$ is correct,
+and the path constructed
+via Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}
+is a shortest path.
+\end{proof}
+
+\begin{lemma}
+For any consistent vertex $x$ with $d(x) \leq k_{\ms{min}}$,
+there exists a path $p$ from $s$ to $x$
+in which each vertex is consistent
+and each edge $e_{uv}$ satisfies $d(u) + w(e_{uv}) = d(v)$.
+\label{lemma:ibid-dynamicswsffp-sound-conpath}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}]
+Construct the path $p$ as follows.
+Initialize the path with the single vertex $x$.
+Iteratively consider the first vertex $v$ on the path,
+which is known to be consistent.
+In the first case, if $v \neq s$,
+then there exists a predecessor vertex $u$ and edge $e_{uv}$
+with $d(u) + w(e_{uv}) = r(v)$.
+Since $w > 0$ and $d(v) = r(v)$,
+we have $d(u) < d(v) \leq d(x)$.
+As a consequence,
+$u$ is consistent;
+prepend to the path the vertex $u$ and the edge $e_{uv}$,
+and iterate.
+In the second case, if $v = s$,
+then we finish our construction of $p$.
+Since the values $d(u)$ decrease monotonically
+for all inserted vertices,
+this process will terminate with a path $p$ beginning at $s$.
+\end{proof}
+
+\begin{lemma}
+Any consistent vertex $x$ with $d(x) \leq k_{\ms{min}}$
+has $d(x) \geq d^*(x)$.
+\label{lemma:ibid-dynamicswsffp-sound-geq}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-geq}]
+This follows directly from
+Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath}.
+Since all vertices on the path are known consistent,
+we must have $d(s) = 0$.
+Further,
+since the $d$-values across each edge in $p$
+satisfy $d(u) + w(e_{uv}) = d(v)$,
+it follows that $d(x) = \sum_{e \in p} w(e)$.
+Therefore,
+a path exists from $s$ to $x$ of length $d(x)$,
+and so the true distance $d^*(x)$ must be upper-bounded by $d(x)$.
+\end{proof}
+
+\begin{lemma}
+Any consistent vertex $v$ with $d(x) \leq k_{\ms{min}}$
+has $d(x) \leq d^*(x)$.
+\label{lemma:ibid-dynamicswsffp-sound-leq}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:ibid-dynamicswsffp-sound-leq}]
+We demonstrate that $d(x) \leq d^*(x)$ by contradiction.
+Suppose a vertex $x$ exists for which $d^*(x) < d(x)$.
+Then there must exist a path $p'$ from $s$ to $x$ of length $d^*(x)$,
+with $d^*(s) = 0$ and $d^*(u) + w(e_{uv}) = d^*(v)$ for each edge
+in $p'$;
+as a consequence,
+we must have $d^*(v) < d(x)$ for all vertices $v$ on $p'$.
+By Lemma~\ref{lemma:ibid-dynamicswsffp-sound-conpath},
+we know that $s$ is consistent,
+so $d(s) = 0$.
+We will show that walking along
+each edge $e_{uv}$ on $p'$ starting at $s$,
+if $d(u) \leq d^*(u)$,
+then $d(v) \leq d^*(v)$.
+
+By definition,
+we have $d(u) + w(e_{uv}) \geq r(v)$,
+so that $d(u) - d^*(u) \geq r(v) - d^*(v)$.
+Therefore,
+it follows that $r(v) \leq d^*(v)$.
+Since $k(v) \leq d^*(v)$,
+it follows that $v$ is consistent,
+so $d(v) \leq d^*(v)$.
+We can replicate this logic down the path.
+As a result,
+it follows that $d(x) \leq d^*(x)$.
+But this contraducts our supposition that $d^*(x) < d(x)$,
+and therefore such a vertex $x$ cannot exist.
+\end{proof}
