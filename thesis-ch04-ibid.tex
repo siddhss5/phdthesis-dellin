@@ -391,7 +391,9 @@ as described by Ford \citep{ford1955networkflowtheory},
 wherein a tensioned edge $e_{uv}$ is selected and relaxed
 by setting $d(v) \leftarrow d(u) + w(e_{uv})$.
 It can be shown that applying this process arbitrarily
-maintains the invariants.
+maintains invariants
+(\ref{eqn:ibid-relaxation-props-nounder} --
+\ref{eqn:ibid-relaxation-props-nottoogood}).
 
 It can be further shown that for a finite graph,
 the number of edge relaxations needed is also finite.
@@ -502,7 +504,7 @@ as described by Theorem~\ref{thm:ibid-relaxation-sound}.
 \begin{theorem}
 Consider $d: V \rightarrow \mathbb{R}$
 satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
-\ref{eqn:ibid-relaxation-props-nottoogood}),
+\ref{eqn:ibid-relaxation-props-ds0}),
 and let $D$ be the smallest value $d(u)$
 among all tensioned edges $e_{uv}$
 (or $\infty$ if no such edges exist).
@@ -512,7 +514,7 @@ has $d(x) = d^*(x)$.
 \label{thm:ibid-relaxation-sound}
 \end{theorem}
 As a result,
-a given value $k$ creates a region of vertices
+a given value $D$ creates a region of vertices
 with values $d(x) \leq D$ that are known to be
 accurate.
 This confers two distinct advantages when designing an algorithm:
@@ -546,10 +548,59 @@ it has the correct start distance.
 Since we are only interested in reconstructing a shortest path to $t$,
 we are interested in terminating computation of the distance
 function as early as possible.
+
 However,
-Theorem~\ref{thm:ibid-relaxation-sound} by itself is insufficient
-to demonstrate that such a shortest path can be reconstructed.
-This requres a proof of Theorem~\ref{thm:ibid-relaxation-reconstruct}.
+while Theorem~\ref{thm:ibid-relaxation-sound} demonstrates
+that $d(t) = d^*(t)$,
+it is not by itself insufficient
+to demonstrate that such a shortest path to $t$ can be reconstructed.
+An illustration of such a problem case is given in
+Figure~\ref{fig:ibid:relaxation-completeness-issue}.
+This requres the addition of
+Theorem~\ref{thm:ibid-relaxation-reconstruct} below.
+Notably,
+the proof for Theorem~\ref{thm:ibid-relaxation-reconstruct}
+relies on (\ref{eqn:ibid-relaxation-props-nottoogood}).
+
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+      \node[fill=black,circle,inner sep=1.2pt] (s) at (0,0) {};
+      \node[fill=black,circle,inner sep=1.2pt] (a) at (1.5,0) {};
+      \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,1.2) {};
+      \node[fill=black,circle,inner sep=1.2pt] (x) at (3.0,0) {};
+      \draw[->,densely dashed] (s) -- (a) node[midway,fill=white,circle,inner sep=1pt] {0};
+      \draw[->] (a) -- (x) node[midway,fill=white,circle,inner sep=1pt] {0};
+      \draw[->] (s) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
+      \draw[->] (b) -- (x) node[midway,fill=white,circle,inner sep=1pt] {1};
+
+      \node[above=0.05cm of s] {$s$};
+      \node[above=0.05cm of a] {$a$};
+      \node[below=0.05cm of b] {$b$};
+      \node[above=0.05cm of x] {$x$};
+
+      \node[below=0.05cm of s] {$d=0$};
+      \node[below=0.05cm of a] {$d=3$};
+      \node[above=0.35cm of b] {$d=1$};
+      \node[below=0.05cm of x] {$d=0$};
+
+      \node[below=0.35cm of s] {$d^*=0$};
+      \node[below=0.35cm of a] {$d^*=0$};
+      \node[above=0.05cm of b] {$d^*=1$};
+      \node[below=0.35cm of x] {$d^*=0$};
+   \end{tikzpicture}
+   \caption{Problem case for pathfinding with distance functions
+      in cases where invariant (\ref{eqn:ibid-relaxation-props-nottoogood})
+      does not hold.
+      Here, $d$ satisfied a and c, with edge $e_{sa}$ tensioned,
+      and $d' = 0$.
+      While the approximation $d$ is \emph{sound} at $x$
+      via Theorem~\ref{thm:ibid-relaxation-sound}
+      (i.e. $d(x)$ is correct),
+      the path reconstructed from $t$ is not a shortest path.}
+   \label{fig:ibid:relaxation-completeness-issue}
+\end{marginfigure}
 
 \begin{theorem}
 Consider $d: V \rightarrow \mathbb{R}$
@@ -566,53 +617,10 @@ is a shortest path from $s$ to $x$ of length $d^*(x)$.
 \label{thm:ibid-relaxation-reconstruct}
 \end{theorem}
 
-%Unfortunately the edge cases for completeness are less strong
-%than for soundness.
-%See the example in Figure~\ref{fig:ibid:relaxation-completeness-issue}.
-%\cdnote{Add note about how in the special case where $d$ is initialized
-%to $\infty$ and all $d$-values are thereafter reduced via edge
-%relaxations,
-%this completeness result also extends to the case of
-%$w \geq 0$ and $d^*(x) \leq d'$.
-%But this result isn't applicable to incremental settings as we'll
-%discuss in Section~\ref{sec:ibid:incremental}.}
-
-%\begin{marginfigure}
-%   \centering
-%   \begin{tikzpicture}
-%      \tikzset{>=latex} % arrow heads
-%      \node[fill=black,circle,inner sep=1.2pt] (s) at (0,0) {};
-%      \node[fill=black,circle,inner sep=1.2pt] (a) at (1.5,0) {};
-%      \node[fill=black,circle,inner sep=1.2pt] (b) at (1.5,1.2) {};
-%      \node[fill=black,circle,inner sep=1.2pt] (x) at (3.0,0) {};
-%      \draw[->,densely dashed] (s) -- (a) node[midway,fill=white,circle,inner sep=1pt] {0};
-%      \draw[->] (a) -- (x) node[midway,fill=white,circle,inner sep=1pt] {0};
-%      \draw[->] (s) -- (b) node[midway,fill=white,circle,inner sep=1pt] {1};
-%      \draw[->] (b) -- (x) node[midway,fill=white,circle,inner sep=1pt] {1};
-%
-%      \node[above=0.05cm of s] {$s$};
-%      \node[above=0.05cm of a] {$a$};
-%      \node[below=0.05cm of b] {$b$};
-%      \node[above=0.05cm of x] {$x$};
-%
-%      \node[below=0.05cm of s] {$d=0$};
-%      \node[below=0.05cm of a] {$d=3$};
-%      \node[above=0.35cm of b] {$d=1$};
-%      \node[below=0.05cm of x] {$d=0$};
-%
-%      \node[below=0.35cm of s] {$d^*=0$};
-%      \node[below=0.35cm of a] {$d^*=0$};
-%      \node[above=0.05cm of b] {$d^*=1$};
-%      \node[below=0.35cm of x] {$d^*=0$};
-%   \end{tikzpicture}
-%   \caption{Problem case for pathfinding with distance functions.
-%      Here, $d$ satisfied a and c, with edge $e_{sa}$ tensioned,
-%      and $d' = 0$.
-%      While the approximation $d$ is \emph{sound} at $x$
-%      ($d(x)$ is correct),
-%      reconstructing a shortest path requires \emph{completeness}.}
-%   \label{fig:ibid:relaxation-completeness-issue}
-%\end{marginfigure}
+Armed with Theorems~\ref{thm:ibid-relaxation-sound}
+and~\ref{thm:ibid-relaxation-reconstruct},
+we can terminate edge relaxation early
+and reconstruct a shortest path from $s$ to $t$.
 
 \subsection{Bidirectional Search}
 \label{sec:ibid:bidirectional}
@@ -621,10 +629,18 @@ A prominent technique for minimizing pathfinding computation for
 single-pair problems
 is bidirectional search.
 In a bidirectional algorithm,
-the distance $d_t$ to the target is calculated in a growing region
+the distance $d_t$ to the dstination is calculated in a growing region
 around the target vertex $t$
-concurrently with the conventional source distance $d_s$ around $s$
+concurrently with the conventional start distance $d_s$ around $s$
 (Figure~\ref{fig:ibid:example-bidirectional}).
+The destination distance function $d_t$,
+yielding the distance of a shortest path from each vertex $u$ to $t$,
+obeys a complementary definition and local characterization as $d_s$,
+with vertex predecessors replaced with successors.
+Approaches such as edge relaxation (Section~\ref{subsec:ibid-tension})
+can therefore be used to calculate $d_t$ using a region around $t$
+within which shortests paths can be reconstructed.
+
 Loosely speaking,
 the search can terminate with a shortest path
 once the two regions intersect.
@@ -777,23 +793,20 @@ and forwards from $v$ to $t$.
 
 The shortest path on a graph is of course intimately tied to
 the edge weight function $w$.
-If the weight function changes from $w$ to $w'$,
-a shortest path $p$ w.r.t. $w$
-will generally no longer be a shortest path w.r.t. $w'$,
+If the weight function changes from $w^{(1)}$ to $w^{(2)}$,
+a shortest path $p^{(1)}$ w.r.t. $w^{(1)}$
+will generally no longer be a shortest path w.r.t. $w^{(2)}$,
 even if changes are small and localized.
 For example,
-if the weight of edge on $p$ increases,
+if the weight of edge on $p^{(1)}$ increases,
 or if the weight of some edge not on $p$ decreases,
-then some other path $p'$ may become shorter than $p$.
-The dynamic shortest-path problem considers finding a shortest path
-for each of a sequence of input edge weight functions,
-and algorithms have been proposed to address the dynamic problem.
-
-\cdnote{
-A review is here: \citep{eppstein1999dynamic},
-\citep{demetrescu2010dynamic}.
-Also how about this: \citep{frigioni2000dynamicsp}.
-Also add forward pointer to heuristic stuff.}
+then some other path $p^{(2)}$ may become shorter than $p^{(1)}$.
+The \emph{dynamic shortest-path problem}
+considers finding a shortest path
+for each of a sequence of input edge weight functions.
+Figure~\ref{fig:ibid:example-incremental}
+shows an incremental algorithm finding a shortest path quickly
+for a subsequent planning episode.
 
 \begin{marginfigure}%
    \centering%
@@ -808,8 +821,43 @@ Also add forward pointer to heuristic stuff.}
    }%
    \caption{Initial episode: 1,287,897 expansions.
       Subsequent episode: 391,122 expansions.}%
-   %\label{fig:ibid:example-bidirectional}%
+   \label{fig:ibid:example-incremental}%
 \end{marginfigure}
+
+We concern ourselves with the \emph{fully dynamic} case,
+in which arbitrary edge weight changes are allowed.
+As mentioned in Section~\ref{subsec:ibid-probdef},
+for our pathfinding problems,
+we treat edges with infinite weight equivalently with non-existant
+edges.
+Therefore,
+deleting or inserting an edge can be represented by
+setting its edge weight to or from infinity, respectively.
+We include here a brief review of the approach underlying common
+algorithms for the dynamic pathfinding problem.
+
+The dynamic problem has been studied in the literature.
+Eary results demonstrated properties of optimal spanning trees
+under certain types of update operations
+\citep{spirapan1975updatingsp}.
+Early algorithms considered restricted problem such as
+the insert-only problem
+with constant edge weights \citep{linchang1991dynamicsp},
+or restricted settings such as planar graphs
+\citep{klein1998planardynamicshort}.
+More general algorithms followed
+\citep{ramalingam1996dynamicswsffp,
+   frigioni1996dynamicsinglesource,
+   frigioni2000dynamicsp}.
+\marginnote{We defer for now discussing the problem of integrating
+heuristic functions with incremental search;
+see Section~\ref{subsec:ibid:heuristic-incremental}
+for that discussion.}
+A review of more general dynamic problems on graphs is available
+in \citep{eppstein1999dynamic},
+including for the more general all-pairs problem
+\citep{demetrescu2010dynamic}.
+
 
 \paragraph{Problem Definition.}
 Consider a directed graph $G = (V,E)$ as described in
@@ -1329,6 +1377,7 @@ See Figure~\ref{fig:ibid:example-astar}.
 \end{marginfigure}
 
 \subsection{Heuristic Methods in Bidirectional Search.}
+\label{subsec:ibid:heuristic-bidirectional}
 
 Attempts to provide a bidirectional algorithm which incorporates
 heuristics generally take one of three approaches.
@@ -1373,6 +1422,7 @@ Also Goldberg \citep{goldberg2005spexternalmemory}.
 To integrate: \citep{dechter1984bfsastaropt}.
 
 \subsection{Heuristic Methods in Incremental Search.}
+\label{subsec:ibid:heuristic-incremental}
 
 Lifelong Planning A* \citep{koenig2004lpastar}.
 
