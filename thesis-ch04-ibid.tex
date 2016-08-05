@@ -52,13 +52,18 @@ We consider three classes of such techniques
    exploits a sink-directed heuristic function over vertices to bias
    exploration in the direction of the sink vertex.
    A strong and admissible such heuristic can drastically speed the
-   search,
+   search, \ssnote{might want to specify exactly how, i.e. expanding
+   fewer vertices}
    although the efficacy is reduced for weaker heuristics.
 \item \emph{Incremental Search} -- An incremental algorithm
    is applied to a sequence of search queries on a graph whose
    edge weight function changes (partially) between queries.
+   \ssnote{isn't this a bit too specific?
+   doesn't it also apply to cases where the vertex topology changes?}
    It endeavors to only consider the portion of its data structure
-   affected by the changes.
+   affected by the changes. \ssnote{might want to say that it's called
+   \emph{incremental} because it incrementally updates only the portion
+   of the data structure that is relevant for solving the problem.}
 \end{enumerate}
 
 The principal contribution of this chapter is IBiD,
@@ -182,6 +187,10 @@ using transit time as the edge weight function
 In this way,
 a shortest path between a pair of start and destination locations
 minimizes the total transit time between them.
+\ssnote{Might want to provide 1-2 sentence intuition on why
+this graph is interesting, and why we chose it for IBID. 
+High degree? Nonuniform degree?
+Large variation in edge weights?}
 
 \paragraph{Problem Settings.}
 The single-pair problem has been extensively studied.
@@ -233,6 +242,13 @@ by walking backwards to $s$ guided by $d^*$.}
    \label{eqn:ibid-distance-function-global}
 \end{equation}
 where $P_{sv}$ is the set of all paths from $s$ to $v$.
+\ssnote{Have you defined len elsewhere? If so, provide pointer.
+Is it meant to be the sum of weights along the path?
+\begin{equation}
+   d^*(v) = \min_{p \in P_{sv}} \mbox{len}(p) = \min_{p \in P_{sv}} \sum_{e \in p} w(e),
+   \label{eqn:ibid-distance-function-global}
+\end{equation}
+}
 Where no paths to $v$ exist,
 we take $d^*(v) = \infty$.
 Note that $d^*$ is only well-defined on graphs with no negative-length
