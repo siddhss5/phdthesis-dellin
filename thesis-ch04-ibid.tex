@@ -155,7 +155,8 @@ paths contain infinite-weight edges.
    \centering%
    \begin{tikzpicture}
       \tikzset{>=latex} % arrow heads
-      \node[inner sep=0pt,anchor=south west] {\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-intro.png}};
+      \node[inner sep=0pt,anchor=south west] {%
+         \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-intro.png}};
       \coordinate (s) at (1.75,0.9);
       \coordinate (t) at (3.93,2.8);
       \node (slab) at (2.5,0.6) {$s$};
@@ -1051,6 +1052,23 @@ the Incremental Bidirectional (IBiD) search algorithm
 is to leverage the early termination of a bidirectional search
 with the efficiency of an incremental search for dynamic
 single-pair shortest path problems.
+An example of IBiD is shown in
+Figure~\ref{fig:ibid:example-incremental-bidirectional}.
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
+   }%
+   \caption{Initial search: 1,181,616 expansions.
+      Replan: 262,422 expansions.}%
+   \label{fig:ibid:example-incremental-bidirectional}%
+\end{marginfigure}
 
 \subsection{Bidirectional Termination with Incremental Distance Functions}
 
@@ -1210,22 +1228,6 @@ found so far.
 We capture the central idea from Theorem~\ref{thm:ibid-sound}
 in Algorithm~\ref{alg:ibid}.
 
-\begin{marginfigure}%
-   \centering%
-   \subfloat[Initial search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
-   }
-   
-   \subfloat[Replan search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
-   }%
-   \caption{Initial search: 1,181,616 expansions.
-      Replan: 262,422 expansions.}%
-   %\label{fig:ibid:example-bidirectional}%
-\end{marginfigure}
-
 \begin{algorithm}[t]
    \caption{IBiD Outline}
    \label{alg:ibid}
@@ -1300,12 +1302,30 @@ Hart, Nilsson, and Raphael \citep{hart1968astar} discovered that
 these approaches can be combined ($d_s + h_t$) to yield
 an admissible algorithm (A*) for the shortest-path problem,
 as long as $h_t$ meets certain conditions.
+See Figure~\ref{fig:ibid:example-astar}.
+
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-astar.png}%
+   \caption{A* search.
+      532,880 expansions.}%
+   \label{fig:ibid:example-astar}%
+\end{marginfigure}
 
 \subsection{Heuristic Methods in Bidirectional Search.}
 
 Attempts to provide a bidirectional algorithm which incorporates
 heuristics generally take one of three approaches.
 \cdnote{I need to deep-dive here to write this correctly.}
+
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-heurbidijkstra.png}%
+   \caption{Bidirectional A* search.
+      515,588 expansions.}%
+   \label{fig:ibid:example-heurbidijkstra}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-heurbidijkstra}.
 
 First,
 front-to-front methods
@@ -1360,29 +1380,12 @@ they are positive as well!
 Create a transformed graph.
 
 \paragraph{Example problem.}
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-astar.png}%
-   \caption{A* search.
-      532,880 expansions.}%
-   \label{fig:ibid:example-astar}%
-\end{marginfigure}
-See Figure~\ref{fig:ibid:example-astar}.
+
 For the purpose of calculating vertex heuristics,
 geographic coordinates were projected onto a 2D plane using the
 scale at the midpoint latitude ($41.25^\circ$)
 resulting in a projecting error of less than 0.3\%.
 The maximum transit speed is 30.11 m/s.
-
-\paragraph{Example problem.}
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-heurbidijkstra.png}%
-   \caption{Bidirectional A* search.
-      515,588 expansions.}%
-   \label{fig:ibid:example-heurbidijkstra}%
-\end{marginfigure}
-See Figure~\ref{fig:ibid:example-heurbidijkstra}.
 
 \section{Other Stuff}
 
@@ -1496,6 +1499,18 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \label{fig:incbi-road-ne}
 \end{figure*}
 
+
+
+\subsection{Implementation Details}
+
+Other implementations:
+\citep{alberts1998softwaredynamicgraph}.
+
+
+\section{Implications for LazySP}
+
+Gotta talk about this stuff!
+
 \subsection{LazySP Selector Experiments}
 
 \begin{figure}
@@ -1555,8 +1570,3 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \includegraphics{build/incbi-sq/workcellij-lambda}
    \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
 \end{figure*}
-
-\subsection{Implementation Details}
-
-Other implementations:
-\citep{alberts1998softwaredynamicgraph}.

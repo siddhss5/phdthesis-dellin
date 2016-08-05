@@ -4,6 +4,10 @@
 #   - this is for the experiment which randomly selects roots
 # - thesis-papers/thesis_experiments/scripts/Makefile.incbi-roadne-video
 
+
+
+# part 1: colorful examples that test different potential functions and balancers.
+
 # the resulting png files are checked in:
 # - pavgfull-balcard.png
 # - pavgfull-baldist.png
@@ -78,15 +82,19 @@ clean:
 # examples from the nj-bos route
 
 # the resulting png files are checked in:
-# - example-astar.png
-# - example-bidijkstra.png
-# - example-dijkstra.png
-# - example-heurbidijkstra.png
-# - example-incbi-0.png
-# - example-incbi-1.png
-# - example-incuni-0.png
-# - example-incuni-1.png
-# - example-intro.png
+# - example-intro.png          # just shows the graph, with no d function
+# - example-dijkstraall.png    # the entire start distance function
+# - example-dijkstra.png       # dijkstra (with termination)
+# - example-bidijkstra.png     # bidirectional
+# - example-incuni-0.png       # lpa* (basically) initial episode
+# - example-incuni-1.png       # lpa* (basically) subsequent episode
+# - example-incbi-0.png        # incbi initial episode
+# - example-incbi-1.png        # incbi subsequent episode
+# - example-astar.png          # heuristic unidir
+# - example-heurbidijkstra.png # heuristic bidir
+
+
+
 
 # home is vertex 458584
 # olin is vertex 249500
