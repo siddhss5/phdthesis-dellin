@@ -127,7 +127,7 @@ identify on $p'$ the edge $e'_{uv}$ adjoining the vertices $u'$, $v'$
 such that $d_s^*(u') < D_s \leq d_s^*(v')$.
 (Since $D_s > 0$, this edge will exist.)
 Since $d_s^*(u') < D_s$,
-by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
+by Theorem~\ref{thm:ibid-dynamicswsffp-sound},
 $u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
 Consider our supposition that
 $d_s^*(u') + w(e_{uv}') + d_t^*(v') < D_s + D_t$.
@@ -136,7 +136,7 @@ and $D_s \leq d_s^*(v')$,
 it follows that
 $d_t^*(v') < D_t$.
 Therefore,
-by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
+by Theorem~\ref{thm:ibid-dynamicswsffp-sound},
 $v'$ is $t$-consistent with $d_t(v') = d_t^*(v')$.
 As a consequence,
 the edge $e'_{uv}$ must be in $E_{\ms{conn}}$.
@@ -247,4 +247,51 @@ As a result,
 it follows that $d(x) \leq d^*(x)$.
 But this contraducts our supposition that $d^*(x) < d(x)$,
 and therefore such a vertex $x$ cannot exist.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:ibid-sound}]
+We will prove this by contradiction.
+Suppose that a path $p'$ exists with
+$\mbox{len}(p') < \min_{e \in E_{\ms{conn}}} \left( d_s(u) + w(e_{uv}) + d_t(v) \right)$.
+Then it must also be that
+$\mbox{len}(p') < K_s + K_t$.
+We will consider two cases.
+
+First, consider the case where $K_s > \mbox{len}(p')$,
+so that $K_s > d_s^*(t)$.
+In this case,
+the last edge $e_{ut}'$ on $p'$
+has $d_s^*(u') < d_s^*(t) < K_s$;
+by Theorem~\ref{thm:ibid-dynamicswsffp-sound},
+$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
+In addition,
+since $K_t > 0$,
+$t$ must be $t$-consistent with $d_t(t) = 0$.
+Therefore,
+it follows that $d_s^*(u') + w(e_{ut}') < d_s(u') + w(e_{ut}')$,
+which contradicts the supposition.
+
+In the second case with $K_s \leq \mbox{len}(p')$,
+identify on $p'$ the edge $e'_{uv}$ adjoining the vertices $u'$, $v'$
+such that $d_s^*(u') < K_s \leq d_s^*(v')$.
+(Since $K_s > 0$, this edge will exist.)
+Since $d_s^*(u') < K_s$,
+by Theorem~\ref{thm:ibid-dynamicswsffp-sound},
+$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
+Consider our supposition that
+$d_s^*(u') + w(e_{uv}') + d_t^*(v') < K_s + K_t$.
+Since $d_s^*(u') + w(e_{uv}') = d_s^*(v')$
+and $K_s \leq d_s^*(v')$,
+it follows that
+$d_t^*(v') < K_t$.
+Therefore,
+by Theorem~\ref{thm:ibid-dynamicswsffp-sound},
+$v'$ is $t$-consistent with $d_t(v') = d_t^*(v')$.
+As a consequence,
+the edge $e'_{uv}$ must be in $E_{\ms{conn}}$.
+Therefore,
+$d_s^*(u') + w(e_{uv}') + d_t^*(v')
+   < d_s(u') + w(e_{uv}') + d_t(v')$,
+which is a contradiction.
 \end{proof}
