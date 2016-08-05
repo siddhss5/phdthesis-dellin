@@ -198,7 +198,7 @@ settings \citep{kaindl1997biheurreconsidered}
 or to settings where pre-computation is available
 \citep{goldberg2007pointtopoint}.
 While we do not focus on such settings,
-the algorithm we propose may be complementary to these techniques.
+the algorithms we propose may be complementary to these techniques.
 
 \section{Review of Pathfinding with Distance Functions}
 \label{sec:ibid:distance-functions}
@@ -212,6 +212,14 @@ distance function approximations.
 Examination of these properties then informs the development of
 algorithms which calculate them,
 which we defer to Section~\ref{sef:ibid:ibid}.
+
+While much of this section summaries prior work,
+the presentation of the bidirectional termination condition
+(Theorem~\ref{thm:ibid-bidir-sound}
+in Section~\ref{sec:ibid:bidirectional})
+in particular
+is formulated to enable the novel theorems
+presented in Section~\ref{sef:ibid:ibid}.
 
 \subsection{Shortest Paths via the Source Distance Function}
 
@@ -262,7 +270,7 @@ Importantly, $d^*$ can also be characterized locally by
    \label{eqn:distance-function-char}
 \end{equation}
 where $\mbox{Pred}(v)$ yeilds the predecessor vertices of $v$,
-and a vertex $v$ with no predecessors takes $d^*(v) = \infty$.
+and a vertex $v \neq s$ with no predecessors takes $d^*(v) = \infty$.
 \marginnote{Note that
 while the distance function $d^*$ necessarily satisfies
 the equations (\ref{eqn:distance-function-char}),
@@ -281,9 +289,10 @@ Note that while (\ref{eqn:distance-function-char})
 is a necessary condition of $d^*$,
 it is not sufficient in general.
 In particular,
-if $w$ has cycles of zero length,
-there will be multiple solutions of (\ref{eqn:distance-function-char})
-which are not the well-defined $d^*$.
+if $w$ has cycles of length zero,
+then even though $d^*$ is well-defined,
+(\ref{eqn:distance-function-char}) admits an infinite number
+of incorrect solutions for $d$.
 
 \paragraph{Reconstructing a Shortest Path from the Distance Function}
 Calculating the source distance function is only useful for solving
@@ -391,7 +400,7 @@ moore1959spmaze}
 cycles through all edges repeatedly,
 relaxing all tensioned edges found
 (at most $|V|-1$ repetitions are sufficient for convergence).
-Note that this does not place any requirements on $G$
+Note that this does not place any requirements on $w$
 (other than that $d^*$ must exist, so there must not be
 any negative-length cycles reachable from $s$).
 
@@ -476,7 +485,7 @@ We can exploit our intution to order relaxations from start to destination
 in the special case where $w \geq 0$
 (note that this requirement is stronger than requiring no reachable
 negative-length cycles).
-We can show that our approximation $d$
+We can then show that our approximation $d$
 is \emph{sound} for a subset of vertices
 as described by Theorem~\ref{thm:ibid-relaxation-sound}.
 
@@ -493,17 +502,17 @@ as described by Theorem~\ref{thm:ibid-relaxation-sound}.
 Consider $d: V \rightarrow \mathbb{R}$
 satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
 \ref{eqn:ibid-relaxation-props-nottoogood}),
-and let $k$ be the smallest value $d(u)$
+and let $D$ be the smallest value $d(u)$
 among all tensioned edges $e_{uv}$
 (or $\infty$ if no such edges exist).
 If $w \geq 0$,
-any vertex $x$ with $d(x) \leq k$
+any vertex $x$ with $d(x) \leq D$
 has $d(x) = d^*(x)$.
 \label{thm:ibid-relaxation-sound}
 \end{theorem}
 As a result,
 a given value $k$ creates a region of vertices
-with values $d(x) \leq k$ that are known to be
+with values $d(x) \leq D$ that are known to be
 accurate.
 This confers two distinct advantages when designing an algorithm:
 an efficient relaxation ordering,
@@ -511,7 +520,7 @@ and an early termination condition for single-pair problems.
 
 \paragraph{Efficient Relaxation Ordering.}
 Therefore,
-all tensioned edges $e_{uv}$ with $d(u) = k$
+all tensioned edges $e_{uv}$ with $d(u) = D$
 (of which there must be at least one if any edges are tensioned)
 can be relaxed immediately,
 and will never be retensioned.
@@ -531,7 +540,7 @@ algorithm \citep{dijkstra1959anote}.
 
 \paragraph{Early Termination.}
 The soundness result shows that once the destination
-vertex $t$ satisfies $d(t) \leq k$,
+vertex $t$ satisfies $d(t) \leq D$,
 it has the correct start distance.
 Since we are only interested in reconstructing a shortest path to $t$,
 we are interested in terminating computation of the distance
@@ -545,14 +554,14 @@ This requres a proof of Theorem~\ref{thm:ibid-relaxation-reconstruct}.
 Consider $d: V \rightarrow \mathbb{R}$
 satisfying (\ref{eqn:ibid-relaxation-props-nounder} --
 \ref{eqn:ibid-relaxation-props-nottoogood}),
-and let $k$ be the smallest value $d(u)$
+and let $D$ be the smallest value $d(u)$
 among all tensioned edges $e_{uv}$
 (or $\infty$ if no such edges exist).
 If $w \geq 0$,
-for any vertex $x$ with $d(x) \leq k$,
+for any vertex $x$ with $d(x) \leq D$,
 a path reconstructed backwards from $x$ by iteratively selecting a
 predecessor minimizing $d(u) + w(e_{uv})$ until $s$ is reached
-is be a shortest path from $s$ to $x$ of length $d^*(x)$.
+is a shortest path from $s$ to $x$ of length $d^*(x)$.
 \label{thm:ibid-relaxation-reconstruct}
 \end{theorem}
 
@@ -651,10 +660,20 @@ turns on when and how to terminate with a shortest path.
 \paragraph{A Correct Termination Condition.}
 %\label{sec:ibid:bidirectional-termination}
 What happens upon an encounter between the forward and reverse searches?
-The difficulty stems from the fact that the first vertex to be
-{\sc Closed} by the searches in both directions
-need not lie on the shortest path
-(Figure~\ref{fig:ibid:bidirectional-termination-issue}).
+Consider running each search until the first vertex is found
+that satisfies Theorem~\ref{thm:ibid-relaxation-sound} in both
+directions
+(that is, the first vertex $x$ for which
+$d_s(x) \leq D_s$ and $d_t(x) \leq D_t$).
+While Theorem~\ref{thm:ibid-relaxation-sound} correctly demonstrates
+that the values $d_s(x)$ and $d_t(x)$ are correct
+(and Theorem~\ref{thm:ibid-relaxation-reconstruct} similarly
+demonstrates that a shortest path can be reconstructed from $s$ to $x$
+and also from $x$ to $t$),
+this is not sufficient to demonstrate that the shortest path
+actually passes through $x$.
+See Figure~\ref{fig:ibid:bidirectional-termination-issue} for a
+counter-example that illustrates this point.
 
 \begin{marginfigure}
    \centering
@@ -695,7 +714,7 @@ with several correct variations proposed
 pohl1969bidirectional, goldberg2005spexternalmemory}.
 What is necessary is a bidirectional equivalent to the 
 completeness-based termination condition
-described in Section~\ref{subsec:ibid-dijkstra-completeness}.
+from Theorem~\ref{thm:ibid-relaxation-reconstruct}.
 
 Suppose $d_s$ and $d_t$ are approximations to $d^*_s$ and $d_t^*$,
 respectively,
@@ -719,6 +738,7 @@ and $e^*_{uv}$ lies on one such path.
 \label{thm:ibid-bidir-sound}
 \end{theorem}
 
+\paragraph{Designing an Efficient Bidirectional Algorithm.}
 In the case where the approximations $d_s$ and $d_t$ are improved
 via edge relaxation,
 since $w \geq 0$,
@@ -957,6 +977,11 @@ once the destination vertex $t$ becomes consistent,
 as exploited by the Lifelong Planning A* algorithm
 \citep{koenig2004lpastar}.
 
+\subsection{Algorithm Design}
+
+\cdnote{I still need to write this part!
+Talk about queues!}
+
 % I don't need this anymore, subsumed in soundness result!
 %\paragraph{Approximation Completeness.}
 %
@@ -1034,156 +1059,77 @@ as exploited by the Lifelong Planning A* algorithm
 %so that $d(x) \leq d^*(x)$.
 %\end{proof}
 
-\section{Incremental Bidirectional Search: The Algorithm}
+\section{Incremental Bidirectional Search}
 \label{sef:ibid:ibid}
 
-Important: $s$ and $t$ must be distinct!
+The principal motivation behind
+the Incremental Bidirectional (IBiD) search algorithm
+is to leverage the early termination of a bidirectional search
+with the efficiency of an incremental search for dynamic
+single-pair shortest path problems.
 
-How can we adapt Theorem~\ref{thm:ibid-bidir-sound}
-to the incremental case?
+\subsection{Bidirectional Termination with Incremental Distance Functions}
+
+Consider a graph endowed with two distance functions,
+a start distance approximation $d_s$,
+and a destination distance approximation $d_t$.
+Since this is an incremental setting,
+we can make use of the formulation
+of Theorem~\ref{thm:ibid-dynamicswsffp-sound}
+from Section~\ref{sec:ibid:incremental}
+to establish the correctness of these approximations
+for certain vertices.
+
+It is essential that the bidirectional termination condition from
+Theorem~\ref{thm:ibid-bidir-sound} be adapted to
+handle these incrementally maintained distance functions.
+The central theorem that enables the IBiD algorithm is:
 
 \begin{theorem}
+Consider a graph with $w > 0$ and with $s \neq t$.
+Consider a start distance approximation $d_s: V \rightarrow \mathbb{R}$,
+with $r_s$ satisfying (\ref{eqn:ibid-inc-props-rvalue}),
+and let $K_s$ be the smallest value $k_s(v)$
+among all inconsistent vertices,
+or $\infty$ if no such vertices exist;
+likewise, consider the same for a destination distance approximation
+$d_t$ and its accompanying $r_t$ and $K_t$.
+
 Define $E_{\ms{conn}}$ as the set of all edges $e_{uv}$ such that
-$u$ is $s$-consistent with $d_s(u) \leq k_s$
-and $v$ is $t$-consistent with $d_t(v) \leq k_t$.
-If $k_s > 0$, $k_t > 0$,
-and
-$\min_{e \in E_{\ms{conn}}} \left( d_s(u) + w(e_{uv}) + d_t(v) \right)
-   \leq k_s + k_t$,
-then the path through $e_{uv}$ is a shortest path.
+$u$ is $s$-consistent with $d_s(u) \leq K_s$
+and $v$ is $t$-consistent with $d_t(v) \leq K_t$,
+and define $\ell_e$ s.t. $\ell_e(e_{uv}) = d_s(u) + w(e_{uv}) + d_t(v)$.
+If $E_{\ms{conn}}$ is non-empty,
+and $e^*_{uv}$ minimizes $\ell_e$
+among $E_{\ms{conn}}$ with $\ell_e(e^*_{uv}) \leq K_s + K_t$,
+then $\ell_e(e^*_{uv})$ is the length of the shortest path,
+and $e^*_{uv}$ lies on one such path.
 \label{thm:ibid-sound}
 \end{theorem}
 
-\begin{proof}[Proof of Theorem~\ref{thm:ibid-sound}]
-We will prove this by contradiction.
-Suppose that a path $p'$ exists with
-$\mbox{len}(p') < \min_{e \in E_{\ms{conn}}} \left( d_s(u) + w(e_{uv}) + d_t(v) \right)$.
-Then it must also be that
-$\mbox{len}(p') < k_s + k_t$.
-We will consider two cases.
+\subsection{Algorithm Design}
 
-First, consider the case where $k_s > \mbox{len}(p')$,
-so that $k_s > d_s^*(t)$.
-In this case,
-the last edge $e_{ut}'$ on $p'$
-has $d_s^*(u') < d_s^*(t) < k_s$;
-by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
-In addition,
-since $k_t > 0$,
-$t$ must be $t$-consistent with $d_t(t) = 0$.
-Therefore,
-it follows that $d_s^*(u') + w(e_{ut}') < d_s(u') + w(e_{ut}')$,
-which contradicts the supposition.
-
-In the second case with $k_s \leq \mbox{len}(p')$,
-identify on $p'$ the edge $e'_{uv}$ adjoining the vertices $u'$, $v'$
-such that $d_s^*(u') < k_s \leq d_s^*(v')$.
-(Since $k_s > 0$, this edge will exist.)
-Since $d_s^*(u') < k_s$,
-by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$u'$ is therefore $s$-consistent with $d_s(u') = d_s^*(u')$.
-Consider our supposition that
-$d_s^*(u') + w(e_{uv}') + d_t^*(v') < k_s + k_t$.
-Since $d_s^*(u') + w(e_{uv}') = d_s^*(v')$
-and $k_s \leq d_s^*(v')$,
-it follows that
-$d_t^*(v') < k_t$.
-Therefore,
-by Theorem~\ref{thm:ibid-dynamicswsffp-complete},
-$v'$ is $t$-consistent with $d_t(v') = d_t^*(v')$.
-As a consequence,
-the edge $e'_{uv}$ must be in $E_{\ms{conn}}$.
-Therefore,
-$d_s^*(u') + w(e_{uv}') + d_t^*(v')
-   < d_s(u') + w(e_{uv}') + d_t(v')$,
-which is a contradiction.
-\end{proof}
-
-\begin{marginfigure}%
-   \centering%
-   \subfloat[Initial search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
-   }
-   
-   \subfloat[Replan search]{%
-      \centering%
-      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
-   }%
-   \caption{Initial search: 1,181,616 expansions.
-      Replan: 262,422 expansions.}%
-   %\label{fig:ibid:example-bidirectional}%
-\end{marginfigure}
-
-
-
-
-
-
-\subsection{IBiD}
-
-The main outline of IBiD is given in Algorithm~\ref{alg:ibid}.
-IBiD conducts two independent DynamicSWSF-FP searches
+\paragraph{Simultaneous Incremental Searches.}
+The IBiD algorithm runs two independent conventional
+DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}
+searches simultaneously,
+one from the start vertex $s$
+and one from the destination vertex $t$,
+with each maintaining a separate priority queue of
+inconsistent vertices $Q_s$ and $Q_t$ respectively
 (Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
 
-\begin{algorithm}[t]
-   \caption{IBiD Outline}
-   \label{alg:ibid}
-   \begin{algorithmic}[1]
-      \Procedure {Main} {\,}
-         \State $\mbox{\sc InitializeSource}(); \; \mbox{\sc InitializeTarget}()$
-         \State $Q_c \gets \emptyset$
-            \Comment $\mbox{ key for } (u,v): d_s(u) + w(u,v) + d_t(v)$
-         \Loop
-            \While {not $\mbox{\sc TerminationCondition}()$}
-               \If {$Q_s.\mbox{TopKey} < Q_t.\mbox{TopKey}$}
-                     \Comment prioritize arbitrarily
-                  \State $\mbox{\sc ProcessSourceQueue}(u)$
-               \Else
-                  \State $\mbox{\sc ProcessTargetQueue}(u)$
-               \EndIf
-               \State Ensure $(u,v) \in Q_c$ iff
-                  $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
-            \EndWhile
-            \State $(u_c,v_c) \gets Q_c.\mbox{Top}$
-            \State $\pi \gets
-               ( \mbox{walk } d_s \mbox{ from } u_c \mbox{ to } s )
-               \cup
-               ( \mbox{walk } d_t \mbox{ from } v_c \mbox{ to } t )$
-            \State wait for edges $(u,v) \in E_{\ms{delta}}$ with changed weights $w(u,v)$
-            \State $\mbox{\sc NotifyWeightChanges}(E_{\ms{delta}})$
-         \EndLoop
-      \EndProcedure
-      \Function {TerminationCondition} {\,}
-         \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
-            \Comment return False if $Q_c$ empty
-         \If {$Q_s.\mbox{TopKey} + Q_t.\mbox{TopKey} < d_s(u_c) + w(u_c,v_c) + d_t(v_c)$}
-            \State \Return False
-         \EndIf
-         \If {$Q_s.\mbox{TopKey} < d_s(u_c)$
-               \mbox{\bf or} $Q_t.\mbox{TopKey} < d_t(v_c)$}
-            \State \Return False
-         \EndIf
-         \State \Return True
-      \EndFunction
-      \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
-         \ForAll {$(u,v) \in E_{\ms{delta}}$}
-            \State $\mbox{\sc UpdateSourceDistance}(v)$
-            \State $\mbox{\sc UpdateTargetDistance}(u)$
-         \EndFor
-         \State Ensure $(u,v) \in Q_c$ iff
-            $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
-      \EndProcedure
-   \end{algorithmic}
-\end{algorithm}
+As with a convential bidirectional search,
+the two sides can be alternated arbitrarily,
+except that the each queue must be processed once upon initialization
+so that $d_s(s) = 0$ and $d_t(t) = 0$.
 
 {\floatevery{algorithm}{\setlength\hsize{16.85cm}}
 \begin{algorithm}[t]
    \caption{As a bidirectional algorithm,
       IBiD conducts two independent DynamicSWSF-FP searches,
-      one computing distance from the source vertex,
-      and the other computing distance to the target vertex.}
+      one computing distance from the start vertex $s$,
+      and the other computing distance to the destination vertex $t$.}
    \label{alg:ibid-two-dynamicswsffps}
    \begin{minipage}[t]{8.2cm}
       \begin{algorithmic}[1]
@@ -1263,9 +1209,101 @@ IBiD conducts two independent DynamicSWSF-FP searches
 \end{algorithm}
 } % floatevery width adjustment
 
+\paragraph{Remembering Connections.}
+Theorem~\ref{thm:ibid-sound} has ramifications when designing
+an algorithm.
+In the case of bidirectional search
+described in Section~\ref{sec:ibid:bidirectional},
+the algorithm could take a shortcut since $D$-values always decreased,
+so it was not necessary to remember older edges when better
+ones were found.
+In the incremental case,
+where the start and destination distance functions $d_s$ and $d_t$
+may both increase and decrease between episodes,
+it is no longer sufficient to remember only the best connection
+found so far.
+
+We capture the central idea from Theorem~\ref{thm:ibid-sound}
+in Algorithm~\ref{alg:ibid}.
+
+\begin{marginfigure}%
+   \centering%
+   \subfloat[Initial search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-0.png}%
+   }
+   
+   \subfloat[Replan search]{%
+      \centering%
+      \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}%
+   }%
+   \caption{Initial search: 1,181,616 expansions.
+      Replan: 262,422 expansions.}%
+   %\label{fig:ibid:example-bidirectional}%
+\end{marginfigure}
+
+\begin{algorithm}[t]
+   \caption{IBiD Outline}
+   \label{alg:ibid}
+   \begin{algorithmic}[1]
+      \Procedure {Main} {\,}
+         \State $\mbox{\sc InitializeSource}(); \; \mbox{\sc InitializeTarget}()$
+         \State $Q_c \gets \emptyset$
+            \Comment $\mbox{ key for } (u,v): d_s(u) + w(u,v) + d_t(v)$
+         \Loop
+            \While {not $\mbox{\sc TerminationCondition}()$}
+               \If {$Q_s.\mbox{TopKey} < Q_t.\mbox{TopKey}$}
+                     \Comment prioritize arbitrarily
+                  \State $\mbox{\sc ProcessSourceQueue}(u)$
+               \Else
+                  \State $\mbox{\sc ProcessTargetQueue}(u)$
+               \EndIf
+               \State Ensure $(u,v) \in Q_c$ iff
+                  $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
+            \EndWhile
+            \State $(u_c,v_c) \gets Q_c.\mbox{Top}$
+            \State $\pi \gets
+               ( \mbox{walk } d_s \mbox{ from } u_c \mbox{ to } s )
+               \cup
+               ( \mbox{walk } d_t \mbox{ from } v_c \mbox{ to } t )$
+            \State wait for edges $(u,v) \in E_{\ms{delta}}$ with changed weights $w(u,v)$
+            \State $\mbox{\sc NotifyWeightChanges}(E_{\ms{delta}})$
+         \EndLoop
+      \EndProcedure
+      \Function {TerminationCondition} {\,}
+         \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
+            \Comment return False if $Q_c$ empty
+         \If {$Q_s.\mbox{TopKey} + Q_t.\mbox{TopKey} < d_s(u_c) + w(u_c,v_c) + d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \If {$Q_s.\mbox{TopKey} < d_s(u_c)$
+               \mbox{\bf or} $Q_t.\mbox{TopKey} < d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \State \Return True
+      \EndFunction
+      \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
+         \ForAll {$(u,v) \in E_{\ms{delta}}$}
+            \State $\mbox{\sc UpdateSourceDistance}(v)$
+            \State $\mbox{\sc UpdateTargetDistance}(u)$
+         \EndFor
+         \State Ensure $(u,v) \in Q_c$ iff
+            $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
+      \EndProcedure
+   \end{algorithmic}
+\end{algorithm}
+
+
+
 \section{Heuristic Search}
 \label{sec:ibid:heuristic}
 
+When examining how to assemble a heuristic-informed algorithm
+that integrates bidirectional with incremental methods,
+it's instructive to examine how these efforts have been addressed
+in the past.
+
+\paragraph{Review of Heuristic Methods.}
 Heuristic methods such as the Graph Traverser
 \citep{doran1966graphtraverser} were originally
 applied to pathfinding problems in order to find non-optimal
@@ -1279,20 +1317,7 @@ these approaches can be combined ($d_s + h_t$) to yield
 an admissible algorithm (A*) for the shortest-path problem,
 as long as $h_t$ meets certain conditions.
 
-\paragraph{Example problem.}
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-astar.png}%
-   \caption{A* search.
-      532,880 expansions.}%
-   \label{fig:ibid:example-astar}%
-\end{marginfigure}
-See Figure~\ref{fig:ibid:example-astar}.
-For the purpose of calculating vertex heuristics,
-geographic coordinates were projected onto a 2D plane using the
-scale at the midpoint latitude ($41.25^\circ$)
-resulting in a projecting error of less than 0.3\%.
-The maximum transit speed is 30.11 m/s.
+\subsection{Heuristic Methods in Bidirectional Search.}
 
 Attempts to provide a bidirectional algorithm which incorporates
 heuristics generally take one of three approaches.
@@ -1327,6 +1352,44 @@ Also Goldberg \citep{goldberg2005spexternalmemory}.
 
 To integrate: \citep{dechter1984bfsastaropt}.
 
+\subsection{Heuristic Methods in Incremental Search.}
+
+Lifelong Planning A* \citep{koenig2004lpastar}.
+
+Apply waste to incremental search to get
+incremental heuristic search.
+
+\paragraph{The Zero-Weight Problem.}
+Talk about how a perfect potential leads to zero waste,
+which breaks incremental search.
+This motivates the lexocraphically sorted key approach.
+
+\subsection{Heuristic IBiD}
+
+Given a potential function which is \emph{consistent}.
+
+Therefore all transformed edge weights are non-negative.
+
+And with the lexographic sorting technique,
+they are positive as well!
+
+Create a transformed graph.
+
+\paragraph{Example problem.}
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-astar.png}%
+   \caption{A* search.
+      532,880 expansions.}%
+   \label{fig:ibid:example-astar}%
+\end{marginfigure}
+See Figure~\ref{fig:ibid:example-astar}.
+For the purpose of calculating vertex heuristics,
+geographic coordinates were projected onto a 2D plane using the
+scale at the midpoint latitude ($41.25^\circ$)
+resulting in a projecting error of less than 0.3\%.
+The maximum transit speed is 30.11 m/s.
+
 \paragraph{Example problem.}
 \begin{marginfigure}%
    \centering%
@@ -1336,19 +1399,6 @@ To integrate: \citep{dechter1984bfsastaropt}.
    \label{fig:ibid:example-heurbidijkstra}%
 \end{marginfigure}
 See Figure~\ref{fig:ibid:example-heurbidijkstra}.
-
-\subsection{The Zero-Weight Problem}
-
-Talk about how a perfect potential leads to zero waste,
-which breaks incremental search.
-This motivates the lexocraphically sorted key approach.
-
-\subsection{Incremental Heuristic Search}
-
-Apply waste to incremental search to get
-incremental heuristic search.
-
-Lifelong Planning A* \citep{koenig2004lpastar}.
 
 \section{Other Stuff}
 
