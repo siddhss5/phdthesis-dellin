@@ -367,7 +367,7 @@ Probabalistic RoadMap (PRM) \citep{kavrakietal1996prm}
 initialized the milestones arrangement
 from a uniform distribution over the free space.
 
-Key to search-based and sampling based approaches
+Key to sampling-based approaches
 to motion planning for such problems
 is the concept of the \emph{local planner}.
 Given two configurations $q_a, q_b \in \mathcal{C}$,
@@ -387,24 +387,43 @@ Second,
 edge connection rules that can forgo connections within
 the same connected component.
 
-\cdnote{Densification?}
+%\cdnote{Densification?}
 
 \paragraph{Search-based Methods.}
-Search-based methods generally enjoy a different pedigree
-when compared to roadmap approaches.
-In particular,
-they are the most natural way of 
+Graph pathfinding algorithms such as A* \citep{hart1968astar}
+are applicable to the motion planning problem if a suitable
+space discretization is considered.
+The search space is often represented implicitly via a set of
+operators or motion primitives
+which reproduce a regular lattice over the configuration space
+\citep{pivtoraiko2005statelattice};
+when the lattice is rectangular,
+seach-based planning is also called ``grid search.''
 
-Lazy collision checking,
-which we discuss in the contect of graph search methods
-in Chapter~\ref{chap:lazysp}.
-
-Lattices (Graph search methods, A*, etc).
-
-Examples (we'll talk a lot more about this in the next section).
+\paragraph{Lazy Validity Checking.}
+Because obstacle-insensitive approaches decouple graph construction
+from validity checking,
+it is often advantageous to defer the latter until it is
+necessary for solving the query at hand.
+Lazy validity checking has been exploited
+in roadmap methods such as the Lazy PRM
+\citep{bohlin2000lazyprm, hauser2015lazy},
+search methods such as Lazy Weighted A* \citep{cohen2014narms},
+and methods which bridge the two such as FMT* \citep{janson2015fmtstar}.
+We discuss laziness in graph search comprehensively
+in Chapter~\ref{chap:lazysp}
 
 \paragraph{Adaptive Densification.}
-What about densification? (aka adaptive discretization)
+One difficulty with these obstacle-insensitive approaches
+is that they commit to a particular discretization,
+and once their search is exhausted,
+they must return the best path found,
+or nothing if no path was found so far.
+This property is known as resolution completeness
+\citep{cheng2004rescomplete}.
+Algorithms such as BIT* \citep{gammell2015bitstar}
+consider a sequence of progressively densified approximations
+in order to produce an anytime sequence of improving solution paths.
 
 \begin{figure}
    \centering
@@ -413,35 +432,80 @@ What about densification? (aka adaptive discretization)
 \end{figure}
 
 \paragraph{Advantages of Obstacle Insensitivity.}
-Insensitivity to obstacles admits a number of efficiency advantages.
-We can cache nearest-neighbor queries required when constructing
-the roadmap.
-Bonus of obstacle insensitivity: caching, parallelization.
-Central point: by staying obstacle-agnostic, it's easier to cache
-things that apply across problem instances.
+The obstacle sensitivity question represents an underlying efficiency
+tradeoff.
+Sensitive approaches may be able to adapt their discretization more
+directly to local obstacle distributions.
+On the other hand,
+insensitivity to obstacles admits a number of efficiency advantages.
+Much of the nearest-neighbor computation
+often required during graph construction can be cached and amortized
+over all planning queries.
+Other properties of the discretization that are constant between
+similar planning instances can also be shared
+as described in Chapter~\ref{chap:family}.
+For these reasons,
+this thesis build on top of obstacle-insensitive roadmaps.
 
-You may also be able to acheive a balance.
-Often, use sensitivity for better performance,
-and mix in some insensitivity for completeness properties.
+\section{Roadmap Classes}
 
-But what type of obstacle-insensitive discretezation strategy should
-we use?
+Roadmap methods operate over a graph constructed in the
+robot's configuration space.
+Roadmap miletones are commonly genererated by a number of different
+types of point sequences,
+and edges are considered between vertices pairs that meet
+certain constraints.
+While most algorithms methods are generally agnostic
+to the class of roadmap that they operate on,
+choosing a suitable class and its parameters has a large effect
+on both theoretical and practical perforamce.
 
-\section{Determinism vs. Probabalisticness}
+\paragraph{Random Sequences.}
+The original roadmap algorithms
+\citep{kavrakietal1996prm}
+operated primarily over sets
+of vertices drawn uniformly at random from the configuration space.
+Many more recent algorithms such as
+RRT* \citep{karaman2010rrtstar},
+PRM* \citep{karaman2011samplingoptimal},
+FMT* \citep{janson2015fmtstar},
+and BIT* \citep{gammell2015bitstar} make use of the same
+uniform obstacle distribution.
+Such a distribution is attractive both because
+it is simple to implement
+it because it allows for theoretical properties such as
+completeness and optimality to be demonstrated
+in probability.
 
-Talk about lazy methods and densification.
+\paragraph{Deterministic Sequences.}
+Many researchers have examined whether randomness is a necessary
+(or even beneficial) aspect of treebuilding and roadmap planners
+\citep{branicky2002detvsprobroadmaps}.
+This is especially relevant in the context of comparing
+roadmap planners with search-based methods
+that conventionally operate over lattices \citep{lavalle2002gridprms}.
 
-OK, so we've committed to an obstacle-insensitive discretization
-strategy.
-What type of graph should we choose?
+One of the most straightforward disadvantages of using a
+non-deterministic sequence for each motion planning query
+is that the constructed graph is different for each query.
+This makes it impractical to pre-compute and amortize nearest
+neighbor queries across problem instances,
+as well as to pre-compute edge states as decribed in
+Chapter~\ref{chap:family}.
 
-\begin{itemize}
-\item LazyPRM \citep{bohlin2000lazyprm}.
-\item RGGs (PRMs, FMT* \citep{janson2015fmtstar},
-   BIT* \citep{gammell2015bitstar}).
-\item Halton graphs.
-\end{itemize}
-
+Further,
+theoretical properties of roadmap methods
+such as resolution completeness and asymptotic optimality
+depend on properties of the underlying point set
+such as its \emph{dispersion}.
+Not only can the dispersion of a set of randomly sampled points
+only be established in expectation,
+but it is demonstrably larger than the dispersion of other
+well-known point sequences,
+such as the Halton or Hammersley set,
+or the Sukharev grid.
+For an in-depth analysis of differet point sets for roadmap
+planning, see Janson \citep{janson2015deterministicsampling}.
 
 \begin{figure}
    \centering
@@ -453,102 +517,113 @@ What type of graph should we choose?
       In this case, all roadmaps have a connection radius of 0.3.}
 \end{figure}
 
-Probabalistic vs. deterministic.
-\citep{branicky2002detvsprobroadmaps}.
-\citep{lavalle2002gridprms}.
-
-\citep{janson2015deterministicsampling}.
-
-Talk about probabalistic completeness and resolution completeness
-\citep{cheng2004rescomplete}.
-
-RRT* \citep{karaman2010rrtstar}.
-Karaman/Frazzoli \citep{karaman2011samplingoptimal}.
-
-RGGs.
-
-Central point: densified roadmap strategy with good properties.
-
-Todo: link to BIT* paper, which does the same conversion to
-accommodate spaces with arbitrary bounds.
-
+\paragraph{Connection Radii.}
+Previous work \citep{karaman2011samplingoptimal} has established
+that a roadmap planner which uses a uniformly randomly generated
+point set is asymptotically optimal almost surely
+if if the edge connection radius $r$ is sufficiently large w.r.t.
+the number the number of samples $n$.
+In particular,
+it defines the critical value $\gamma^*_{\mathcal{C}}$:
 \begin{equation}
    \gamma^*_{\mathcal{C}}
       = 2 \left( \left[ 1 + \frac{1}{d} \right]
-         \frac{\lambda_d(\mathcal{C})}{\zeta_d} \right)^{1/d}
+         \frac{\lambda_d(\mathcal{C})}{\zeta_d} \right)^{1/d},
 \end{equation}
+where $d$ is the dimensionality of the configuration space,
+$\lambda_d(\cdot)$ represents the Lebesgue measure (e.g. volume),
+and $\zeta_d$ is the Lebesgue measure of the $d$-dimensional unit ball.
 
-with $\lambda_d(\cdot)$ the Lebesgue measure of a $d$-dimensional
-space.
-
-Scaling radii:
-
+Asymptotically optimal under uniform sampling requires
+an edge connection radius $r_{\ms{log}}$:
 \begin{equation}
-   r_1(n) = \gamma_{\mathcal{C}} \left( \frac{\log(n)}{n} \right)^{1/d}
+   r_{\ms{log}}(n) =  \gamma^*_{\mathcal{C}} \, \eta
+      \left( \frac{\log(n)}{n} \right)^{1/d}
 \end{equation}
-
+for some tuning parameter $\eta > 1$.
+Point sets with tighter dispersion bounds,
+such as the Halton sequence,
+can exploit a smaller connection radius $r_{\ms{log}}$:
 \begin{equation}
-   r_2(n) = \gamma_{\mathcal{C}} \left( \frac{\log(\log(n))}{n} \right)^{1/d}
+   r_{\ms{loglog}}(n) = \gamma_{\mathcal{C}} \, \eta
+      \left( \frac{\log(\log(n))}{n} \right)^{1/d}.
 \end{equation}
+For details we refer the reader
+to \citep{janson2015deterministicsampling}.
 
-\begin{verbatim}
-robot: HERB
-gamma_c_star: 7.670459
-radius log_n: 2.825833 (n=10000)
-radius loglog_n: 2.306115 (n=10000)
-radius 1_n: 2.057751 (n=10000)
+\paragraph{Roadmaps for Articulated Robots.}
+We apply roadmap methods to the three robot platforms
+from Chapter~\ref{chap:intro} in this thesis.
+Unless otherwise noted,
+we build roadmaps directly in the joint space of the robot.
+See Table~\ref{table:roadmap-params} for the roadmap parameters
+that we use.
 
-robot: IRB4400
-gamma_c_star: 7.738634
-radius log_n: 2.413850 (n=10000)
-radius loglog_n: 1.904293 (n=10000)
-\end{verbatim}
-
-\subsection{Dispersion}
-
-Deterministic sampling and dispersion:
-\citep{janson2015deterministicsampling}.
-
-\begin{figure}
+\begin{table}
    \centering
-   \includegraphics{build/roadmaps-dispersion/dispersion}
-   \caption{Dispersion plot on the unit square.
-      Green is the dispersion of an incremental (greedy) Sukharev
-      grid.}
-\end{figure}
+   \begin{tabular}{lccc}
+      \toprule
+      & HERB & CHIMP & IRB4400 \\
+      \midrule
+      $d$ & 7 & 7 & 6 \\
+      $\gamma^*_{\mathcal{C}}$ & 7.67 & 7.97 & 7.74 \\
+      $r_{\ms{log}}$ & 2.83 & 2.93 & 2.41 \\
+      $r_{\ms{loglog}}$ & 2.31 & 2.40 & 1.90 \\
+      \bottomrule
+   \end{tabular}
+   \caption{Table of roadmap connection radii parameters for
+      various scaling rates across the different robot platforms
+      considered in this thesis.
+      Radii presented are for $n=10000$ and $\eta = 1$
+      and are given in radians.}
+   \label{table:roadmap-params}
+\end{table}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/roadmaps-dispersion/dispersion-herb}
-   \caption{HERB dispersion plot.}
-\end{figure}
+%\subsection{Dispersion}
+%
+%Deterministic sampling and dispersion:
+%\citep{janson2015deterministicsampling}.
+%
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/roadmaps-dispersion/dispersion}
+%   \caption{Dispersion plot on the unit square.
+%      Green is the dispersion of an incremental (greedy) Sukharev
+%      grid.}
+%\end{figure}
+%
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/roadmaps-dispersion/dispersion-herb}
+%   \caption{HERB dispersion plot.}
+%\end{figure}
+%
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/roadmaps-dispersion/dispersion-irb4400}
+%   \caption{IRB4400 dispersion plot.}
+%\end{figure}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/roadmaps-dispersion/dispersion-irb4400}
-   \caption{IRB4400 dispersion plot.}
-\end{figure}
-
-\subsection{Batch Size}
-
-\begin{figure}
-   \centering
-   \begin{tikzpicture}
-   \begin{axis}[
-         xmode=log,
-         xlabel={Batch Size},
-         ylabel={LazySP Time (s)},
-         xlabel near ticks,
-         ylabel near ticks,
-         ]
-      \addplot coordinates {
-         (100, 0.2407595708)
-         (250, 0.27367886569999994)
-         (1000, 0.2165730066)
-         (2500, 0.3836524094)
-         (10000, 0.47772694290000006)
-      };
-   \end{axis}
-   \end{tikzpicture}
-   \caption{Batch size. {\tt herbbin0}, seeds 1-10, gammafac=1, lambda=0.}
-\end{figure}
+%\subsection{Batch Size}
+%
+%\begin{figure}
+%   \centering
+%   \begin{tikzpicture}
+%   \begin{axis}[
+%         xmode=log,
+%         xlabel={Batch Size},
+%         ylabel={LazySP Time (s)},
+%         xlabel near ticks,
+%         ylabel near ticks,
+%         ]
+%      \addplot coordinates {
+%         (100, 0.2407595708)
+%         (250, 0.27367886569999994)
+%         (1000, 0.2165730066)
+%         (2500, 0.3836524094)
+%         (10000, 0.47772694290000006)
+%      };
+%   \end{axis}
+%   \end{tikzpicture}
+%   \caption{Batch size. {\tt herbbin0}, seeds 1-10, gammafac=1, lambda=0.}
+%\end{figure}
