@@ -1,30 +1,40 @@
 \chapter{Roadmap Methods for Motion Planning}
 \label{chap:roadmaps}
 
-The motion planning problem is a fundamental problem in robotics.
-This chapter describes the motion planning problem,
-and provides an overview of a well-studied class of algorithms called
-roadmap methods.
-We focus only on the parts that are relevant to this thesis;
-for a more comprehensive treatment,
-see LaValle \citep{lavalle2006planningbook}.
+Robots are fundamentally agents that move through the world,
+and so the question of how to best deliberate about motion
+is a central problem in robotics.
+Different tasks and problem domains expose a vast array of
+qualities and properties of motion that are important
+-- for example, motion that is expressive, efficient, or expected
+-- and algorithms can rely on a rich and growing set
+of models and methodologies in order to generate such motion.
+
+Underlying this rich tapestry of robotic motion
+is the most fundamental abstraction of motion planning --
+finding a path for a system which accomplishes a motion task
+without colliding with obstacles.
+While this might at first seem straightfoward,
+finding such paths for articulated robotics in
+complex semi-structured environments
+is no easy feat,
+and finding such paths quickly and efficiently
+is of upmost important.
+
+This chapter includes a brief introduction to
+the motion planning problem.
+Due to its paramount importance to robotics,
+variations on this problem have deservedly
+enjoyed a considerable amount of attention over the past 40 years.
+We tailor our investigation towards aspects of the problem
+that are relevant to this thesis.
+In particular,
+we provide an overview of a class of approaches called roadmap methods
+that are well-suited to motion planning for articulated robots.
+For a comprehensive treatment,
+we refer to LaValle \citep{lavalle2006planningbook}.
 
 \section{The Motion Planning Problem}
-
-The earliest examples considered were for a single rigid body.
-The most fundamental form of the \emph{motion planning problem},
-which is a generalization of the \emph{piano mover's problem},
-entails x y and z.
-Cites:
-\citep{lozanoperezwedley1979collisionfree}.
-Piano mover's problem
-\citep{schwartzsharir1983pianomovers1}.
-All about geometry, valid/invalid poses.
-Find a solution, or determine that no solution exists.
-Problems characterized by finding collision-free paths,
-or proving that none exist.
-Intimately related to the geometry of the body and of the obstacles.
-Introduce feasibiliy / infeasibility.
 
 \begin{marginfigure}
    \centering
@@ -34,68 +44,115 @@ Introduce feasibiliy / infeasibility.
       entails finding a collision-free path for a geometric body
       amongst obstacles,
       or finding that no path exists.}
+   \label{fig:roadmaps:movers}
 \end{marginfigure}
+
+The earliest instances of motion planning considered a single rigid
+body moving within a geometric environment consisting of
+fixed obstacles
+(Figure~\ref{fig:roadmaps:movers}).
+Termed the \emph{FindPath} or \emph{piano mover's} problem,
+this representation and variations thereof were extensively studied
+\citep{lozanoperezwedley1979collisionfree,
+   schwartzsharir1983pianomovers1},
+for various dimensionalities (e.g. two or three)
+and obstacle representations (e.g. polygonal regions).
+Importantly,
+these earlest problems exhibited two fundamental properties
+inherent in all motion planning problems:
+(a) that solutions, called \emph{paths}, are continuous, and
+(b) that the objective is binary, with any
+prospective path either in collision or collision-free.
+The problem entails finding a non-colliding path if one exists,
+or returning with failure otherwise.
 
 \begin{marginfigure}
    \centering
    \includegraphics{build/c-space} %
    \caption{The motion planning problem entails finding a continuous
       path among obstacles in an abstract configuration space.}
+   \label{fig:roadmaps:cspace}
 \end{marginfigure}
 
-Originally, for a rigid body
-in a 2D or 3D workspace.
-Various different specifications of types of obstacles (polygonal regions)
-and types of bodies.
+A generalization of the piano over's problem
+commonly called the \emph{motion planning problem}
+entails an abstraction of the single rigid body
+to an arbitrary \emph{configuration space} (C-space)
+\citep{lozanoperez1983cspace}.
+Any point $q$ in this abstract space $\mathcal{C}$
+(see Figure~\ref{fig:roadmaps:cspace}),
+corresponds to a full configuration of the system,
+such has the position and orientation of a rigid body.
+Importantly,
+$\mathcal{C}$ can also capture the full configuration (or joint)
+space of an articulated robotic manipulator.
 
-The generalization called the \emph{motion planning problem}
-deals with configuration spaces.
-Cite: \citep{lozanoperez1983cspace}.
-We can deal with articulated mechanisms,
-which we focus on in this thesis.
-It is fundamental to robotics.
-Problem also called FindPath.
+Any point $q \in \mathcal{C}$ corresponds to a particular geometric
+configuration of the robot within its fixed environment.
+If this configuration entails a geometric collision in the workspace
+(either between the robot and the environment,
+or the robot with itself),
+this point lies within a \emph{configuration-space obstacle}.
+The union of these configurations comprises the set of obstacle
+configurations $\mathcal{C}_{\ms{obs}}$.
+Collision-free configurations and paths must be contained entirely
+in the complement of this set,
+$\mathcal{C}_{\ms{free}} = \mathcal{C} \setminus \mathcal{C}_{\ms{obs}}$.
 
-Define $\mathcal{C}_{\ms{free}}$.
-Compact sets.
-
-A solution is called a path.
-
-What are its properties?
-
-\begin{itemize}
-\item The space is continuous.
-\item Solutions are continuous (and there are an infinite set of them).
-\end{itemize}
+A path $\xi : [0,1] \rightarrow \mathcal{C}$
+is called collision-free if
+$\xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \in [0,1]$.
+A continuous path $\xi$ satisfies a particular motion planning query
+with start and goal configurations $q_{\ms{start}}$ and $q_{\ms{goal}}$
+if $\xi(0) = q_{\ms{start}}$ and $\xi(1) = q_{\ms{goal}}$.
 
 \subsection{Optimal Motion Planning}
 
 The optimal motion planning problem is a generalization which
-includes a metric over solution paths.
+includes a metric over solution paths
+$x : \Xi \rightarrow \mathbb{R}$.
+See \citep{karaman2011samplingoptimal}.
 
 \subsection{Further Generalizations}
 
+\cdnote{
 There are other generalizations such as kinodynamic planning.
 Here, a solution is commonly called a trajectory.
 Optimal variants may have costs on the actions as well.
 Intro: focus on configuration-space planning (not kinodynamic planning).
-
 What about constraints? We won't deal with these much either.
+}
 
 \section{Motion Planning by Discretizing C-Space}
 
-\subsection{Testing Validity of Motions}
+We give a brief review of approaches to motion planning that rely
+on discretizations of the configuration space.
 
-Well, there are exact algorithms.
-Exact methods in low-dimensional spaces.
-The key point here is that these methods do not rely on discretization
-of the configuration space.
-But representing C-space obstacles is too hard.
-(Cite for one approach: \citep{lozanoperez1983cspace}.)
-Instead, we validate paths via lifting samples
-into 3D space and testing them.
-Relate to term ``sampling-based methods.''
+\subsection{Building Graphs in C-Space}
 
+The formulation of motion planning via the configuration space
+raises the question:
+how can we test whether a motion is collision-free?
+This question is especially delicate when the geometry is complex
+and the configuration-space obstacles cannot be represented explicitly.
+In this case,
+it is necessary to test prospective configurations and motions
+for membership in $\mathcal{C}_{\ms{free}}$ using indicator functions.
+\begin{equation}
+   \mathbf{1}_{\mathcal{C}\ms{free}} : \mathcal{C} \rightarrow \{ \mbox{True}, \mbox{False} \} 
+   \mbox{\quad s.t. \quad}
+   \mathbf{1}_{\mathcal{C}\ms{free}}(q) = 1 \mbox{ iff } q \in \mathcal{C}_{\ms{free}}.
+\end{equation}
+Note that implementing $\mathbf{1}_{\mathcal{C}\ms{free}}$ for an articulated robot
+entails computing the forward kinematics of the robot at the
+query configuration,
+and running a collision check in the workspace.
+
+We can rely on the functional variant to test a path $\xi$:
+\begin{equation}
+   \mathbf{1}_{\Xi\ms{free}} : \Xi \rightarrow
+      \{ \mbox{True}, \mbox{False} \} 
+\end{equation}
 Talk about committing to a resolution to test with,
 which is what we do in this thesis.
 Note that this is only an approximation.
@@ -103,15 +160,34 @@ You should pad your obstacles so you don't plan through wires.
 But also link to C-space bubble stuff
 \citep{quinlan1994modification}.
 
-Define the path indicator function.
+\paragraph{Composing Motions.}
+Importantly,
+two paths $\xi_{ab}$ and $\xi{bc}$ with $\xi_{ab}(1) = \xi_{bc}(0)$
+can be concatenated to a path $\xi{ac}$,
+with
+\begin{equation}
+   \mathbf{1}_{\Xi\ms{free}}(\xi_{ab})
+   \;\cap\;
+   \mathbf{1}_{\Xi\ms{free}}(\xi_{bc})
+   \iff
+   \mathbf{1}_{\Xi\ms{free}}(\xi_{ac}).
+\end{equation}
+This motivates approaches which maintain a graph structure of
+smaller valid motions in the configuration space.
+Consider a graph $G = (V,E)$,
+with each vertex $v \in V$ a configuration $q \in \mathcal{C}$
+and each edge $e \in E$ a path $\xi$
+s.t.  $\mathbf{1}_{\Xi\ms{free}}(\xi) = \mbox{True}$.
+If $v_{\ms{start}}, v_{\ms{goal}} \in V$
+correspond to the query vertices $q_{\ms{start}}, q_{\ms{goal}}$,
+then a path $p$ through $G$ from
+$v_{\ms{start}}$ to $v_{\ms{goal}}$
+corresponds to a collision-free solution to the motion planning problem.
 
-\subsection{Roadmap Graphs in C-Space}
-
-Due to the way we test paths for validity,
-it is natural to explore algorithms which build larger paths
-out of smaller ones.
-We focus on algorithms that approximate C-space via graphs.
-Talk about discretizing states.
+The approach for constructing, searching, and validating this graph
+differs significantly between algorithms.
+We will broadly review different options in
+Section~\ref{sec:roadmaps:sensitivity}.
 
 \begin{marginfigure}
    \centering
@@ -127,16 +203,6 @@ Talk about discretizing states.
       for the (feasible) motion planning problem.}
 \end{marginfigure}
 
-There are other ways that don't discretize C-Space this way.
-E.g. optimizataion approaches
-(e.g. CHOMP \citep{zucker2013chomp},
-TrajOpt \citep{schulman2013trajopt})
-which require stronger world descriptions
-(SDFs, convex obstacle decompositions).
-Also,
-optimizers are commonly used in lower levels to react to local
-changes (e.g. \citep{quinlan1994modification}).
-
 \begin{marginfigure}
    \centering
    \begin{tikzpicture}
@@ -148,94 +214,234 @@ changes (e.g. \citep{quinlan1994modification}).
       for the optimal motion planning problem.}
 \end{marginfigure}
 
-The key point of this section is whether the algorithm commits to
-a discretization a priori,
-or whether the graph is built incrementally in response to the
-distribution of valid or costly states.
+\cdnote{Talk about execution costs that are additive!}
 
-\subsection{Motion Planning as Pathfinding}
+%\paragraph{Resolution and Probabalistic Completeness.}
+%Any discretization is only an approximation of the actual configuration
+%space.
+%Of course, the discretization is always just an approximation
+%of the actual C-space.
+%Hopefully, you can choose a discretization strategy that allows your
+%algorithm to have one or both of these forms of completeness.
+
+\paragraph{Motion Planning as Pathfinding.}
 \label{subsec:roadmaps:planning-as-pathfinding}
-
 Here, talk about how even if there are multiple available
 start or goal configurations
 (e.g. different grasps or inverse kinematics solutions),
 the motion planning problem can still be posed as a
-single-pair shortest path (SSSP) problem
+single-pair shortest path (SPSP) problem
 by augmenting the graph with virtual source sink vertices
 and edges.
 
-\subsection{Resolution and Probabalistic Completeness}
+\paragraph{Other Approaches to Motion Planning.}
+The motion planning problem affords a number of different classes of
+algorithms.
+One such class which is especially well-suited to easier instances
+is trajectory optimization.
+Approaches such as CHOMP \citep{zucker2013chomp}
+and TrajOpt \citep{schulman2013trajopt})
+commit to a trajectory representation for $\xi^{(1)}$
+and use require stronger world descriptions
+(SDFs, convex obstacle decompositions)
+to make local modifications
+to produce a new path $\xi^{(2)}$.
+Also,
+optimizers are commonly used in lower levels to react to local
+changes (e.g. \citep{quinlan1994modification}).
 
-Of course, the discretization is always just an approximation
-of the actual C-space.
-Hopefully, you can choose a discretization strategy that allows your
-algorithm to have one or both of these forms of completeness.
+\section{Obstacle Sensitivity}
+\label{sec:roadmaps:sensitivity}
 
-\section{Obstacle-Insensitive Discretizations}
+Generally,
+graph-based motion planners require the following three stages:
+(a) constructing the graph,
+(b) searching the graph, and
+(c) validating the graph.
 
-So we've decided to build graphs in C-space to answer motion planning
-queries.
-The next question is what should characterize our approach.
+One of the key differentiators between graph-building techniques
+for motion planning available in the literature
+is how they interleave constructing, searching, and validating
+the graph.
+This section reviews one important consideration:
+the degree of dependence of the graph structure
+on the distribution of obstacles in the scene.
+We broadly categorize algorithms into two groups:
+those that are \emph{obstacle-sensitive},
+and those that are \emph{obstacle-insensitive}.
 
-We focus on discretizations that are obstacle-insensitive.
-Here's why.
+\subsection{Obstacle-Sensitive Approaches}
+\label{subsec:roadmaps:sensitive}
 
-\subsection{Obstacle Insensitive Approaches}
+In obstacle sensitive approach,
+the graph is built incrementally,
+and construction of new elements
+is directly interleaved with validating them,
+in response to the distribution of valid or costly states.
 
-The most straightforward discretezation strategy.
-Commit to a graph structure a priori.
+\paragraph{Exact Algorithms.}
+The earliest work on the motion planning problem studied exact
+algorithms which worked directly on an explicit representation
+of the obstacles (e.g. polygons) \citep{lozanoperez1983cspace}.
+These approaches can guarantee optimal solutions,
+and don't require edge validation if implemented correctly.
+However,
+they are difficult to apply to problems on articulated
+robots for two reasons.
+First, many are only applicable to problems in two or three dimensions.
+Second, an explicit representation of obstacles in the
+configuration space is exceedingly difficult due to the
+nonlinearity in the forward kinematics function.
+
+\paragraph{Treebuilding Algorithms.}
+Other approaches treat the configuration space implicitly.
+The most common algorithms grow and validate trees simulteneously,
+either unidirectionally or bidirectionally.
+At each iterations,
+these algorithms use a sampling strategy to propose a new extension,
+and then augment their tree(s) if the new motion is found to be valid.
+
+Key examples of this approach include
+Expansive Space Trees (EST) \citep{hsu1997expansive}
+and Rapidly-exploring Random Trees (RRT)
+\citep{lavalle1998rrt, kuffner2000rrtconnect}.
+SBL \citep{sanchezante2001sbl}
+is a bidirectional EST with lazy edge validity checking.
+
+\paragraph{Planning vs. Execution Cost.}
+The core algorithms in this category are primarily feasibility
+algorithms;
+there is no mechanism explicitly biasing them to select
+low-cost paths.
+\marginnote{We talk about this tradeoff in detail
+in Chapter~\ref{chap:lemur}.}
+Therefore, solutions found tend to be of low quality,
+and they are customarily optimized using a path shortcutting
+algorithm.
+More recent work has also focused on asymptotically optimal variants
+of these planners \citep{karaman2010rrtstar}.
+
+\paragraph{Advantages of Obstacle Sensitivity.}
+One key advantage to obstacle-sensative approaches is that
+they only construct the graph structure in the parts of the
+configuration space that are relevant to the planning query.
+The Vornoi bais of the RRT or the importance sampling of the EST
+attempt to focus sampling graph construction in ares
+which tend to improve the current solution.
+
+Another advantage is that these algorithms handle densification
+naturally;
+the graph structure is augmented automatically,
+so the resolution of the discretization need not be explicitly
+increased as the instance reveals to be more difficult.
+
+%It's important to compare against these.
+%But we focus on insensitive approaches.
+
+\cdnote{Visibility PRMs \citep{simeon2000visibilityprms}.}
+
+%Usually, densification comes for free.
+
+%Probabalistic completeness.
+
+\subsection{Obstacle-Insensitive Approaches}
+
+In contrast to the obstacle-sensitive approaches described in
+Section~\ref{subsec:roadmaps:sensitive},
+the approaches in this section commit to a particular discretization
+of the configuration space a priori,
+independent of the distribution of obstacles or costs.
+While this simpler method forgoes some of the advantages of
+obstacle sensitivity,
+this idependence does confer some advantages of its own.
+
+\paragraph{Roadmap Methods.}
+
+The earliest obstacle-insensitive methods particular to the motion
+planning problem are called \emph{roadmap methods}.
+The term roadmap usually connotes a graph embedded in a continous
+ambient space in the presence of obstacles.
+Vertices in the graph are also called milestones.
+The first roadmap methods such as the
+Probabalistic RoadMap (PRM) \citep{kavrakietal1996prm}
+initialized the milestones arrangement
+from a uniform distribution over the free space.
+
+Key to search-based and sampling based approaches
+to motion planning for such problems
+is the concept of the \emph{local planner}.
+Given two configurations $q_a, q_b \in \mathcal{C}$,
+the local planner first produces a candidate path $\xi_{ab}$ between
+them.
+(A common implementation simply produces the straight-line path
+in configuration space.)
+Edges are only attempted when they meet certain restrictions.
+
+There are some variants of roadmap planners that are not independent
+of the obstacle distribution.
+First,
+many roadmap planners make use of a heuristic ``expansion'' step
+wherein additional samples are added to the roadmap
+in order to increase its connectivity.
+Second,
+edge connection rules that can forgo connections within
+the same connected component.
+
+\cdnote{Densification?}
+
+\paragraph{Search-based Methods.}
+Search-based methods generally enjoy a different pedigree
+when compared to roadmap approaches.
+In particular,
+they are the most natural way of 
+
+Lazy collision checking,
+which we discuss in the contect of graph search methods
+in Chapter~\ref{chap:lazysp}.
+
+Lattices (Graph search methods, A*, etc).
 
 Examples (we'll talk a lot more about this in the next section).
-\begin{itemize}
-\item Lattices (Graph search methods, A*, etc).
-\item RGGs (PRMs, FMT* \citep{janson2015fmtstar},
-   BIT* \citep{gammell2015bitstar}).
-\item Halton graphs.
-\end{itemize}
 
+\paragraph{Adaptive Densification.}
 What about densification? (aka adaptive discretization)
 
-\subsection{Obstacle Sensitive Approaches}
+\begin{figure}
+   \centering
+   \includegraphics{build/roadmap-stack}
+   \caption{Roadmap stack.}
+\end{figure}
 
-Many approaches build graphs incrementally in response to the
-obstacle distribution.
-
-RRT.
-
-Visibility PRMs \citep{simeon2000visibilityprms}.
-
-Smart sampling strategies.
-Talk about sampling heuristics.
-The original PRM.
-Lots of other things.
-
-Expansive spaces.
-ESTs. Expansive spaces. \citep{hsu1997expansive}.
-
-Usually, densification comes for free.
-
-Probabalistic completeness.
-
-\subsection{Conclusion}
-
-Of course, lots of planners do both.
-Often, use sensitivity for better performance,
-and mix in some insensitivity for completeness properties.
-
-Talk about adaptive discretization.
-
+\paragraph{Advantages of Obstacle Insensitivity.}
+Insensitivity to obstacles admits a number of efficiency advantages.
+We can cache nearest-neighbor queries required when constructing
+the roadmap.
 Bonus of obstacle insensitivity: caching, parallelization.
 Central point: by staying obstacle-agnostic, it's easier to cache
 things that apply across problem instances.
+
+You may also be able to acheive a balance.
+Often, use sensitivity for better performance,
+and mix in some insensitivity for completeness properties.
 
 But what type of obstacle-insensitive discretezation strategy should
 we use?
 
 \section{Determinism vs. Probabalisticness}
 
+Talk about lazy methods and densification.
+
 OK, so we've committed to an obstacle-insensitive discretization
 strategy.
 What type of graph should we choose?
+
+\begin{itemize}
+\item LazyPRM \citep{bohlin2000lazyprm}.
+\item RGGs (PRMs, FMT* \citep{janson2015fmtstar},
+   BIT* \citep{gammell2015bitstar}).
+\item Halton graphs.
+\end{itemize}
+
 
 \begin{figure}
    \centering
