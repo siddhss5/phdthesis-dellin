@@ -1605,6 +1605,30 @@ Gotta talk about this stuff!
 
 \begin{figure}
    \centering
+   \includegraphics{build/incbi-road-ne/stats2}
+   \caption{Expected number of vertex expansions required to solve
+      a single-pair shortest path query on a Northeast USA road network.
+      Four problems P1-P4 were considered with different numbers of
+      expected edges with traffic changes between episodes
+      (P1: few changes, P4 many changes).
+      The dataset consists of 400 instances of 10 episodes each
+      deriving from 20 randomly selected vertex pairs
+      and 20 random traffic seeds.
+      The ``Initial'' series captures the first episode for each
+      problem instance
+      (with identical behavior between problems P1-P4 because
+      no traffic changes affect the initial episode).
+      The ``Replans'' series capture an averave over the remaining
+      nine episodes.
+      Note that
+      (a) only the latter four incremental planners see savings during
+      replanning,
+      and (b) the initial episode is identical between each
+      incremental planner and its corresponding complete cousin.}
+\end{figure}
+
+\begin{figure}
+   \centering
    \includegraphics{build/incbi-sq/herbbin0}
    
    \includegraphics{build/incbi-sq/herbbin0-lambda}
