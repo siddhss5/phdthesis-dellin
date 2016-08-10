@@ -9,13 +9,10 @@
 % this stats are currently manually computed
 % from results of experiment: Makefile.incbi-road-ne
 
-
-% these are currently stderrs, not 95% confidences!
-
-% c4 = 0.0010
-% c3 = 0.0005
-% c2 = 0.0002
-% c1 = 0.0001
+% P4 = 0.0010
+% P3 = 0.0005
+% P2 = 0.0002
+% P1 = 0.0001
 
 \pgfplotstableread{
 barname mean meanstderr
@@ -68,11 +65,11 @@ barname mean meanstderr
 Dijk 795759.135 24727.98792030518
 BiDijk 638054.195 21738.91519384
 A* 346055.93 14326.093879725271
-W-BiDijk 277999.0225 10876.99206318198
+H-BiDijk 277999.0225 10876.99206318198
 DynSWSF 795759.135 24727.98792030518
 IBiD 638054.195 21738.91519384
 LPA* 346055.93 14326.093879725271
-W-IBiD 277999.0225 10876.99206318198
+H-IBiD 277999.0225 10876.99206318198
 }{\datainit}
 
 \pgfplotstableread{

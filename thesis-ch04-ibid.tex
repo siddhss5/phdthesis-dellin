@@ -16,20 +16,27 @@ We consider three classes of such techniques
 
 \begin{marginfigure}[5cm]%
    \centering%
-   \subfloat[Bidirectional search.]{%
+   \subfloat[Bidirectional search.
+      A path is found near the intersection of the two searches.]{%
       \centering %
       \includegraphics{build/ibid-intro-focus-bidirectional} %
    }%
    
-   \subfloat[Heuristic search.]{%
+   \subfloat[Heuristic search.
+      The search is biased towards the destination vertex.]{%
       \centering %
       \includegraphics{build/ibid-intro-focus-heuristic} %
    }%
    
-   \subfloat[Incremental search. \ssnote{hard to follow}]{%
+   \subfloat[Incremental search.
+      After a straight-line path is found for the first planning episode,
+      a new obstacle appears; only the shaded region must be
+      recomputed to find the new shortest path.]{%
       \centering %
       \includegraphics{build/ibid-intro-focus-incremental} %
    }%
+
+   \vspace{0.2cm}
    
    \caption{Illustrations of the three focusing techniques considered
       on a spatial pathfinding problem.}%
@@ -39,31 +46,30 @@ We consider three classes of such techniques
 \begin{enumerate}
 \item \emph{Bidirectional Search} -- A bidirectional algorithm
    conducts two concurrent searches,
-   one from the source vertex $s$,
-   and the other from the sink vertex $t$.
-   Such searches are well-suited to roadmaps in ambient spaces that
-   are high-dimensional \ssnote{how does this translate to number of nodes
-   or edges or degree?} and/or have
-   obstacles situated close to the source/sink vertices
-   \ssnote{hmm, isn't bidirectional Djikstra best when the searches
-   meet in the middle, so won't it expand a lot more nodes if sources
-   or sinks are harder when compared to both being equally hard?}.
+   one from the start vertex $s$,
+   and the other from the destination vertex $t$.
+   The depth to which each search must descend is typically
+   a factor of two shallower than that of a unidirectional search.
+   Such searches are therefore well-suited to graphs with larger
+   branching factors.
+   For example,
+   for a roadmap graph,
+   the number of vertices is polynomial in the depth
+   and exponential in the dimensionality of the space.
 \item \emph{Heuristic Search} -- A heuristic-informed algorithm
-   exploits a sink-directed heuristic function over vertices to bias
-   exploration in the direction of the sink vertex.
+   exploits a destination-directed heuristic function over vertices to bias
+   exploration in the direction of the destination vertex.
    A strong and admissible such heuristic can drastically speed the
-   search, \ssnote{might want to specify exactly how, i.e. expanding
-   fewer vertices}
-   although the efficacy is reduced for weaker heuristics.
+   search by reducing the number of vertices that must be expanded.
 \item \emph{Incremental Search} -- An incremental algorithm
-   is applied to a sequence of search queries on a graph whose
-   edge weight function changes (partially) between queries.
-   \ssnote{isn't this a bit too specific?
-   doesn't it also apply to cases where the vertex topology changes?}
-   It endeavors to only consider the portion of its data structure
-   affected by the changes. \ssnote{might want to say that it's called
-   \emph{incremental} because it incrementally updates only the portion
-   of the data structure that is relevant for solving the problem.}
+   is applicable to the dynamic pathfinding problem in which
+   a sequence of search episodes are conducted with
+   edge weight function changes (partially) between episodes.
+   An algorithm is termed \emph{incremental} because
+   it incrementally updates only the portion of its data structures
+   that are affected by the updated edge weight changes.
+   \marginnote{Note that vertex/edge insertions and deletions
+      can be modeled as edge weight changes via infinite weights.}
 \end{enumerate}
 
 The principal contribution of this chapter is IBiD,
@@ -146,7 +152,7 @@ in which a path of minimal length is sought
 between distinct start and destination vertices
 $s,t \in V$.
 (We can also handle planning problems with multiple
-start/goal configurations as an SPSP problem
+start/destination configurations as an SPSP problem
 as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.)
 
 Our review is applicable to problems where $w$ is everywhere finite.
@@ -156,6 +162,25 @@ and so will return that no path exists in the case where shortest
 paths contain infinite-weight edges.
 
 \paragraph{An example problem.}
+We will carry forward an illustrative example problem from
+the public dataset of the 9th DIMACS Implementation Challenge
+\citep{demetrescuetal2006dimacs9}
+(Northeast USA)
+comprising an approximate road network,
+using transit time as the edge weight function
+(Figure~\ref{fig:ibid:example-intro}).
+In this way,
+a shortest path between a pair of start and destination locations
+minimizes the total transit time between them.
+More details about the graph are given in the experimental section
+in Section~\ref{sec:ibid:experiments}.
+The graph is sufficiently large that minimizing search computation
+is important,
+and the available transit time heuristic is broadly useful
+but not perfectly strong.
+The road routing domain is of great interest,
+and it is commonly used for benchmarking and easy to visualize.
+
 \begin{marginfigure}%
    \centering%
    \begin{tikzpicture}
@@ -172,25 +197,11 @@ paths contain infinite-weight edges.
    \caption{A graph of the Northeast USA from the 9th DIMACS
       Implementation Challenge
       comprises 1,524,453 vertices and 3,868,020 directed edges.
-      A shortest path problem from a source $s$ in New Jersey
-      to a target $t$ outisde Boston
+      A shortest path problem from a start $s$ in New Jersey
+      to a destination $t$ outisde Boston
       will be used as an example.}%
    \label{fig:ibid:example-intro}%
 \end{marginfigure}
-We will carry forward an illustrative example problem from
-the public dataset of the 9th DIMACS Implementation Challenge
-\citep{demetrescuetal2006dimacs9}
-(Northeast USA)
-comprising an approximate road network,
-using transit time as the edge weight function
-(Figure~\ref{fig:ibid:example-intro}).
-In this way,
-a shortest path between a pair of start and destination locations
-minimizes the total transit time between them.
-\ssnote{Might want to provide 1-2 sentence intuition on why
-this graph is interesting, and why we chose it for IBID. 
-High degree? Nonuniform degree?
-Large variation in edge weights?}
 
 \paragraph{Problem Settings.}
 The single-pair problem has been extensively studied.
@@ -222,44 +233,40 @@ in particular
 is formulated to enable the novel theorems
 presented in Section~\ref{sef:ibid:ibid}.
 
-\subsection{Shortest Paths via the Source Distance Function}
+\subsection{Shortest Paths via the Start Distance Function}
+
+\begin{marginfigure}%
+   \centering%
+   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstraall.png}%
+   \caption{The distance function from the start vertex.}%
+   \label{fig:ibid:example-distance-all}%
+\end{marginfigure}
 
 The pioneering pathfinding algorithms of the late 1950s address
 a generalization of the SPSP problem called
 the \emph{single-source} problem,
 where shortest paths are calculated from the start vertex $s$
 to all vertices on the graph.
-They proceed by calculating the \emph{source distance function}
+They proceed by calculating the \emph{start distance function}
 $d^* : V \rightarrow \mathbb{R}$,
 which gives the length of the shortest path from $s$
 to each vertex $v$.
 In other words:
 \marginnote{Once the distance function $d^*$ is computed,
-a shortest path to any target $t$ can be generated trivially
+a shortest path to any destination $t$ can be generated trivially
 by walking backwards to $s$ guided by $d^*$.}
 \begin{equation}
-   d^*(v) = \min_{p \in P_{sv}} \mbox{len}(p),
+   d^*(v) = \min_{p \in P_{sv}} \mbox{len}(p,w),
    \label{eqn:ibid-distance-function-global}
 \end{equation}
-where $P_{sv}$ is the set of all paths from $s$ to $v$.
-\ssnote{Have you defined len elsewhere? If so, provide pointer.
-Is it meant to be the sum of weights along the path?
-\begin{equation}
-   d^*(v) = \min_{p \in P_{sv}} \mbox{len}(p) = \min_{p \in P_{sv}} \sum_{e \in p} w(e),
-   \label{eqn:ibid-distance-function-global}
-\end{equation}
-}
+where $P_{sv}$ is the set of all paths from $s$ to $v$,
+and $\mbox{len}$ is given by (\ref{eqn:lazysp:len-definition})
+as the sum of the path's consitutent weights
+with respect to the edge weight function $w$.
 Where no paths to $v$ exist,
 we take $d^*(v) = \infty$.
 Note that $d^*$ is only well-defined on graphs with no negative-length
 cycles reachable from $s$.
-
-\begin{marginfigure}%
-   \centering%
-   \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-dijkstraall.png}%
-   \caption{The distance function from the source vertex.}%
-   \label{fig:ibid:example-distance-all}%
-\end{marginfigure}
 
 Importantly, $d^*$ can also be characterized locally by
 \begin{equation}
@@ -296,7 +303,7 @@ then even though $d^*$ is well-defined,
 of incorrect solutions for $d$.
 
 \paragraph{Reconstructing a Shortest Path from the Distance Function}
-Calculating the source distance function is only useful for solving
+Calculating the start distance function is only useful for solving
 the SPSP problem if it can be used to efficiently determine
 a shortest path.
 We can show that such a path can be reconstructed by starting at
@@ -407,14 +414,6 @@ Note that this does not place any requirements on $w$
 (other than that $d^*$ must exist, so there must not be
 any negative-length cycles reachable from $s$).
 
-\paragraph{Approximation Soundness.}
-The need for multiple cycles of Bellman-Ford stems from the fact
-that each edge may need to be relaxed several times.
-This occurrs because relaxing an edge changes the
-$d$-value of the target vertex,
-which may newly tension downstream edges
-(see Figure~\ref{fig:ibid:bellman-ford-repetitions}).
-
 \begin{marginfigure}
    \centering
    \begin{tikzpicture}
@@ -484,6 +483,14 @@ which may newly tension downstream edges
    \label{fig:ibid:bellman-ford-repetitions}
 \end{marginfigure}
 
+\paragraph{Approximation Soundness.}
+The need for multiple cycles of Bellman-Ford stems from the fact
+that each edge may need to be relaxed several times.
+This occurrs because relaxing an edge changes the
+$d$-value of the destination vertex,
+which may newly tension downstream edges
+(see Figure~\ref{fig:ibid:bellman-ford-repetitions}).
+
 We can exploit our intution to order relaxations from start to destination
 in the special case where $w \geq 0$
 (note that this requirement is stronger than requiring no reachable
@@ -536,7 +543,7 @@ algorithm \citep{dijkstra1959anote}.
    \caption{Dijkstra's algorithm computes the start distance function
       $d^*$ to solve the example shortest path problem.
       Darker vertices have smaller $d$-values.
-      The algorithm stops upon reaching the target vertex $t$
+      The algorithm stops upon reaching the destination vertex $t$
       after expanding 1,290,820 vertices.}%
    \label{fig:ibid:example-distance}%
 \end{marginfigure}
@@ -633,8 +640,8 @@ single-pair problems
 is bidirectional search
 (also called ``doubletree'' search \citep{doran1966doubletree}).
 In a bidirectional algorithm,
-the distance $d_t$ to the dstination is calculated in a growing region
-around the target vertex $t$
+the distance $d_t$ to the destination is calculated in a growing region
+around the destination vertex $t$
 concurrently with the conventional start distance $d_s$ around $s$
 (Figure~\ref{fig:ibid:example-bidirectional}).
 The destination distance function $d_t$,
@@ -648,17 +655,28 @@ within which shortests paths can be reconstructed.
 Loosely speaking,
 the search can terminate with a shortest path
 once the two regions intersect.
-The savings relative to a unidirectional search grow with the problem's
-branching factor.
-For roadmap graphs embedded in an ambient space,
-this branching factor can be linear or exponential in the space's
-dimension.
+Each search need only descend to a depth a factor of two
+shallower than a unidirectional search.
+Therefore, problems where the graph density grows quickly with
+the search depth are particularly well-suited to bidirectional
+algorithms.
+For example,
+for a roadmap graph embedded in an ambient Euclidean space,
+the number of expanded vertices in a ball is polynomial in the depth
+and exponential in the dimensionality of the space.
+It has also been empirically established that bidirectional approaches
+are beneficial for instances in which many vertices around
+both the start and destination vertices are costly
+(e.g. due to obstacles).
+This may be because the number of vertices that need to be expanded
+in these regions do not grow quickly with the search depth.
+
 \begin{marginfigure}%
    \centering%
    \includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}%
    \caption{The bidirectional Dijkatra's algorithm
-      computes $d_s$ around the source vertex
-      and $d_t$ around the target vertex.
+      computes $d_s$ around the start vertex
+      and $d_t$ around the destination vertex.
       Darker vertices have smaller $d$-values in their respective
       regions.
       The algorithm terminates after expanding a total of
@@ -863,7 +881,9 @@ or restricted settings such as planar graphs
 More general algorithms followed
 \citep{ramalingam1996dynamicswsffp,
    frigioni1996dynamicsinglesource,
-   frigioni2000dynamicsp}.
+   frigioni2000dynamicsp};
+we describe and generalize the DynamicSWSF-FP algorithm
+of Ramalingam and Reps below.
 \marginnote{We defer for now discussing the problem of integrating
 heuristic functions with incremental search;
 see Section~\ref{subsec:ibid:heuristic-incremental}
@@ -1154,6 +1174,19 @@ Figure~\ref{fig:ibid:example-incremental-bidirectional}.
    \label{fig:ibid:example-incremental-bidirectional}%
 \end{marginfigure}
 
+Because it is derived from DynamicSWSF-FP,
+the IBiD algorithm is applicable to graphs with $w > 0$.
+(If zero weights are present,
+the algorithm can be adapted by transforming $w$ to use
+lexographically sorted tuples as developed
+by LPA* \citep{koenig2004lpastar},
+described in Section~\ref{subsec:ibid:heuristic-incremental}.)
+Note also that as an extension of
+Bidirectional Dijkstra's algorithm \citep{goldberg2005spexternalmemory},
+the algorithm presented requires $s \neq t$.
+If the start and destination vertices coincide,
+an empty path can be returned in a preprocessing step.
+
 \subsection{Bidirectional Termination with Incremental Distance Functions}
 
 Consider a graph endowed with two distance functions,
@@ -1226,35 +1259,35 @@ so that $d_s(s) = 0$ and $d_t(t) = 0$.
    \label{alg:ibid-two-dynamicswsffps}
    \begin{minipage}[t]{8.2cm}
       \begin{algorithmic}[1]
-         \Procedure {InitializeSource} {\,\!}
+         \Procedure {InitializeStart} {\,\!}
             \ForAll {$v \in V$}
                \State $d_s(v) \gets \infty; \;\; r_s(v) \gets \infty$
             \EndFor
             \State $r_s(s) \gets 0$
             \State $Q_s \gets \{ s \}$
                \Comment $\mbox{ key for } v: \min\big(r_s(v),d_s(v)\big)$
-            \State $\mbox{\sc ProcessSourceQueue}()$
+            \State $\mbox{\sc ProcessStartQueue}()$
          \EndProcedure
-         \Procedure {UpdateSourceDistance} {$v$}
+         \Procedure {UpdateStartDistance} {$v$}
             \If {$v \neq s$}
                \State $r_s(v) \gets \displaystyle\min_{u \in \mbox{\scriptsize Pred}(v)}
                   \big( d_s(u) + w(u,v) \big)$
             \EndIf
             \State Ensure $v \in Q_s$ iff $d_s(v) \neq r_s(v)$
          \EndProcedure
-         \Procedure {ProcessSourceQueue} {\,\!}
+         \Procedure {ProcessStartQueue} {\,\!}
             \State $u \gets Q_s.\mbox{Pop}()$
             \If {$r_s(u) < d_s(u)$}
                   \Comment over-consistent
                \State $d_s(u) \gets r_s(u)$
                \ForAll {$v \in \mbox{Succ}(u)$}
-                  \State $\mbox{\sc UpdateSourceDistance}(v)$
+                  \State $\mbox{\sc UpdateStartDistance}(v)$
                \EndFor
             \Else
                   \Comment under-consistent
                \State $d_s(u) \gets \infty$
                \ForAll {$v \in \mbox{Succ}(u) \cup u$}
-                  \State $\mbox{\sc UpdateSourceDistance}(v)$
+                  \State $\mbox{\sc UpdateStartDistance}(v)$
                \EndFor
             \EndIf
          \EndProcedure
@@ -1265,35 +1298,35 @@ so that $d_s(s) = 0$ and $d_t(t) = 0$.
    \begin{minipage}[t]{8.2cm}
       \begin{algorithmic}[1]
          \algrestore{ibid-two-dynamicswsffps}
-         \Procedure {InitializeTarget} {\,\!}
+         \Procedure {InitializeDest} {\,\!}
             \ForAll {$v \in V$}
                \State $d_t(v) \gets \infty; \;\; r_t(v) \gets \infty$
             \EndFor
             \State $r_t(t) \gets 0$
             \State $Q_t \gets \{ t \}$
                \Comment $\mbox{ key for } v: \min\big(r_t(v),d_t(v)\big)$
-            \State $\mbox{\sc ProcessTargetQueue}()$
+            \State $\mbox{\sc ProcessDestQueue}()$
          \EndProcedure
-         \Procedure {UpdateTargetDistance} {$u$}
+         \Procedure {UpdateDestDistance} {$u$}
             \If {$u \neq t$}
                \State $r_t(u) \gets \displaystyle\min_{v \in \mbox{\scriptsize Succ}(u)}
                   \big( w(u,v) + d_t(v) \big)$
             \EndIf
             \State Ensure $u \in Q_t$ iff $d_t(u) \neq r_t(u)$
          \EndProcedure
-         \Procedure {ProcessTargetQueue} {\,\!}
+         \Procedure {ProcessDestQueue} {\,\!}
             \State $v \gets Q_t.\mbox{Pop}()$
             \If {$r_t(v) < d_t(v)$}
                   \Comment over-consistent
                \State $d_t(v) \gets r_t(v)$
                \ForAll {$u \in \mbox{Pred}(v)$}
-                  \State $\mbox{\sc UpdateTargetDistance}(u)$
+                  \State $\mbox{\sc UpdateDestDistance}(u)$
                \EndFor
             \Else
                   \Comment under-consistent
                \State $d_t(v) \gets \infty$
                \ForAll {$u \in \mbox{Pred}(v) \cup v$}
-                  \State $\mbox{\sc UpdateTargetDistance}(u)$
+                  \State $\mbox{\sc UpdateDestDistance}(u)$
                \EndFor
             \EndIf
          \EndProcedure
@@ -1326,16 +1359,16 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
    \label{alg:ibid}
    \begin{algorithmic}[1]
       \Procedure {Main} {\,}
-         \State $\mbox{\sc InitializeSource}(); \; \mbox{\sc InitializeTarget}()$
+         \State $\mbox{\sc InitializeStart}(); \; \mbox{\sc InitializeDest}()$
          \State $Q_c \gets \emptyset$
             \Comment $\mbox{ key for } (u,v): d_s(u) + w(u,v) + d_t(v)$
          \Loop
             \While {not $\mbox{\sc TerminationCondition}()$}
                \If {$Q_s.\mbox{TopKey} < Q_t.\mbox{TopKey}$}
                      \Comment prioritize arbitrarily
-                  \State $\mbox{\sc ProcessSourceQueue}(u)$
+                  \State $\mbox{\sc ProcessStartQueue}(u)$
                \Else
-                  \State $\mbox{\sc ProcessTargetQueue}(u)$
+                  \State $\mbox{\sc ProcessDestQueue}(u)$
                \EndIf
                \State Ensure $(u,v) \in Q_c$ iff
                   $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
@@ -1363,8 +1396,8 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
       \EndFunction
       \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
          \ForAll {$(u,v) \in E_{\ms{delta}}$}
-            \State $\mbox{\sc UpdateSourceDistance}(v)$
-            \State $\mbox{\sc UpdateTargetDistance}(u)$
+            \State $\mbox{\sc UpdateStargDistance}(v)$
+            \State $\mbox{\sc UpdateDestDistance}(u)$
          \EndFor
          \State Ensure $(u,v) \in Q_c$ iff
             $u \neq Q_s$, $v \neq Q_t$, key $\neq \infty$
@@ -1388,8 +1421,8 @@ applied to pathfinding problems in order to find non-optimal
 solutions more economically.
 These unidirectional methods proceed similarly to Dijkstra's algorithm,
 but instead of prioritizing {\sc Open} vertices
-based on their source distance $d_s$,
-they use a target-directed heuristic function $h_t$.
+based on their start distance $d_s$,
+they use a destination-directed heuristic function $h_t$.
 Hart, Nilsson, and Raphael \citep{hart1968astar} established that
 these approaches can be combined ($d_s + h_t$) to yield
 an admissible algorithm (A*) for the shortest-path problem,
@@ -1418,7 +1451,7 @@ First,
 such as Pohl's Bidirectional Heuristic Path Algorithm (BHPA)
 \citep{pohl1971bidirectional}
 conduct two conventional heuristic-informed searches
-(i.e. the start search directed to the goal vertex,
+(i.e. the start search directed to the destination vertex,
 and vice versa).
 This approach suffers from the problem that the two sets of
 \textsc{Closed} vertices must overlap substantially
@@ -1515,11 +1548,11 @@ appears just as expensive.
 The key insight is that under an appropriately chosen potential function,
 many shortest path algorithms are able to terminate more quickly.
 To see why,
-consider the potential function $b$ coinciding with the goal heuristic
-function $h_g$ used in A*.
+consider the potential function $b$ coinciding with
+the destination heuristic function $h_t$ used in A*.
 By (\ref{eqn:ibid:potential-transformation}),
 the weight $w_b$ of a directed edge $e_{uv}$ which makes
-progress towards the goal (so that $b(v) < b(u)$)
+progress towards the destination (so that $b(v) < b(u)$)
 will have its transformed weight be reduced,
 whereas an edge in the incorrect direction will have its transformed
 weight increase.
@@ -1533,7 +1566,7 @@ heuristic function
 A pathfinding algorithm therefore searches only in the excess weight
 space,
 and is therefore biased to explore paths which make progress towards
-the goal vertex.
+the destination vertex.
 In effect,
 while the transformation does not affect the relative ordering of
 paths,
@@ -1587,14 +1620,67 @@ The most commonly used potential function
 is simply the average of the two:
 \begin{equation}
    b(v) = \frac{h_t(v) - h_s(v)}{2}.
+   \label{eqn:ibid:averaged-potential}
 \end{equation}
 Note that the start heuristic value is negated;
 when the start heuristic is used during the reverse search,
 it is applied to predecessor vertices.
-Figure~\ref{fig:ibid:example-heurbidijkstra} shows this averaged
+It can be shown that if $h_s$ and $h_t$ are consistent
+(i.e. satisfy (\ref{eqn:ibid:potential-consistent})),
+$b$ is also consistent.
+
+\begin{figure}
+   \centering%
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurnone-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurnone-original}%
+   
+   %\vspace{0.2cm}
+   %
+   %\includegraphics{build/incbi-lpastar-fig1/lpastar-heurhalf-original}%
+   %\;\;%
+   %\includegraphics{build/incbi-lpastar-fig1/incbi-heurhalf-original}%
+   
+   \vspace{0.2cm}
+   
+   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurfull-original}%
+   \;\;%
+   \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-original}%
+   
+   \caption{Illustration of behavior of bidirectional heuristic serach
+      on a shortest path problem reproduced
+      from \citep{koenig2004lpastar}.
+      Vertices that are start-expanded are shown in blue,
+      while those that are destination-expanded are shown in red.
+      At left, the algorithm performs only start-side expansions,
+      which approximates the behavior of a unidirectional algorithm.
+      At right, the algorithm  performs distance-balanced expansions
+      between the two searches.
+      The top row shoes the behavior of the algorithm with no
+      heuristic potential function.
+      Start and destination heuristic functions are available,
+      and their effect are shown at bottom.
+      The unidirectional search uses the destination heuristic $h_t$
+      as its potential function,
+      while the bidirectional search uses the averaged potential
+      function (\ref{eqn:ibid:averaged-potential}).
+      }
+   \label{fig:incbi-lpastar-fig1-heurchange}
+\end{figure}
+
+Figure~\ref{fig:incbi-lpastar-fig1-heurchange} shows the behavior
+of the bidirectional heuristic search algorithm
+on a path planning problem in an eight-connected grid world.
+This example problem is reproduced from \citep{koenig2004lpastar}.
+The figure shows the effect of the combination of bidirectional
+and heuristic search.
+
+Figure~\ref{fig:ibid:example-heurbidijkstra} shows the result
+of conducting a bidirectional search using this averaged
 potential function for the example road network problem.
-This algorithm is listed as ``W-BiDijk''
-(weighted bidirectional Dijkstra's)
+This algorithm is listed as ``H-BiDijk''
+(heuristic bidirectional Dijkstra's)
 in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \begin{marginfigure}%
@@ -1663,92 +1749,44 @@ domains,
 the second component of $w_b$ is everywhere positive,
 and therefore $w_b > (0,0)$.
 
-\paragraph{Equivalence to Lifelong Planning A*}
-Combining (\ref{eqn:ibid:incremental-potential-key})
-with the incremental key (\ref{eqn:ibid:incremental-key})
-yields the following:
+%\paragraph{Equivalence to Lifelong Planning A*}
+%Combining (\ref{eqn:ibid:incremental-potential-key})
+%with the incremental key (\ref{eqn:ibid:incremental-key})
+%yields the following:
 %\begin{equation}
 %   k_b(v) = \min\left[ d_b(v), r_b(v) \right]
 %\end{equation}
-
-
-\begin{subequations}%
-   \begin{align}
-      k_b(v) = & \min\left( d_b(v), r_b(v) \right) \\
-         = & \min\left( \left[ d(v) - [ b(s) - b(v) ]; d(v) \right],
-            r_b(v) \right)
-   \end{align}%
-\end{subequations}%
-
+%\begin{subequations}%
+%   \begin{align}
+%      k_b(v) = & \min\left( d_b(v), r_b(v) \right) \\
+%         = & \min\left( \left[ d(v) - [ b(s) - b(v) ]; d(v) \right],
+%            r_b(v) \right)
+%   \end{align}%
+%\end{subequations}%
+%\cdnote{I need to add this!}
 
 This algorithm is listed as ``LPA*''
 in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \subsection{Heuristic IBiD}
 
-Given a potential function which is \emph{consistent}.
+The potential function transformation approach is
+applicable to Dijkstra's algorithm (yielding A*),
+Bidirectional Dijkstra's algorithm (yielding H-BiDijk),
+and DynamicSWSF-FP (yielding LPA*).
+Therefore,
+it is natural to apply the same approach to IBiD,
+which is both bidirectional and incremental.
 
-Therefore all transformed edge weights are non-negative.
-
-And with the lexographic sorting technique,
-they are positive as well!
-
-Create a transformed graph.
-
-\paragraph{Example problem.}
-
-For the purpose of calculating vertex heuristics,
-geographic coordinates were projected onto a 2D plane using the
-scale at the midpoint latitude ($41.25^\circ$)
-resulting in a projecting error of less than 0.3\%.
-The maximum transit speed is 30.11 m/s.
-
-\section{Other Stuff}
-
-\subsection{Examples}
-
-See Figure~\ref{fig:incbi-lpastar-fig1-heurchange}
-and Figure~\ref{fig:incbi-lpastar-fig1}.
-
-\begin{figure}
-   \centering%
-   
-   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurnone-original}%
-   \;\;%
-   \includegraphics{build/incbi-lpastar-fig1/incbi-heurnone-original}%
-   
-   \vspace{0.2cm}
-   
-   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurhalf-original}%
-   \;\;%
-   \includegraphics{build/incbi-lpastar-fig1/incbi-heurhalf-original}%
-   
-   \vspace{0.2cm}
-   
-   \includegraphics{build/incbi-lpastar-fig1/lpastar-heurfull-original}%
-   \;\;%
-   \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-original}%
-   
-   \caption{Illustration of behavior of IBiD on a single
-      (non-incremental) shortest path problem.
-      At left, IBiD uses the unidirectional start-side expansion
-      strategy.
-      At right, IBiD uses the bidirectional distance-balanaced
-      expansion strategy.
-      Start and goal heuristic functions are available;
-      the unidirectional search uses a potential function based
-      on the goal heuristic,
-      and the bidirectional search a potential function using
-      the average heuristic.
-      IBiD is run with three different potential function weights:
-      0.0 (top), 0.5 (middle), and 1.0 (bottom).
-      IBiD therefore preforms equivalently to
-      Dijkstra's algorithm (top-left),
-      Bidirectional Dijkstra's (top-right),
-      A* (bottom-left),
-      and Bidirectional A* (bottom-right).}
-   \label{fig:incbi-lpastar-fig1-heurchange}
-\end{figure}
+As with the core IBiD algorithm presented in Section~\ref{sef:ibid:ibid},
+the heuristic variant requires $w > 0$ and $s \neq t$.
+Given consistent heuristics $h_s$ and $h_t$,
+form the averaged potential function $b$ as described
+in Section~\ref{eqn:ibid:averaged-potential}.
+This induces a transformed edge weight function $w_b$
+according to (\ref{eqn:ibid:incremental-potential-key}).
+The Heuristic IBiD algorithm consists of running IBiD
+(Algorithm~\ref{alg:ibid}) over these transformed edge weights.
 
 \begin{figure}
    \centering%
@@ -1763,12 +1801,17 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \;\;%
    \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-changed}%
    
-   \caption{IBiD with only source-side expansions and a goal-side
-      heuristic (top) proceeds identically to Lifelong Planning A*,
+   \caption{
+      Comparison of Heuristic IBiD parameters (expansion balancers
+      and potential functions) on a dynamic grid world pathfinding
+      problem reproduced from \citep{koenig2004lpastar}.
+      Heuristic IBiD with only start-side expansions
+      and a destination-side heuristic (top)
+      proceeds identically to Lifelong Planning A*,
       performing 37 expansions on the original world (left)
       followed by 18 expansions over 14 vertices on the chanced
       world (right).
-      IBiD with distance-balanced expansions and an average
+      Heuristic IBiD with distance-balanced expansions and an average
       potential (bottom)
       performs 30 expansions on the original world
       followed by 18 expansions over 15 vertices on the changed
@@ -1776,82 +1819,151 @@ and Figure~\ref{fig:incbi-lpastar-fig1}.
    \label{fig:incbi-lpastar-fig1}
 \end{figure}
 
-\begin{figure*}
-   \centering%
-   
-   \begin{tabular}{ccc}
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalnone-balfwd.png}\\556,209 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-baldist.png}\\319,938 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-balcard.png}\\281,413 expansions}
-      \vspace{0.3cm}
-      \\
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalhalf-balfwd.png}\\297,414 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-baldist.png}\\206,625 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-balcard.png}\\178,929 expansions}
-      \vspace{0.3cm}
-      \\
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalfull-balfwd.png}\\82,915 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-baldist.png}\\95,759 expansions}
-      &
-      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-balcard.png}\\69,218 expansions}
-      \vspace{0.5cm}
+The behavior of Heuristic IBiD on a dynamic problem is shown
+in Figure~\ref{fig:incbi-lpastar-fig1}.
+This algorithm is listed as ``H-IBiD'' (Heuristic IBiD)
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
+
+\section{Experimental Results.}
+\label{sec:ibid:experiments}
+
+We performed an experimental comparison of the various pathfinding
+algorithms described in this chapter
+on a set of incremental problem instances drawn from
+an approximate road network of the Northeast USA
+from the public dataset from the 9th DIMACS
+Implementation Challenge \citep{demetrescuetal2006dimacs9}.
+The directed graph consists of comprises 1,524,453 vertices
+and 3,868,020 edges.
+Each edge is annotated with a transit time.
+The shortest path problem between a pair of start and destination
+locations therefore minimizes the total transit time between them.
+
+We compared a total of eight algorithms on this problem,
+consisting of each combination of
+\{ unidirectional, bidirectional \},
+\{ complete, incremental \},
+and
+\{ uninformed, heuristic informed \}.
+A complete table of algorithms is given
+in Table~\ref{table:ibid:experiments-algorithms}.
+
+\begin{table}
+   \centering
+   \begin{tabular}{cccll}
+      \toprule
+      Bidir & Heur & Inc & Name & Full name \\
+      \midrule
+        &   &   & Dijk & Dijkstra's algorithm \\
+      X &   &   & BiDijk & Bidirectional Dijkstra's algorithm \\
+        & X &   & A* & A* search \\
+      X & X &   & H-BiDijk & Heuristic bidirectional Dijkstra's \\
+        &   & X & DynSWSF & DynamicSWSF-FP \\
+      X &   & X & IBiD & Incremental Bidirectional Dijkstra's \\
+        & X & X & LPA* & Lifelong Planning A* \\
+      X & X & X & H-BiDijk & Heuristic IBiD \\
+      \bottomrule
    \end{tabular}
-   
-   \caption{Comparison between various heuristic strengths and
-      balancing strageties on a single-pair road network problem.
-      A path with shortest transit time is sought.
-      The heuristic strength varies from no heuristic (top)
-      to a full-strength heuristic (bottom).
-      At left, a foward-only balancer is used, so that the
-      top-left is equivalent to Dijkstra's algorithm,
-      and the bottom-left is equivalent to A*.
-      The middle column uses a balanced distance strategy.
-      The right column uses a balanced cardinality strategy.}
-   \label{fig:incbi-road-ne}
-\end{figure*}
+   \caption{Table of algorithms compared in the Northeast USA
+      dynamic pathfinding problem.
+      Each algorithm is marked as bidirectional (``Bidir''),
+      heuristic-informed (``Heur''),
+      and/or incremental (``Inc'').}
+   \label{table:ibid:experiments-algorithms}
+\end{table}
 
+\paragraph{Heuristics.}
+For algorithms that use heuristics (A*, H-BiDijk, LPA*, and H-IBiD),
+we compute them using 2D Euclidean distance.
+We therefore project the input data given in  geographic coordinates
+onto the 2D plane using the latitude/longitude scale at the
+midpoint latitude ($41.25^\circ$N).
+This results in a projection error of less than 0.3\%.
+Because edge weights are transit times,
+we use the maximum transit speed over the entire graph as the
+conversion factor (30.11 m/s),
+so that the resulting heuristic is consistent.
 
+For the unidirectional algorithms (A* and LPA*),
+the destination heuristic function $h_t$ was used.
+For the bidirectional algorithms (H-BiDijk and H-IBiD),
+the averaged potential function $b$
+from (\ref{eqn:ibid:averaged-potential}) was used.
 
-\subsection{Implementation Details}
+\paragraph{Dynamic Edge Weights.}
+For the dynamic setting,
+we created instances on the graph derived from a traffic analogy.
+Each edge may either be \emph{unblocked},
+taking its original transit time as its edge weight,
+or \emph{blocked}, taking an infinite edge weight.
+Between each planning episode,
+each edge transitions independently
+between blocked and unblocked with some probability.
+We ran experiments across four problem classes
+with different probability parameters,
+ranging from P1 (infrequent changes)
+to P4 (frequent changes),
+with transition probabilities given
+in Table~\ref{table:ibid:traffic-params}.
+The expected steady-state proportion of blocked edges on the graph
+follows from
+\begin{equation}
+   P_{\ms{blocked}} = \frac{P_{\ms{block}}}{P_{\ms{block}} + P_{\ms{unblock}}},
+\end{equation}
+and the transition probabilities were chosen so that this expected
+proportion is constant across the problem classes at 0.002.
 
-Other implementations:
-\citep{alberts1998softwaredynamicgraph}.
-
-
-\section{Implications for LazySP}
-
-Gotta talk about this stuff!
-
-\subsection{LazySP Selector Experiments}
-
-\begin{figure}
+\begin{table}
    \centering
-   \includegraphics{build/incbi-sq/all-even}
-   \caption{Across a selection of articulated robot planning instances,
-      using the Even edge selector.
-      Algorithms are
-      \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
-      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBiD,
-      and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
-      Results shown are cumulative search time.
-      }
-\end{figure}
+   \begin{tabular}{cccc}
+      \toprule
+      Problem & $P_{\ms{block}}$ & $P_{\ms{unblock}}$ & $P_{\ms{blocked}}$ \\
+      \midrule
+      P1 & 0.0001 & 0.0499 & 0.002 \\
+      P2 & 0.0002 & 0.0998 & 0.002 \\ 
+      P3 & 0.0005 & 0.2495 & 0.002 \\
+      P4 & 0.0010 & 0.4990 & 0.002 \\
+      \bottomrule
+   \end{tabular}
+   \caption{Traffic transition parameters for each edge
+      of the Northeast USA graph for the four problem classes
+      P1 -- P4.}
+   \label{table:ibid:traffic-params}
+\end{table}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/incbi-road-ne/stats}
-   \caption{Road network incremental results.
-      Algorithms are
-      \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
-      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBiD,
-      and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
-      }
-\end{figure}
+Each problem instance consisted of a start/destination vertex
+pair chosen uniformly at random from the vertex set,
+and a randomly chosen initial distribution of blocked edges
+(each edge initially blocked with the steady-state 0.002 probability).
+We compared all eight algorithms against the same set of 1600
+problem instances
+formed by all combinations of
+the four different traffic transition problem classes,
+20 different start/destination pairs
+and 20 different traffic initial distributions.
+
+Each problem instance consists of ten planning episodes,
+with traffic transition probability governed by the parameters
+in Table~\ref{table:ibid:traffic-params} between each episode.
+The four non-incremental algorithms were restarted from scratch
+for each episode.
+The four incremental algorithms were notified of the changed
+edge weights before each episode.
+
+\paragraph{Discussion of Results.}
+The results of this experiment are shown
+in Figure~\ref{fig:ibid:road-ne-stats}.
+The results are primarily partitioned by algorithm.
+For each algorithm,
+the results from the 1600 instances are broken down as follows.
+Since the four different problem classes affect only the edge weight
+transition probabilities for non-initial (replanning) episodes,
+summary statistics are shown separately for only the 400 unique
+initial episodes,
+which are common across all problem classes.
+The statistics for the replanning episodes are then
+averaged across the remaining nine episodes,
+and are broken down by problem class.
 
 \begin{figure}
    \centering
@@ -1878,36 +1990,170 @@ Gotta talk about this stuff!
    \label{fig:ibid:road-ne-stats}
 \end{figure}
 
+\paragraph{Effect of Incremental Search.}
+The first observation from the data is that
+each of the first four non-incremental algorithms
+show identical performance between the initial and replanning
+episodes.
+This is expected,
+because the joint edge weight distribution for each episode treated
+individually is identical
+(edges blocked with independenth probability 0.002),
+and the non-incremental algorithms address each episode from scratch.
+
+The performance of the four incremental algorithms on the initial
+episodes is identical to that of their non-incremental counterparts.
+In contrast, the results largely show
+significantly improved performance on the replanning episodes
+relative to the initial episodes.
+This demonstrates the effectiveness of incremental algorithms.
+As expected,
+as the frequency of edge weight changes decreases
+(most infrequent for P1)
+so that there are fewer changed edge weights between each episode,
+the benefits of incremental search are magnified.
+On the other hand,
+the results for DynamicSWSF-FP on the P4 problem class
+(with many changed edge weights)
+actually shows an increased number of vertex expansions --
+this can happen because incremental algorithms can visit a vertex
+more than once (at most twice with $w>0$).
+
 \begin{figure}
    \centering
-   \includegraphics{build/incbi-sq/herbbin0}
-   
-   \includegraphics{build/incbi-sq/herbbin0-lambda}
-   \caption{Problem: \texttt{herbbin0}.
-      Lines are:
-      \protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);} no heuristic,
-      \protect\tikz{\protect\draw[densely dashed] (0,0) -- (0.15,0.15);} start heuristic,
-      \protect\tikz{\protect\draw[densely dashdotted] (0,0) -- (0.15,0.15);} avg heuristic,
-      \protect\tikz{\protect\draw[densely dotted] (0,0) -- (0.15,0.15);} goal heuristic.
-      }
+   \includegraphics{build/incbi-road-ne/stats2rel}
+   \caption{Relative performance improvement for replanning episodes
+      relative to initial episodes for each incremental algorithm
+      on the dynamic road network problem.}
+   \label{fig:ibid:road-ne-stats-rel}
 \end{figure}
 
-\begin{figure*}
-   \centering
-   \includegraphics{build/incbi-sq/herbbookshelf0}
-   \includegraphics{build/incbi-sq/herbbookshelf1nom}
-   
-   \includegraphics{build/incbi-sq/herbbookshelf0-lambda}
-   \includegraphics{build/incbi-sq/herbbookshelf1nom-lambda}
-   \caption{Problems: \texttt{herbbookshelf0} (left), texttt{herbbookshelf1nom} (right).}
-\end{figure*}
+\paragraph{Comparison of Bidirectional and Heuristic Methods.}
+For this problem domain,
+it appears that the benefit of adding a destination heuristic (A*)
+is more significant than the benefit of conducting a bidirectional
+search (BiDijk).
+However, in both the complete and incremental settings,
+combining both techniques outperforms either one individually.
 
-\begin{figure*}
-   \centering
-   \includegraphics{build/incbi-sq/workcellef}
-   \includegraphics{build/incbi-sq/workcellij}
-   
-   \includegraphics{build/incbi-sq/workcellef-lambda}
-   \includegraphics{build/incbi-sq/workcellij-lambda}
-   \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
-\end{figure*}
+\paragraph{Benefit of Incremental Search}
+Figure~\ref{fig:ibid:road-ne-stats-rel} shows the same results
+for the replanning episodes of each incremental algorithm
+normalized to its initial episode.
+In other words,
+it shows the benefit of incremental search for each algorithm
+and problem class.
+In particular,
+this shows that not only does the bidirectional and heuristic-informed
+algorithm (H-BiDijk) outperform the other non-incremental planners
+as shown in Figure~\ref{fig:ibid:road-ne-stats},
+but also that integrating incremental search (H-IBiD)
+yields the largest additional relative speedup.
+It appears that for this problem domain,
+the combination of these three techniques is particularly effective.
+
+\section{Available Implementations}
+
+Many existing implementations of bidirectional,
+incremental \citep{alberts1998softwaredynamicgraph},
+and heuristic \citep{likhachev2008sbpl}
+pathfinding algorithms exist.
+We provide an implementation of the algorithms in this chapter
+for the Boost Graph Library \citep{siek2001boostgraph}
+at the following address:
+\begin{quote}
+   \texttt{https://github.com/personalrobotics/lemur/tree/master/pr\_bgl}
+\end{quote}
+
+
+%\begin{figure*}
+%   \centering%
+%   
+%   \begin{tabular}{ccc}
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalnone-balfwd.png}\\556,209 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-baldist.png}\\319,938 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgnone-balcard.png}\\281,413 expansions}
+%      \vspace{0.3cm}
+%      \\
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalhalf-balfwd.png}\\297,414 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-baldist.png}\\206,625 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavghalf-balcard.png}\\178,929 expansions}
+%      \vspace{0.3cm}
+%      \\
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pgoalfull-balfwd.png}\\82,915 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-baldist.png}\\95,759 expansions}
+%      &
+%      \specialcell{\includegraphics[width=5cm]{figs/incbi-road-ne/singleshot/pavgfull-balcard.png}\\69,218 expansions}
+%      \vspace{0.5cm}
+%   \end{tabular}
+%   
+%   \caption{Comparison between various heuristic strengths and
+%      balancing strageties on a single-pair road network problem.
+%      A path with shortest transit time is sought.
+%      The heuristic strength varies from no heuristic (top)
+%      to a full-strength heuristic (bottom).
+%      At left, a foward-only balancer is used, so that the
+%      top-left is equivalent to Dijkstra's algorithm,
+%      and the bottom-left is equivalent to A*.
+%      The middle column uses a balanced distance strategy.
+%      The right column uses a balanced cardinality strategy.}
+%   \label{fig:incbi-road-ne}
+%\end{figure*}
+
+%\section{Implications for LazySP}
+
+%Gotta talk about this stuff!
+
+%\subsection{LazySP Selector Experiments}
+
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/incbi-sq/all-even}
+%   \caption{Across a selection of articulated robot planning instances,
+%      using the Even edge selector.
+%      Algorithms are
+%      \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north west lines}]{};}\;LPA*,
+%      \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;IBiD,
+%      and \protect\tikz{\protect\node[fill=black!30,draw=black,postaction={pattern=north east lines}]{};}\;Reverse LPA*.
+%      Results shown are cumulative search time.
+%      }
+%\end{figure}
+
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/incbi-sq/herbbin0}
+%   
+%   \includegraphics{build/incbi-sq/herbbin0-lambda}
+%   \caption{Problem: \texttt{herbbin0}.
+%      Lines are:
+%      \protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);} no heuristic,
+%      \protect\tikz{\protect\draw[densely dashed] (0,0) -- (0.15,0.15);} start heuristic,
+%      \protect\tikz{\protect\draw[densely dashdotted] (0,0) -- (0.15,0.15);} avg heuristic,
+%      \protect\tikz{\protect\draw[densely dotted] (0,0) -- (0.15,0.15);} goal heuristic.
+%      }
+%\end{figure}
+
+%\begin{figure*}
+%   \centering
+%   \includegraphics{build/incbi-sq/herbbookshelf0}
+%   \includegraphics{build/incbi-sq/herbbookshelf1nom}
+%   
+%   \includegraphics{build/incbi-sq/herbbookshelf0-lambda}
+%   \includegraphics{build/incbi-sq/herbbookshelf1nom-lambda}
+%   \caption{Problems: \texttt{herbbookshelf0} (left), texttt{herbbookshelf1nom} (right).}
+%\end{figure*}
+
+%\begin{figure*}
+%   \centering
+%   \includegraphics{build/incbi-sq/workcellef}
+%   \includegraphics{build/incbi-sq/workcellij}
+%   
+%   \includegraphics{build/incbi-sq/workcellef-lambda}
+%   \includegraphics{build/incbi-sq/workcellij-lambda}
+%   \caption{Problems: \texttt{workcellef} (left), \texttt{workcellij} (right).}
+%\end{figure*}
