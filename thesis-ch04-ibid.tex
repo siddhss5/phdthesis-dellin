@@ -621,13 +621,17 @@ Armed with Theorems~\ref{thm:ibid-relaxation-sound}
 and~\ref{thm:ibid-relaxation-reconstruct},
 we can terminate edge relaxation early
 and reconstruct a shortest path from $s$ to $t$.
+This algorithm is listed as ``Dijk''
+(Dijkstra's algorithm)
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \subsection{Bidirectional Search}
 \label{sec:ibid:bidirectional}
 
 A prominent technique for minimizing pathfinding computation for
 single-pair problems
-is bidirectional search.
+is bidirectional search
+(also called ``doubletree'' search \citep{doran1966doubletree}).
 In a bidirectional algorithm,
 the distance $d_t$ to the dstination is calculated in a growing region
 around the target vertex $t$
@@ -665,12 +669,14 @@ dimension.
 The first bidirectional algorithm
 was proposed by Dantzig \citep{dantzig1963linearprogramming},
 and the first precisely described algorithm was presented by
-Nicholson \citep{nicholson1966shortest}.
+Nicholson \citep{nicholson1966shortest},
 %Implementation of a sound and efficient algorithm
 %turns on two important questions:
 %(a) when and how to terminate with a shortest path,
 %and (b) how to balance expansions from the two directions of the
 %search.
+and the similar Bi-Directional Shortest Path Algorithm (BSPA)
+was analyzed by Pohl \citep{pohl1971bidirectional}.
 Implementation of a sound and efficient algorithm
 turns on when and how to terminate with a shortest path.
 
@@ -741,6 +747,11 @@ Let $D_s$ be the minimum $u$-value among all tensioned edges in $d_s$
 Then we can establish the following proof of a correct termination
 condition:
 
+\marginnote{This treatment of the bidirectional termination condition
+is presented differently than in most related work because it will
+help us formulate an incremental version
+in Section~\ref{sef:ibid:ibid}.}
+
 \begin{theorem}
 Define $E_{\ms{conn}}$ as the set of all edges $e_{uv}$ such that
 $d_s(u) \leq D_s$ and $d_t(v) \leq D_t$,
@@ -772,6 +783,10 @@ Note also that Theorem~\ref{thm:ibid-relaxation-reconstruct}
 allows a shortest path to be constructed from $e^*_{uv}$
 buy walking backwards from $u$ to $s$,
 and forwards from $v$ to $t$.
+
+This algorithm is listed as ``BiDijk''
+(bidirectional Dijkstra's algorithm)
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 %\subsection{Balancing Directions}
 %The general bidirectional algorithm leaves open the strategy
@@ -857,7 +872,6 @@ A review of more general dynamic problems on graphs is available
 in \citep{eppstein1999dynamic},
 including for the more general all-pairs problem
 \citep{demetrescu2010dynamic}.
-
 
 \paragraph{Problem Definition.}
 Consider a directed graph $G = (V,E)$ as described in
@@ -990,6 +1004,7 @@ given an arbitrary estimate $d$
 this argument makes use of a third function $k$ defined as:
 \begin{equation}
    k(v) = \min\left[ d(v), r(v) \right].
+   \label{eqn:ibid:incremental-key}
 \end{equation}
 %If we define $V_{\ms{incons}}$ as the set of inconsistent vertices
 %(that is, with $d(v) \neq r(v)$,
@@ -1030,6 +1045,11 @@ as exploited by the Lifelong Planning A* algorithm
 
 \cdnote{I still need to write this part!
 Talk about queues!}
+
+This algorithm is listed as ``DynSWSF''
+(Dynamic SWSF-FP)
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
+
 
 % I don't need this anymore, subsumed in soundness result!
 %\paragraph{Approximation Completeness.}
@@ -1113,7 +1133,7 @@ Talk about queues!}
 
 The principal motivation behind
 the Incremental Bidirectional (IBiD) search algorithm
-is to leverage the early termination of a bidirectional search
+is to leverage the early termination efficiency of a bidirectional search
 with the efficiency of an incremental search for dynamic
 single-pair shortest path problems.
 An example of IBiD is shown in
@@ -1172,6 +1192,13 @@ then $\ell_e(e^*_{uv})$ is the length of the shortest path,
 and $e^*_{uv}$ lies on one such path.
 \label{thm:ibid-sound}
 \end{theorem}
+
+Note that the first half of the conditions
+from Theorem~\ref{thm:ibid-sound}
+is drawn from the soundness conditions for incremental search
+from Theoem~\ref{thm:ibid-dynamicswsffp-sound},
+while the second half resembles the bidirectional termination
+conditions from Theorem~\ref{thm:ibid-bidir-sound}.
 
 \subsection{Algorithm Design}
 
@@ -1291,6 +1318,8 @@ found so far.
 
 We capture the central idea from Theorem~\ref{thm:ibid-sound}
 in Algorithm~\ref{alg:ibid}.
+This algorithm is listed as ``IBiD''
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \begin{algorithm}[t]
    \caption{IBiD Outline}
@@ -1344,7 +1373,6 @@ in Algorithm~\ref{alg:ibid}.
 \end{algorithm}
 
 
-
 \section{Heuristic Search}
 \label{sec:ibid:heuristic}
 
@@ -1362,11 +1390,13 @@ These unidirectional methods proceed similarly to Dijkstra's algorithm,
 but instead of prioritizing {\sc Open} vertices
 based on their source distance $d_s$,
 they use a target-directed heuristic function $h_t$.
-Hart, Nilsson, and Raphael \citep{hart1968astar} discovered that
+Hart, Nilsson, and Raphael \citep{hart1968astar} established that
 these approaches can be combined ($d_s + h_t$) to yield
 an admissible algorithm (A*) for the shortest-path problem,
 as long as $h_t$ meets certain conditions.
 See Figure~\ref{fig:ibid:example-astar}.
+We show the results of unidirectional heuristic search as ``A*''
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \begin{marginfigure}%
    \centering%
@@ -1380,8 +1410,192 @@ See Figure~\ref{fig:ibid:example-astar}.
 \label{subsec:ibid:heuristic-bidirectional}
 
 Attempts to provide a bidirectional algorithm which incorporates
-heuristics generally take one of three approaches.
-\cdnote{I need to deep-dive here to write this correctly.}
+heuristic estimates generally take one of three approaches,
+which we survey here.
+
+First,
+``front-to-back'' methods
+such as Pohl's Bidirectional Heuristic Path Algorithm (BHPA)
+\citep{pohl1971bidirectional}
+conduct two conventional heuristic-informed searches
+(i.e. the start search directed to the goal vertex,
+and vice versa).
+This approach suffers from the problem that the two sets of
+\textsc{Closed} vertices must overlap substantially
+before the search can be terminated,
+and therefore the benefit of the bidirectional search
+is not fully realized.
+\cdnote{Pohl cites Berge? Missile analogy.}
+
+Second,
+``front-to-front'' methods exploit a consistent pairwise
+heuristic function $h(u,v)$ evaluated over every pair of vertices
+on each search's \textsc{Open} list,
+and the vertices representing the shortest potential path are
+expanded.
+Early approaches with inflated heuristics
+\citep{doran1966doubletree} did not yield promising results.
+The later Bidirectional Heuristic Front-to-Front Algorithm
+(BHFFA) \citep{champeaux1983biheuragain} does show an improved
+number of vertex expansions.
+\marginnote{An earlier version of BHFFA \citep{champeauxsint1977bhffa}
+was shown to be incorrect due in large part to the difficulty
+establishing a correct bidirectional termination condition.}
+While this approach does not suffer from the region overlap problem
+inherent in front-to-back methods,
+it instead incurrs the very high cost of computing full pairwise
+heuristics, and updating all vertices on \textsc{Open}
+after each vertex expansion.
+
+The third approach
+derives from an alternative interpretation of heuristic search
+algorithms first proposed by Ikeda et. al.
+\citep{ikeda1994betterroutes}.
+Under this interpretation,
+a heuristic-informed A* search is equivalent to an uninformed
+Dijkstra's search under a particular transformation
+of the edge weights using the heuristic function
+as a vertex potential function.
+Therefore,
+because front-to-back methods use different heuristics for the
+forward and reverse searches,
+they are effectively searching graphs with different weight functions.
+The proposed solution is to arrive at a single consistent potential
+function,
+which allows the transformed pathfinding problem to be solved using
+the uninformed bidirectional algorithm described
+in Section~\ref{sec:ibid:bidirectional}.
+
+\paragraph{Potential-Adjusted Weight Functions.}
+Consider an arbitrary vertex potential function
+$b : V \rightarrow \mathbb{R}$,
+and consider the following transformation of a weight
+function $w$ into transformed weight function $w_b$:
+\begin{equation}
+   w_b(e_{uv}) = w(e_{uv}) - \left[ b(u) - b(v) \right].
+   \label{eqn:ibid:potential-transformation}
+\end{equation}
+The effect of this transformation on the lengths of paths over $G$
+bears investigation.
+Consider a path $p_{xy}$ from $x$ to $y$ which has length $\ell$ w.r.t. $w$.
+What is its weight $\ell_b$ w.r.t. $w_b$?
+A simple summation reveals that
+\begin{equation}
+   \ell_b(p_{xy}) = \ell(p_{xy}) - \left[ b(x) - b(y) \right].
+   \label{eqn:ibid:potential-path-lengths}
+\end{equation}
+That is, the difference between the initial and transformed lengths
+of the path from $x$ to $y$ is independent of the path itself
+(its consituent vertices and edges),
+and only a function of the endpoint vertices.
+In particular,
+this implies that a shortest path from $x$ to $y$ w.r.t. $w_b$
+remains a shortest path w.r.t. $w$.
+Therefore, any admissible shortest path algorithm can be used to
+solve w.r.t. $w_b$.
+Note that the transformation does not change the length of any
+cycles in $G$.
+Note also that as a consequence of
+(\ref{eqn:ibid:potential-path-lengths}),
+the original and transformed start distance functions are related by
+\begin{equation}
+   d^*_b(v) = d^*(v) - \left[ b(s) - b(v) \right].
+\end{equation}
+
+\paragraph{Benefit of Potential Adjustment.}
+If the ordering of solution paths does not change under the
+potential function transformation,
+what benefit would be obtained by conducting the search
+on the transformed weight function?
+Indeed,
+computing the full distance function $d_s$ over $w_b$,
+e.g. by edge relaxation,
+appears just as expensive.
+
+The key insight is that under an appropriately chosen potential function,
+many shortest path algorithms are able to terminate more quickly.
+To see why,
+consider the potential function $b$ coinciding with the goal heuristic
+function $h_g$ used in A*.
+By (\ref{eqn:ibid:potential-transformation}),
+the weight $w_b$ of a directed edge $e_{uv}$ which makes
+progress towards the goal (so that $b(v) < b(u)$)
+will have its transformed weight be reduced,
+whereas an edge in the incorrect direction will have its transformed
+weight increase.
+The transformed quantity $w_b$
+from (\ref{eqn:ibid:potential-transformation})
+can be considered the \emph{excess weight} of each edge,
+relative to the expected weight given the progress measured by the
+heuristic function
+(this quantity has also been called the ``waste'' of the edge
+\citep{pohl1969bidirectional}).
+A pathfinding algorithm therefore searches only in the excess weight
+space,
+and is therefore biased to explore paths which make progress towards
+the goal vertex.
+In effect,
+while the transformation does not affect the relative ordering of
+paths,
+it does shift the weight between edges on paths to accentuate poor
+choices to allow for early termination.
+
+\paragraph{Requirements on the Potential Function.}
+The argument that ordering of paths (and therefore shortest path(s))
+is invariant to the transformation is true for any arbitrary
+potential function.
+However,
+in order to be useful,
+we must be able to solve the transformed problem efficiently
+(i.e. with early termination).
+As we saw for edge relaxation in Section~\ref{subsec:ibid-tension},
+our soundness result from Theorem~\ref{thm:ibid-relaxation-reconstruct}
+requires that the edge weight function be nonnegative.
+This induces the requirement that
+the vertex potential $b$ to be \emph{consistent}
+(also known as \emph{dual feasible}), i.e.
+\begin{equation}
+   b(u) + w(e_{uv}) \geq b(v) \quad\forall e_{uv} \in E.
+   \label{eqn:ibid:potential-consistent}
+\end{equation}
+If (\ref{eqn:ibid:potential-consistent}) holds,
+then the efficient ordering and early termination
+for edge relaxation (i.e. Dijkstra's algorithm)
+can be applied to the transformed problem $w_b$,
+and the returned path is also a shortest path w.r.t. $w$. 
+
+\paragraph{Potential Functions for Bidirectional Search.}
+Treating heuristic search as such a potential function transformation
+allows Ikeda et. al. \citep{ikeda1994betterroutes} to apply
+the same idea to bidirectional search.
+In particular,
+if one commits to a single potential function $b$,
+then the conventional bidirectional algorithm
+(Section~\ref{sec:ibid:bidirectional})
+can be applied directly.
+The question is,
+what potential function should we use?
+
+A bidirectional search customarily has available
+two heuristic functions,
+one $h_t(v)$ that approximates the length of paths
+from $v$ to the destination vertex $t$,
+and one $h_s(v)$ that approximates the length of paths
+from the start vertex to $v$.
+The most commonly used potential function
+\citep{ikeda1994betterroutes, goldberg2005spexternalmemory}
+is simply the average of the two:
+\begin{equation}
+   b(v) = \frac{h_t(v) - h_s(v)}{2}.
+\end{equation}
+Note that the start heuristic value is negated;
+when the start heuristic is used during the reverse search,
+it is applied to predecessor vertices.
+Figure~\ref{fig:ibid:example-heurbidijkstra} shows this averaged
+potential function for the example road network problem.
+This algorithm is listed as ``W-BiDijk''
+(weighted bidirectional Dijkstra's)
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \begin{marginfigure}%
    \centering%
@@ -1390,49 +1604,85 @@ heuristics generally take one of three approaches.
       515,588 expansions.}%
    \label{fig:ibid:example-heurbidijkstra}%
 \end{marginfigure}
-See Figure~\ref{fig:ibid:example-heurbidijkstra}.
 
-First,
-front-to-front methods
-could evaluate the heuristic between all pairs in the two
-{\sc Open} sets.
-Expensive.
-
-Second,
-perform two heuristic-informed searches,
-and account for the connection problem via a complex
-termination condition.
-Not necessarily efficient.
-(Pohl cites Berge?)
-Missile analogy.
-
-Third,
-waste (same heuristic function).
-
-Concept of waste \citep{pohl1969bidirectional}.
-I think this subsumes A*.
-
-Talk about the 94 paper \citep{ikeda1994betterroutes}
-expressing A* as a search on
-the waste graph.
-
-As a potential function.
-Also Goldberg \citep{goldberg2005spexternalmemory}.
-
-To integrate: \citep{dechter1984bfsastaropt}.
+\cdnote{To integrate: \citep{dechter1984bfsastaropt}.}
 
 \subsection{Heuristic Methods in Incremental Search.}
 \label{subsec:ibid:heuristic-incremental}
 
-Lifelong Planning A* \citep{koenig2004lpastar}.
+Efforts to integrate heuristics into incremental search algorithms
+have taken a similar potential function approach.
+Koenig et. al. developed Lifelong Planning A* \citep{koenig2004lpastar},
+which implicitly applies this transformation
+and then applies the DynamicSWSF-FP incremental algorithm
+\citep{ramalingam1996dynamicswsffp}
+from Section~\ref{sec:ibid:incremental}
+to solve the dynamic problem.
+However,
+the underlying incremental algorithm has a stricter requirements:
+while Dijkstra's algorithm requires $w \geq 0$,
+Theorem~\ref{thm:ibid-dynamicswsffp-sound} governing
+the incremental algorithm requires $w > 0$.
+As a result,
+even in the case where the potential function is consistent
+via (\ref{eqn:ibid:potential-consistent}),
+the transformed weight function $w_b$ will not generally satisfy
+$w_b > 0$.
+This occurs along all edges for which the weight is identical to
+the potential function difference
+-- exactly the expected scenario when the potential function is
+accurate.
 
-Apply waste to incremental search to get
-incremental heuristic search.
+\paragraph{Avoiding the Zero Weight with Sorted Tuples.}
+LPA* solves the zero weight problem by conducting the incremental
+search over a different set --
+instead of the reals $w : E \rightarrow \mathbb{R}^{> 0}$,
+each transformed edge weight is instead a member of a product space
+\begin{equation}
+   w_b \;:\; E \;\rightarrow\; \mathbb{R}^{\geq 0} \!\times\! \mathbb{R}^{> 0}.
+\end{equation}
+with the transformation defined as
+\begin{equation}
+   w_b(e_{uv}) = \big[ w(e_{uv}) - [b(u) - b(v)]; \; w(e_{uv}) \big].
+   \label{eqn:ibid:incremental-potential-key}
+\end{equation}
+Note that the first element of the tuple concides with the
+non-incremental potential function transformation from
+(\ref{eqn:ibid:potential-transformation}).
+Elements of the product space are sorted lexographically;
+that is, their comparison only considers the first component,
+with the exception that when the first component is equal,
+the second component is then considered.
+Summing two elements is performed component-wise.
+\marginnote{Note that in order to maintaion $w_b > 0$,
+the second element need only be positive,
+and could even be constant (e.g. unity).
+We keep the value $w(e_{uv})$ for consistency with LPA*.}
+Note that since the we already assert that $w > 0$ for incremental
+domains,
+the second component of $w_b$ is everywhere positive,
+and therefore $w_b > (0,0)$.
 
-\paragraph{The Zero-Weight Problem.}
-Talk about how a perfect potential leads to zero waste,
-which breaks incremental search.
-This motivates the lexocraphically sorted key approach.
+\paragraph{Equivalence to Lifelong Planning A*}
+Combining (\ref{eqn:ibid:incremental-potential-key})
+with the incremental key (\ref{eqn:ibid:incremental-key})
+yields the following:
+%\begin{equation}
+%   k_b(v) = \min\left[ d_b(v), r_b(v) \right]
+%\end{equation}
+
+
+\begin{subequations}%
+   \begin{align}
+      k_b(v) = & \min\left( d_b(v), r_b(v) \right) \\
+         = & \min\left( \left[ d(v) - [ b(s) - b(v) ]; d(v) \right],
+            r_b(v) \right)
+   \end{align}%
+\end{subequations}%
+
+
+This algorithm is listed as ``LPA*''
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 \subsection{Heuristic IBiD}
 
@@ -1625,6 +1875,7 @@ Gotta talk about this stuff!
       replanning,
       and (b) the initial episode is identical between each
       incremental planner and its corresponding complete cousin.}
+   \label{fig:ibid:road-ne-stats}
 \end{figure}
 
 \begin{figure}
