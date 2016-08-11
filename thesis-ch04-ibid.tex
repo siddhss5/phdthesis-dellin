@@ -996,6 +996,15 @@ the inapplicability of the global invariant
 (\ref{eqn:ibid-relaxation-props-nounder}) between episodes
 has implications on the class of weight functions that can be solved
 by the incremental approach.
+\marginnote{Indeed,
+later in Theorem~\ref{thm:ibid-dynamicswsffp-sound} we will
+restrict $w$ further so that $w>0$
+to garner the benefits of approximation soundness and early
+termination.
+However, we conjecture that the incremental algorithm is
+correct even without $w>0$
+(as long as no non-positive cycles exist)
+as long as the algorithm is not terminated early.}
 In particular,
 when applied to weight functions with cycles of zero length
 (for which $d^*$ is well-defined),
@@ -1004,10 +1013,6 @@ which satisfies (\ref{eqn:ibid-inc-props-consistent})
 matches $d^*$.
 We therefore restrict the class of weight functions considered
 to those with only positive length cycles.
-
-\cdnote{TODO: show that the algorithm terminates as long as there
-are no cycles with non-positive length.
-Lyaponov function argument?}
 
 \paragraph{Approximation Soundness.}
 In Section~\ref{subsec:ibid-tension},
@@ -1063,13 +1068,29 @@ as exploited by the Lifelong Planning A* algorithm
 
 \subsection{Algorithm Design}
 
-\cdnote{I still need to write this part!
-Talk about queues!}
+In the same way that the edge relaxation decomposition
+(\ref{eqn:ibid-relaxation-props}) allowed way to progressively
+update an estimate $d$ via a priority queue,
+the decomposition (\ref{eqn:ibid-inc-props}) affords the same
+opportunity.
+The DynamicSWSF-FP algorithm \citep{ramalingam1996dynamicswsffp}
+maintains a queue $Q$ of inconsistent vertices,
+and processes them in the order given by the priority key
+(\ref{eqn:ibid:incremental-key})
+used in the soundness result
+in Theorem~\ref{thm:ibid-dynamicswsffp-sound}.
 
+One key aspect of the algorithm is the way underconsistent vertices
+are handled.
+Upon encountering an underconsistent vertex ($d(v) < r(v)$),
+the algorithm applies $d(v) \leftarrow \infty$
+(if the vertex remains inconsistent, it would be rendered
+consistent in a future iteration if necessary).
+This ensures that each vertex is processed at most twice during
+each planning episode.
 This algorithm is listed as ``DynSWSF''
 (Dynamic SWSF-FP)
 in the results of Figure~\ref{fig:ibid:road-ne-stats}.
-
 
 % I don't need this anymore, subsumed in soundness result!
 %\paragraph{Approximation Completeness.}
@@ -1382,18 +1403,6 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
             \State $\mbox{\sc NotifyWeightChanges}(E_{\ms{delta}})$
          \EndLoop
       \EndProcedure
-      \Function {TerminationCondition} {\,}
-         \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
-            \Comment return False if $Q_c$ empty
-         \If {$Q_s.\mbox{TopKey} + Q_t.\mbox{TopKey} < d_s(u_c) + w(u_c,v_c) + d_t(v_c)$}
-            \State \Return False
-         \EndIf
-         \If {$Q_s.\mbox{TopKey} < d_s(u_c)$
-               \mbox{\bf or} $Q_t.\mbox{TopKey} < d_t(v_c)$}
-            \State \Return False
-         \EndIf
-         \State \Return True
-      \EndFunction
       \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
          \ForAll {$(u,v) \in E_{\ms{delta}}$}
             \State $\mbox{\sc UpdateStargDistance}(v)$
@@ -1405,6 +1414,30 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
    \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}
+   \caption{IBiD Termination Condition}
+   \label{alg:ibid}
+   \begin{algorithmic}[1]
+      \Function {TerminationCondition} {\,}
+         \If {$Q_s.\mbox{IsEmpty}$ {\bf and} $d_s(t) = \infty$}
+            \State \Return True
+         \EndIf
+         \If {$Q_t.\mbox{IsEmpty}$ {\bf and} $d_t(s) = \infty$}
+            \State \Return True
+         \EndIf
+         \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
+            \Comment return False if $Q_c$ empty
+         \If {$Q_s.\mbox{TopKey} + Q_t.\mbox{TopKey} < d_s(u_c) + w(u_c,v_c) + d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \If {$Q_s.\mbox{TopKey} < d_s(u_c)$
+               \mbox{\bf or} $Q_t.\mbox{TopKey} < d_t(v_c)$}
+            \State \Return False
+         \EndIf
+         \State \Return True
+      \EndFunction
+   \end{algorithmic}
+\end{algorithm}
 
 \section{Heuristic Search}
 \label{sec:ibid:heuristic}
@@ -1458,7 +1491,7 @@ This approach suffers from the problem that the two sets of
 before the search can be terminated,
 and therefore the benefit of the bidirectional search
 is not fully realized.
-\cdnote{Pohl cites Berge? Missile analogy.}
+%\cdnote{Pohl cites Berge? Missile analogy.}
 
 Second,
 ``front-to-front'' methods exploit a consistent pairwise
@@ -1691,7 +1724,7 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
    \label{fig:ibid:example-heurbidijkstra}%
 \end{marginfigure}
 
-\cdnote{To integrate: \citep{dechter1984bfsastaropt}.}
+% \cdnote{To integrate: \citep{dechter1984bfsastaropt}.}
 
 \subsection{Heuristic Methods in Incremental Search.}
 \label{subsec:ibid:heuristic-incremental}
