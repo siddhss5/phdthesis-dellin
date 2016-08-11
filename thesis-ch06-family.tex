@@ -117,7 +117,8 @@ later in this chapter.
 The configuration of a quasistatic manipulation environment
 with multiple moveable objects can be represented as a
 \emph{composite configuration space},
-\marginnote{Also called the \emph{joint configuration space}.}
+\marginnote{The composite configuration space is also called
+the \emph{joint configuration space}.}
 consisting of the Cartesian product of the individual configuration
 spaces of the constituent objects.
 For example,
@@ -161,7 +162,8 @@ we ignore constraints on feasible object placements.
       \node at (0,0) {\includegraphics{build/family-composite/plot-volumes}};
       \node at (5,0) {\includegraphics{build/family-composite/plot-volumes-individual}};
    \end{tikzpicture}
-   \caption{Volumes.}
+   \caption{Illustration of a composite configuration space
+      for a manipulation task.}
    \label{fig:family:composite-volumes}
 \end{figure}
 
@@ -217,19 +219,43 @@ we refer the reader to \citep{simeon2004manipulation}.
       \node at (5.5,0) {\includegraphics{build/family-composite/plot-g-manifold}};
       \node at (11,0) {\includegraphics{build/family-composite/plot-pbottom-manifold}};
    \end{tikzpicture}
-   \caption{The trajectory projections.}
+   \caption{Illustration of a transit and transfer constraint manifolds
+      in the composite configuration space for a manipulation task,
+      along with projections of each
+      onto the robot's configuration space.}
    \label{fig:family:composite-manifolds}
 \end{figure*}
 
-\paragraph{Visualizing Manifolds.}
-We visualize examples of these manifolds as red surfaces
-in Figure~\ref{fig:family:composite-manifolds}.
-Below each depiction of the manifold lines a visualization of the
-projection of the each composite obstacle in $\mathcal{C}_{RO}$
+\paragraph{Transit and Transfer Manifolds in $\mathcal{C}_{RO}$.}
+To address a manipulation task, then,
+the robot must move through this composite configuration space
+$\mathcal{C}_{RO}$
+while abiding by the underlying transit and transfer constraint
+manifolds.
+Consider the visualization
+in Figure~\ref{fig:family:composite-manifolds},
+with manifolds shown as red surfaces.
+In the first step,
+the robot must transit from its current configuration at left
+to a grasp configuration at right,
+while constained to the transit manifold shown in red.
+Next,
+the second step is constrained to a transfer manifold
+in which both the robot and the object move together
+to an placement location.
+Finally, the third step shows an addition transit away from
+the placement location to a desired destination configuration.
+
+\paragraph{Projecting Manifolds onto $\mathcal{C}_{R}$.}
+Since the full composite configuration while constrained to a manifold
+can be expressed as a function of the robot configuration $q_R$ only,
+it is sufficient to consider eac subproblem as the projection of
+the composite obstacles in $\mathcal{C}_{RO}$
 onto the robot's configuration space $\mathcal{C}_{R}$.
-On each manifold,
-we also show a solution path that lies on the manifold,
-as well as its projection.
+Below each depiction of the manifolds
+in Figure~\ref{fig:family:composite-manifolds}
+lies a visualization of this projection,
+along with the projected solution path.
 
 The first and third subfigures correspond to transit subproblems,
 in which motion through the composite space is constrained so that
@@ -238,35 +264,37 @@ The second subfigure corresponds to a transfer subproblem,
 in which the motion of the object directly follows from the
 motion of the robot.
 
+\subsection{Planning over a Family of Related Subsets}
 
+The depictions of the three projections
+in Figure~\ref{fig:family:composite-manifolds}
+lends a concrete picture to the description of changing free subsets
+depicted in Figure~\ref{fig:family:herbbin-multistep-example}.
+Clearly,
+when the composite configuration space $\mathcal{C}_{RO}$
+is projected onto $\mathcal{C}_{R}$,
+each of the three motion planning problems required by the task
+induces a different free subset
+$\mathcal{C}_{\ms{free}} \subset \mathcal{C}_{R}$.
 
-\subsection{Example Problems}
+Importantly however,
+the free subsets are related.
+In the visualized example,
+the projection of the green composite obstacle is identical
+across the three free subsets.
 
-Manipulation problems.
-Workcell example.
-HERB exaple.
-
-\subsection{Multiple Sets in a Family}
-
-Project everything down into the robot's configuration space.
-
-There will be more examples later in this chapter.
-
-\subsection{Hints at a Solution}
-
-For example,
-consider the case where the robot has already evaluated a number
-of roadmap edges in order to find a valid path to grasp the red mug.
+How can we take advantage of this?
+Consider a roadmap method addressing the table clearing problem
+in Figure~\ref{fig:family:herbbin-multistep-example}.
+Suppose that a number of edges have already been evaluated in order
+to find a valid path for the first step to grasp the red mug.
 Once grasped, the active valid subset $\mathcal{C}_{\ms{free}}$
-has changed.
+within which the second step must be planned has changed.
 However,
 any edge known to be valid for the previous step
 can be validated in the new subset by simply checking the grasped
-mug against the environment.
-
-For more details, see Section~\ref{sec:family:approach} below.
-
-See the forklift mega example problem
+mug against the robot environment.
+A similar example in a 2D world is presented
 in Figure~\ref{fig:family:example}.
 
 \begin{figure*}
@@ -359,46 +387,52 @@ in Figure~\ref{fig:family:example}.
    
    \vspace{0.1in}
    \smallskip\noindent\small Figure \ref{fig:family:example}:
-   An illustration of a family planning
+   An illustration of a family motion planning
    problem in a common configuration space $\mathcal{C}$.
    The problem definition generalizes to an artibrary number of
    configuration space subsets and set relations between them.
    When two queries in different subests are solved sequentially,
-   a family planner can reuse path segments less expensively.
+   a family motion planner can reuse path segments less expensively.
    See Section~\ref{sec:family:in-manipulation} for examples in
    manipulation.
 
 \end{figure*}
 
-Now that we see why it's useful to consider this decomposition,
-let's formally define the problem.
-This serves as a motivating example.
-But the family motion planning problem is more general than this.
+This example from a simple manipulation task motivates
+the formalization of the family motion planning problem
+in Section~\ref{sec:family:formulation},
+which is more generally applicable than manipulation tasks
+in particular.
+We then develop our intuition from the simple examples in this section
+when describing our approach in greater detail
+in Section~\ref{sec:family:approach}.
 
 \section{The Family Motion Planning Problem}
 \label{sec:family:formulation}
 
-The family planning problem is
+The family motion planning problem is
 a generalization of both the movers' problem
-and the multi-query planning problem%
-\cite{kavrakietal1996prm}.
-The reader is referred to
-Fig.~\ref{fig:family:example}
-for a general example,
-as well as a simple instantiation on a 2D manipulation task.
+(Section~\ref{chap:roadmaps})
+and the \emph{multi-query} planning problem
+\citep{kavrakietal1996prm}.
+%The reader is referred to
+%Figure~\ref{fig:family:example}
+%for a general example,
+%as well as a simple instantiation on a 2D manipulation task.
 %which is discussed in more detail in
 %Section~\ref{subsec:multi-prm-example}.
-The family problem formulation
-explicitly captures both planning and execution effort
-and can therefore be used as an ensemble effort model
-for use in the E$^8$-PRM planner across queries.
-
-The family planning problem is multi-query in
-a fixed configuration space $\mathcal{C}$.
-However, unlike related problems in which all
+%The family problem formulation
+%explicitly captures both planning and execution effort
+%and can therefore be used as an ensemble effort model
+%for use in the E$^8$-PRM planner across queries.
+The problem is multi-query in
+a fixed configuration space $\mathcal{C}$,
+in that it accommodates multiple distinct motion planning queries
+(e.g. between $q_{\ms{start}},q_{\ms{dest}} \in \mathcal{C}$).
+However, unlike existing multi-query formulations in which all
 queries demand solution paths contained within a single common subset of
 $\mathcal{C}$
-(usually the set of collision-free configurations, denoted
+(i.e. the set of collision-free configurations, denoted
 $\mathcal{C}_{\mbox{\scriptsize free}}$),
 the family problem allows for the specification of
 a \emph{family} of multiple such subsets
@@ -410,7 +444,7 @@ is a subset of the common configuration space
 $S \subseteq \mathcal{C} \;\forall\; S \in \mathcal{F}$),
 and each subset $S$ has its own indicator and planning estimator
 ${\bf 1}_S[\cdot]$ and $\hat{p}_S(\cdot)$
-as in Section~??.
+as in Section~\ref{subsec:roadmaps:building-graphs}.
 For example,
 in Fig.~\ref{fig:family:example}\subref{subfig:family:figstar-manip-spaces},
 $\mathcal{C}$-subset $B$
@@ -433,7 +467,7 @@ $\mathcal{C}$-subset $U \in \mathcal{F}$
       \includegraphics{build/query-to-subset-a}
    }
    \vspace{-0.05in}
-   \subfloat[Family planning]{
+   \subfloat[Family motion planning]{
       \includegraphics{build/query-to-subset-b}
    }
    \vspace{0.1in}
@@ -488,7 +522,7 @@ Together, these four elements
 subsets $\mathcal{F}$ each with endowed indicators,
 a set of queries $\mathcal{U}$,
 and a list of subset relations $\mathcal{R}$)
-comprise a family planning problem.
+comprise a family motion planning problem.
 
 \subsection{Revisting the Example (as a Family Motion Planning Problem)}
 
@@ -790,7 +824,7 @@ A large body of prior work has focused on methods to
 improve planning efficiency on manipulation problems.
 We show that many of these approaches are
 in fact special instances of a more general structure,
-which we formulate as the \emph{family planning problem}.
+which we formulate as the \emph{family motion planning problem}.
 
 \subsection{Show some examples of the behavior?}
 
@@ -811,7 +845,7 @@ introduced the concept of a pre-cached roadmap consisting of
 configurations and paths already known to be valid w.r.t.
 self-collision.
 As a type of invariant in $\mathcal{C}$,
-this can be seen as a particular instance of family planning.
+this can be seen as a particular instance of family motion planning.
 See Fig.~\ref{fig:family:self-collision-example}.
 
 \begin{figure*}
@@ -821,9 +855,9 @@ See Fig.~\ref{fig:family:self-collision-example}.
       all using baked calls.
       Traces are LEMUR
       (\protect\tikz{\protect\draw[thick,black] (0,0) -- (0.15,0.15);}),
-      the family planner (no caching)
+      the family motion planner (no caching)
       (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
-      or the family planner with self-checked caching
+      or the family motion planner with self-checked caching
       (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).}
 \end{figure*}
 
@@ -1270,7 +1304,7 @@ as described in Section~\ref{subsec:family:broad-phase}.
    }%
    \quad%
    \subfloat[
-      A family planner can explicitly reason about the
+      A family motion planner can explicitly reason about the
       conservative nature of the broad-phase check.
       This allows it to defer some narrow phase checks
       (often indefinitely)
@@ -1425,7 +1459,7 @@ see Fig.~\ref{fig:family:dynamic-environments}).
 By explicitly labeling such areas in workspace
 (and leveraging the \emph{set containment} property
 \citep{newmanbranicky1991cspacetransforms}),
-we can represent this structure as a family planning problem.
+we can represent this structure as a family motion planning problem.
 
 \section{Other Stuff}
 
