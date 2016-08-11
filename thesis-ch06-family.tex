@@ -28,6 +28,7 @@ and given as input to the LEMUR motion planner described
 in Chapter~\ref{chap:utility}.
 
 This chapter proceeds as follows.
+Section~\ref{sec:family:related-work} surveys related work.
 In Section~\ref{sec:family:families-in-manipulation},
 we motivate these the family motion planning problem
 from the standpoint of manipulation tasks.
@@ -38,15 +39,147 @@ and Section~\ref{sec:family:as-utility} details how the family
 problem can be represented as a utility function.
 The remainder of the chapter examines several applications
 of this decomposition,
-such as caching invariant geometry
+such as multi-step geometry
+(Section~\ref{subsec:family:app-multi-step})
+and caching invariant geometry
 (Section~\ref{subsec:family:cached-self-valid}),
-multi-step geometry (Section~\ref{subsec:family:app-multi-step}),
 conservative geometric approximations
 (Section~\ref{subsec:family:broad-phase}),
 and dynamic environments
 (Section~\ref{subsec:family:dynamic-environments}).
 
-\section{Families in Manipulation Tasks}
+\section{Related Work}
+\label{sec:family:related-work}
+
+The topic of reusing planning computation
+between similar motion planning problems
+has been extensively studied in the literature.
+We include here a broad survey of existing approaches;
+the application sections
+(Section~\ref{subsec:family:app-multi-step}
+-- \ref{subsec:family:dynamic-environments}) also include
+relevant references to prior work.
+
+\paragraph{Exact Algorithms.}
+Exact planning methods construct explicit obstacles
+directly in the configuration space.
+Many such approaches allow for precomputation of primitives,
+such as bitmaps \citep{kavraki1995cspacefft}
+or C-space primitives for different workspace obstacles
+\citep{newmanbranicky1991cspacetransforms}.
+More recently,
+Lien and Lu \citep{lien2009similarobstacles} describe a method to
+build a PRM around obstacles in a database,
+and then reposes them in a new world.
+As described in Section~\ref{subsec:roadmaps:sensitive},
+the exact approach is not easily applicable to articulated robots
+with complex mappings from workspace to C-space.
+
+\paragraph{Accommodating Dynamic Subsets in Sampling-Based Planning.}
+Strong recent interest in sampling-based planning
+has lead to the development of a number of approaches to handle
+environments in which $\mathcal{C}_{\ms{free}}$ changes over time.
+If a given discretization is asserted a priori,
+this problem setting is similar to the dynamic shortest path problem
+from Chapter~\ref{chap:ibid};
+we refer the reader to that chapter for a review of related work.
+Many sampling-based approaches attempt to prune and grow
+the discretizations itself in response to these changes,
+such as the Dynamic RRT \citep{ferguson2006drrt},
+the Reconfigurable Random Forest (RRF)
+\citep{li2002incrementalprmmanagement},
+and the Lazy Reconfiguration Forest
+\citep{gayle2007lazyreconfigforest}.
+%We do the lazy thing as well (built into our planner).
+%None of these reason about the structure of the configuration space.
+However, these approaches do not reason explicitly about the
+structure of the configuration space,
+which we will consider
+in Section~\ref{sec:family:families-in-manipulation}.
+
+\paragraph{Considering Static and Dynamic Obstacles Separately.}
+Some approaches do take advantage of such structure
+through a two-level dichotomy between
+the \emph{permanent} and \emph{non-permanent} configuration space
+obstacles that induce $\mathcal{C}_{free}$.
+Leven and Hutchinson \citep{leven2000changing}
+and similar work \citep{kallman2004dynamicroadmaps}
+handle changing environments by
+precomputing a self-collision-free roadmap offline,
+and then pruning it at query time
+using a mapping from workspace cells to roadmap edges.
+%This can also be viewed through the multi-space lens
+%-- I think this is just an instantiation of a bunch of sets.
+%They're very focused on the precomputation stuff.
+%However, this approach this can't directly handle grasped objects.
+Other methods \citep{jaillet2004dynamicprm}
+exploit the dichotomy between static and dynamic parts of
+the world online.
+
+\paragraph{Task and Motion Planning.}
+The structure in manipulation tasks that our approach leverages
+is similar to the \emph{conditional reachability graph} which is
+part of the recent \textsc{FFRob} heuristic task planning framework
+\citep{garrett2014ffrob}.
+While this framework does make use of a similar configuration
+space decomposition for manipulation tasks
+as described in Section~\ref{sec:family:families-in-manipulation},
+it differs from our approach in two ways.
+First,
+it is concerned only with manipulation tasks,
+and does not consider how the induced set of motion planning problems
+can be formulated more generally
+(e.g. in Section~\ref{sec:family:formulation}).
+Second,
+because the framework does not consider utility,
+its motion planner is not able to exploit the configuration space
+structure to the same extent as our approach.
+
+%\subsection{Fast Collision Checking}
+%
+%Broad-phase collision checking.
+%See Section~\ref{subsec:broad-phase} for more on this.
+%I need cites!
+
+%\subsection{Sampling Strategies}
+%
+%Also Kurniawati and Hsu's
+%\emph{Workspace-based Connectivity Oracle}
+%\citep{kurniawati2008workconnoracle}
+%which is a smart sampling strategy which considers workspace
+%geometry to inform PRM sampling.
+%Kurniawati has a bunch of other work on PRM fundamentals and sampling.
+%I think our approach is complementary to a PRM sampling strategy.
+%Or, you could do deterministic sampling
+%\citep{lavalle2002gridprms} \citep{geraerts2002prmcomparison}.
+%
+%\subsection{Multi-Resolution Planning}
+%
+%\noindent
+%\begin{itemize}
+%\item S. Kambhampati 1986
+%\item R. Steffens 2010
+%\item S. Zickler 2010
+%\item K. Gochev 2013
+%\end{itemize}
+
+%\subsection{Graph Search}
+
+%Many graph-search approaches are relevant to planning in similar
+%environments.
+%Algorithms such as
+%D* \citep{stentz1994dstar}
+%or LPA* \citep{koenig2004lpastar}
+%handle dynamically changing (or incrementally discovered) worlds.
+%Experience graphs \citep{phillips2012egraphs} are a method to apply
+%computation from previous graph-search planning queries
+%to the current problem.
+
+%\subsection{Other Related Work to Integrate}
+%
+%Symbolic planning frameworks.
+
+\section{Motivation: Families in Manipulation Tasks}
 \label{sec:family:families-in-manipulation}
 
 Motion planning approaches that build graphs
@@ -524,8 +657,7 @@ a set of queries $\mathcal{U}$,
 and a list of subset relations $\mathcal{R}$)
 comprise a family motion planning problem.
 
-\subsection{Revisting the Example (as a Family Motion Planning Problem)}
-
+\paragraph{Revisting the Example (as a Family Motion Planning Problem).}
 Consider the diagram from Fig.~\ref{fig:family:example}.
 $\mathcal{F}$ consists of five $\mathcal{C}$-subsets labeled
 $A$, $B$, $C$, $S_{12}$, and $S_{23}$,
@@ -558,58 +690,31 @@ instead of cost 6 for a new configuration.
 Thus, we might hope that a planner may be biased towards reusing
 said path segments in this case.
 
-\subsection{Related Work}
+\paragraph{Applications of the Family Motion Planning Problem.}
+So far,
+we have motivated the family motion planning problem
+for the application of manipulation planning tasks.
+However,
+the same structure is present in a number of other applications,
+including cached invariant geometry
+and conservative geometric approximations.
+We review these applications
+in Sections~\ref{subsec:family:app-multi-step}
+-- \ref{subsec:family:dynamic-environments}.
 
-Similarities to other problems.
-
-It's a generalization.
-
-Applicability of existing approaches.
-
-Approaches which adapt a graph or tree structure
-\citep{ferguson2006drrt, gayle2007lazyreconfigforest}
-do not reason about this structure directly.
-
-\cdnote{Is this the right place for this?}
-
-\subsection{Review of Family Motion Planning Problems in Manipulation Tasks}
-
-This briefly discusses how various types of problems can be viewed
-as instances of the family motion planning problem.
-Describe structure only, and forward reference to the applications
-sections below.
-
-Instances of family problems are especially prevalent when
-planning for manipulation tasks with articulated robots.
-This section details several such instances.
-While these instances are discussed separately here,
-they are often present simultaneously.
-See Section~\ref{subsec:family:herb-experiment}
-for experimental results for a problem
-which includes several of the family problem instances
-described below.
-
-For multi-step plans, show the HERB bin example,
-and the first few steps of the workcell example.
-
-\subsection{Implementation Details}
-
-We also provide an implementation for the
-OpenRAVE \citep{diankov2010openrave}
-virtual kinematic planning environment
-which automatically discovers $\mathcal{C}$-subsets
-in manipulation tasks.
-
-\section{Approach: Reasoning over Family Beliefs}
+\section{Approach: A Utility Model over Family Beliefs}
 \label{sec:family:approach}
 
 LEMUR relies on a domain-specific ensemble cost model
 $\mathcal{M}$ to provide it with planning and execution cost
 estimates for prospective edges.
-This allows it to exploit this domain-specific structure.
+This allows it to exploit domain-specific
+knowledge and structure that may be present.
 
-We capture this structure via an ensemble cost model
-$\mathcal{M}_{\ms{family}}$.
+We capture the structure of the family motion planning problem
+via an ensemble edge cost model $\mathcal{M}_{\ms{family}}$.
+\marginnote{See Section~\ref{subsec:lemur:ensemble-edge-cost-models}
+for a review of what constitutes an ensemble edge cost model.}
 The model maintains
 (a) a family $\mathcal{F}$ of $\mathcal{C}$-subsets
 relevant to the problem,
@@ -828,38 +933,8 @@ which we formulate as the \emph{family motion planning problem}.
 
 \subsection{Show some examples of the behavior?}
 
-\section{Application: Caching Invariant Geometry}
-\label{subsec:family:cached-self-valid}
 
-\paragraph{Cached Self-Collision-Checked Roadmaps}
-Self-collision checking is a potentially expensive component to
-articulated motion planning;
-in contrast to environment checking,
-it is fundamentally quadratic in the number of moving links.
-Further, pairs of links to be checked
-tend to be relatively close to each other,
-reducing the effeciveness of broad-phase approaches.
 
-Leven and Hutchinson \citep{leven2000changing}
-introduced the concept of a pre-cached roadmap consisting of
-configurations and paths already known to be valid w.r.t.
-self-collision.
-As a type of invariant in $\mathcal{C}$,
-this can be seen as a particular instance of family motion planning.
-See Fig.~\ref{fig:family:self-collision-example}.
-
-\begin{figure*}
-   \centering   
-   \includegraphics{build/family-sq-caching/pvxs}
-   \caption[]{LEMUR single-query results on several HERB problems,
-      all using baked calls.
-      Traces are LEMUR
-      (\protect\tikz{\protect\draw[thick,black] (0,0) -- (0.15,0.15);}),
-      the family motion planner (no caching)
-      (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
-      or the family motion planner with self-checked caching
-      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).}
-\end{figure*}
 
 \section{Application: Multi-Step Manipulation Tasks}
 \label{subsec:family:app-multi-step}
@@ -1267,6 +1342,48 @@ FamilyUtilityChecker reports 17 vars (makes sense)
 2**10 =  1024 truth table rows
 \end{verbatim}
 
+
+
+
+
+
+\section{Application: Caching Invariant Geometry}
+\label{subsec:family:cached-self-valid}
+
+\paragraph{Cached Self-Collision-Checked Roadmaps}
+Self-collision checking is a potentially expensive component to
+articulated motion planning;
+in contrast to environment checking,
+it is fundamentally quadratic in the number of moving links.
+Further, pairs of links to be checked
+tend to be relatively close to each other,
+reducing the effeciveness of broad-phase approaches.
+
+Leven and Hutchinson \citep{leven2000changing}
+introduced the concept of a pre-cached roadmap consisting of
+configurations and paths already known to be valid w.r.t.
+self-collision.
+As a type of invariant in $\mathcal{C}$,
+this can be seen as a particular instance of family motion planning.
+See Fig.~\ref{fig:family:self-collision-example}.
+
+\begin{figure*}
+   \centering   
+   \includegraphics{build/family-sq-caching/pvxs}
+   \caption[]{LEMUR single-query results on several HERB problems,
+      all using baked calls.
+      Traces are LEMUR
+      (\protect\tikz{\protect\draw[thick,black] (0,0) -- (0.15,0.15);}),
+      the family motion planner (no caching)
+      (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
+      or the family motion planner with self-checked caching
+      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).}
+\end{figure*}
+
+
+
+
+
 \section{Application: Exploiting Conservative Geometric Approximations}
 \label{subsec:family:broad-phase}
 
@@ -1376,6 +1493,11 @@ as described in Section~\ref{subsec:family:broad-phase}.
    \label{fig:family:broad-phase-2d}
 \end{figure}
 
+
+
+
+
+
 \section{Application: Dynamic Environments}
 
 \paragraph{Dynamic Environments.}
@@ -1460,6 +1582,18 @@ By explicitly labeling such areas in workspace
 (and leveraging the \emph{set containment} property
 \citep{newmanbranicky1991cspacetransforms}),
 we can represent this structure as a family motion planning problem.
+
+
+\section{Implementation Details}
+
+We provide an implementation for the
+OpenRAVE \citep{diankov2010openrave}
+virtual kinematic planning environment
+which automatically discovers $\mathcal{C}$-subsets
+in manipulation tasks.
+
+
+
 
 \section{Other Stuff}
 

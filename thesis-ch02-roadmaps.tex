@@ -285,14 +285,19 @@ The earliest work on the motion planning problem studied exact
 algorithms which worked directly on an explicit representation
 of the obstacles (e.g. polygons) \citep{lozanoperez1983cspace}.
 These approaches can guarantee optimal solutions,
-and don't require edge validation if implemented correctly.
+and may not require explicit edge validation.
 However,
 they are difficult to apply to problems on articulated
 robots for two reasons.
-First, many are only applicable to problems in two or three dimensions.
+First, many are only applicable to problems in two or three dimensions,
+or to robots that can only translate \citep{kavraki1995cspacefft}.
 Second, an explicit representation of obstacles in the
 configuration space is exceedingly difficult due to the
 nonlinearity in the forward kinematics function.
+While some approaches are able to construct explicit
+analytical or approximate configuraion space obstacles from
+workspace geometry (e.g. \citep{newmanbranicky1991cspacetransforms}),
+they are often only applicable to simple kinematics.
 
 \paragraph{Treebuilding Algorithms.}
 Other approaches treat the configuration space implicitly.
