@@ -302,7 +302,7 @@ then even though $d^*$ is well-defined,
 (\ref{eqn:distance-function-char}) admits an infinite number
 of incorrect solutions for $d$.
 
-\paragraph{Reconstructing a Shortest Path from the Distance Function}
+\paragraph{Reconstructing a Shortest Path from the Distance Function.}
 Calculating the start distance function is only useful for solving
 the SPSP problem if it can be used to efficiently determine
 a shortest path.
@@ -1256,21 +1256,6 @@ conditions from Theorem~\ref{thm:ibid-bidir-sound}.
 
 \subsection{Algorithm Design}
 
-\paragraph{Simultaneous Incremental Searches.}
-The IBiD algorithm runs two independent conventional
-DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}
-searches simultaneously,
-one from the start vertex $s$
-and one from the destination vertex $t$,
-with each maintaining a separate priority queue of
-inconsistent vertices $Q_s$ and $Q_t$ respectively
-(Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
-
-As with a convential bidirectional search,
-the two sides can be alternated arbitrarily,
-except that the each queue must be processed once upon initialization
-so that $d_s(s) = 0$ and $d_t(t) = 0$.
-
 {\floatevery{algorithm}{\setlength\hsize{16.85cm}}
 \begin{algorithm}[t]
    \caption{As a bidirectional algorithm,
@@ -1356,6 +1341,21 @@ so that $d_s(s) = 0$ and $d_t(t) = 0$.
 \end{algorithm}
 } % floatevery width adjustment
 
+\paragraph{Simultaneous Incremental Searches.}
+The IBiD algorithm runs two independent conventional
+DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}
+searches simultaneously,
+one from the start vertex $s$
+and one from the destination vertex $t$,
+with each maintaining a separate priority queue of
+inconsistent vertices $Q_s$ and $Q_t$ respectively
+(Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
+
+As with a convential bidirectional search,
+the two sides can be alternated arbitrarily,
+except that the each queue must be processed once upon initialization
+so that $d_s(s) = 0$ and $d_t(t) = 0$.
+
 \paragraph{Remembering Connections.}
 Theorem~\ref{thm:ibid-sound} has ramifications when designing
 an algorithm.
@@ -1370,10 +1370,16 @@ may both increase and decrease between episodes,
 it is no longer sufficient to remember only the best connection
 found so far.
 
-We capture the central idea from Theorem~\ref{thm:ibid-sound}
-in Algorithm~\ref{alg:ibid}.
-This algorithm is listed as ``IBiD''
-in the results of Figure~\ref{fig:ibid:road-ne-stats}.
+Instead,
+we track all potential connection edges in a connection queue $Q_c$.
+Members of this queue are edges on the graph $e_{uv}$
+for which vertex $u$ is $s$-consistent,
+and vertex $v$ is $t$-consistent.
+This queue is sorted bythe key $d_s(u) + w(u,v) + d_t(v)$.
+As an optimization,
+the queue does not include edges for which the key is infinite,
+since that corresponds to a non-existant path.
+The resulting algorithm outline is shown in Algorithm~\ref{alg:ibid}.
 
 \begin{algorithm}[t]
    \caption{IBiD Outline}
@@ -1414,16 +1420,22 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
    \end{algorithmic}
 \end{algorithm}
 
+\paragraph{Termination Condition.}
+The termination condition from Theorem~\ref{thm:ibid-sound}
+is captured in Algorithm~\ref{alg:ibid:ibid-termination}.
+The first conditional handles cases where no finite path exists.
+This algorithm is listed as ``IBiD''
+in the results of Figure~\ref{fig:ibid:road-ne-stats}.
+
 \begin{algorithm}
    \caption{IBiD Termination Condition}
-   \label{alg:ibid}
+   \label{alg:ibid:ibid-termination}
    \begin{algorithmic}[1]
       \Function {TerminationCondition} {\,}
-         \If {$Q_s.\mbox{IsEmpty}$ {\bf and} $d_s(t) = \infty$}
+         \If {$\left[Q_s.\mbox{Empty} \mbox{\bf{ and }} d_s(t)\!=\!\infty\right]$
+            {\bf or} $\left[Q_t.\mbox{Empty} \mbox{\bf{ and }} d_t(s)\!=\!\infty\right]$}
             \State \Return True
-         \EndIf
-         \If {$Q_t.\mbox{IsEmpty}$ {\bf and} $d_t(s) = \infty$}
-            \State \Return True
+               \Comment no solution path
          \EndIf
          \State $(u_c,v_c) \gets Q_c.\mbox{TopKey}$
             \Comment return False if $Q_c$ empty
@@ -1472,7 +1484,7 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
    \label{fig:ibid:example-astar}%
 \end{marginfigure}
 
-\subsection{Heuristic Methods in Bidirectional Search.}
+\subsection{Heuristic Methods in Bidirectional Search}
 \label{subsec:ibid:heuristic-bidirectional}
 
 Attempts to provide a bidirectional algorithm which incorporates
@@ -1726,7 +1738,7 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 % \cdnote{To integrate: \citep{dechter1984bfsastaropt}.}
 
-\subsection{Heuristic Methods in Incremental Search.}
+\subsection{Heuristic Methods in Incremental Search}
 \label{subsec:ibid:heuristic-incremental}
 
 Efforts to integrate heuristics into incremental search algorithms
@@ -1916,7 +1928,7 @@ in Figure~\ref{fig:incbi-lpastar-fig1}.
 This algorithm is listed as ``H-IBiD'' (Heuristic IBiD)
 in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
-\section{Experimental Results.}
+\section{Experimental Results}
 \label{sec:ibid:experiments}
 
 We performed an experimental comparison of the various pathfinding
@@ -2128,7 +2140,7 @@ search (BiDijk).
 However, in both the complete and incremental settings,
 combining both techniques outperforms either one individually.
 
-\paragraph{Benefit of Incremental Search}
+\paragraph{Benefit of Incremental Search.}
 Figure~\ref{fig:ibid:road-ne-stats-rel} shows the same results
 for the replanning episodes of each incremental algorithm
 normalized to its initial episode.
