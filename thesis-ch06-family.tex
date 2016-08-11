@@ -1,17 +1,19 @@
 \chapter{Planning over Configuration Space Families}
 \label{chap:family}
 
-So far, we've been dealing with problems in a configuration space
-with a fixed valid subset $\mathcal{C}_{\ms{free}}$.
+To this point,
+we have considered motion planning problems in which a path is sought
+within a fixed valid subset
+$\mathcal{C}_{\ms{free}} \subset \mathcal{C}$
 In Chapter~\ref{chap:lazysp},
-we described a lazy search algorithm which treats belief over edge
-state in a binary fasion -- evaluated or unevaluated.
-This deals with part of complexity.
-Chapter~\ref{chap:utility} introduced the concept of utility to
+we described a lazy search algorithm which is suited to domains in
+which determining the weight of an edge
+-- perhaps due to expensive set membership tests --
+is expensive.
+Chapter~\ref{chap:utility} discussed the concept of utility to
 motion planning,
 and showed examples of its application to single-query motion
 planning problems.
-This deals with task efficiency, via utility functions.
 
 However,
 many applications exhibit structure beyond simple binary belief over
@@ -20,42 +22,36 @@ In this chapter,
 we introduce the \emph{family motion planning problem},
 a generalization of the motion planning problem to a family of sets
 over $\mathcal{C}$.
-Since LEMUR accepts an arbitrary utility function.
+We then show how such a problem over familes can be represented
+as in the utility function framework,
+and given as input to the LEMUR motion planner described
+in Chapter~\ref{chap:utility}.
 
-Complex, but semi-structured.
-Hint at beliefs over spaces.
-
+This chapter proceeds as follows.
 In Section~\ref{sec:family:families-in-manipulation},
-we motivate these problems in manipulation problems.
+we motivate these the family motion planning problem
+from the standpoint of manipulation tasks.
+Section~\ref{sec:family:formulation} formulates the problem
+generally.
+We describe our approach in Section~\ref{sec:family:approach},
+and Section~\ref{sec:family:as-utility} details how the family
+problem can be represented as a utility function.
+The remainder of the chapter examines several applications
+of this decomposition,
+such as caching invariant geometry
+(Section~\ref{subsec:family:cached-self-valid}),
+multi-step geometry (Section~\ref{subsec:family:app-multi-step}),
+conservative geometric approximations
+(Section~\ref{subsec:family:broad-phase}),
+and dynamic environments
+(Section~\ref{subsec:family:dynamic-environments}).
 
-\section{Families in Manipulation Problems}
-\label{sec:family:in-manipulation}
-
-When addressing multi-step tasks
-such as the table clearing task in
-Figure~\ref{fig:family:herbarmmultithread-master},
-the robot's valid subset $\mathcal{C}_{\ms{free}}$
-changes each time an object is grasped or placed,
-or when people or obstacles move.
-Over the course of a planning episode,
-these changing subsets constitute a family of related sets over
-$\mathcal{C}$.
-
-Here, I discuss motion and manipulation planning problems with
-multiple moveable and graspable objects.
-Discuss the composite configuration space.
-Project everything down onto the robot's configuration space.
-
-Use the workcell problem as an example.
-Show images of each of the sets.
-Forward-link to the experimental section later for full results.
-
-This serves as a motivating example.
-But the family motion planning problem is more general than this.
+\section{Families in Manipulation Tasks}
+\label{sec:family:families-in-manipulation}
 
 Motion planning approaches that build graphs
 in the collision-free subset of
-configuration space,
+configuration space as described in Chapter~\ref{chap:roadmaps},
 e.g. the
 PRM \citep{kavrakietal1996prm}
 and RRT \citep{lavallekuffner1999rrt},
@@ -63,8 +59,10 @@ have proven promising
 for high-dimensional articulated robotics problems
 in unstructured environments.
 These approaches devote a large amount of computational effort
-testing configurations and paths for collision,
-and the resulting graph can then be reused
+testing configurations and paths for collision
+via the free set indicator function
+(Section~\ref{subsec:roadmaps:building-graphs}),
+and multi-query planners can then reuse the resulting graph
 for other queries in the same collision-free subset.
 
 However,
@@ -73,20 +71,89 @@ this subset of the robot's configuration space
 is sensitive to the locations and shapes of
 both people and objects in the environment,
 as well as the robot itself.
-In addition, it depends on the shape and pose of any object
+It also depends on the shape and pose of any object
 grasped by the robot.
+Consider the table clearing task in
+Figure~\ref{fig:family:herbbin-multistep-example}.
+The robot's valid subset $\mathcal{C}_{\ms{free}}$
+changes each time the object is grasped or released.
+Over the course of a planning episode,
+these changing subsets constitute a family of related sets over
+$\mathcal{C}$.
+
+\begin{marginfigure}
+   \centering
+   \includegraphics[width=2.5cm]{figs/herbbin/step0cropped.png}%
+   \includegraphics[width=2.5cm]{figs/herbbin/step01cropped.png}
+
+   \includegraphics[width=2.5cm]{figs/herbbin/step12cropped.png}%
+   \includegraphics[width=2.5cm]{figs/herbbin/step2cropped.png}
+
+   \caption{A simple manipulation task: retreive the mug from
+      the table, and drop it in the blue bin.
+      This task requires plans in three distinct C-space free subsets.}
+   \label{fig:family:herbbin-multistep-example}
+\end{marginfigure}
+
 This makes it difficult not only to apply the results of prior
 planning computation to the current problem,
-but also to efficiently consider planned or hypothesized motions,
+but also to efficiently consider multiple planned or hypothesized
+motions,
 since we must reconstruct our graph from scratch whenever
 the environment changes.
 This is especially the case for
 multi-step manipulation tasks that must be planned into the future.
 %We want to continuously update our representation for detours.
 
-\subsection{Composite Space Projection}
+We use this multi-step manipulation task as a motivating example
+for the family motion planning problem,
+and dive more deeply next into the structure of the problem's
+composite configuration space.
+We will consider problems over other robots and applications
+later in this chapter.
 
-Semi-structured environments between queries.
+\subsection{The Composite Configuration Space}
+
+The configuration of a quasistatic manipulation environment
+with multiple moveable objects can be represented as a
+\emph{composite configuration space},
+\marginnote{Also called the \emph{joint configuration space}.}
+consisting of the Cartesian product of the individual configuration
+spaces of the constituent objects.
+For example,
+consider an environment with a robot $R$ and an object $O$;
+each is endowed with a configuration space:
+\begin{equation}
+   \mathcal{C}_R \quad\mbox{and}\quad \mathcal{C}_O.
+\end{equation}
+For example,
+the robot's configuration space may be represented as its joint angles,
+while the object's configuration may be $SE(3)$.
+The composite space is then defined as
+\begin{equation}
+   \mathcal{C}_{RO} = \mathcal{C}_R \times \mathcal{C}_O.
+\end{equation}
+Of course,
+not all composite configurations will be feasible;
+some may correspond to configurations in which the robot,
+object, or static environment are intersecting each other (colliding),
+while others may denote configurations of the object where it is
+not at a stable placement or grasp configuration.
+
+\paragraph{Visualizating the Composite Configuration Space.}
+While the composite configuration space for any interesting
+manipulation task
+is of too high dimension to effectively visualize in full,
+we can make an approximation shown
+in Figure~\ref{fig:family:composite-volumes}.
+Imagine that this 3D visualization represents a projection of
+$\mathcal{C}_{RO}$
+so that the two horizontal axes $x$ and $y$ correspond to
+the robot's configuration space $\mathcal{C}_{R}$,
+while the vertical axis $z$ corresponds to the object's
+configuration space $\mathcal{C}_{O}$.
+For the sake of this visualization,
+we ignore constraints on feasible object placements.
 
 \begin{figure}
    \centering
@@ -95,7 +162,53 @@ Semi-structured environments between queries.
       \node at (5,0) {\includegraphics{build/family-composite/plot-volumes-individual}};
    \end{tikzpicture}
    \caption{Volumes.}
+   \label{fig:family:composite-volumes}
 \end{figure}
+
+Within the composite configuration space are three volumes
+corresponding to composite configuration space obstacles,
+shown individually at the right
+of Figure~\ref{fig:family:composite-volumes}:
+\begin{itemize}
+\item First, in blue, is a volume which representing configurations
+   in which the moveable object collides with the static environment.
+   Note that the obstacle is invariant to the configuration of the robot.
+\item Second, in green, is a volume in which the robot collides with
+   the static environment.
+   Similarly, note that this obstacle is invariant to the configuration
+   of the object.
+\item Third, colored by height, is a volume representing
+   composite configurations in which the robot and object are colliding.
+\end{itemize}
+The manipulation problem can then be formulated as a motion planning
+in this composite configuration space,
+taking the system from a starting configuration
+(e.g. with the robot in its home configuration, and the mug on the table
+from Figure~\ref{fig:family:herbbin-multistep-example})
+to a destination configuration(s)
+(e.g. with the robot returned home, and the mug in the bin).
+However,
+this composite configuration space
+is also encumbered by constraints which restrict allowable motion
+to constraint manifolds.
+
+\subsection{Transit and Transfer Manifolds}
+The source of these constraint manifolds within the composite
+configuration space is the fact that in prehensile manipulation tasks,
+the moveable object cannot move on its own.
+In fact,
+any solution task alternates between two types of constraints:
+\emph{transit} manifolds,
+in which the robot's configuration changes while that of the object
+remains constant,
+and \emph{transfer} manifolds,
+in which the configuration of the object moves as a function of
+the robot's configuration (i.e. during a grasp).
+(This dichotomy can be extended to multiple robots or
+moveable objects.)
+For an in-depth treatment of the structure of these manifolds
+in manipulation tasks,
+we refer the reader to \citep{simeon2004manipulation}.
 
 \begin{figure*}
    \centering
@@ -105,7 +218,26 @@ Semi-structured environments between queries.
       \node at (11,0) {\includegraphics{build/family-composite/plot-pbottom-manifold}};
    \end{tikzpicture}
    \caption{The trajectory projections.}
+   \label{fig:family:composite-manifolds}
 \end{figure*}
+
+\paragraph{Visualizing Manifolds.}
+We visualize examples of these manifolds as red surfaces
+in Figure~\ref{fig:family:composite-manifolds}.
+Below each depiction of the manifold lines a visualization of the
+projection of the each composite obstacle in $\mathcal{C}_{RO}$
+onto the robot's configuration space $\mathcal{C}_{R}$.
+On each manifold,
+we also show a solution path that lies on the manifold,
+as well as its projection.
+
+The first and third subfigures correspond to transit subproblems,
+in which motion through the composite space is constrained so that
+the moveable object's configuration remains constant.
+The second subfigure corresponds to a transfer subproblem,
+in which the motion of the object directly follows from the
+motion of the robot.
+
 
 
 \subsection{Example Problems}
@@ -115,6 +247,8 @@ Workcell example.
 HERB exaple.
 
 \subsection{Multiple Sets in a Family}
+
+Project everything down into the robot's configuration space.
 
 There will be more examples later in this chapter.
 
@@ -238,6 +372,8 @@ in Figure~\ref{fig:family:example}.
 
 Now that we see why it's useful to consider this decomposition,
 let's formally define the problem.
+This serves as a motivating example.
+But the family motion planning problem is more general than this.
 
 \section{The Family Motion Planning Problem}
 \label{sec:family:formulation}
@@ -620,6 +756,7 @@ If so, this certificate is added to $\mathcal{T}_{\ms{imply}}$,
 and the lowest-effort certificate is returned.
 
 \section{Family Belief as a Utility Model}
+\label{sec:family:as-utility}
 
 We show preliminary results of applying LEMUR to planning over
 such $\mathcal{C}$-space families on the sequential
@@ -658,10 +795,9 @@ which we formulate as the \emph{family planning problem}.
 \subsection{Show some examples of the behavior?}
 
 \section{Application: Caching Invariant Geometry}
-
-\paragraph{Cached Self-Collision-Checked Roadmaps}
 \label{subsec:family:cached-self-valid}
 
+\paragraph{Cached Self-Collision-Checked Roadmaps}
 Self-collision checking is a potentially expensive component to
 articulated motion planning;
 in contrast to environment checking,
@@ -692,8 +828,9 @@ See Fig.~\ref{fig:family:self-collision-example}.
 \end{figure*}
 
 \section{Application: Multi-Step Manipulation Tasks}
+\label{subsec:family:app-multi-step}
 
-\paragraph{Grasped Objects}
+\subsection{Grasped Objects}
 \label{subsec:family:grasped-objects}
 
 One instance specific to manipulation problems is the handling of

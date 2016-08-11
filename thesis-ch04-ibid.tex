@@ -986,6 +986,8 @@ The motivation behind this decomposition is that the former
 while the latter (\ref{eqn:ibid-inc-props-consistent})
 can be established iteratively.
 Prior work adopts the following labeling for each vertex $v$:
+\marginnote{This meaning of consistency for vertices in incremental
+search is distinct from consistency of heuristic or potential functions.}
 if $d(v) = r(v)$, the vertex is \emph{consistent},
 whereas inconsistent vertices are either
 \emph{under-consistent} if $d(v) < r(v)$
@@ -1506,7 +1508,7 @@ is not fully realized.
 %\cdnote{Pohl cites Berge? Missile analogy.}
 
 Second,
-``front-to-front'' methods exploit a consistent pairwise
+``front-to-front'' methods exploit a pairwise
 heuristic function $h(u,v)$ evaluated over every pair of vertices
 on each search's \textsc{Open} list,
 and the vertices representing the shortest potential path are
@@ -1631,7 +1633,7 @@ our soundness result from Theorem~\ref{thm:ibid-relaxation-reconstruct}
 requires that the edge weight function be nonnegative.
 This induces the requirement that
 the vertex potential $b$ to be \emph{consistent}
-(also known as \emph{dual feasible}), i.e.
+(also known as \emph{monotone} or \emph{dual feasible}), i.e.
 \begin{equation}
    b(u) + w(e_{uv}) \geq b(v) \quad\forall e_{uv} \in E.
    \label{eqn:ibid:potential-consistent}
