@@ -1720,8 +1720,8 @@ the potential function difference
 accurate.
 
 \paragraph{Avoiding the Zero Weight with Sorted Tuples.}
-LPA* solves the zero weight problem by conducting the incremental
-search over a different set --
+LPA* solves the zero weight problem by effectively conducting
+the incremental search over a different set of edge weights --
 instead of the reals $w : E \rightarrow \mathbb{R}^{> 0}$,
 each transformed edge weight is instead a member of a product space
 \begin{equation}
@@ -1749,21 +1749,80 @@ domains,
 the second component of $w_b$ is everywhere positive,
 and therefore $w_b > (0,0)$.
 
-%\paragraph{Equivalence to Lifelong Planning A*}
-%Combining (\ref{eqn:ibid:incremental-potential-key})
-%with the incremental key (\ref{eqn:ibid:incremental-key})
-%yields the following:
-%\begin{equation}
-%   k_b(v) = \min\left[ d_b(v), r_b(v) \right]
-%\end{equation}
-%\begin{subequations}%
-%   \begin{align}
-%      k_b(v) = & \min\left( d_b(v), r_b(v) \right) \\
-%         = & \min\left( \left[ d(v) - [ b(s) - b(v) ]; d(v) \right],
-%            r_b(v) \right)
-%   \end{align}%
-%\end{subequations}%
-%\cdnote{I need to add this!}
+\paragraph{Equivalence to Lifelong Planning A*}
+Our treatment of the transformed edge weight function $w_b$
+and the key function $k$ differs from the original presentation
+\citep{koenig2004lpastar}.
+Here,
+we will briefly show that they are equivalent.
+
+Consider two algorithms conducting a search over a graph:
+(a) LPA*
+and (b) DynamicSWSF-FP with its incremental key
+(\ref{eqn:ibid:incremental-key}) and using the transformed
+edge weight function (\ref{eqn:ibid:incremental-potential-key}).
+LPA* maintains the two values $g'(v)$ and $rhs'(v)$ for each vertex,
+as well as the key $k'(v)$ for sorting its priority queue
+(we use the prime notation for LPA* values):
+\begin{equation}
+   g'(v) \quad\mbox{and}\quad rhs'(v) = \min_{u \in \mbox{\scriptsize Pred}(v)} g'(u) + w(e_{uv}),
+\end{equation}%
+\begin{equation}
+   k'(v) = \left[ \min\!\left( g'(v), rhs'(v) \right) + b(v);\;
+      \min\!\left( g'(v), rhs'(v) \right) \right].
+\end{equation}
+
+In contrast,
+our algorithm (b) builds its distance function $d(v)$
+over the transformed tuple weight function $w_b$
+from (\ref{eqn:ibid:incremental-potential-key}).
+We show the equivalence of these two approaches via the following
+invariant:
+\begin{equation}
+   d(v) = \left[ g'(v) + b(v) - b(s) ;\; g'(v) \right].
+   \label{eqn:ibid:lpastar-transformation-equiv-d}
+\end{equation}
+Note that this is trivially true at the start of each algorithm,
+when $g'(v) = \infty$ and $d(v) = \left[ \infty ; \infty \right]$
+for all vertices.
+
+We next derive the complementary equivalence between $r(v)$ and
+$rhs'(v)$ for $v \neq s$ ($r(s) = rhs'(s) = 0$ trivially).
+\begin{subequations}%
+   \begin{align}
+      r(v) = & \min_{u \in \mbox{\scriptsize Pred}(v)} d(u) + w_b(e_{uv}) \\
+      = & \min_{u \in \mbox{\scriptsize Pred}(v)}
+         \left[ g'(u) + w(e_{uv}) + b(v) - b(s) ;\; g'(u) + w(e_{uv}) \right] \\
+      = & \left[ rhs'(v) + b(v) - b(s) ;\; rhs'(v) \right]
+         \label{eqn:ibid:lpastar-transformation-equiv-r}
+   \end{align}%
+\end{subequations}%
+
+As a result,
+we can write the key $k$ used by our DynamicSWSF-FP algorithm
+over the transformed edge weights as follows:
+\begin{subequations}
+   \begin{align}
+      k(v) = & \min\!\left( d(v), r(v) \right) \\
+      = & \min\!\left( \left[ g'(v) + b(v) - b(s) ;\; g'(v) \right], \right. \\
+        & \quad\quad\; \left. \left[ rhs'(v) + b(v) - b(s) ;\; rhs'(v) \right] \right) \\
+      = & \left[ -b(s); 0 \right]
+         + \left[ \min\!\left( g'(v), rhs'(v) \right) + b(v);\;
+         \min\!\left( g'(v), rhs'(v) \right) \right] \\
+      = & \left[ -b(s); 0 \right] + k'(v).
+   \end{align}%
+\end{subequations}%
+This shows that the tuple keys used to sort the priority queues
+for the two algorithms are identical,
+up to the constant $\left[ -b(s); 0 \right]$.
+Therefore,
+both algorithms will select the same inconsistent vertex at each
+iteration,
+and it follows from (\ref{eqn:ibid:lpastar-transformation-equiv-d})
+and (\ref{eqn:ibid:lpastar-transformation-equiv-r})
+will make the same determination w.r.t. over vs. under consistency
+and set $g'(v)$ and $d(v)$ respectively in order to maintain
+the invariant (\ref{eqn:ibid:lpastar-transformation-equiv-d}).
 
 This algorithm is listed as ``LPA*''
 in the results of Figure~\ref{fig:ibid:road-ne-stats}.
