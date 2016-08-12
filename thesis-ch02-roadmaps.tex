@@ -455,6 +455,7 @@ For these reasons,
 this thesis build on top of obstacle-insensitive roadmaps.
 
 \section{Roadmap Classes}
+\label{sec:roadmaps:roadmap-classes}
 
 Roadmap methods operate over a graph constructed in the
 robot's configuration space.
@@ -550,7 +551,7 @@ an edge connection radius $r_{\ms{log}}$:
 for some tuning parameter $\eta > 1$.
 Point sets with tighter dispersion bounds,
 such as the Halton sequence,
-can exploit a smaller connection radius $r_{\ms{log}}$:
+can exploit a smaller connection radius $r_{\ms{loglog}}$:
 \begin{equation}
    r_{\ms{loglog}}(n) = \gamma_{\mathcal{C}} \, \eta
       \left( \frac{\log(\log(n))}{n} \right)^{1/d}.

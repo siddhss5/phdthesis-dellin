@@ -1,0 +1,288 @@
+% This is really cool extra stuff that unfortunately I just don't have time for!
+
+\subsection{Grasped Objects}
+\label{subsec:family:grasped-objects}
+
+One instance specific to manipulation problems is the handling of
+grasped objects.
+For example, 
+consider a manipulator which grasps a geometric object.
+This affects the set of collision-free configurations
+across a large section of $\mathcal{C}$
+relative to the old set of valid configurations $S_{\ms{old}}$.
+However,
+the resulting $\mathcal{C}$-subset $S_{new}$
+can be represented simply as
+$S_{\ms{new}} = S_{\ms{old}} \cap G$,
+with $G$ the set of robot configurations in which
+the \emph{grasped object} (only)
+is deemed free of collision with the robot and environment.
+This structure is discussed in the context of the
+\emph{conditional reachability graph},
+part of the \textsc{FFRob} heuristic framework
+\citep{garrett2014ffrob}.
+
+For example,
+consider the manipulation problem in
+Figure~\ref{fig:family:testherb-problem}.
+The robot must find a path which moves its arm to grasp the cup.
+After the cup is grasped,
+the robot can reuse any edge in the existing roadmap
+by simply checking the grasped cup
+against the remainder of the environment.
+This structure,
+together with the approach to dynamic environments,
+are included together in the experimental results
+(Section~\ref{subsec:family:herb-experiment}).
+
+\section{Application: Caching Invariant Geometry}
+\label{subsec:family:cached-self-valid}
+
+\paragraph{Cached Self-Collision-Checked Roadmaps}
+Self-collision checking is a potentially expensive component to
+articulated motion planning;
+in contrast to environment checking,
+it is fundamentally quadratic in the number of moving links.
+Further, pairs of links to be checked
+tend to be relatively close to each other,
+reducing the effeciveness of broad-phase approaches.
+
+Leven and Hutchinson \citep{leven2000changing}
+introduced the concept of a pre-cached roadmap consisting of
+configurations and paths already known to be valid w.r.t.
+self-collision.
+As a type of invariant in $\mathcal{C}$,
+this can be seen as a particular instance of family motion planning.
+See Fig.~\ref{fig:family:self-collision-example}.
+
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/self-collision}
+   \caption{A roadmap is pre-computed in $R$,
+      the subset of $\mathcal{C}$ consisting of configurations free
+      of robot self-collision.
+      Online, the planner must find a path that's also within $E$,
+      the subset free of environment collision.
+      When solving this query in $S = R \cap E$,
+      the Family PRM automatically prefers potential paths with
+      pre-computed edges (e.g. shown in grey)
+      due to lower planning costs over alternatives with lower
+      execution costs.}
+   \label{fig:family:self-collision-example}
+\end{marginfigure}
+
+\begin{figure*}
+   \centering   
+   \includegraphics{build/family-sq-caching/pvxs}
+   \caption[]{LEMUR single-query results on several HERB problems,
+      all using baked calls.
+      Traces are LEMUR
+      (\protect\tikz{\protect\draw[thick,black] (0,0) -- (0.15,0.15);}),
+      the family motion planner (no caching)
+      (\protect\tikz{\protect\draw[thick,blue] (0,0) -- (0.15,0.15);}),
+      or the family motion planner with self-checked caching
+      (\protect\tikz{\protect\draw[thick,green] (0,0) -- (0.15,0.15);}).}
+\end{figure*}
+
+
+
+
+
+\section{Application: Exploiting Conservative Geometric Approximations}
+\label{subsec:family:broad-phase}
+
+The family formulation also enables motion planners to
+reason directly about different robot or environment models.
+For example, consider two geometric robot models,
+one with high quality (e.g. from a CAD program),
+and one hand-tuned ``padded'' model consisting of 
+a small number of simple conservative bounding volumes.
+The $\mathcal{C}$-subsets derived from these models
+are related by $R_{\ms{padded}} \subseteq R_{\ms{CAD}}$.
+Collision checkers currently use a similar approach internally
+to speed up collision checks (see Fig.~\ref{fig:family:broad-phase}.
+and Fig~\ref{fig:family:broad-phase-2d}).
+
+See Figure~\ref{fig:family:broad-phase-2d}
+for a simple example with integrated broad-phase collision checking
+as described in Section~\ref{subsec:family:broad-phase}.
+
+\begin{figure*}[b]
+   \centering
+   
+   \subfloat[
+      A single-set planner testing simply for membership in
+      $\mathcal{C}_{\mbox{\scriptsize free}}$
+      treats a collision validity checker as a
+      ``black box.''
+      Internally,
+      modern checkers first employ an inexpensive broad-phase check
+      using a low-dimensional conservative representation
+      to quickly identify non-colliding bodies before
+      resorting to an expensive narrow-phase check.
+   ]{%
+      \includegraphics{build/broadphase-single}%
+   }%
+   \quad%
+   \subfloat[
+      A family motion planner can explicitly reason about the
+      conservative nature of the broad-phase check.
+      This allows it to defer some narrow phase checks
+      (often indefinitely)
+      and instead prefer paths that require fewer expensive checks.
+   ]{%
+      \includegraphics{build/broadphase-multi}%
+   }
+   
+   \caption[][0.0in]{Collision validity checking is a commonly used
+     indicator function.
+     The family formulation allows an intelligent planner to
+     reach inside the checker's ``black box'' and reduce the number
+     of costly narrow-phase checks.
+     Resulting paths tend to be cheaper to compute and
+     stay further from obstacles.}
+   \label{fig:family:broad-phase}
+\end{figure*}
+
+% this is the broad phase bean figure
+\begin{figure}
+   \centering
+
+   % left side
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 7219.5
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda0.png}
+   }
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 836.5\par
+      Average check cost: 4692.6
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda1.png}
+   }
+   \\
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 2685.7
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda0.png}
+   }
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 907.1\par
+      Average check cost: 1064.5
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda1.png}
+   }
+
+   \caption{A simple 2D example of the Family PRM using
+     a broad-phase check.
+     Checking for collision with the grey box is 10x less expensive
+     than with the actual black obstacle.}
+     %\cdnote{I need to talk about this in the text.}}
+   \label{fig:family:broad-phase-2d}
+\end{figure}
+
+
+
+
+
+
+\section{Application: Dynamic Environments}
+
+\paragraph{Dynamic Environments.}
+\label{subsec:family:dynamic-environments}
+
+\begin{figure}
+   \centering
+
+   \begin{minipage}{.6\textwidth}
+      \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+      \node[anchor=south west,inner sep=0] at (0,0)
+        {\includegraphics[width=0.8\textwidth]{figs/chimp-voxels-delta.png}};
+
+      \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+        (debrislab) at (0.7,1.0) {Debris object\\removed};
+      \node[circle,inner sep=2,draw,fill=white] (debris) at (2.2,2.9) {};
+      \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+        (debrislab.north) -- (debris);
+        
+      \node[draw,inner sep=3pt,fill=white,fill opacity=0.9,align=center]
+        (addlab) at (5.0,2.0) {Additional\\voxels seen};
+      \node[circle,inner sep=2,draw,fill=white] (added) at (4.4,5.0) {};
+      \draw[draw=black, double=white, double distance=1pt, line width=1pt]
+        (addlab.north) -- (added);
+        
+      \end{tikzpicture}
+   \end{minipage}%
+   \,%
+   \begin{minipage}{.35 \textwidth}
+      \includegraphics{build/retroactive-a}
+      
+      \includegraphics{build/retroactive-b}
+   \end{minipage}
+
+   \caption{
+      Structured or unstructured dynamic environments
+      can be represented as a family problem
+      (see Section~\ref{subsec:family:dynamic-environments}).
+      
+      \vspace{0.05in}
+      \noindent
+      (Left) A disaster response robot maintains a
+      dynamic unstructured environment model
+      using coarse voxels
+      (scene data from a debris-clearing task at a
+      recent disaster response competition).
+      Since the last planning query,
+      voxels have been added (green) and removed (red).
+      
+      \vspace{0.05in}
+      \noindent
+      (Right) $\mathcal{C}$-subsets and relations
+      can be added retroactively.
+      Here, the graph for an initial query is checked w.r.t $S_1$.
+      After environment changes,
+      $S_1$ is redefined in terms of the $\mathcal{C}$-subsets
+      derived from the set of common, added, and removed elements,
+      allowing for reuse on a query in $S_2$.
+      Here,
+      the planner need only check existing path segments
+      against added voxels in order to reuse them for the current query.}
+   \label{fig:family:dynamic-environments}
+\end{figure}
+
+The sensors on most articulated robots allow them to maintain
+dynamic environment models to track changing collision geometry.
+These models might be
+structured (e.g. recognizing objects with known models)
+or unstructured (e.g. occupancy models).
+In both cases,
+even in a changing world,
+there are often areas that are fixed between planning queries.
+
+Prior work (e.g. \citep{jaillet2004dynamicprm})
+leverages this by imposing a dichotomy between
+\emph{fixed} and \emph{moving} components of $\mathcal{C}$.
+Our formulation extends this to an arbitrary number of such labels,
+including ones defined retroactively (i.e. during planning;
+see Fig.~\ref{fig:family:dynamic-environments}).
+By explicitly labeling such areas in workspace
+(and leveraging the \emph{set containment} property
+\citep{newmanbranicky1991cspacetransforms}),
+we can represent this structure as a family motion planning problem.
