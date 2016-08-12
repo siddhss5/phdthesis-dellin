@@ -132,21 +132,21 @@ given in Figure~\ref{fig:roadmaps:cost-model-feasible}.
    \centering
    \begin{tikzpicture}
       \node at (0,0) {
-         $x_{\ms{feas}}[\xi] = L_2[\xi]$
+         $x_{\ms{path}}[\xi] = L_2[\xi]$
       };
    \end{tikzpicture}
    \caption{Example dynamical cost function for the optimal
       motion planning problem.
       Here, the arc length of $\xi$ using the $L_2$ norm cost is used.}
-   \label{fig:roadmaps:cost-model-dynamic}
+   \label{fig:roadmaps:cost-model-path}
 \end{marginfigure}
 
 The \emph{optimal motion planning problem}
 is a generalization of the motion planning problem which
 includes an objective over solution paths
-$x_{\ms{dyn}} : \Xi \rightarrow \mathbb{R}$
-intended to measure dynamical properties of the trajectory.
-Common choices for $x_{\ms{dyn}}$ include
+$x_{\ms{path}} : \Xi \rightarrow \mathbb{R}$
+intended to measure properties intrinsic to the path.
+Common choices for $x_{\ms{path}}$ include
 the path's arc length,
 the total time or energy necessary to execute the path,
 the squared time derivatives averaged over the path.
@@ -155,19 +155,30 @@ of sampling-based methods for the optimal motion planning problem.
 
 \marginnote{An optimal moption planner
    typically considers both feasibility dynamical properties of candidate paths --
-   this objective is simply $x_{\ms{opt}} = x_{\ms{feas}} + x_{\ms{dyn}}$.
+   this objective is simply $x_{\ms{opt}} = x_{\ms{feas}} + x_{\ms{path}}$.
    We treat them separately because they exhibit fundamentally different
    computational efficiency.}
 
 \subsection{Further Generalizations}
 
-\cdnote{
-There are other generalizations such as kinodynamic planning.
-Here, a solution is commonly called a trajectory.
-Optimal variants may have costs on the actions as well.
-Intro: focus on configuration-space planning (not kinodynamic planning).
-What about constraints? We won't deal with these much either.
-}
+There are a great number of further generalizations of the
+motion planning problem that we will not explicitly consider.
+For example,
+the kinodynamic planning problem includes the derivatives of the
+configuration variables,
+and a solution to the kinodynamic problem is called a trajectory.
+Various algorithms exist \citep{lavallekuffner1999rrt}.
+The objective used in optimal variants of the kinodynamic problem
+often include components which depend on the accelerations or torques
+required to execute the trajectory.
+
+Constrained motion planning constitutes an additional generalization.
+A holonomic constraint on the configuration space,
+for example,
+induces a subset (often a manifold) of the configuration space
+on which planning is restricted.
+Various motion planners \citep{berenson2009manifolds}
+have been proposed to accommodate such constraints.
 
 \section{Motion Planning by Discretizing C-Space}
 

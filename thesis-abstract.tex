@@ -1,0 +1,77 @@
+% begin abstract
+
+\begin{fullwidth}
+\begin{adjustwidth}{1in}{1in}
+
+{\LARGE \emph{Abstract}}
+
+\vspace{0.2in}
+
+An effective autonomous robot performing dangerous or menial tasks
+will need to act under significant time and energy constraints.
+At task time,
+the amount of effort a robot spends planning its motion directly
+detracts from its total performance.
+Manipulation tasks, however, present challenges
+to efficient motion planning.
+Tightly coupled steps (e.g. choices of object grasps or placements)
+allow poor early decisions to render subsequent steps difficult;
+this encourages longer planning horizons.
+However,
+an articulated robot
+situated within a geometrically complex and dynamic environment
+induces a high-dimensional configuration space
+in which it is expensive to test for valid paths.
+And since multi-step plans
+require paths in changing valid subsets of configuration space,
+it is difficult to reuse computation across steps.
+
+\vspace{0.2cm}
+
+This thesis proposes an approach to motion planning
+well-suited to articulated robots
+performing recurring multi-step manipulation tasks
+in complex, semi-structured environments.
+Motivated by roadmap methods,
+we study a lazy approach to pathfinding on graphs
+which decouples constructing and searching the graph
+from validating its edges.
+This decoupling raises two immediate questions which we address:
+(a) how to allocate precious validation computation
+among the edges on the graph,
+and (b) how to efficiently solve the resulting dynamic pathfinding
+problem which arises as edges are validated.
+We next consider the inherent tradeoff
+between planning and execution cost,
+and show that an objective based on utility functions
+is able to effectively balance these competing goals
+during lazy pathfinding.
+Lastly,
+we define the family motion planning problem
+which captures the structure of multi-step manipulation tasks,
+and propose a related utility function which allows our
+motion planner to quickly find efficient solutions for such tasks.
+
+\vspace{0.2cm}
+
+We assemble our algorithms into an integrated manipulation planning
+system,
+and demonstrate its effectiveness on motion and manipulation tasks
+on several robotic platforms.
+We also provide open-source implementations of our algorithms
+for contemporary motion planning frameworks.
+While the motivation for this thesis originally derived
+from manipulation,
+both the lazy and incremental algorithms that we propose
+are broadly applicable to problem domains
+in which edge validation is expensive,
+or for dynamic problems such as traffic routing.
+
+% end abstract
+
+\vspace{0.2cm}
+
+\cdnote{Add acknowledgements!}
+
+\end{adjustwidth}
+\end{fullwidth}
