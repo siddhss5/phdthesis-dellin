@@ -32,13 +32,13 @@ This thesis proposes an approach to motion planning
 well-suited to articulated robots
 performing recurring multi-step manipulation tasks
 in complex, semi-structured environments.
-Motivated by roadmap methods,
-we study a lazy approach to pathfinding on graphs
+The high cost of edge validation in roadmap methods
+motivates us to study a lazy approach to pathfinding on graphs
 which decouples constructing and searching the graph
 from validating its edges.
 This decoupling raises two immediate questions which we address:
 (a) how to allocate precious validation computation
-among the edges on the graph,
+among the unevaluated edges on the graph,
 and (b) how to efficiently solve the resulting dynamic pathfinding
 problem which arises as edges are validated.
 We next consider the inherent tradeoff
@@ -62,10 +62,12 @@ We also provide open-source implementations of our algorithms
 for contemporary motion planning frameworks.
 While the motivation for this thesis originally derived
 from manipulation,
-both the lazy and incremental algorithms that we propose
-are broadly applicable to problem domains
-in which edge validation is expensive,
-or for dynamic problems such as traffic routing.
+our pathfinding algorithms are broadly applicable to problem domains
+in which edge validation is expensive.
+Furthermore,
+the underlying similarity between lazy and dynamic settings
+also renders our incremental algorithms applicable
+to conventional dynamic problems such as traffic routing.
 
 % end abstract
 
