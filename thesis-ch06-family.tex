@@ -35,18 +35,10 @@ from the standpoint of manipulation tasks.
 Section~\ref{sec:family:formulation} formulates the problem
 generally.
 We describe our approach in Section~\ref{sec:family:approach},
-and Section~\ref{sec:family:as-utility} details how the family
-problem can be represented as a utility function.
-The remainder of the chapter examines several applications
-of this decomposition,
-such as multi-step geometry
-(Section~\ref{subsec:family:app-multi-step})
-and caching invariant geometry
-(Section~\ref{subsec:family:cached-self-valid}),
-conservative geometric approximations
-(Section~\ref{subsec:family:broad-phase}),
-and dynamic environments
-(Section~\ref{subsec:family:dynamic-environments}).
+which details how the family problem can be represented
+as a utility model that can be used by LEMUR.
+The chapter concludes with experimental results on multi-step
+manipulation tasks in Section~\ref{subsec:family:app-multi-step}.
 
 \section{Related Work}
 \label{sec:family:related-work}
@@ -54,11 +46,11 @@ and dynamic environments
 The topic of reusing planning computation
 between similar motion planning problems
 has been extensively studied in the literature.
-We include here a broad survey of existing approaches;
-the application sections
-(Section~\ref{subsec:family:app-multi-step}
--- \ref{subsec:family:dynamic-environments}) also include
-relevant references to prior work.
+We include here a broad survey of existing approaches.
+%the application sections
+%(Section~\ref{subsec:family:app-multi-step}
+%-- \ref{subsec:family:dynamic-environments}) also include
+%relevant references to prior work.
 
 \paragraph{Exact Algorithms.}
 Exact planning methods construct explicit obstacles
@@ -528,7 +520,7 @@ in Figure~\ref{fig:family:example}.
    configuration space subsets and set relations between them.
    When two queries in different subests are solved sequentially,
    a family motion planner can reuse path segments less expensively.
-   See Section~\ref{sec:family:in-manipulation} for examples in
+   See Section~\ref{subsec:family:app-multi-step} for examples in
    manipulation.
 
 \end{figure*}
@@ -649,8 +641,7 @@ Common types of such relations
 (containment and intersection)
 are illustated in Fig.~\ref{fig:family:relations}.
 Fig.~\ref{fig:family:example} gives an example of intersection relations;
-an example of containment is a padded (conservative)
-robot model (see Section~\ref{subsec:family:broad-phase}).
+an example of containment is a padded (conservative) robot model.
 
 Together, these four elements
 (a configuration space $\mathcal{C}$,
@@ -692,17 +683,17 @@ instead of cost 6 for a new configuration.
 Thus, we might hope that a planner may be biased towards reusing
 said path segments in this case.
 
-\paragraph{Applications of the Family Motion Planning Problem.}
-So far,
-we have motivated the family motion planning problem
-for the application of manipulation planning tasks.
-However,
-the same structure is present in a number of other applications,
-including cached invariant geometry
-and conservative geometric approximations.
-We review these applications
-in Sections~\ref{subsec:family:app-multi-step}
--- \ref{subsec:family:dynamic-environments}.
+%\paragraph{Applications of the Family Motion Planning Problem.}
+%So far,
+%we have motivated the family motion planning problem
+%for the application of manipulation planning tasks.
+%However,
+%the same structure is present in a number of other applications,
+%including cached invariant geometry
+%and conservative geometric approximations.
+%We review these applications
+%in Sections~\ref{subsec:family:app-multi-step}
+%-- \ref{subsec:family:dynamic-environments}.
 
 \section{Approach: A Utility Model over Family Beliefs}
 \label{sec:family:approach}
@@ -980,7 +971,7 @@ Consider the following definition
 for a subset $S \subseteq \mathcal{C}$.
 Consider an edge $e \in E$ which corresponds to a particular trajectory
 $\xi_e : [0,1] \rightarrow \mathcal{C}$
-as described in Chapter~\ref{chap:roadmap}.
+as described in Chapter~\ref{chap:roadmaps}.
 We will define edge set membership as:
 \begin{equation}
    e \in S \iff \xi_e(t) \in S \;\;\forall\;\; t \in [0,1].
