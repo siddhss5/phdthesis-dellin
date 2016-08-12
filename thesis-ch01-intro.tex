@@ -207,33 +207,42 @@ cached checks and multi-step problems.
 
 \section{Review of Experimental Platforms and Problem Instances}
 
-AKA evaluation.
-
-Throughout, we will run experiments on three experimental platforms:
-HERB (Figure~\ref{fig:intro:platform-herb}),
-CHIMP (Figure~\ref{fig:intro:platform-chimp}),
-and IRB4400 (Figure~\ref{fig:intro:platform-irb4400}).
-
-\begin{marginfigure}
+\begin{figure*}
    \centering
-   \includegraphics[width=0.45\textwidth]{figs/simple-table-clearing-task.png}
-   \includegraphics[width=0.45\textwidth]{figs/herbarm-traj0-t000.png}
-   \caption{The HERB home robot experimental platform.}
-   \label{fig:intro:platform-herb}
-\end{marginfigure}
+   
+   \subfloat[The HERB home robot experimenal platform.]{%
+      \includegraphics[height=3.25cm]{figs/simple-table-clearing-task.png}
+      \includegraphics[height=3.25cm]{figs/herbarm-traj0-t000.png}
+      \label{subfig:intro:platform-herb}
+   }%
+   \quad%
+   \subfloat[An ABB IRB 440 robot in an industrial workcell.]{%
+      \includegraphics[height=3.25cm]{figs/workcell/config-a.png}
+      \label{subfig:intro:platform-irb4400}
+   }%
+   \quad%
+   \subfloat[The CHIMP disaster response robot.]{%
+      \quad%
+      \includegraphics[height=3.25cm]{figs/chimp-voxels-delta.png}%
+      \quad
+      \label{subfig:intro:platform-chimp}
+   }%
+   
+   \caption[][0.5cm]{Robotic platforms considered in this thesis.}
+   \label{fig:intro:platforms}
+\end{figure*}
 
-\begin{marginfigure}
-   \centering
-   \includegraphics[width=0.8\textwidth]{figs/chimp-voxels-delta.png}
-   \caption{The CHIMP disaster response robot.}
-   \label{fig:intro:platform-chimp}
-\end{marginfigure}
+We consider a number of motion and manipulation planning instances
+across three robotic platforms:
+\begin{itemize}
+\item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-herb}:
+   HERB, the Home Exploring Robot Butler
+   \citep{srinivasa2012herb20}.
+\item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-irb4400}:
+   IRB 4400, a compact industrial robot from ABB.
+\item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-chimp}:
+   CHIMP, the CMU Highly Intelligent Mobile Platform
+   \citep{stentz2014chimp}.
+\end{itemize}
 
-\begin{marginfigure}
-   \centering
-   \includegraphics[width=\textwidth]{figs/workcell/config-a.png}
-   \caption{An ABB IRB440 robot.}
-   \label{fig:intro:platform-irb4400}
-\end{marginfigure}
-
-
+\cdnote{Forward ref to experimental evaluation sections.}

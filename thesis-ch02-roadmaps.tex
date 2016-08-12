@@ -467,7 +467,9 @@ in order to produce an anytime sequence of improving solution paths.
 \begin{figure}
    \centering
    \includegraphics{build/roadmap-stack}
-   \caption{Roadmap stack.}
+   \caption{A stack of progressively densified roadmaps
+      over a given free subset of configuration space
+      $\mathcal{C}_{\ms{free}}$.}
 \end{figure}
 
 \paragraph{Advantages of Obstacle Insensitivity.}
@@ -591,19 +593,12 @@ can exploit a smaller connection radius $r_{\ms{loglog}}$:
 For details we refer the reader
 to \citep{janson2015deterministicsampling}.
 
-\paragraph{Roadmaps for Articulated Robots.}
-We apply roadmap methods to the three robot platforms
-from Chapter~\ref{chap:intro} in this thesis.
-Unless otherwise noted,
-we build roadmaps directly in the joint space of the robot.
-See Table~\ref{table:roadmap-params} for the roadmap parameters
-that we use.
-
-\begin{table}
+\begin{margintable}
    \centering
+   {\renewcommand{\tabcolsep}{0.15cm}
    \begin{tabular}{lccc}
       \toprule
-      & HERB & CHIMP & IRB4400 \\
+      & HERB & CHIMP & IRB 4400 \\
       \midrule
       $d$ & 7 & 7 & 6 \\
       $\gamma^*_{\mathcal{C}}$ & 7.67 & 7.97 & 7.74 \\
@@ -611,13 +606,23 @@ that we use.
       $r_{\ms{loglog}}$ & 2.31 & 2.40 & 1.90 \\
       \bottomrule
    \end{tabular}
+   }
+   \vspace{0.1cm}
    \caption{Table of roadmap connection radii parameters for
       various scaling rates across the different robot platforms
       considered in this thesis.
-      Radii presented are for $n=10000$ and $\eta = 1$
+      Radii presented are for $n=10000$ and $\eta = 1$,
       and are given in radians.}
    \label{table:roadmap-params}
-\end{table}
+\end{margintable}
+
+\paragraph{Roadmaps for Articulated Robots.}
+We apply roadmap methods to the three robot platforms
+from Chapter~\ref{chap:intro} in this thesis.
+Unless otherwise noted,
+we build roadmaps directly in the joint space of the robot.
+See Table~\ref{table:roadmap-params} for the roadmap parameters
+that we use.
 
 %\subsection{Dispersion}
 %

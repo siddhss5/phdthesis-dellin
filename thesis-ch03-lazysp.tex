@@ -1,16 +1,13 @@
 \chapter{Fast Pathfinding on Graphs via Lazy Evaluation}
 \label{chap:lazysp}
 
-{\bf Selectors.
-Edge-equivalence.}
-
 \cdnote{Important caveat: due to roadmap edges sharing vertices,
 edges adjacent to evaluated edges will also change cost!}
 
 While the shortest path problem has myriad applications,
 the computational efficiency of suitable algorithms
 depends intimately on the underlying problem domain.
-In this paper,
+In this chapter,
 we focus on domains where evaluating the edge weight function
 dominates algorithm running time.
 %\ajnote{I don't find out what this paper's contribution is
@@ -25,8 +22,6 @@ Further, we propose various novel selectors inspired by
 sampling and statistical mechanics,
 and find that these selectors outperform
 existing algorithms on a set of example problems.
-
-\section{Introduction}
 
 \begin{figure}
 \centering
@@ -55,6 +50,8 @@ existing algorithms on a set of example problems.
    and maintaining internal data structures.}
 \label{fig:sp-intro}
 \end{figure}
+
+\section{Introduction}
 
 Graphs provide a powerful abstraction
 capable of representing problems in a wide variety of domains
@@ -122,10 +119,11 @@ collision and distance computations for the complex geometry
 of the robot and environment,
 resulting in planning times of multiple seconds to find a path.
 
-In this paper,
+As described in Chapter~\ref{chap:roadmaps},
 we consider problem domains in which evaluating the edge weight
-function $w$ dominates algorithm running time
-and investigate the following research question:
+function $w$ dominates algorithm running time.
+In this chapter,
+we investigate the following research question:
 \begin{quote}
 How can we minimize the number of edges we need to evaluate
 to answer shortest-path queries?
@@ -342,7 +340,7 @@ will lead to an algorithm that is complete and optimal,
 its \emph{efficiency} is dictated by the choice of this
 selector.
 This motivates the theoretical and empirical investigation of different
-edge selectors in this paper.
+edge selectors in this chapter.
 
 \textbf{Simple selectors.}
 We codify five common strategies in
@@ -447,7 +445,7 @@ and statistical mechanics.
       \end{tikzpicture}%
    }%
    \caption[lazysp snapshots]{Snapshots of the LazySP algorithm using each edge selector
-      discussed in this paper on the same obstacle roadmap graph problem,
+      discussed in this chapter on the same obstacle roadmap graph problem,
       with start (\protect\tikz[baseline=-0.5ex]{\protect\node[circle,fill=blue,inner sep=1pt]{};})
       and goal (\protect\tikz[baseline=-0.5ex]{\protect\node[circle,fill=green,inner sep=1pt]{};}).
       At top, the algorithms after evaluating five edges
@@ -470,6 +468,25 @@ and statistical mechanics.
 \end{figure*}
 
 \section{Edge Equivalence to A* Variants}
+
+In the previous section,
+we introduced LazySP as the path-selection analogue
+to BFS vertex-selection algorithms.
+In this section,
+we make this analogy more precise.
+In particular,
+we show that LazySP-Expand
+%(that is, LazySP with the Expand selector)
+%\ajnote{name consistency}
+is edge-equivalent to a variant of A*
+(and Weighted A*),
+and that LazySP-Forward is edge-equivalent to a variant of
+Lazy Weighted A*
+(see Table~\ref{table:equivalences}).
+%\ajnote{Say ``as described below''?}
+It is important to be specific about the conditions under which
+these equivalences arise,
+which we detail here.
 
 \begin{table}
    \centering
@@ -497,25 +514,6 @@ and statistical mechanics.
       $h_{\ms{lazy}}$ heuristic (\ref{eqn:h_lazy}).}
    \label{table:equivalences}
 \end{table}
-
-In the previous section,
-we introduced LazySP as the path-selection analogue
-to BFS vertex-selection algorithms.
-In this section,
-we make this analogy more precise.
-In particular,
-we show that LazySP-Expand
-%(that is, LazySP with the Expand selector)
-%\ajnote{name consistency}
-is edge-equivalent to a variant of A*
-(and Weighted A*),
-and that LazySP-Forward is edge-equivalent to a variant of
-Lazy Weighted A*
-(see Table~\ref{table:equivalences}).
-%\ajnote{Say ``as described below''?}
-It is important to be specific about the conditions under which
-these equivalences arise,
-which we detail here.
 
 \textbf{Edge equivalence.}
 We say that two algorithms are \emph{edge-equivalent} if they
