@@ -616,16 +616,16 @@ $\mathcal{C}$-subset $U \in \mathcal{F}$
       \begin{tabular}{cc}
       \includegraphics{build/relations-inclusion} \\
       $A \subseteq B$ \\
-      $\mathbf{1}_A \Rightarrow \mathbf{1}_B$ \\
       \end{tabular}
+      \label{fig:family:relations-containment}
    }
    \vspace{-0.05in}
    \subfloat[Intersection relation]{
       \begin{tabular}{cc}
       \includegraphics{build/relations-intersection} \\
       $A = B \cap C$ \\
-      $\mathbf{1}_B \wedge \mathbf{1}_C \Rightarrow \mathbf{1}_A$ \\
       \end{tabular}
+      \label{fig:family:relations-intersection}
    }
    \vspace{0.1in}
    \caption{Types of subset relations.
@@ -705,39 +705,241 @@ in Sections~\ref{subsec:family:app-multi-step}
 \section{Approach: A Utility Model over Family Beliefs}
 \label{sec:family:approach}
 
-LEMUR relies on a domain-specific ensemble cost model
+Recall from Chapter~\ref{chap:utility}
+that the LEMUR motion planner takes as input
+a domain-specific ensemble cost model
 $\mathcal{M}$ to provide it with planning and execution cost
 estimates for prospective edges.
+\marginnote{See Section~\ref{subsec:lemur:ensemble-edge-cost-models}
+for the definition of an ensemble edge cost model.}
 This allows it to exploit domain-specific
 knowledge and structure that may be present.
 
-We capture the structure of the family motion planning problem
-via an ensemble edge cost model $\mathcal{M}_{\ms{family}}$.
-\marginnote{See Section~\ref{subsec:lemur:ensemble-edge-cost-models}
-for a review of what constitutes an ensemble edge cost model.}
-The model maintains
-(a) a family $\mathcal{F}$ of $\mathcal{C}$-subsets
-relevant to the problem,
-(b) the inclusion/intersection relations between them,
-and (c) the set of validity checks that have been performed
-for each edge.
-This knowledge enables it to implement an edge
-planning cost estimator $\grave{p}_{\ms{family}}(e)$
-which determines the minimum set of collision checks necessary
-to validate an edge within a target subset.
+We wish to capture the structure of the family motion planning problem
+via such an ensemble edge cost model $\mathcal{M}_{\ms{family}}$.
+To do so requires us to implement the remaining planning cost estimator
+$\grave{p}_{\ms{family}}(e)$
+as a function of the underly family
+$\mathcal{F}$ of $\mathcal{C}$-subsets
+and the intersection/inclusion relations between them.
+We accomplish this over the course of a planning episode
+by reasoning explicitly about belief over the subset membership
+of individual configurations and edges.
 
-\subsection{Family Belief States}
+%The model maintains
+%(a) a family $\mathcal{F}$ of $\mathcal{C}$-subsets
+%relevant to the problem,
+%(b) the inclusion/intersection relations between them,
+%and (c) the set of validity checks that have been performed
+%for each edge.
+%This knowledge enables it to implement an edge
+%planning cost estimator $\grave{p}_{\ms{family}}(e)$
+%which determines the minimum set of collision checks necessary
+%to validate an edge within a target subset.
 
-The problem is really about beliefs over states.
-Talk about the family graph.
-The belief space is $\mathcal{B}$,
-so we're really planning over $\mathcal{B} \times \mathcal{C}$.
+\subsection{Family Belief}
 
-$\mathcal{C} \times \mathcal{B}$.
+Consider a family $\mathcal{F}$ consisting of $n$ subsets,
+and consider a configuration $q \in \mathcal{C}$ on which
+we may have invoked one or multiple subset indicator functions.
+\marginnote{Recall that for subset $S$,
+invoking the indicator function $\mathbf{1}_S$
+on configuration $q$
+returns a binary value representing whether $q \in S$.}
+How can we generally represent our knowledge
+about the subset membership of $q$?
+We can form a \emph{belief space} $\mathcal{B}$ as follows
+\begin{equation}
+   \mathcal{B} = \prod_{S \in \mathcal{F}}
+      \{ \mbox{Unknown}, \mbox{False}, \mbox{True} \}.
+   \label{eqn:family:beliefs}
+\end{equation}
+That is,
+a belief state $b \in \mathcal{B}$ stores
+knowledge of subset membership for each subset $S \in \mathcal{F}$.
+(We will abbreviate the membership beliefs for each state
+in (\ref{eqn:family:beliefs})
+as U, F, and T respectively.)
 
-\subsection{Family Belief Graph}
+\paragraph{Composing a Family Belief Graph.}
+Consider the initial belief state of a configuration
+$b_{\ms{init}} = \left( \mbox{U}, \mbox{U}, \dots \right)$
+for all subsets.
+How does a belief state $b$ transition after invoking a particular
+indicator function?
+In the most general case,
+invoking the $i$-th indicator $\mathbf{1}_{S_i}$ returning
+$r \in \{\mbox{F},\mbox{T}\}$
+results in a belief state $b'$ equal to $b$ but with its
+$i$-th component set to $r$.
+(The existing $i$-th component of $b$ must either be U
+or already be $r$ if the indicators are consistent.)
+This simple transition model induces a directed
+\emph{family belief graph}
+$G_{\mathcal{F}} = (V_{\mathcal{F}}, E_{\mathcal{F}})$
+where $V_{\mathcal{F}} = \mathcal{B}$
+and each edge $e_{\mathcal{F}} \in E_{\mathcal{F}}$ represents $(S,r)$,
+the result of invoking an available indicator function $\mathbf{1}_{S}$
+and having it return the binary result $r$.
 
-\subsection{Set Relations as Logical Propositions.}
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/family-belief-graph-example}
+   \caption{Example family belief graph
+      for a family for two subsets, $S_1$ and $S_2$.
+      From the initial belief $b_{\ms{init}} = (\mbox{U},\mbox{U})$,
+      each transition $(S,r)$ represents invoking
+      indicator $\mathbf{1}_S$ with returned binary result $r$.
+      }
+   \label{fig:family:belief-graph-example}
+\end{marginfigure}
+
+For example,
+consider a family $\mathcal{F}$ consisting of two unrelated subsets,
+$S_1$ and $S_2$.
+The family belief graph $G_{\mathcal{F}}$
+illustrated in Figure~\ref{fig:family:belief-graph-example}
+shows all possible belief transitions on the graph.
+
+\subsection{Subset Relations and the Family Belief Graph}
+In a family motion planning problem,
+the family of subsets $\mathcal{F}$
+is accompanied by a set of subset relations $\mathcal{R}$.
+These relations have implications on the family belief graph
+$G_{\mathcal{F}}$.
+To build the revised graph,
+we convert both the belief state $b$
+and the subset relations $\mathcal{R}$
+into a set of \emph{logical propositions}.
+
+\paragraph{Beliefs and Subset Relations as Logical Propositions.}
+A logical proposition is a statement consisting of
+propositional variables and logical operators.
+We will use bolded letters to denote propositional variables.
+A set of propositions $\mathcal{P}$ can be used as \emph{premises}
+as part of an \emph{argument} to demonstrate a \emph{conclusion};
+a logical solver can then be used validate or invalidate the argument.
+For example, an argument with these premises and conclusion
+$\{ (\mathbf{A} \Rightarrow \mathbf{B}), (\lnot\mathbf{B}) \}
+\Rightarrow (\lnot\mathbf{A})$
+can be shown to be valid.
+
+Any belief state $b$ can be represented as a set of logical
+propositions.
+Consider again the simple family
+from Figure~\ref{fig:family:belief-graph-example}
+consisting of subsets $S_1$ and $S_2$
+(with $S_i \subseteq \mathcal{C}$).
+We will introduce the propositional variable $\mathbf{S}_i$ as follows:
+for some query configuration $q \in \mathcal{C}$,
+the proposition $\mathbf{S}_i$ implies $q \in S_i$,
+whereas $\lnot\mathbf{S}_i$ implies $q \notin S_i$.
+\marginnote{We keep distinct notation for the indicator
+function predicate $\mathbf{1}_S$ over $\mathcal{C}$
+and the corresponding propositional variable $\mathbf{S}$;
+the former is used as a subroutine to be invoked to determine
+subset membership,
+whereas the latter is used to represent actual or hypothesized
+assignments to the propositional logic engine.}
+Therefore,
+a belief state $b$ can be converted into a set of propositions
+$\mathcal{P}_b$:
+\begin{equation}
+   \mathcal{P}_b = \{ \mathbf{S}_i \; \forall \; i \; | \; b[i] = \mbox{T} \}
+      \cup \{ \lnot\mathbf{S}_i \; \forall \; i \; | \; b[i] = \mbox{F} \}.
+   \label{eqn:family:belief-propositions}
+\end{equation}
+For example,
+belief $b=(T,F)$ corresponds to
+$\mathcal{P}_b = \{ \mathbf{S}_1, \lnot\mathbf{S}_2 \}$,
+and belief $b=(U,U)$ corresponds to $\mathcal{P}_b = \emptyset$.
+
+The set of subset relations $\mathcal{R}$
+can also be represented as a set of propositions.
+In particular,
+the containment relation $A \subseteq B$
+(Figure~\ref{fig:family:relations-containment})
+yields $\{ ( \mathbf{A} \Rightarrow \mathbf{B} ) \}$
+and the intersection relation $A = B \cap C$
+(Figure~\ref{fig:family:relations-intersection})
+yields 
+$\{ ( \mathbf{B} \wedge \mathbf{C} \Rightarrow \mathbf{A} ),
+( \mathbf{A} \Rightarrow \mathbf{B} ),
+( \mathbf{A} \Rightarrow \mathbf{C} )
+\}$.
+Converting each relation in $\mathcal{R}$ in this way
+yields an equivalent set of relational propositions
+$\mathcal{P}_{\mathcal{R}}$.
+
+\paragraph{Subset Relations Prune the Family Belief Graph.}
+The relational propositions $\mathcal{P}_{\mathcal{R}}$
+together with the belief propositions $\mathcal{P}_b$ for
+each belief state $b$ given by (\ref{eqn:family:belief-propositions})
+can then be used along with a propositional
+logic engine to compute the family belief graph
+for a particular family motion planning problem.
+In particular,
+consider a given belief state vertex $b \in V_{\mathcal{F}}$
+and a proposed out-edge $(S,r)$.
+Let $\mathcal{P}_e$,
+the resulting additional set of propositions for this edge,
+be $\{ \mathbf{S} \}$ if $r = \mbox{True}$,
+or $\{ \lnot\mathbf{S} \}$ otherwise.
+Then $i$-th component of the successor belief state $b'$
+is formed by considering the following two propositional arguments:
+\begin{equation}
+   b'[i] = \left\{ \begin{array}{cl}
+   \mbox{True}
+      & \mbox{if }
+      \mathcal{P}_{\mathcal{R}} \cup \mathcal{P}_b \cup \mathcal{P}_e
+         \Rightarrow \mathbf{S}_i
+      \mbox{ is valid} \\
+   \mbox{False}
+      & \mbox{if }
+      \mathcal{P}_{\mathcal{R}} \cup \mathcal{P}_b \cup \mathcal{P}_e
+         \Rightarrow \lnot\mathbf{S}_i
+      \mbox{ is valid} \\
+   \mbox{Unknown}
+      & \mbox{otherwise.}
+   \end{array} \right.
+\end{equation}
+
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/family-belief-graph-example-wrels}
+   \caption{Example family belief graph
+      for a family for two subsets, $S_1$ and $S_2$,
+      with the subset relation that $S_1 \subseteq S_2$.
+      Compare this family belief graph
+      to Figure~\ref{fig:family:belief-graph-example}
+      without the relation.}
+   \label{fig:family:belief-graph-example-wrels}
+\end{marginfigure}
+
+We show the effect of subset relations $\mathcal{R}$
+on the family belief graph for our simple example family
+with an additional containment relation
+in Figure~\ref{fig:family:belief-graph-example-wrels}.
+The additional proposition from $\mathcal{P}_{\mathcal{R}}$,
+namely that $\mathbf{S}_1 \Rightarrow \mathbf{S}_2$,
+prunes the original graph
+in Figure~\ref{fig:family:belief-graph-example}
+by removing inconsistent belief states and transitions.
+
+We also illustrate the family belief graph
+for the more complex family motion planning
+problem in Figure~\ref{fig:family:example}.
+Recall that the family $\mathcal{F}$ consists of
+five $\mathcal{C}$-subsets, $A$, $B$, $C$, $S_{12}$, and $S_{23}$,
+and $\mathcal{R}$ consists of the subset relations
+$S_{12} = A \cap B$ and $S_{23} = A \cap C$.
+The family belief graph is shown
+in Figure~\ref{fig:family:appendix-suction-example-graph}
+in Appendix~\ref{chap:appendix-family}.
+
+\vspace{1in}
+
+\paragraph{Old stuff.}
 The planner represents the list of set relations $\mathcal{R}$
 (Section~??)
 specified in the family problem formulation
@@ -763,6 +965,24 @@ For example, an argument with these premises and conclusion
 $\{ (\mathbf{1}_A \Rightarrow \mathbf{1}_B), (\lnot\mathbf{1}_B) \}
 \Rightarrow (\lnot\mathbf{1}_A)$
 can be shown to be valid.
+
+
+
+
+\paragraph{An Example Family Belief Graph.}
+We form the complete family belief graph for the example problem
+from Figure~\ref{fig:family:example}.
+
+\paragraph{This works for edges too.}
+
+The problem is really about beliefs over states.
+Talk about the family graph.
+The belief space is $\mathcal{B}$,
+so we're really planning over $\mathcal{B} \times \mathcal{C}$.
+
+$\mathcal{C} \times \mathcal{B}$.
+
+
 
 \subsection{A Utility Model}
 

@@ -42,7 +42,7 @@ clean:
 # read those deps
 $(foreach doc,$(DOCS),$(eval -include $(doc).mk))
 
-# compiling standalone tex's to pdfs
+# compiling standalone tex's to pdfss
 #build/%.pdf: figs/%.tex
 comma := ,
 *1 = $(word 1, $(subst $(comma), ,$*))
@@ -53,6 +53,11 @@ build/%.pdf: figs/$$(*1).tex
 	@echo after is $(*2)
 	mkdir -p `dirname $@`
 	pdflatex -halt-on-error -output-directory=build --jobname="$*" "\def\arg$(*2){}\input{figs/$(*1)}"
+
+# compiling dot's into pdf's
+build/%.pdf: figs/%.dot
+	dot2tex -ftikz figs/$*.dot --crop > build/$*.tex
+	pdflatex -halt-on-error -output-directory=build --jobname="$*" build/$*.tex
 
 #build/e8-world-%.pdf build/e8-world-%-stats.tex: fig-scripts/e8-example.py
 #	mkdir -p build

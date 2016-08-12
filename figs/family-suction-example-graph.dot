@@ -1,0 +1,108 @@
+digraph G {
+   graph [d2tgraphstyle=">=latex,very thick,font=\footnotesize,inner sep=0pt"]
+   rankdir = LR;
+   nodesep = 0.07;
+   ranksep = 0.5;
+   node [fontsize=10];
+   
+   UUUUU -> FUUFF [color=red,style=dashed]; // [label="A,F"];
+   UUUUU -> TUUUU [color=red,style="line width=0.1cm"];// [label="A,F"];
+   UUUUU -> UFUFU [color="#00CC00",style=dashed];// [label="B,F"];
+   UUUUU -> UTUUU [color="#00CC00"];// [label="B,T"];
+   UUUUU -> UUFUF [color=blue,style=dashed];// [label="C,F"];
+   UUUUU -> UUTUU [color=blue,style="line width=0.1cm"];// [label="C,T"];
+
+
+   FUUFF -> FFUFF [color="#00CC00",style=dashed];// [label="B,F"];
+   FUUFF -> FTUFF [color="#00CC00"];// [label="B,T"];
+   FUUFF -> FUFFF [color=blue,style=dashed];// [label="C,F"];
+   FUUFF -> FUTFF [color=blue];// [label="C,T"];
+   
+   TUUUU -> TFUFU [color="#00CC00",style=dashed];// [label="B,F"];
+   TUUUU -> TTUTU [color="#00CC00"];// [label="B,T"];
+   TUUUU -> TUFUF [color=blue,style=dashed];// [label="C,F"];
+   TUUUU -> TUTUT [color=blue,style="line width=0.1cm"];// [label="C,T"];
+
+   UFUFU -> FFUFF [color=red,style=dashed];// [label="A,F"];
+   UFUFU -> TFUFU [color=red,style="line width=0.1cm"];// [label="A,F"];
+   UFUFU -> UFFFF [color=blue,style=dashed];// [label="C,F"];
+   UFUFU -> UFTFU [color=blue,style="line width=0.1cm"];// [label="C,T"];
+   
+   UTUUU -> FTUFF [color=red,style=dashed];// [label="A,F"];
+   UTUUU -> TTUTU [color=red,style="line width=0.1cm"];// [label="A,F"];
+   UTUUU -> UTFUF [color=blue,style=dashed];// [label="C,F"];
+   UTUUU -> UTTUU [color=blue,style="line width=0.1cm"];// [label="C,T"];
+
+   UUFUF -> FUFFF [color=red,style=dashed];// [label="A,F"];
+   UUFUF -> TUFUF [color=red];// [label="A,F"];
+   UUFUF -> UFFFF [color="#00CC00",style=dashed];// [label="B,F"];
+   UUFUF -> UTFUF [color="#00CC00"];// [label="B,T"];
+
+   UUTUU -> FUTFF [color=red,style=dashed];// [label="A,F"];
+   UUTUU -> TUTUT [color=red,style="line width=0.1cm"];// [label="A,F"];
+   UUTUU -> UFTFU [color="#00CC00",style=dashed];// [label="B,F"];
+   UUTUU -> UTTUU [color="#00CC00"];// [label="B,T"];
+
+
+   FFUFF -> FFFFF [color=blue,style=dashed];// [label="C,F"];
+   FFUFF -> FFTFF [color=blue];// [label="C,T"];
+   FTUFF -> FTFFF [color=blue,style=dashed];// [label="C,F"];
+   FTUFF -> FTTFF [color=blue];// [label="C,T"];
+   TFUFU -> TFFFF [color=blue,style=dashed];// [label="C,F"];
+   TFUFU -> TFTFT [color=blue,style="line width=0.1cm"];// [label="C,T"];
+   TTUTU -> TTFTF [color=blue,style=dashed];// [label="C,F"];
+   TTUTU -> TTTTT [color=blue,style="line width=0.1cm"];// [label="C,T"];
+
+   FUFFF -> FFFFF [color="#00CC00",style=dashed];// [label="B,F"];
+   FUFFF -> FTFFF [color="#00CC00"];// [label="B,T"];
+   FUTFF -> FFTFF [color="#00CC00",style=dashed];// [label="B,F"];
+   FUTFF -> FTTFF [color="#00CC00"];// [label="B,T"];
+   TUFUF -> TFFFF [color="#00CC00",style=dashed];// [label="B,F"];
+   TUFUF -> TTFTF [color="#00CC00"];// [label="B,T"];
+   TUTUT -> TFTFT [color="#00CC00",style=dashed];// [label="B,F"];
+   TUTUT -> TTTTT [color="#00CC00"];// [label="B,T"];
+
+   UFFFF -> FFFFF [color=red,style=dashed];// [label="A,F"];
+   UFFFF -> TFFFF [color=red];// [label="A,F"];
+   UFTFU -> FFTFF [color=red,style=dashed];// [label="A,F"];
+   UFTFU -> TFTFT [color=red,style="line width=0.1cm"];// [label="A,F"];
+   UTFUF -> FTFFF [color=red,style=dashed];// [label="A,F"];
+   UTFUF -> TTFTF [color=red];// [label="A,F"];
+   UTTUU -> FTTFF [color=red,style=dashed];// [label="A,F"];
+   UTTUU -> TTTTT [color=red,style="line width=0.1cm"];// [label="A,F"];
+
+   // goal vertices
+   //TUTUT [style=filled,fillcolor="#BBFFBB",label="\begin{array}{c} \mbox{TUTUT} \\\\ d = 0 \end{array}"];
+   TUTUT [style=filled,fillcolor="#BBFFBB",texlbl="$\begin{array}{c} \mbox{TUTUT} \\ d = 0 \end{array}$"];
+   TTTTT [style=filled,fillcolor="#BBFFBB",texlbl="$\begin{array}{c} \mbox{TTTTT} \\ d = 0 \end{array}$"];
+   TFTFT [style=filled,fillcolor="#BBFFBB",texlbl="$\begin{array}{c} \mbox{TFTFT} \\ d = 0 \end{array}$"];
+
+   // impossible vertices
+   UUFUF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{UUFUF} \\ d = \infty \end{array}$"];
+   UFFFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{UFFFF} \\ d = \infty \end{array}$"];
+   UTFUF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{UTFUF} \\ d = \infty \end{array}$"];
+   FUUFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FUUFF} \\ d = \infty \end{array}$"];
+   FUFFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FUFFF} \\ d = \infty \end{array}$"];
+   FUTFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FUTFF} \\ d = \infty \end{array}$"];
+   FFUFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FFUFF} \\ d = \infty \end{array}$"];
+   FFFFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FFFFF} \\ d = \infty \end{array}$"];
+   FFTFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FFTFF} \\ d = \infty \end{array}$"];
+   FTUFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FTUFF} \\ d = \infty \end{array}$"];
+   FTFFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FTFFF} \\ d = \infty \end{array}$"];
+   FTTFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{FTTFF} \\ d = \infty \end{array}$"];
+   TUFUF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{TUFUF} \\ d = \infty \end{array}$"];
+   TFFFF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{TFFFF} \\ d = \infty \end{array}$"];
+   TTFTF [style=filled,fillcolor="#FFCCCC",texlbl="$\begin{array}{c} \mbox{TTFTF} \\ d = \infty \end{array}$"];
+
+   // other possible vertices
+   UUUUU [texlbl="$\begin{array}{c} \mbox{UUUUU} \\ d = 6 \end{array}$"];
+   UFUFU [texlbl="$\begin{array}{c} \mbox{UFUFU} \\ d = 6 \end{array}$"];
+   UUTUU [texlbl="$\begin{array}{c} \mbox{UUTUU} \\ d = 4 \end{array}$"];
+   UTUUU [texlbl="$\begin{array}{c} \mbox{UTUUU} \\ d = 6 \end{array}$"];
+   TUUUU [texlbl="$\begin{array}{c} \mbox{TUUUU} \\ d = 2 \end{array}$"];
+   UFTFU [texlbl="$\begin{array}{c} \mbox{UFTFU} \\ d = 4 \end{array}$"];
+   TFUFU [texlbl="$\begin{array}{c} \mbox{TFUFU} \\ d = 2 \end{array}$"];
+   UTTUU [texlbl="$\begin{array}{c} \mbox{UTTUU} \\ d = 4 \end{array}$"];
+   TTUTU [texlbl="$\begin{array}{c} \mbox{TTUTU} \\ d = 2 \end{array}$"];
+   
+}
