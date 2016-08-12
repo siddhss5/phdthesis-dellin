@@ -286,3 +286,130 @@ By explicitly labeling such areas in workspace
 (and leveraging the \emph{set containment} property
 \citep{newmanbranicky1991cspacetransforms}),
 we can represent this structure as a family motion planning problem.
+
+\section{Other Stuff}
+
+\pgfplotstableread{
+barname mean error
+RRTConnect 2.56378257751494 0.1819787187133847
+LazyPRM(*) 2.59627093791926 0.07645708288005078
+LEMUR(SQ) 1.95654549121872 0.04821756844687192
+LEMUR(MQ) 1.5911829090115797 0.03471955055186312
+}{\datalemurherbbin}
+
+\begin{figure}
+   \centering
+   \begin{tikzpicture}
+      \begin{axis}[
+         width=6.0cm,
+         height=4.0cm,
+         xbar,
+         bar width=12,
+         xmin=0,
+         enlarge y limits={abs=0.45cm},
+         %xmin=0,xmax=95,
+         %xtick pos=bottom,
+         %symbolic y coords={E, F, R, A, B, W, P},
+         yticklabels from table={\datalemurherbbin}{barname},
+         ytick=data,
+         ytick pos=left,
+         xmajorgrids,
+         %xmajorticks=false,
+         ticklabel style={font=\footnotesize},
+         xlabel={\footnotesize{Planning time $p$ (s)}},
+         xlabel near ticks,
+         ] 
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
+         {\datalemurherbbin};
+      \end{axis}
+   \end{tikzpicture}
+   \caption{LEMUR Herbbin, $\lambda = 1$}
+\end{figure}
+
+\pgfplotstableread{
+barname mean error
+RRTConnect 17.735649337767864 0.8572182241158215
+LazyPRM(*) 11.02914777755716 0.2718847854283968
+LEMUR(SQ) 8.987455253601558 0.22683157494511255
+LEMUR(MQ) 5.995352478027379 0.23607184395127515
+}{\datalemurworkcell}
+
+\begin{figure}
+   \centering
+   \begin{tikzpicture}
+      \begin{axis}[
+         width=6.0cm,
+         height=4.0cm,
+         xbar,
+         bar width=12,
+         xmin=0,
+         enlarge y limits={abs=0.45cm},
+         %xmin=0,xmax=95,
+         %xtick pos=bottom,
+         %symbolic y coords={E, F, R, A, B, W, P},
+         yticklabels from table={\datalemurworkcell}{barname},
+         ytick=data,
+         ytick pos=left,
+         xmajorgrids,
+         %xmajorticks=false,
+         ticklabel style={font=\footnotesize},
+         xlabel={\footnotesize{Planning time $p$ (s)}},
+         xlabel near ticks,
+         ] 
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
+         {\datalemurworkcell};
+      \end{axis}
+   \end{tikzpicture}
+   \caption{LEMUR Workcell, $\lambda = 1$}
+\end{figure}
+
+% data over 84 data points
+% there are 85 PlanToNamedConfiguration planning requests in
+% my planning_queries/yaml/* directory;
+% i paired them up, and these are the numbers across all pairs
+\pgfplotstableread{
+barname mean stderror95
+FamilyFirst 0.3858953203473929 0.011569714605374383
+FamilySecond 0.18286271038508334 0.0070175681823757274
+}{\datalemurtableclear}
+
+\begin{figure}
+   \centering
+   \begin{tikzpicture}
+      \begin{axis}[
+         width=6.0cm,
+         height=3.0cm,
+         xbar,
+         bar width=12,
+         xmin=0,
+         enlarge y limits={abs=0.45cm},
+         %xmin=0,xmax=95,
+         %xtick pos=bottom,
+         %symbolic y coords={E, F, R, A, B, W, P},
+         yticklabels from table={\datalemurtableclear}{barname},
+         ytick=data,
+         ytick pos=left,
+         xmajorgrids,
+         %xmajorticks=false,
+         ticklabel style={font=\footnotesize},
+         xlabel={\footnotesize{Planning time $p$ (s)}},
+         xlabel near ticks,
+         ] 
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{stderror95}]
+         {\datalemurtableclear};
+      \end{axis}
+   \end{tikzpicture}
+   \caption{Family Tableclear, $\lambda = 0$}
+\end{figure}

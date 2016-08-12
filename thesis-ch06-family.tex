@@ -1177,13 +1177,13 @@ from OMPL.
    \subfloat[Starting Configuration]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-a.png}
    }
-   \subfloat[Step 1, in $S_1$]{
+   \subfloat[Step 1, in $S_{AB}$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-b.png}
    }
-   \subfloat[Step 2, in $S_2$]{
+   \subfloat[Step 2, in $S_{BC}$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-c.png}
    }
-   \subfloat[Step 3, in $S_3$]{
+   \subfloat[Step 3, in $S_{CD}$]{
       \includegraphics[width=0.185\linewidth]{figs/testherb-d.png}
    }
    \subfloat[Ending Configuration.]{
@@ -1200,7 +1200,7 @@ from OMPL.
 \end{figure*}
 
 The first task we considered is the table clearing task from
-Figure~\ref{fig:family:testherb-problem}.
+Figure~\ref{fig:family:herbbin-multistep-example}.
 Each condition for LEMUR was conducted over 50 randomly generated
 Halton roadmaps with 10,000 milestones per batch
 and a $r_{\ms{loglog}}$ connection radius schedule with $\eta = 1$
@@ -1212,49 +1212,136 @@ the simple edge cost model $\mathcal{M}_{\ms{simple}}$
 or the family edge cost model $\mathcal{M}_{\ms{family}}$
 described above.
 
-The task consists of 3 steps (transit, transfer, and transit).
-The family module computeda decomposition of the full task
-and discovered the following distinct C-space subsets
-over the full planning problem.
-\begin{table}
+The task consists of 3 steps:
+the initial transit to the mug (AB),
+the transfer to a drop location (BC),
+and the final transit back to the home configuration (CD).
+The family module computed a decomposition of the full task
+and discovered 7 relevant C-space subsets
+over the full planning problem
+listed in Table~\ref{table:family:herbbin-subsets}.
+An illustration of the subsets is also shown
+in Figure~\ref{fig:family:testherb-problem}.
+
+\begin{table*}
    \centering
-   \begin{tabular}{cc}
-      R & E \\
-      c & d \\
+   \begin{minipage}[t]{.65\textwidth}
+   \begin{tabular}{cll}
+      \toprule
+      Subset & Geometry 1 & Geometry 2 \\
+      \midrule
+      $S_1$  & RobotMoving & RobotMoving + EnvStatic \\
+      $S_2$  & RobotMoving & MugPlacedTable \\
+      $S_3$  & RobotMoving & MugPlacedBin \\
+      $S_4$  & GraspedMug & RobotMoving + EnvStatic \\
+      \bottomrule
    \end{tabular}
-\end{table}
+   \end{minipage}
+   \begin{minipage}[t]{.30\textwidth}
+   \begin{tabular}{cl}
+      \toprule
+      Subset & Defined as \\
+      \midrule
+      $S_{AB}$  & $S_1 \cap S_2$ \\
+      $S_{BC}$  & $S_1 \cap S_4$ \\
+      $S_{CD}$  & $S_1 \cap S_3$ \\
+      \bottomrule
+   \end{tabular}
+   \end{minipage}
+   \caption[][0.5cm]{Constituent subsets in the \texttt{herbbin} example
+      problem.}
+   \label{table:family:herbbin-subsets}
+\end{table*}
 
 We measured the length of the path returned by each algorithm (rad),
 as well as the total planning time as measured by a wall clock (s).
 
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/herbbin-g1ll}
+%   \caption{Example of planning over families for the HERB bin example
+%      problem (closest intermediate roots).
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
+%      }
+%\end{figure}
 
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/herbbin-r0p9719o}
+%   \caption{Example of planning over families for the HERB bin example
+%      problem (closest intermediate roots).
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $R=2.0$ scaled by $1/n$.
+%      }
+%\end{figure}
 
+% nominated intermediate roots!
+\begin{figure}
+   \centering
+   \includegraphics{build/multistep-prescribed/herbbinnom-g1ll}
+   \caption{Comparison of measured planning time $p$ and solution
+      execution cost $x$ for the HERB table-clearing example.
+      RRT is shown in red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+      Results for LEMUR with the simple edge cost model are shown in
+      blue \protect\tikz{\protect\node[fill=blue,draw=black]{};},
+      while the family edge cost model is shown in
+      green \protect\tikz{\protect\node[fill=green!70!black,draw=black]{};}.
+      The LEMUR results show the effect of adjusting the $\lambda_p$
+      tradeoff parameter from $0$ (lower right) to $0.99$ (upper left).
+      }
+\end{figure}
 
-
-Note that the Family PRM,
-with no relations specified and $\lambda=0$
-reduces to the Lazy PRM.
-As expected,
-increasing $\lambda$ resulted in decreased planning times
-but yielded longer paths.
-Including more $\mathcal{C}$-subset relations
-also significantly reduced planning times,
-and had little effect on path lengths on this problem.
-Note that the planning time results when using
-the cached self-collision-checked roadmap, denoted by (*),
-do not include the pre-computation time.
-
-Note that including inter-step relations drastically
-reduces planning times for subsequent steps.
-We expect this trend would continue as more steps are included.
-Also, note that when $\lambda=0$,
-path length is unchanged as the number of set relations is
-changed
--- this is because the paths that are selected for evaluation
-by the algorithm are a function only of their (constant) lengths.
-
+%\begin{figure}
+%   \centering
+%   \includegraphics{build/multistep-prescribed/herbbinnom-r0p9719o}
+%   \caption{Example of planning over families for the HERB bin example
+%      problem (nominated intermediate roots).
+%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+%      Individual LEMUR results are dashed
+%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
+%      while Family-aware results are solid
+%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
+%      Colors for the inner search algorithm are:
+%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
+%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
+%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
+%      These results use $R=2.0$ scaled by $1/n$.
+%      }
+%\end{figure}
 
 \subsection{Tending a Press Brake with an IRB4400}
+
+The second task we considered is a sheet metal bending task
+using an ABB IRB4400 robot in an industrial workcell.
+See Figure~\ref{fig:family:workcell-configs}
+for an illustration of the task.
+Each condition for LEMUR was conducted over 50 randomly generated
+Halton roadmaps with 10,000 milestones per batch
+and a $r_{\ms{loglog}}$ connection radius schedule with $\eta = 1$
+(see Section~\ref{sec:roadmaps:roadmap-classes}).
+We varied the $\lambda_p$ planning-vs.-execution tradeoff parameter
+between $0.0$ to $0.99$ (Chapter~\ref{chap:utility}),
+and selected either
+the simple edge cost model $\mathcal{M}_{\ms{simple}}$
+or the family edge cost model $\mathcal{M}_{\ms{family}}$
+described above.
 
 \begin{figure}
    \centering
@@ -1276,23 +1363,75 @@ by the algorithm are a function only of their (constant) lengths.
       before the robot returns to its initial configuration (A).
       Results for planning these steps are shown in
       Figure~\ref{fig:family:workcell-pvx}.}
+   \label{fig:family:workcell-configs}
 \end{figure}
+
+The task consists of 8 steps,
+as described in Figure~\ref{fig:family:workcell-pvx}.
+The family module computed a decomposition of the full task
+and discovered 17 relevant C-space subsets
+over the full planning problem
+listed in Table~\ref{table:family:workcell-subsets}.
+Note that the motion plans for steps BC and CD are in the same
+subset.
+
+\begin{table*}
+   \centering
+   \begin{minipage}[t]{.65\textwidth}
+   \begin{tabular}{cll}
+      \toprule
+      Subset & Geometry 1 & Geometry 2 \\
+      \midrule
+      $S_1$  & RobotMoving & RobotMoving + EnvStatic \\
+      $S_2$  & RobotMoving & SheetPlacedStart \\
+      $S_3$  & RobotMoving & SheetPlacedSettling \\
+      $S_4$  & RobotMoving & SheetPlacedDestination \\
+      $S_5$  & GraspedTopSide & RobotMoving + EnvStatic \\
+      $S_6$  & GraspedTopSide1Flat & RobotMoving + EnvStatic \\
+      $S_7$  & GraspedTopSide1Bent & RobotMoving + EnvStatic \\
+      $S_8$  & GraspedBotSide & RobotMoving + EnvStatic \\
+      $S_9$  & GraspedBotSide2Flat & RobotMoving + EnvStatic \\
+      $S_{10}$ & GraspedBotSide2Bent & RobotMoving + EnvStatic \\
+      \bottomrule
+   \end{tabular}
+   \end{minipage}
+   \begin{minipage}[t]{.30\textwidth}
+   \begin{tabular}{cl}
+      \toprule
+      Subset & Defined as \\
+      \midrule
+      $S_{AB}$  & $S_1 \cap S_2$ \\
+      $S_{BC}$  & $S_1 \cap S_5 \cap S_6$ \\
+      $S_{CD}$  & $S_1 \cap S_5 \cap S_6$ \\
+      $S_{EF}$  & $S_1 \cap S_5 \cap S_7$ \\
+      $S_{FG}$  & $S_1 \cap S_3$ \\
+      $S_{GH}$  & $S_1 \cap S_8 \cap S_9$ \\
+      $S_{IJ}$  & $S_1 \cap S_8 \cap S_{10}$ \\
+      $S_{JA}$  & $S_1 \cap S_4$ \\
+      \bottomrule
+   \end{tabular}
+   \end{minipage}
+   \caption[][0.5cm]{Constituent subsets in the \texttt{workcell} example
+      problem.}
+   \label{table:family:workcell-subsets}
+\end{table*}
+
+We measured the length of the path returned by each algorithm (rad),
+as well as the total planning time as measured by a wall clock (s).
 
 \begin{figure}
    \centering
    \includegraphics{build/multistep-prescribed/workcell-g1ll}
-   \caption[]{Example of planning over families for an industrial
-      workcell example problem.
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.}
+   \caption[]{Comparison of measured planning time $p$ and solution
+      execution cost $x$ for the industrial workcell example.
+      RRT is shown in red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
+      Results for LEMUR with the simple edge cost model are shown in
+      blue \protect\tikz{\protect\node[fill=blue,draw=black]{};},
+      while the family edge cost model is shown in
+      green \protect\tikz{\protect\node[fill=green!70!black,draw=black]{};}.
+      The LEMUR results show the effect of adjusting the $\lambda_p$
+      tradeoff parameter from $0$ (lower right) to $0.99$ (upper left).
+      }
    \label{fig:family:workcell-pvx}
 \end{figure}
 
@@ -1315,29 +1454,11 @@ by the algorithm are a function only of their (constant) lengths.
 %   \label{fig:family:workcell-pvx}
 %\end{figure}
 
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/herbbin-g1ll}
-   \caption{Example of planning over families for the HERB bin example
-      problem (closest intermediate roots).
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
-      }
-\end{figure}
-
 %\begin{figure}
 %   \centering
-%   \includegraphics{build/multistep-prescribed/herbbin-r0p9719o}
-%   \caption{Example of planning over families for the HERB bin example
-%      problem (closest intermediate roots).
+%   \includegraphics{build/multistep-prescribed/herbbookshelfnom-g1ll}
+%   \caption{Example of planning over families for the HERB bookshelf example
+%      problem, with nominated intermediate roots.
 %      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
 %      Individual LEMUR results are dashed
 %      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
@@ -1345,245 +1466,44 @@ by the algorithm are a function only of their (constant) lengths.
 %      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
 %      Colors for the inner search algorithm are:
 %      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-%      These results use $R=2.0$ scaled by $1/n$.
+%      \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
+%      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
+%      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
 %      }
 %\end{figure}
-
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/herbbinnom-g1ll}
-   \caption{Example of planning over families for the HERB bin example
-      problem (nominated intermediate roots).
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
-      }
-\end{figure}
 
 %\begin{figure}
 %   \centering
-%   \includegraphics{build/multistep-prescribed/herbbinnom-r0p9719o}
-%   \caption{Example of planning over families for the HERB bin example
-%      problem (nominated intermediate roots).
-%      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-%      Individual LEMUR results are dashed
-%      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-%      while Family-aware results are solid
-%      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-%      Colors for the inner search algorithm are:
-%      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-%      \protect\tikz{\protect\node[fill=purple,draw=black]{};}\;Heuristic IBiD,
-%      and \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*.
-%      These results use $R=2.0$ scaled by $1/n$.
-%      }
+%   \hspace{0.2cm}
+%   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step0.png}%
+%   \;
+%   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step1.png}%
+%   \;
+%   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step2.png}%
+%   
+%   \includegraphics{build/herbarmmultithread/master-fig}
+%   \caption[]{
+%      Results from a motion planning experiment for manipulation
+%      planning in which the robot must move to grasp the mug
+%      and place it into a bin at its side
+%      before returning to its initial configuration.
+%      In the course of planning the first step to the grasp point,
+%      the planner has discovered a number of edges known to be
+%      valid.
+%      After the grasp, the robot must find a motion to transfer the
+%      mug -- any edges known to be valid in the previous step
+%      can be used after only checking that the grasped mug does not
+%      collide with the environment.
+%      Compared with a sequence of single-query calls to LEMUR
+%      with model $\mathcal{C}_{\ms{simple}}$
+%      \protect\tikz{\protect\node[fill=black!80,draw=black]{};},
+%      LEMUR armed with the $\mathcal{M}_{\ms{family}}$ ensemble
+%      cost model
+%      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}
+%      can guide the planner to use edges that are less
+%      expensive to validate.}
+%   \label{fig:family:herbarmmultithread-master}
 %\end{figure}
-
-\begin{figure}
-   \centering
-   \includegraphics{build/multistep-prescribed/herbbookshelfnom-g1ll}
-   \caption{Example of planning over families for the HERB bookshelf example
-      problem, with nominated intermediate roots.
-      RRT is red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
-      Individual LEMUR results are dashed
-      (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);}),
-      while Family-aware results are solid
-      (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);}),.
-      Colors for the inner search algorithm are:
-      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;IBiD,
-      \protect\tikz{\protect\node[fill=olive,draw=black]{};}\;A*, and
-      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}\;LPA*.
-      These results use $k_\gamma=1.0$ scaled by $\log(\log(n))/n$.
-      }
-\end{figure}
-
-\begin{table*}[b]
-   \begin{widepage}
-   \centering
-   \footnotesize
-   \setlength{\tabcolsep}{3pt}
-   \renewcommand{\arraystretch}{1.3}
-   \begin{tabular}{|cc|r@{ }lr@{ }lr@{ }lr@{ }l|r@{ }lr@{ }lr@{ }lr@{ }l|r@{ }lr@{ }lr@{ }lr@{ }l|}
-   \toprule
-   \multirow{2}{*}{Relations} & \multirow{2}{*}{Cost}
-     & \multicolumn{8}{c|}{$\lambda = 0$}
-     & \multicolumn{8}{c|}{$\lambda = 0.5$}
-     & \multicolumn{8}{c|}{$\lambda = 1$}
-   \\
-     &
-     & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
-     & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
-     & Step & 1 & Step & 2 & Step & 3 & \multicolumn{2}{c|}{Total}
-   \\ \midrule
-   \multirow{2}{*}{None} & Plan
-     &  6.16&s &  3.72&s &  2.38&s & 12.25&s
-     &  5.52&s &  2.89&s &  2.12&s & 10.53&s
-     &  3.39&s &  2.25&s &  2.12&s &  7.76&s
-   \\
-     & Exec
-     & 14.22&rad &  8.51&rad &  4.23&rad & 26.97&rad
-     & 15.07&rad & 10.60&rad &  4.23&rad & 29.89&rad
-     & 15.07&rad & 10.60&rad &  4.23&rad & 29.89&rad
-   \\ [1ex]
-   Inter-Step & Plan
-     &  6.40&s &  2.33&s &  0.86&s &  9.59&s
-     &  5.40&s &  1.55&s &  0.91&s &  7.86&s
-     &  3.38&s &  0.91&s &  0.30&s &  4.59&s
-   \\
-   (Sec.~\ref{subsec:family:dynamic-environments},~\ref{subsec:family:grasped-objects})
-     & Exec
-     & 14.22&rad &  8.51&rad &  4.23&rad & 26.97&rad
-     & 15.07&rad & 12.21&rad &  4.23&rad & 31.51&rad
-     & 15.07&rad & 12.21&rad &  7.11&rad & 34.40&rad
-   \\ [1ex]
-   Self-Checked & Plan*
-     &  3.54&s &  2.23&s &  1.17&s & 6.94&s
-     &  2.99&s &  1.77&s &  1.16&s & 5.92&s
-     &  1.47&s &  1.22&s &  1.16&s & 3.85&s
-   \\
-   (Sec.~\ref{subsec:family:cached-self-valid}) & Exec
-     & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
-     & 14.22&rad & 10.06&rad &  4.23&rad & 28.51&rad
-     & 14.22&rad & 10.60&rad &  4.23&rad & 29.05&rad
-   \\ [1ex]
-   \multirow{2}{*}{Both} & Plan*
-     &  3.25&s &  1.79&s &  0.90&s & 5.94&s
-     &  2.88&s &  1.55&s &  0.92&s & 5.35&s
-     &  1.47&s &  1.88&s &  0.31&s & 3.66&s
-   \\
-     & Exec
-     & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
-     & 14.22&rad &  8.51&rad &  4.23&rad & 26.96&rad
-     & 14.22&rad &  9.64&rad &  6.36&rad & 30.22&rad
-   \\ 
-   \bottomrule
-   \end{tabular}
-   \caption[][-0.1in]{Home robot manipulation task results.
-     The entry with no relations and $\lambda=0$ is equivalent
-     to the LazyPRM.
-     These are old results.}
-   \label{tab:family:testherb}
-   \end{widepage}
-\end{table*}
-
-\begin{figure}
-   \centering
-   \hspace{0.2cm}
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step0.png}%
-   \;
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step1.png}%
-   \;
-   \includegraphics[width=2.7cm]{figs/herbarmmultithread/herbarmmultithread-step2.png}%
-   
-   \includegraphics{build/herbarmmultithread/master-fig}
-   \caption[]{
-      Results from a motion planning experiment for manipulation
-      planning in which the robot must move to grasp the mug
-      and place it into a bin at its side
-      before returning to its initial configuration.
-      In the course of planning the first step to the grasp point,
-      the planner has discovered a number of edges known to be
-      valid.
-      After the grasp, the robot must find a motion to transfer the
-      mug -- any edges known to be valid in the previous step
-      can be used after only checking that the grasped mug does not
-      collide with the environment.
-      Compared with a sequence of single-query calls to LEMUR
-      with model $\mathcal{C}_{\ms{simple}}$
-      \protect\tikz{\protect\node[fill=black!80,draw=black]{};},
-      LEMUR armed with the $\mathcal{M}_{\ms{family}}$ ensemble
-      cost model
-      \protect\tikz{\protect\node[fill=cyan,draw=black]{};}
-      can guide the planner to use edges that are less
-      expensive to validate.}
-   \label{fig:family:herbarmmultithread-master}
-\end{figure}
-
-Here's some notes on the workcell example:
-
-\begin{table*}
-   \centering
-   \begin{minipage}[t]{.65\textwidth}
-   \begin{tabular}{cll}
-      \toprule
-      Subset & Geometry1 & Geometry2 \\
-      \midrule
-      $S_1$  & RobotMoving & RobotMoving + EnvStatic \\
-      $S_2$  & RobotMoving & SheetPlacedStart \\
-      $S_3$  & RobotMoving & SheetPlacedSettling \\
-      $S_4$  & RobotMoving & SheetPlacedDestination \\
-      $S_5$  & GraspedTopSide & RobotMoving + EnvStatic \\
-      $S_6$  & GraspedTopSide1Flat & RobotMoving + EnvStatic \\
-      $S_7$  & GraspedTopSide1Bent & RobotMoving + EnvStatic \\
-      $S_8$  & GraspedBotSide & RobotMoving + EnvStatic \\
-      $S_9$  & GraspedBotSide2Flat & RobotMoving + EnvStatic \\
-      $S_{10}$ & GraspedBotSide2Bent & RobotMoving + EnvStatic \\
-      \bottomrule
-   \end{tabular}
-   \end{minipage}
-   \begin{minipage}[t]{.30\textwidth}
-   \begin{tabular}{cl}
-      \toprule
-      Subset & Defined as \\
-      \midrule
-      $AB$  & $S_1 \cap S_2$ \\
-      $BC$  & $S_1 \cap S_5 \cap S_6$ \\
-      $CD$  & $S_1 \cap S_5 \cap S_6$ \\
-      $EF$  & $S_1 \cap S_5 \cap S_7$ \\
-      $FG$  & $S_1 \cap S_3$ \\
-      $GH$  & $S_1 \cap S_8 \cap S_9$ \\
-      $IJ$  & $S_1 \cap S_8 \cap S_{10}$ \\
-      $JA$  & $S_1 \cap S_4$ \\
-      \bottomrule
-   \end{tabular}
-   \end{minipage}
-   \caption{Constituent subsets in the \texttt{workcell} example
-      problem.}
-\end{table*}
-
-\begin{verbatim}
-workcell basic (independent) atoms:
- (1) (robot) x (self+staticenv)
- (2) (robot) x (sheetstart)
- (3) (robot) x (sheetregrasp)
- (4) (robot) x (sheetend)
- (5) (robotgrabtop-sheetmidside2flat) x (self+staticenv)
- (6) (robotgrabtop-sheetside1flat) x (self+staticenv)
- (7) (robotgrabtop-sheetside1bent) x (self+staticenv)
- (8) (robotgrabbottom-sheetmidside1bent) x (self+staticenv)
- (9) (robotgrabbottom-sheetside2flat) x (self+staticenv)
-(10) (robotgrabbottom-sheetside2bent) x (self+staticenv)
-
-each problem step is built of atoms:
- step AB = (1) n (2)
- step BC = (1) n (5) n (6)
- step CD = (1) n (5) n (6)
- step EF = (1) n (5) n (7)
- step FG = (1) n (3)
- step GH = (1) n (8) n (9)
- step IJ = (1) n (8) n (10)
- step JA = (1) n (4)
-
-FamilyUtilityChecker reports 17 vars (makes sense)
-
-2**10 =  1024 truth table rows
-\end{verbatim}
-
-
-
-
-
-
-
-
 
 \section{Implementation Details}
 
@@ -1592,136 +1512,6 @@ OpenRAVE \citep{diankov2010openrave}
 virtual kinematic planning environment
 which automatically discovers $\mathcal{C}$-subsets
 in manipulation tasks.
-
-
-
-
-\section{Other Stuff}
-
-\pgfplotstableread{
-barname mean error
-RRTConnect 2.56378257751494 0.1819787187133847
-LazyPRM(*) 2.59627093791926 0.07645708288005078
-LEMUR(SQ) 1.95654549121872 0.04821756844687192
-LEMUR(MQ) 1.5911829090115797 0.03471955055186312
-}{\datalemurherbbin}
-
-\begin{figure}
-   \centering
-   \begin{tikzpicture}
-      \begin{axis}[
-         width=6.0cm,
-         height=4.0cm,
-         xbar,
-         bar width=12,
-         xmin=0,
-         enlarge y limits={abs=0.45cm},
-         %xmin=0,xmax=95,
-         %xtick pos=bottom,
-         %symbolic y coords={E, F, R, A, B, W, P},
-         yticklabels from table={\datalemurherbbin}{barname},
-         ytick=data,
-         ytick pos=left,
-         xmajorgrids,
-         %xmajorticks=false,
-         ticklabel style={font=\footnotesize},
-         xlabel={\footnotesize{Planning time $p$ (s)}},
-         xlabel near ticks,
-         ] 
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
-         {\datalemurherbbin};
-      \end{axis}
-   \end{tikzpicture}
-   \caption{LEMUR Herbbin, $\lambda = 1$}
-\end{figure}
-
-\pgfplotstableread{
-barname mean error
-RRTConnect 17.735649337767864 0.8572182241158215
-LazyPRM(*) 11.02914777755716 0.2718847854283968
-LEMUR(SQ) 8.987455253601558 0.22683157494511255
-LEMUR(MQ) 5.995352478027379 0.23607184395127515
-}{\datalemurworkcell}
-
-\begin{figure}
-   \centering
-   \begin{tikzpicture}
-      \begin{axis}[
-         width=6.0cm,
-         height=4.0cm,
-         xbar,
-         bar width=12,
-         xmin=0,
-         enlarge y limits={abs=0.45cm},
-         %xmin=0,xmax=95,
-         %xtick pos=bottom,
-         %symbolic y coords={E, F, R, A, B, W, P},
-         yticklabels from table={\datalemurworkcell}{barname},
-         ytick=data,
-         ytick pos=left,
-         xmajorgrids,
-         %xmajorticks=false,
-         ticklabel style={font=\footnotesize},
-         xlabel={\footnotesize{Planning time $p$ (s)}},
-         xlabel near ticks,
-         ] 
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
-         {\datalemurworkcell};
-      \end{axis}
-   \end{tikzpicture}
-   \caption{LEMUR Workcell, $\lambda = 1$}
-\end{figure}
-
-% data over 84 data points
-% there are 85 PlanToNamedConfiguration planning requests in
-% my planning_queries/yaml/* directory;
-% i paired them up, and these are the numbers across all pairs
-\pgfplotstableread{
-barname mean stderror95
-FamilyFirst 0.3858953203473929 0.011569714605374383
-FamilySecond 0.18286271038508334 0.0070175681823757274
-}{\datalemurtableclear}
-
-\begin{figure}
-   \centering
-   \begin{tikzpicture}
-      \begin{axis}[
-         width=6.0cm,
-         height=3.0cm,
-         xbar,
-         bar width=12,
-         xmin=0,
-         enlarge y limits={abs=0.45cm},
-         %xmin=0,xmax=95,
-         %xtick pos=bottom,
-         %symbolic y coords={E, F, R, A, B, W, P},
-         yticklabels from table={\datalemurtableclear}{barname},
-         ytick=data,
-         ytick pos=left,
-         xmajorgrids,
-         %xmajorticks=false,
-         ticklabel style={font=\footnotesize},
-         xlabel={\footnotesize{Planning time $p$ (s)}},
-         xlabel near ticks,
-         ] 
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{stderror95}]
-         {\datalemurtableclear};
-      \end{axis}
-   \end{tikzpicture}
-   \caption{Family Tableclear, $\lambda = 0$}
-\end{figure}
 
 %\cdnote{%
 %Special case of this is if objects are disappearing.

@@ -4,6 +4,23 @@
 \begin{figure}
    \centering
    \includegraphics[width=10.5cm]{build/family-suction-example-graph}
-   \caption{A figure.}
+   \caption{Family belief graph for the 2D example problem from
+      Figure~\ref{fig:family:example} in Chapter~\ref{chap:family}.
+      The underlying family consists of five sets:
+      $A$, $B$, $C$, $S_{12}$, and $S_{23}$.
+      Transitions between states are shown for indicators
+      $\mathbf{1}_A$ (\protect\tikz{\protect\node[fill=red,draw=black]{};}),
+      $\mathbf{1}_B$ (\protect\tikz{\protect\node[fill=green!70!black,draw=black]{};}),
+      and $\mathbf{1}_C$ (\protect\tikz{\protect\node[fill=blue,draw=black]{};}),
+      with solid lines (\protect\tikz{\protect\draw[thick,solid] (0,0) -- (0.15,0.15);})
+      showing transitions in which the indicator returns True,
+      and dashed lines (\protect\tikz{\protect\draw[thick,densely dotted] (0,0) -- (0.15,0.15);})
+      showing transitions in which the indicator returns False.
+      Also shown is the distance function and optimal policy
+      for a query subset $S_u = S_{23}$,
+      with green beliefs as goal states.
+      Bolded edges (\protect\tikz{\protect\draw[ultra thick,solid] (0,0) -- (0.15,0.15);})
+      represent transitions on an optimal policy.
+      }
    \label{fig:family:appendix-suction-example-graph}
 \end{figure}
