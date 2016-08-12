@@ -32,7 +32,7 @@ In particular,
 we provide an overview of a class of approaches called roadmap methods
 that are well-suited to motion planning for articulated robots.
 For a comprehensive treatment,
-we refer to LaValle \citep{lavalle2006planningbook}.
+we refer the to LaValle \citep{lavalle2006planningbook}.
 
 \section{The Motion Planning Problem}
 
@@ -74,7 +74,7 @@ or returning with failure otherwise.
    \label{fig:roadmaps:cspace}
 \end{marginfigure}
 
-A generalization of the piano over's problem
+A generalization of the piano mover's problem
 commonly called the \emph{motion planning problem}
 entails an abstraction of the single rigid body
 to an arbitrary \emph{configuration space} (C-space)
@@ -99,19 +99,65 @@ Collision-free configurations and paths must be contained entirely
 in the complement of this set,
 $\mathcal{C}_{\ms{free}} = \mathcal{C} \setminus \mathcal{C}_{\ms{obs}}$.
 
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \node at (0,0) {
+         $\arraycolsep=5pt%
+         x_{\ms{feas}}[\xi] = \left\{ \begin{array}{cl}
+            0 & \mbox{if } \xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \\
+            \infty & \mbox{otherwise} \\
+         \end{array} \right.$
+      };
+   \end{tikzpicture}
+   \caption{Edge cost model
+      for the (feasible) motion planning problem.}
+   \label{fig:roadmaps:cost-model-feasible}
+\end{marginfigure}
+
 A path $\xi : [0,1] \rightarrow \mathcal{C}$
 is called collision-free if
 $\xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \in [0,1]$.
 A continuous path $\xi$ satisfies a particular motion planning query
 with start and goal configurations $q_{\ms{start}}$ and $q_{\ms{goal}}$
 if $\xi(0) = q_{\ms{start}}$ and $\xi(1) = q_{\ms{goal}}$.
+This is the motion planning problem.
+We can capture the collision constraint by minimizing
+the functional objective $x_{\ms{feas}}$
+given in Figure~\ref{fig:roadmaps:cost-model-feasible}.
 
 \subsection{Optimal Motion Planning}
 
-The optimal motion planning problem is a generalization which
-includes a metric over solution paths
-$x : \Xi \rightarrow \mathbb{R}$.
-See \citep{karaman2011samplingoptimal}.
+\begin{marginfigure}
+   \centering
+   \begin{tikzpicture}
+      \node at (0,0) {
+         $x_{\ms{feas}}[\xi] = L_2[\xi]$
+      };
+   \end{tikzpicture}
+   \caption{Example dynamical cost function for the optimal
+      motion planning problem.
+      Here, the arc length of $\xi$ using the $L_2$ norm cost is used.}
+   \label{fig:roadmaps:cost-model-dynamic}
+\end{marginfigure}
+
+The \emph{optimal motion planning problem}
+is a generalization of the motion planning problem which
+includes an objective over solution paths
+$x_{\ms{dyn}} : \Xi \rightarrow \mathbb{R}$
+intended to measure dynamical properties of the trajectory.
+Common choices for $x_{\ms{dyn}}$ include
+the path's arc length,
+the total time or energy necessary to execute the path,
+the squared time derivatives averaged over the path.
+See \citep{karaman2011samplingoptimal} for a comprehensive treatment
+of sampling-based methods for the optimal motion planning problem.
+
+\marginnote{An optimal moption planner
+   typically considers both feasibility dynamical properties of candidate paths --
+   this objective is simply $x_{\ms{opt}} = x_{\ms{feas}} + x_{\ms{dyn}}$.
+   We treat them separately because they exhibit fundamentally different
+   computational efficiency.}
 
 \subsection{Further Generalizations}
 
@@ -189,31 +235,6 @@ The approach for constructing, searching, and validating this graph
 differs significantly between algorithms.
 We will broadly review different options in
 Section~\ref{sec:roadmaps:sensitivity}.
-
-\begin{marginfigure}
-   \centering
-   \begin{tikzpicture}
-      \node at (0,0) {
-         $x(e) = \left\{ \begin{array}{cl}
-            0 & \mbox{if } e \in \mathcal{C}_{\ms{free}} \\
-            \infty & \mbox{otherwise} \\
-         \end{array} \right.$
-      };
-   \end{tikzpicture}
-   \caption{Edge cost model
-      for the (feasible) motion planning problem.}
-\end{marginfigure}
-
-\begin{marginfigure}
-   \centering
-   \begin{tikzpicture}
-      \node at (0,0) {
-         $x(e) = || e ||_2$
-      };
-   \end{tikzpicture}
-   \caption{$L_2$-norm edge cost model
-      for the optimal motion planning problem.}
-\end{marginfigure}
 
 \cdnote{Talk about execution costs that are additive!}
 
