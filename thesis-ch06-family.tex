@@ -737,7 +737,7 @@ of individual configurations and edges.
 %which determines the minimum set of collision checks necessary
 %to validate an edge within a target subset.
 
-\subsection{Family Belief}
+\subsection{Family Beliefs}
 
 Consider a family $\mathcal{F}$ consisting of $n$ subsets,
 and consider a configuration $q \in \mathcal{C}$ on which
@@ -786,7 +786,7 @@ and having it return the binary result $r$.
    \centering
    \includegraphics{build/family-belief-graph-example}
    \caption{Example family belief graph
-      for a family for two subsets, $S_1$ and $S_2$.
+      for a family of two subsets, $S_1$ and $S_2$.
       From the initial belief $b_{\ms{init}} = (\mbox{U},\mbox{U})$,
       each transition $(S,r)$ represents invoking
       indicator $\mathbf{1}_S$ with returned binary result $r$.
@@ -908,7 +908,7 @@ is formed by considering the following two propositional arguments:
    \centering
    \includegraphics{build/family-belief-graph-example-wrels}
    \caption{Example family belief graph
-      for a family for two subsets, $S_1$ and $S_2$,
+      for a family of two subsets, $S_1$ and $S_2$,
       with the subset relation that $S_1 \subseteq S_2$.
       Compare this family belief graph
       to Figure~\ref{fig:family:belief-graph-example}
@@ -937,57 +937,130 @@ The family belief graph is shown
 in Figure~\ref{fig:family:appendix-suction-example-graph}
 in Appendix~\ref{chap:appendix-family}.
 
-\vspace{1in}
+\subsection{A Family Utility Model}
 
-\paragraph{Old stuff.}
-The planner represents the list of set relations $\mathcal{R}$
-(Section~??)
-specified in the family problem formulation
-as a set of \emph{logical propositions} $P_{\ms{global}}$
-which are considered globally applicable.
-For example,
-the proposition $\mathbf{1}_A \Rightarrow \mathbf{1}_B$
-follows from the relation $A \subseteq B$
-(see Fig.~\ref{fig:family:relations}).
-In addition,
-each edge $e$ in the roadmap $G$ is augmented with an initially empty
-set $e.P$ containing all additional edge-specific propositions
-known to be true as a result of any indicator functions evaluated
-over that edge.
-For example,
-if planner evaluated the indicator $\mathbf{1}_B[e]$
-and it returned False,
-the proposition $\lnot\mathbf{1}_B$ would be added to $e.P$.
-Together, such sets of propositions can be used as \emph{premises}
-as part of an \emph{argument} to demonstrate a \emph{conclusion};
-a logical solver can then be used validate or invalidate the argument.
-For example, an argument with these premises and conclusion
-$\{ (\mathbf{1}_A \Rightarrow \mathbf{1}_B), (\lnot\mathbf{1}_B) \}
-\Rightarrow (\lnot\mathbf{1}_A)$
-can be shown to be valid.
+A key input to the LEMUR planner from Chapter~\ref{chap:utility}
+is the ensemble edge cost model $\mathcal{M}$
+which captures domain-specific estimates of both the
+execution cost $\hat{x}$ and the remaining planning cost $\grave{p}$
+for each edge on its roadmap.
+How can we take advantage of our family belief graph
+in order to implement such a model for the family
+motion planning problem?
+
+Recall that the formulation of the family motion planning problem
+(Section~\ref{sec:family:formulation})
+includes for each subset indicator function $\mathbf{1}_S$
+an invocation cost estimate $\hat{p}_S$.
+Our key insight is that our ensemble edge cost model
+$\mathcal{M}_{\ms{family}}$ can
+(a) maintain for each edge $e$ its current belief state $b_e$
+within and between each planning query,
+and (b) leverage the family belief graph
+in order to compute for any current edge 
+an optimal optimistic sequence of indicator function invocations
+in order to demonstrate that the edge $e$ is a member of the
+query subset $S_u$.
+
+\paragraph{Beliefs from Configurations to Edges.}
+Paramount in our approach is the ability to reason over edge beliefs.
+So far in Section~\ref{sec:family:approach},
+we have developed a family belief graph $G_{\mathcal{F}}$
+informed by the set of subset relations $\mathcal{R}$
+which allows us to reason about the evolution of our belief
+over the subset memberships of a query configuration $q \in \mathcal{C}$.
+Can we use this same belief graph to reason about edge beliefs as well?
+
+While this is not generally true for arbitrary subset relations,
+we can demonstrate that it is true for the particular relations that
+we are considering -- namely, containments and intersections.
+Consider the following definition
+for a subset $S \subseteq \mathcal{C}$.
+Consider an edge $e \in E$ which corresponds to a particular trajectory
+$\xi_e : [0,1] \rightarrow \mathcal{C}$
+as described in Chapter~\ref{chap:roadmap}.
+We will define edge set membership as:
+\begin{equation}
+   e \in S \iff \xi_e(t) \in S \;\;\forall\;\; t \in [0,1].
+   \label{eqn:family:edge-subset-membership-defn}
+\end{equation}
+Consider the containment relation $A \subseteq B$;
+it can be easily shown by (\ref{eqn:family:edge-subset-membership-defn})
+that if $e \in A$, then $e \in B$.
+A similar statement can be made about the intersection relation
+$A = B \cap C$.
+If $e \in A$, then $e \in B \cap C$ and vice versa.
+
+\begin{marginfigure}
+   \centering
+   \begin{tabular}{cc}
+      \includegraphics{build/relations-disjoint} \\
+      $A = C \setminus B$ \\
+   \end{tabular}
+   \caption{A subset relation which does not carry over directly
+      from configurations to edges.}
+   \label{fig:family:relations-disjoint}
+\end{marginfigure}
+
+An example of a set relation for which the edge membership relations
+do not follow directly from the configuration membership relations
+is shown in Figure~\ref{fig:family:relations-disjoint}.
+In this example,
+the subset relation $A = C \setminus B$ implies that if $q \in A$,
+then $q \notin B$.
+However,
+this is not true in general for edges.
+Fortunately,
+containment and intersection relations are sufficient for all
+instances of family motion planning problems that we consider.
+
+\paragraph{Computing an Optimistic Optimal Belief Policy.}
+Using the invocation cost estimates $\hat{p}_S$
+for each subset $S \in \mathcal{F}$,
+we can create an edge weight function
+$w_{\hat{p}} : E_{\mathcal{F}} \rightarrow \mathbb{R}$ as
+\begin{equation}
+   w_{\hat{p}}(e) = \hat{p}_S \;\mbox{ for }\; e = (S,r).
+\end{equation}
+For the current motion planning query in the $i$-th subset $S_u$,
+we also identify all belief states $b \in V_{\mathcal{F}}$
+for which $b[i] = \mbox{True}$
+as goal vertices,
+and compute an optimal policy over
+the family belief graph $G_{\mathcal{F}}$ using a reverse
+Dijkstra's search.
+An example of this policy is shown
+in Figure~\ref{fig:family:belief-graph-example-wrels-policy}.
+
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/family-belief-graph-example-wrels-policy}
+   \caption{Optimal optimistic belief graph policy
+      for a family of two subsets, $S_1$ and $S_2$,
+      with the subset relation that $S_1 \subseteq S_2$,
+      and with $\hat{p}_1 = 1$ and $\hat{p}_2 = 10$.
+      The query subset is $S_u = S_2$;
+      beliefs for which $b[2] = \mbox{T}$ are goal vertices (green).
+      The value function $d$ is shown for each believe state,
+      and infeasible beliefs
+      (i.e. with $d = \infty$,
+      which are already demonstrably not in the query subset)
+      are shown in green.
+      The edges on the optimal policy are shown in bold.}
+   \label{fig:family:belief-graph-example-wrels-policy}
+\end{marginfigure}
+
+\paragraph{The Belief-Informed Family Utility Model.}
+We are now ready to define the ensemble edge cost utility model
+$\mathcal{M}_{\ms{family}}$.
 
 
 
 
-\paragraph{An Example Family Belief Graph.}
-We form the complete family belief graph for the example problem
-from Figure~\ref{fig:family:example}.
 
-\paragraph{This works for edges too.}
+\vspace{1cm}
 
-The problem is really about beliefs over states.
-Talk about the family graph.
-The belief space is $\mathcal{B}$,
-so we're really planning over $\mathcal{B} \times \mathcal{C}$.
-
-$\mathcal{C} \times \mathcal{B}$.
-
-
-
-\subsection{A Utility Model}
-
-The key to the Family PRM is the ensemble effort model
-$\mathcal{M}_{\ms{multi}}$
+the 
 (Algorithm~\ref{alg:family:effort-model})
 which allows for evaluation of an edge
 as well as estimates of its planning and execution effort
@@ -1000,6 +1073,13 @@ for that edge,
 and as output produces an \emph{optimistic validation certificate}
 consisting of subset indicators which if evaluated would
 validate the membership of the edge in $U$ with lowest effort.
+
+\paragraph{This works for edges too.}
+
+The problem is really about beliefs over states.
+Talk about the family graph.
+The belief space is $\mathcal{B}$,
+so we're really planning over $\mathcal{B} \times \mathcal{C}$.
 
 \begin{algorithm}
 \caption{Family Validitiy Effort Model
