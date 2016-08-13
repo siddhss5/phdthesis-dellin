@@ -1,17 +1,35 @@
 \chapter{Maximizing Utility in Motion Planning}
 \label{chap:utility}
 
-\cdnote{This was the abstract:}
+Up to this point,
+we have considered general optimization problems on graphs:
+given an edge weight function $w : E \rightarrow \mathbb{R}$
+which is expensive to evaluate,
+how can arrive at a minimizing solution path as quickly as possible?
+We saw in Chapters~\ref{chap:lazysp} that the LazySP algorithm
+can take advantage of different edge selectors in order to minimize
+the number of such evaluations,
+and Chapter~\ref{chap:ibid} discussed the IBiD incremental search
+algorithm for efficiently solving the intervening dynamic
+pathfinding problem.
 
-Faced with articulated motion tasks in semi-structured environments,
-autonomous robots must allocate limited resources between planning
+In this chapter,
+we will ask a more fundamental question
+-- what objective should we be optimizing in the first place?
+Chapter~\ref{chap:roadmaps} laid out the functionals
+$x_{\ms{valid}}$ and $x_{\ms{path}}$
+capturing the feasible and optimal motion planning problems,
+respectively.
+But as we report in the introduction,
+robots must allocate limited resources between planning
 motions and subsequently executing them.
 Existing approaches for motion planning in such high-dimensional
 spaces,
 including sampling-based, asymptotically optimal and anytime planners,
 risk either quickly returning a solution that is expensive to execute,
 or spending too much planning effort improving an existing solution.
-Our primary contribution is to imbue 
+
+The primary contribution of this chapter is to imbue 
 lazily-evaluated sampling-based approaches
 with a \emph{utility function}
 which incorporates both planning and execution cost in its objective.
@@ -28,11 +46,49 @@ and is particularly amenable to caching
 %\scnote{Is caching a standard thing in the roadmap planning context?
 %Or if not, do you intend to explain it further?}
 and parallelization.
-We also discuss a configuration space decomposition
-and accompanying planning cost model
-for multi-step manipulation planning tasks.
 
-\section{Introduction}
+\section{Motivation and Related Work}
+
+\begin{figure}
+   \centering
+   \begin{tikzpicture}
+      \node[inner sep=0cm] at (1.9,6.25) {\includegraphics{build/pvx-graph}};
+      \node[inner sep=0cm] at (2.08,2.65) {\includegraphics[width=3.51cm]{build/multiple-sets}};
+      \node[inner sep=0cm] at (6.5,4.77)
+         {\includegraphics[width=4.25cm]{figs/herbarm-snapshot-cropped.png}};
+         
+      \node[fill=white,inner sep=2pt,anchor=west] at (7.5,7.5) {\scriptsize planning: 2.9s};
+      \node[fill=white,inner sep=2pt,anchor=west] at (7.5,7.2) {\scriptsize execution: 5.7s};
+      \draw[thick,->] (7.5,7.35) -- (7.0,6.5);
+      
+      \node[fill=white,inner sep=2pt,anchor=west] at (7.0,2.0) {\scriptsize planning: 2.4s};
+      \node[fill=white,inner sep=2pt,anchor=west] at (7.0,1.7) {\scriptsize execution: 12.4s};
+      \draw[thick,->] (7.8,2.2) -- (8.05,3.2);
+   \end{tikzpicture}
+   \caption[]{
+      A robot reaching to grab a book
+      must allocate limited resources between planning and executing its motion.
+      Our planner reasons over a user-defined utility function (top~left)
+      to explicitly trade-off between these two significant sources
+      of cost.
+      As its roadmap search (right) discovers valid edges
+      (\protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);}),
+      it mediates between
+      high-cost edges that are fast to find~%
+      (\protect\tikz{\protect\draw[blue,ultra thick] (0,0) -- (0.15,0.15);})
+      and low-cost edges that require significant planning~%
+      (\protect\tikz{\protect\draw[green,ultra thick] (0,0) -- (0.15,0.15);})
+      directly via their prospective utilities.
+      Because the planner accepts arbitrary estimators
+      for planning cost,
+      it can naturally exploit both caching and geometric structure in
+      $\mathcal{C}$ (bottom left).
+      \cdnote{Turns out the right HERB example is not a great one
+      -- I'll look for a better one tomorrow
+      (and improve the figure quality itself).}
+      \cdnote{Replace bottom-left with fancy 3D plot?}}
+   \label{fig:fig1}
+\end{figure}
 
 \scnote{General Comment: I did not quite follow how 'marginal' utility applies here. I'm sure it is not the term from probability.
 Do you use marginal to indicate that you optimize for utility?}
@@ -95,47 +151,7 @@ solutions that never get used.
 It can also be difficult to decide when to terminate them.
 We wish to do better.
 
-\begin{figure}
-   \centering
-   \begin{tikzpicture}
-      \node[inner sep=0cm] at (1.9,6.25) {\includegraphics{build/pvx-graph}};
-      \node[inner sep=0cm] at (2.08,2.65) {\includegraphics[width=3.51cm]{build/multiple-sets}};
-      \node[inner sep=0cm] at (6.5,4.77)
-         {\includegraphics[width=4.25cm]{figs/herbarm-snapshot-cropped.png}};
-         
-      \node[fill=white,inner sep=2pt,anchor=west] at (7.5,7.5) {\scriptsize planning: 2.9s};
-      \node[fill=white,inner sep=2pt,anchor=west] at (7.5,7.2) {\scriptsize execution: 5.7s};
-      \draw[thick,->] (7.5,7.35) -- (7.0,6.5);
-      
-      \node[fill=white,inner sep=2pt,anchor=west] at (7.0,2.0) {\scriptsize planning: 2.4s};
-      \node[fill=white,inner sep=2pt,anchor=west] at (7.0,1.7) {\scriptsize execution: 12.4s};
-      \draw[thick,->] (7.8,2.2) -- (8.05,3.2);
-   \end{tikzpicture}
-   \caption[]{
-      A robot reaching to grab a book
-      must allocate limited resources between planning and executing its motion.
-      Our planner reasons over a user-defined utility function (top~left)
-      to explicitly trade-off between these two significant sources
-      of cost.
-      As its roadmap search (right) discovers valid edges
-      (\protect\tikz{\protect\draw[thick] (0,0) -- (0.15,0.15);}),
-      it mediates between
-      high-cost edges that are fast to find~%
-      (\protect\tikz{\protect\draw[blue,ultra thick] (0,0) -- (0.15,0.15);})
-      and low-cost edges that require significant planning~%
-      (\protect\tikz{\protect\draw[green,ultra thick] (0,0) -- (0.15,0.15);})
-      directly via their prospective utilities.
-      Because the planner accepts arbitrary estimators
-      for planning cost,
-      it can naturally exploit both caching and geometric structure in
-      $\mathcal{C}$ (bottom left).
-      \cdnote{Turns out the right HERB example is not a great one
-      -- I'll look for a better one tomorrow
-      (and improve the figure quality itself).}
-      \cdnote{Replace bottom-left with fancy 3D plot?}}
-   \label{fig:fig1}
-\end{figure}
-
+\paragraph{Expressing the Planning vs. Execution Tradeoff.}
 Our goal is to devise an algorithm that \emph{explicitly} reasons over both planning
 and execution cost. Our algorithm should behave like an optimal algorithm 
 if execution cost is critical, and like a randomized algorithm if planning
@@ -169,6 +185,7 @@ This is true for most real-world robot motion planning problems
 where 80-95\% of the planning time
 is dominated by collision-checking.
 
+\paragraph{Lazily Evaluated Marginal Utility Roadmas.}
 When combined, these insights enable a planning approach which
 reason explicitly over utility using online estimates.
 This leads naturally to the
@@ -216,17 +233,9 @@ of potential extensions and applications of our algorithm.
 \section{Utility in Motion Planning}
 \label{sec:utility}
 
-We consider the motion planning problem in a configuration space
-$\mathcal{C}$:
-given the collision-free subset
-$\mathcal{C}_{\ms{free}} \subset \mathcal{C}$
-and configurations
-$q_{\ms{start}}$ and $q_{\ms{goal}}$,
-find a valid path
-$\xi: [0,1] \rightarrow \mathcal{C}_{\ms{free}}$
-with $\xi(0) = q_{\ms{start}}$
-and $\xi(1) = q_{\ms{goal}}$.
-We further consider a cost function
+We consider the optimal motion planning problem
+as described in Chapter~\ref{chap:roadmaps}.
+We consider a cost function
 $x: \Xi \rightarrow \mathbb{R}^+$
 which measures path quality --
 in our case, the cost of executing a solution path.
@@ -237,7 +246,7 @@ each instance admits a path(s) with optimal execution cost $x^*$.
 
 A sound motion planner $A$ accepts a problem instance
 and yields a valid solution path $\xi$
-with execution cost $x(\xi)$.
+with execution cost $x[\xi]$.
 We are also interested in measuring the planning cost incurred by
 the algorithm itself
 via a real-valued performance metric $p$.
@@ -356,7 +365,7 @@ Many planners
 take parameters which profoundly affect both the
 quality of their solutions and the planning cost they incur.
 The range parameter of the RRT \citep{lavallekuffner1999rrt}
-and the inflation factor in Weighted A* \cite{pohl1970weightedastar}
+and the inflation factor in Weighted A* \citep{pohl1970weightedastar}
 are common examples of this.
 However,
 it is difficult to choose the values for these parameters;
@@ -427,7 +436,7 @@ While the planner is running,
 we can decompose its planning estimate $\hat{p}$ for a prospective
 path $\xi$ into two components:
 \begin{equation}
-   \hat{p}(\xi) = \bar{p} + \grave{p}(\xi)
+   \hat{p}(\xi) = \bar{p} + \grave{p}[\xi]
 \end{equation}
 that is,
 the measured planning cost elapsed $\bar{p}$
@@ -577,11 +586,11 @@ can exploit.
    We have:
    \begin{align}
       \xi_i &= \argmax_{\xi \in \Xi_i}
-      \Big[ \, U\big( \, \bar{p}_i \! + \! \grave{p}_i(\xi), \; \hat{x}_i(\xi) \big) \Big] \\
+      \Big[ \, U\big( \, \bar{p}_i \! + \! \grave{p}_i[\xi], \; \hat{x}_i[\xi] \big) \Big] \\
       &= \argmax_{\xi \in \Xi_i}
-      \Big[ \,  U\big( \, \grave{p}_i(\xi), \; \hat{x}_i(\xi) \big) - w_p \, \bar{p}_i \, \Big] \\
+      \Big[ \,  U\big( \, \grave{p}_i[\xi], \; \hat{x}_i[\xi] \big) - w_p \, \bar{p}_i \, \Big] \\
       &= \argmax_{\xi \in \Xi_i}
-      \Big[ \, U\big( \, \grave{p}_i(\xi), \; \hat{x}_i(\xi) \big) \Big]
+      \Big[ \, U\big( \, \grave{p}_i[\xi], \; \hat{x}_i[\xi] \big) \Big]
    \end{align}
 \end{proof}
 
@@ -686,7 +695,10 @@ Algorithm~\ref{alg:utility-search-outline}
 and exploits several properties and assumptions that are
 common in motion planning for articulated robots.
 The planner considers paths constrained to a roadmap graph $G$
-defined a priori in $\mathcal{C}$.
+defined a priori in $\mathcal{C}$,
+and resembles repeated invocations of the LazySP algorithm
+from Chapter~\ref{chap:lazysp}
+on progressively densified roadmaps.
 The set of continuous paths $\Xi$ considered by the planner is
 therefore restricted to the set of paths $\Pi$ on the roadmap.
 
@@ -735,9 +747,8 @@ the per-iteration edge weight function $w_i$
 can be stored as a single scalar value $w$ per edge,
 with only a single edge weight updated per iteration.
 Second,
-an incremental shortest-path algorithm
-such as DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}
-or Lifelong Planning A* \citep{koenig2004lpastar}
+an incremental shortest-path algorithm,
+as described in detail in Chapter~\ref{chap:ibid},
 can be used to efficiently search for candidate paths.
 
 Certain cost estimate models exhibit an approximate form of
@@ -814,7 +825,7 @@ At each iteration $i$,
 the roadmap is searched for a path $\pi_i$
 which maximizes estimated utility according to $\lambda_p$.
 This search uses an incremental search algorithm
-(our experiments use a bidirectional variant of DynamicSWSF-FP).
+(our experiments use the IBiD algorithm from Chapter~\ref{chap:ibid}).
 If no such path exists
 (i.e. all paths have infinite weight),
 the roadmap is expanded with a new batch of vertices and edges.
@@ -1025,9 +1036,20 @@ Chapter~\ref{chap:family}.
 \end{figure}
 
 \begin{figure*}
-   \centering   
+   \begin{widepage}
+   \begin{center}
+    
    \includegraphics{build/lemur-sq/herb-master}
-   \caption[]{Experimental results across six single-query motion planning
+
+   \caption[][99in]{x}
+   \label{fig:lemur:sq-herb-master}
+
+   \end{center}
+   \end{widepage}
+
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:lemur:sq-herb-master}:
+      Experimental results across six single-query motion planning
       instances for a 7-DOF robot arm.
       Top: expected planning cost $p$ (in seconds)
       vs. execution cost $x$ (in radians) for each parameterized
@@ -1047,14 +1069,25 @@ Chapter~\ref{chap:family}.
       \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT-Connect with shortcutting,
       \protect\tikz{\protect\node[fill=green,draw=black]{};}\;BIT*,
       \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;LEMUR (no roadmap cache),
-      and \protect\tikz{\protect\node[fill=black!80,draw=black]{};}\;LEMUR (with roadmap cache).}
-   \label{fig:lemur:sq-herb-master}
+      and \protect\tikz{\protect\node[fill=black!80,draw=black]{};}\;LEMUR (with roadmap cache).
+   
 \end{figure*}
 
 \begin{figure*}
-   \centering
+   \begin{widepage}
+   \begin{center}
+   
    \includegraphics{build/lemur-sq/herb-timing}
-   \caption[]{Time breakdown of LEMUR for each of the six
+
+   \caption[][99in]{x}
+   \label{fig:lemur:sq-herb-timing}
+
+   \end{center}
+   \end{widepage}
+
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:lemur:sq-herb-timing}:
+      Time breakdown of LEMUR for each of the six
       experimental problems across various values of $\lambda_p$.
       Cumulative time is shown performing the following operations:
       \protect\tikz{\protect\node[fill=red!20,draw=black]{};}\;roadmap generation,
@@ -1063,8 +1096,8 @@ Chapter~\ref{chap:family}.
       and \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;unaccounted for.
       The bottom row shows the results of the algorithm over the same
       set of 50 roadmaps when reading the cached roadmap from disk
-      to avoid online nearest-neighbor queries.}
-   \label{fig:lemur:sq-herb-timing}
+      to avoid online nearest-neighbor queries.
+   
 \end{figure*}
 
 \begin{figure*}
@@ -1087,24 +1120,34 @@ Chapter~\ref{chap:family}.
 \end{figure*}
 
 \begin{figure*}
-   \centering
+   \begin{widepage}
+   \begin{center}
+   
    \includegraphics{build/filmstrip}
-   \caption{Illustration of three trajectories generated by LEMUR
+
+   \caption[][99in]{x}
+   \label{fig:filmstrip}
+
+   \end{center}
+   \end{widepage}
+
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:filmstrip}:
+      Illustration of three trajectories generated by LEMUR
       on instance 6 from our experiments.
       The planner was initialized with the parameters
-      $\lambda_p = 0, 0.5,$ and $1$;
+      $\lambda_p = 0, 0.5, \mbox{ and } 1$;
       the same roadmap was used.
       By increasing $\lambda_p$, the planner prefers minimizing
-      planning cost at the expense of more costly solution paths.}
-   \label{fig:filmstrip}
+      planning cost at the expense of more costly solution paths.
 \end{figure*}
 
-\begin{figure*}
-   \centering   
-   \includegraphics{build/lemur-sq/chimp-master}
-   \caption[]{Experimental results across CHIMP motion planning
-      instances for a 7-DOF robot arm.}
-\end{figure*}
+%\begin{figure*}
+%   \centering   
+%   \includegraphics{build/lemur-sq/chimp-master}
+%   \caption[]{Experimental results across CHIMP motion planning
+%      instances for a 7-DOF robot arm.}
+%\end{figure*}
 
 \section{Experiments}
 \label{sec:experiments}
@@ -1145,7 +1188,7 @@ and Batch Informed Trees (BIT*) \citep{gammell2015bitstar}
 as implemented in OMPL version 1.1.0
 with default parameters.
 To address maximal-utility problems,
-RRT-Connect and LBKPIECE were augmented with the default OMPL
+RRT-Connect was augmented with the default OMPL
 path shortcutter.
 For each planner,
 the optimization budget before termination

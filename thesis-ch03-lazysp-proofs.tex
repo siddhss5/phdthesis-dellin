@@ -1,7 +1,9 @@
-\chapter{Appendix: LazySP Proofs}
+\chapter{Appendix: LazySP Proofs and Timing Results}
 \label{sec:appendix-proofs}
 
-\subsection{LazySP}
+\section{LazySP Proofs}
+
+\subsection{Theoretical Properties of LazySP}
 
 \begin{proof}[Proof of Theorem \ref{thm:lazy-optimality}]
 Let $p^*$ be an optimal path w.r.t. $w$,
@@ -293,7 +295,7 @@ $e'_{xy}$ would then be popped from $Q_e$ with $f(e'_{xy}) = \ell'$,
 and it would have been evaluated before $e_{xy}$ with $f(e_{xy}) = \ell$.
 \end{proof}
 
-\chapter{Appendix: LazySP Timing Results}
+\section{LazySP Timing Results}
 \label{sec:appendix-timing}
 
 We include an accounting of the cumulative computation time taken by
@@ -301,8 +303,8 @@ each component of LazySP for each of the seven selectors
 for each problem class (Figure~\ref{fig:table-timing-results}).
 
 \begin{figure*}
-   \begin{widepage}
-   \centering
+   \begin{widepage}%
+   \centering%
    {\small%
    \setlength{\tabcolsep}{0.06cm}%
    \begin{tabular}{l@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r@{\hskip 9pt}rc@{\hskip 0pt}r}
@@ -368,9 +370,11 @@ for each problem class (Figure~\ref{fig:table-timing-results}).
       \bottomrule
    \end{tabular}%
    }%
-   \end{widepage}
-   \vspace{0.5cm}
-   \caption{
+   \caption[][99in]{x}%
+   \label{fig:table-timing-results}%
+   \end{widepage}%
+   \vspace{0.05in}
+   \smallskip\noindent\footnotesize Figure \ref{fig:table-timing-results}:
       Detailed timing results for each selector.
       The actual edge weights for the illustrative
       PartConn and UnitSquare problems were pre-computed,
@@ -386,6 +390,5 @@ for each problem class (Figure~\ref{fig:table-timing-results}).
       three primary steps: the inner search (\emph{search}),
       invoking the edge selector (\emph{sel}),
       and evaluating edges (\emph{eval}).
-      We also show the number of edges evaluated.}
-   \label{fig:table-timing-results}
+      We also show the number of edges evaluated.
 \end{figure*}

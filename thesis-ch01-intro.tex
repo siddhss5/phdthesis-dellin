@@ -32,8 +32,9 @@ and do so under significant resource constraints.
 
 % contributions
 
-\begin{adjustwidth}{0.3in}{0.3in}
-\emph{%
+\vspace{0.2cm}
+\begin{adjustwidth}{0.2in}{0.1in}
+\emph{\large%
 This thesis proposes an
 efficient motion planning approach
 well-suited
@@ -42,13 +43,27 @@ performing recurring multi-step manipulation tasks
 in complex, semi-structured environments.
 }
 \end{adjustwidth}
+\vspace{0.2cm}
+
+We begin by characterizing the challenges inherent in
+motion planning for manipulation tasks.
+We then detail a concerted set of insights which inform our approach.
+The result is a collection of complementary algorithms
+which together demonstrate that outperform
+the current state-of-the-art.
 
 \section{Problem Characterization}
 
-Planning motions for articulated robots in such domains
-presents a number of challenges.
+Planning motions for articulated robots performing manipulation tasks
+presents a number of challenges,
+which we survey here.
 
-\paragraph{High dimensionality.}
+A performant motion planner is only one component in a larger
+robotic system,
+which for many tasks must consider uncertainty, constraints,
+motion control, and error recovery.
+
+\paragraph{High Dimensionality.}
 The continuous configuration spaces induced by robotic arms
 often have higher dimensionality than typical vehicle navigation
 problems.
@@ -57,7 +72,7 @@ this manifests itself as high branching factors
 or costly nearest-neighbor queries,
 and calls for intelligent discretization schemes.
 
-\paragraph{Expensive validity checking.}
+\paragraph{Expensive Validity Checking.}
 The robot and its environment are geometrically complex.
 Homes and disaster areas are cluttered,
 and arms with revolute joints render corresponding 
@@ -69,7 +84,7 @@ to disambiguate feasible paths from colliding ones.
 Testing candidate motions for collision therefore entails a
 large computational cost during planning.
 
-\paragraph{Planning vs. execution allocation.}
+\paragraph{Planning vs. Execution Effort.}
 The robot must allocate its limited resources
 (e.g. time and energy) between planning motions and executing them.
 To maximize task efficiency,
@@ -81,26 +96,86 @@ humans,
 who are particularly intolerant of both unpredictible motion
 and planning pauses.
 
-\paragraph{Semi-structured environments.}
+\paragraph{Semi-Structured Environments.}
 The robot must continually generate planned motions in partially
 changing environments.
 This is especially evident when planning for manipulation tasks,
 where each object grasp and placement changes the collision-free
 subset of configuration space.
 
-A performant motion planner is only one component in a larger
-robotic system,
-which for many tasks must consider uncertainty, constraints,
-motion control, and error recovery.
+\begin{figure*}[t]
+   \centering
+   \begin{tikzpicture}
+      \tikzset{>=latex} % arrow heads
+   
+      \node[draw=black!10,fill=black!1] (motiv) at ((0,0)
+         {\strut Motivation: Motion Planning for Manipulation Tasks};
+
+      \node[draw=black!10,fill=black!1] (roadmaps) at (0,-1.5) {\begin{minipage}{4.7cm}
+         \vspace{0.05cm}\centering\setstretch{0.8}
+         \hyperref[chap:roadmaps]{
+         \strut {\bf Chapter~\ref{chap:roadmaps}:} \\
+         \vspace{0.1cm} Review of Roadmap Methods for Motion Planning\strut
+         }\end{minipage}};
+
+      \node[draw=black!10,fill=black!1] (howopt) at (-4.0,-3.0) {\strut How to Optimize?};
+
+      \node[draw=black!10,fill=black!1] (lazysp) at (-6.0,-4.5) {\begin{minipage}{3.2cm}
+         \vspace{0.05cm}\centering\setstretch{0.8}
+         \hyperref[chap:lazysp]{
+         \strut {\bf Chapter~\ref{chap:lazysp}:} \\
+         \vspace{0.1cm} Fast Pathfinding\\via Lazy Evaluation\strut
+         }\end{minipage}};
+
+      \node[draw=black!10,fill=black!1] (ibid) at (-2.0,-4.5) {\begin{minipage}{3.2cm}
+         \vspace{0.05cm}\centering\setstretch{0.8}
+         \hyperref[chap:ibid]{
+         \strut {\bf Chapter~\ref{chap:ibid}:} \\
+         \vspace{0.1cm} Bidirectional\\Incremental Search\strut
+         }\end{minipage}};
+
+      \node[draw=black!10,fill=black!1] (whatopt) at ( 4.0,-3.0) {\strut What to Optimize?};
+
+      \node[draw=black!10,fill=black!1] (utility) at ( 2.0,-4.5) {\begin{minipage}{3.2cm}
+         \vspace{0.05cm}\centering\setstretch{0.8}
+         \hyperref[chap:utility]{
+         \strut {\bf Chapter~\ref{chap:utility}:} \\
+         \vspace{0.1cm} Maximizing Utility\\in Motion Planning\strut
+         }\end{minipage}};
+
+      \node[draw=black!10,fill=black!1] (family) at ( 6.0,-4.5) {\begin{minipage}{3.2cm}
+         \vspace{0.05cm}\centering\setstretch{0.8}
+         \hyperref[chap:family]{
+         \strut {\bf Chapter~\ref{chap:family}:} \\
+         \vspace{0.1cm} Planning over\\C-Space Families\strut
+         }\end{minipage}};
+
+      \draw[->,thick,black!70] (motiv) -- (roadmaps);
+      \draw[->,thick,black!70] (roadmaps) -- (-4.0,-1.5) -- (howopt);
+      \draw[->,thick,black!70] (roadmaps) -- ( 4.0,-1.5) -- (whatopt);
+      \draw[->,thick,black!70] (howopt) -- (-6.0,-3.0) -- (lazysp);
+      \draw[->,thick,black!70] (howopt) -- (-2.0,-3.0) -- (ibid);
+      \draw[->,thick,black!70] (whatopt) -- ( 2.0,-3.0) -- (utility);
+      \draw[->,thick,black!70] (whatopt) -- ( 6.0,-3.0) -- (family);
+
+   \end{tikzpicture}
+   \caption[][0.3cm]{Outline of the thesis document.
+      Motivated by recurring manipulation tasks,
+      we consider two questions:
+      (a) how to optimize a motion planning objective
+      over a C-space roadmap,
+      and (b) which objective best captures
+      the task's planning/execution tradeoff?}
+
+   \label{fig:intro:outline}
+\end{figure*}
 
 \section{Outline of Approach}
 
 This thesis develops an approach to motion planning
 for articulated robots
 which addresses these four challenges.
-
-\cdnote{From Sidd: add a sweet graph showing the relationship
-between the chapters!}
+We provide an outline of the thesis in Figure~\ref{fig:intro:outline}.
 
 \paragraph{\nameref{chap:roadmaps} (Chapter~\ref{chap:roadmaps})}
 We begin by reviewing the definition of the motion planning problem
@@ -186,7 +261,38 @@ cached checks and multi-step problems.
 
 \section{Summary of Contributions}
 
-\cdnote{Make this into a table of some kind, like the proposal doc?}
+\begin{table*}[t]
+   \centering
+   {\renewcommand{\arraystretch}{1.4}
+   \begin{tabular}{clll}
+      \toprule
+      Ch. & Problem & Algorithm & Description \\
+      \midrule
+      \ref{chap:lazysp} & Shortest Path (SP)
+         & LazySP
+         & {\renewcommand{\arraystretch}{0.8}%
+            \begin{tabular}{@{}l@{}} Lazy search with edge selectors \\
+            (induces an inner Dynamic SP problem)\end{tabular}} \\
+      \ref{chap:ibid} & Dynamic Shortest Path
+         & IBiD & Incremental Bidirectional Dijkstra's algorithm \\
+      \ref{chap:utility} & Motion Planning
+         & LEMUR
+         & {\renewcommand{\arraystretch}{0.8}%
+            \begin{tabular}{@{}l@{}} Lazily Evaluated Marginal Utility Roadmaps \\
+            (accepts a domain-specific cost model)\end{tabular}} \\
+      \ref{chap:family} & Family Motion Planning
+         & Family LEMUR
+         & Express a C-space family as a LEMUR cost model \\
+         %LEMUR over a family of C-space subsets \\
+      \bottomrule
+   \end{tabular}}
+   \caption[][0.5cm]{Table of algorithms developed in this thesis.}
+   \label{table:intro:table-of-algorithms}
+\end{table*}
+
+We summarize the contributions of this thesis here.
+A table of the developed algorithms is presented in
+Table~\ref{table:intro:table-of-algorithms}
 
 \begin{itemize}
 \item The LazySP pathfinding algorithm for graphs with expensive
@@ -216,7 +322,7 @@ cached checks and multi-step problems.
 
 \section{Review of Experimental Platforms and Problem Instances}
 
-\begin{figure*}
+\begin{figure*}[t]
    \centering
    
    \subfloat[The HERB home robot experimenal platform.]{%
