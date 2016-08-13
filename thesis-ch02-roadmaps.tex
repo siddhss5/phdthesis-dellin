@@ -19,7 +19,7 @@ finding such paths for articulated robotics in
 complex semi-structured environments
 is no easy feat,
 and finding such paths quickly and efficiently
-is of upmost important.
+is of upmost importance.
 
 This chapter includes a brief introduction to
 the motion planning problem.
@@ -27,12 +27,12 @@ Due to its paramount importance to robotics,
 variations on this problem have deservedly
 enjoyed a considerable amount of attention over the past 40 years.
 We tailor our investigation towards aspects of the problem
-that are relevant to this thesis.
+that are relevant to this thesis
+-- for a comprehensive treatment,
+we refer the to LaValle \citep{lavalle2006planningbook}.
 In particular,
 we provide an overview of a class of approaches called roadmap methods
 that are well-suited to motion planning for articulated robots.
-For a comprehensive treatment,
-we refer the to LaValle \citep{lavalle2006planningbook}.
 
 \section{The Motion Planning Problem}
 
@@ -47,23 +47,26 @@ we refer the to LaValle \citep{lavalle2006planningbook}.
    \label{fig:roadmaps:movers}
 \end{marginfigure}
 
-The earliest instances of motion planning considered a single rigid
-body moving within a geometric environment consisting of
-fixed obstacles
+The earliest studies of motion planning considered a single rigid
+body moving within a Euclidean environment consisting of
+fixed geometric obstacles
 (Figure~\ref{fig:roadmaps:movers}).
 Termed the \emph{FindPath} or \emph{piano mover's} problem,
 this representation and variations thereof were extensively studied
 \citep{lozanoperezwedley1979collisionfree,
    schwartzsharir1983pianomovers1},
-for various dimensionalities (e.g. two or three)
+for small dimensionalities (e.g. two or three)
 and obstacle representations (e.g. polygonal regions).
 Importantly,
 these earlest problems exhibited two fundamental properties
 inherent in all motion planning problems:
-(a) that solutions, called \emph{paths}, are continuous, and
-(b) that the objective is binary, with any
-prospective path either in collision or collision-free.
-The problem entails finding a non-colliding path if one exists,
+(a) that solutions,
+called \emph{motions} or \emph{paths},
+are continuous, and
+(b) that the fundamental feasibility objective is binary,
+with any prospective path either infeasible (in collision)
+or feasible (collision-free).
+The problem entails finding a feasible solution path if one exists,
 or returning with failure otherwise.
 
 \begin{marginfigure}
@@ -74,37 +77,54 @@ or returning with failure otherwise.
    \label{fig:roadmaps:cspace}
 \end{marginfigure}
 
+\paragraph{The Configuration Space.}
 A generalization of the piano mover's problem
 commonly called the \emph{motion planning problem}
 entails an abstraction of the single rigid body
 to an arbitrary \emph{configuration space} (C-space)
 \citep{lozanoperez1983cspace}.
 Any point $q$ in this abstract space $\mathcal{C}$
-(see Figure~\ref{fig:roadmaps:cspace}),
+(see Figure~\ref{fig:roadmaps:cspace})
 corresponds to a full configuration of the system,
-such has the position and orientation of a rigid body.
+such as the position and orientation of a rigid body.
 Importantly,
 $\mathcal{C}$ can also capture the full configuration (or joint)
 space of an articulated robotic manipulator.
 
 Any point $q \in \mathcal{C}$ corresponds to a particular geometric
 configuration of the robot within its fixed environment.
-If this configuration entails a geometric collision in the workspace
+If this configuration results in a geometric collision in the workspace
 (either between the robot and the environment,
 or the robot with itself),
-this point lies within a \emph{configuration-space obstacle}.
+this point lies within a \emph{configuration-space obstacle},
+e.g. $CO_1$ in Figure~\ref{fig:roadmaps:cspace}.
 The union of these configurations comprises the set of obstacle
-configurations $\mathcal{C}_{\ms{obs}}$.
-Collision-free configurations and paths must be contained entirely
-in the complement of this set,
+configurations $\mathcal{C}_{\ms{obs}}$,
+and a configuration $q$ is collision free if
+it is contained within the complement of this set
 $\mathcal{C}_{\ms{free}} = \mathcal{C} \setminus \mathcal{C}_{\ms{obs}}$.
+
+\paragraph{Paths in $\mathcal{C}$.}
+A continuous function $\xi : [0,1] \rightarrow \mathcal{C}$
+of bounded variation is called a \emph{path},
+and let the set $\Xi$ denote the set of such paths.
+We can then establish path validity:
+\begin{equation}
+   \mbox{path $\xi$ is valid} \iff
+   \xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \in [0,1]
+   \label{eqn:roadmaps:path-validity}
+\end{equation}
+We can capture this defininition for use in an optimization
+framework via the functional
+$x_{\ms{valid}} : \Xi \rightarrow \mathbb{R}$
+shown in Figure~\ref{fig:roadmaps:cost-model-feasible}.
 
 \begin{marginfigure}
    \centering
    \begin{tikzpicture}
       \node at (0,0) {
          $\arraycolsep=5pt%
-         x_{\ms{feas}}[\xi] = \left\{ \begin{array}{cl}
+         x_{\ms{valid}}[\xi] = \left\{ \begin{array}{cl}
             0 & \mbox{if } \xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \\
             \infty & \mbox{otherwise} \\
          \end{array} \right.$
@@ -115,16 +135,14 @@ $\mathcal{C}_{\ms{free}} = \mathcal{C} \setminus \mathcal{C}_{\ms{obs}}$.
    \label{fig:roadmaps:cost-model-feasible}
 \end{marginfigure}
 
-A path $\xi : [0,1] \rightarrow \mathcal{C}$
-is called collision-free if
-$\xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \in [0,1]$.
-A continuous path $\xi$ satisfies a particular motion planning query
-with start and goal configurations $q_{\ms{start}}$ and $q_{\ms{goal}}$
-if $\xi(0) = q_{\ms{start}}$ and $\xi(1) = q_{\ms{goal}}$.
-This is the motion planning problem.
-We can capture the collision constraint by minimizing
-the functional objective $x_{\ms{feas}}$
-given in Figure~\ref{fig:roadmaps:cost-model-feasible}.
+\paragraph{The Motion Planning Problem.}
+Consider a single-pair motion planning query $u$
+consisting of start and destination vertices
+$q_{\ms{start}}, q_{\ms{dest}} \in \mathcal{C}$
+as well as a collision-free subset $\mathcal{C}_{\ms{free}}$.
+The motion planning problem consists of finding a valid path $\xi^*$
+with $\xi^*(0) = q_{\ms{start}}$ and $\xi^*(1) = q_{\ms{dest}}$
+if one exists.
 
 \subsection{Optimal Motion Planning}
 
@@ -143,7 +161,7 @@ given in Figure~\ref{fig:roadmaps:cost-model-feasible}.
 
 The \emph{optimal motion planning problem}
 is a generalization of the motion planning problem which
-includes an objective over solution paths
+includes an additional objective over solution paths
 $x_{\ms{path}} : \Xi \rightarrow \mathbb{R}$
 intended to measure properties intrinsic to the path.
 Common choices for $x_{\ms{path}}$ include
@@ -155,9 +173,9 @@ of sampling-based methods for the optimal motion planning problem.
 
 \marginnote{An optimal moption planner
    typically considers both feasibility dynamical properties of candidate paths --
-   this objective is simply $x_{\ms{opt}} = x_{\ms{feas}} + x_{\ms{path}}$.
+   this objective is simply $x_{\ms{opt}} = x_{\ms{valid}} + x_{\ms{path}}$.
    We treat them separately because they exhibit fundamentally different
-   computational efficiency.}
+   computational profiles.}
 
 \subsection{Further Generalizations}
 
@@ -182,50 +200,54 @@ have been proposed to accommodate such constraints.
 
 \section{Motion Planning by Discretizing C-Space}
 
-We give a brief review of approaches to motion planning that rely
-on discretizations of the configuration space.
+We give a brief review of approaches to the motion planning problem
+that rely principally on discretizations of the configuration space.
 
 \subsection{Building Graphs in C-Space}
 \label{subsec:roadmaps:building-graphs}
 
-The formulation of motion planning via the configuration space
-raises the question:
-how can we test whether a motion is collision-free?
+\paragraph{Testing Validity of Configurations}
+How can we establish the validity of a configuration $q$?
 This question is especially delicate when the geometry is complex
 and the configuration-space obstacles cannot be represented explicitly.
 In this case,
-it is necessary to test prospective configurations and motions
-for membership in $\mathcal{C}_{\ms{free}}$ using indicator functions.
+it is necessary to test prospective paths
+for membership in $\mathcal{C}_{\ms{free}}$ using a predicate
+called an \emph{indicator function},
 \begin{equation}
-   \mathbf{1}_{\mathcal{C}\ms{free}} : \mathcal{C} \rightarrow \{ \mbox{True}, \mbox{False} \} 
+   \mathbf{1}_{\mathcal{C}\ms{free}} : \mathcal{C} \rightarrow
+      \{ \mbox{True}, \mbox{False} \} 
    \mbox{\quad s.t. \quad}
-   \mathbf{1}_{\mathcal{C}\ms{free}}(q) = 1 \mbox{ iff } q \in \mathcal{C}_{\ms{free}}.
+   \mathbf{1}_{\mathcal{C}\ms{free}}(q) = \mbox{True} \mbox{ iff } q \in \mathcal{C}_{\ms{free}}.
 \end{equation}
 Note that implementing $\mathbf{1}_{\mathcal{C}\ms{free}}$ for an articulated robot
 entails computing the forward kinematics of the robot at the
 query configuration,
-and running a collision check in the workspace.
+and conducting a collision check in the workspace.
 
-We can rely on the functional variant to test a path $\xi$:
+\paragraph{Testing Validity of Paths}
+How can we establish the validity of a path $\xi$
+according to (\ref{eqn:roadmaps:path-validity})?
+There are many approaches that can be applied,
+including C-space bubbles \citep{quinlan1994modification}
+and computing a path discretization resolution and corresponding
+workspace obstacle padding
+\citep{barraquand1991distributedrepresentation}.
+We will simply assume that a functional variant of the indicator
+function is available:
 \begin{equation}
    \mathbf{1}_{\Xi\ms{free}} : \Xi \rightarrow
       \{ \mbox{True}, \mbox{False} \} 
 \end{equation}
-Talk about committing to a resolution to test with,
-which is what we do in this thesis.
-Note that this is only an approximation.
-You should pad your obstacles so you don't plan through wires.
-But also link to C-space bubble stuff
-\citep{quinlan1994modification}.
 
-\paragraph{Composing Motions.}
+\paragraph{Motion Planning as Pathfinding.}
 Importantly,
 two paths $\xi_{ab}$ and $\xi{bc}$ with $\xi_{ab}(1) = \xi_{bc}(0)$
 can be concatenated to a path $\xi{ac}$,
 with
 \begin{equation}
    \mathbf{1}_{\Xi\ms{free}}(\xi_{ab})
-   \;\cap\;
+   \;\land\;
    \mathbf{1}_{\Xi\ms{free}}(\xi_{bc})
    \iff
    \mathbf{1}_{\Xi\ms{free}}(\xi_{ac}).
@@ -233,21 +255,30 @@ with
 This motivates approaches which maintain a graph structure of
 smaller valid motions in the configuration space.
 Consider a graph $G = (V,E)$,
-with each vertex $v \in V$ a configuration $q \in \mathcal{C}$
-and each edge $e \in E$ a path $\xi$
-s.t.  $\mathbf{1}_{\Xi\ms{free}}(\xi) = \mbox{True}$.
-If $v_{\ms{start}}, v_{\ms{goal}} \in V$
-correspond to the query vertices $q_{\ms{start}}, q_{\ms{goal}}$,
+with each vertex $v \in V$ a configuration $q_v \in \mathcal{C}$,
+and each edge $e_{uv} \in E$ a path $\xi_e \in \Xi$
+s.t. $\xi(0) = q_u$ and $\xi(1) = q_v$.
+If $v_{\ms{start}}, v_{\ms{dest}} \in V$
+correspond to the query vertices $q_{\ms{start}}, q_{\ms{dest}}$,
 then a path $p$ through $G$ from
-$v_{\ms{start}}$ to $v_{\ms{goal}}$
-corresponds to a collision-free solution to the motion planning problem.
+$v_{\ms{start}}$ to $v_{\ms{dest}}$
+corresponds to a valid solution to the motion planning problem.
+
+\paragraph{Optimal Motion Planning as Pathfinding.}
+Furthermore,
+if the optimization objective $x_{\ms{path}}$
+from Figure~\ref{fig:roadmaps:cost-model-path} is \emph{additive},
+then the optimal motion planning problem can be solved on $G$
+via a shortest path algorithm
+(at least up to the discretization afforded by the graph).
+This is accomplished by defining an edge weight function
+$w : E \rightarrow \mathbb{R}$
+by $w(e) = x_{\ms{opt}}(\xi_e)$.
 
 The approach for constructing, searching, and validating this graph
 differs significantly between algorithms.
 We will broadly review different options in
 Section~\ref{sec:roadmaps:sensitivity}.
-
-\cdnote{Talk about execution costs that are additive!}
 
 %\paragraph{Resolution and Probabalistic Completeness.}
 %Any discretization is only an approximation of the actual configuration
@@ -257,15 +288,15 @@ Section~\ref{sec:roadmaps:sensitivity}.
 %Hopefully, you can choose a discretization strategy that allows your
 %algorithm to have one or both of these forms of completeness.
 
-\paragraph{Motion Planning as Pathfinding.}
-\label{subsec:roadmaps:planning-as-pathfinding}
-Here, talk about how even if there are multiple available
-start or goal configurations
-(e.g. different grasps or inverse kinematics solutions),
-the motion planning problem can still be posed as a
-single-pair shortest path (SPSP) problem
-by augmenting the graph with virtual source sink vertices
-and edges.
+%\paragraph{Motion Planning as Pathfinding.}
+%\label{subsec:roadmaps:planning-as-pathfinding}
+%Here, talk about how even if there are multiple available
+%start or goal configurations
+%(e.g. different grasps or inverse kinematics solutions),
+%the motion planning problem can still be posed as a
+%single-pair shortest path (SPSP) problem
+%by augmenting the graph with virtual source sink vertices
+%and edges.
 
 \paragraph{Other Approaches to Motion Planning.}
 The motion planning problem affords a number of different classes of
@@ -464,12 +495,14 @@ Algorithms such as BIT* \citep{gammell2015bitstar}
 consider a sequence of progressively densified approximations
 in order to produce an anytime sequence of improving solution paths.
 
+\cdnote{Relate this to the C-space pyramids approach from
+\citep{barraquand1991distributedrepresentation}.}
+
 \begin{figure}
    \centering
    \includegraphics{build/roadmap-stack}
    \caption{A stack of progressively densified roadmaps
-      over a given free subset of configuration space
-      $\mathcal{C}_{\ms{free}}$.}
+      over a given free configuration space $\mathcal{C}$.}
 \end{figure}
 
 \paragraph{Advantages of Obstacle Insensitivity.}
