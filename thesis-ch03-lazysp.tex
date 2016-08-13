@@ -1,18 +1,23 @@
 \chapter{Fast Pathfinding on Graphs via Lazy Evaluation}
 \label{chap:lazysp}
 
-\cdnote{Important caveat: due to roadmap edges sharing vertices,
-edges adjacent to evaluated edges will also change cost!}
-
-While the shortest path problem has myriad applications,
+The roadmap methods described in Chapter~\ref{chap:roadmaps}
+create a discretization of the configuration space by way of
+a graph $G = (V,E)$.
+This allows the motion planning problem to be solved by way of
+a pathfinding algorithm on $G$
+-- and there are a large variety of such algorithms available
+in the literature to choose from.
+However,
 the computational efficiency of suitable algorithms
 depends intimately on the underlying problem domain.
+
 In this chapter,
-we focus on domains where evaluating the edge weight function
+we consider the general shortest path problem
+with a particular focus on domains (such as robot motion planning)
+where evaluating the edge weight function
 dominates algorithm running time.
-%\ajnote{I don't find out what this paper's contribution is
-%until the 3rd sentence ... start stronger!}
-Inspired by approaches in robotic motion planning,
+Inspired by lazy approaches in robotics,
 we define and investigate the \emph{Lazy Shortest Path} class of
 algorithms which is differentiated by the choice of
 an \emph{edge selector} function.
@@ -51,7 +56,7 @@ existing algorithms on a set of example problems.
 \label{fig:sp-intro}
 \end{figure}
 
-\section{Introduction}
+\section{The Shortest Path Problem}
 
 Graphs provide a powerful abstraction
 capable of representing problems in a wide variety of domains
