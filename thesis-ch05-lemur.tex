@@ -1158,6 +1158,25 @@ nearest neighbor caching,
 with time breakdowns for each shown in
 Figure~\ref{fig:lemur:sq-herb-timing}.
 
+\begin{figure}
+   \centering
+   \includegraphics{build/lemur-sq/chimp-valve-drc001-20131221-102450p936-CBRT}
+   \caption{Comparison of measured planning time $p$ and solution
+      execution cost $x$ for the first step of a CHIMP valve turning task.
+      Results for four parameterized planners are shown:
+      RRT-Connect~(\protect\tikz{\protect\node[fill=red,draw=black]{};}),
+      BIT*~(\protect\tikz{\protect\node[fill=green,draw=black]{};}),
+      Lazy~ARA*~(\protect\tikz{\protect\node[fill=cyan,draw=black]{};}),
+      and LEMUR~(\protect\tikz{\protect\node[fill=black!90,draw=black]{};}).
+      The LEMUR results show the effect of adjusting the $\lambda_p$
+      tradeoff parameter from $0$ (lower right) to $0.99$ (upper left).
+      The results for other planners show the affect of changing the
+      total optimization time after the first returned solution.
+      Also shown for reference are the contours for the
+      $\lambda_U = 0.50$ utility function (i.e. 1~rad =~1~sec).
+      }
+\end{figure}
+
 The relative performance between the planners varies
 significantly between the six instances considered.
 For example, BIT* performs very well on some instances
