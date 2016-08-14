@@ -11,7 +11,20 @@
    xlabel near ticks,
    ylabel near ticks,
    xmin=0,xmax=20,
+   ymin=35,ymax=110,
+   axis on top,
    ]
+
+   \draw[black!14.5,fill=black!4.5] (axis cs:0,35) -- (axis cs:0,135) -- (axis cs:100,35) -- cycle;
+   \draw[black!14.0,fill=black!4.0] (axis cs:0,35) -- (axis cs:0,125) -- (axis cs: 90,35) -- cycle;
+   \draw[black!13.5,fill=black!3.5] (axis cs:0,35) -- (axis cs:0,115) -- (axis cs: 80,35) -- cycle;
+   \draw[black!13.0,fill=black!3.0] (axis cs:0,35) -- (axis cs:0,105) -- (axis cs: 70,35) -- cycle;
+   \draw[black!12.5,fill=black!2.5] (axis cs:0,35) -- (axis cs:0, 95) -- (axis cs: 60,35) -- cycle;
+   \draw[black!12.0,fill=black!2.0] (axis cs:0,35) -- (axis cs:0, 85) -- (axis cs: 50,35) -- cycle;
+   \draw[black!11.5,fill=black!1.5] (axis cs:0,35) -- (axis cs:0, 75) -- (axis cs: 40,35) -- cycle;
+   \draw[black!11.0,fill=black!1.0] (axis cs:0,35) -- (axis cs:0, 65) -- (axis cs: 30,35) -- cycle;
+   \draw[black!10.5,fill=black!0.5] (axis cs:0,35) -- (axis cs:0, 55) -- (axis cs: 20,35) -- cycle;
+   \draw[black!10.0,fill=black!0.0] (axis cs:0,35) -- (axis cs:0, 45) -- (axis cs: 10,35) -- cycle;
 
    \addplot
       plot[color=red,mark options={color=red},mark options={scale=0.5},

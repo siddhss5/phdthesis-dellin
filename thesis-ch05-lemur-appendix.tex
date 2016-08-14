@@ -1,0 +1,86 @@
+\chapter{Appendix: LEMUR}
+\label{chap:appendix-utility}
+
+\begin{figure*}
+   \begin{widepage}
+   \begin{center}
+    
+   \includegraphics{build/lemur-sq/herb-master}
+
+   \caption[][99in]{x}
+   \label{fig:lemur:sq-herb-master}
+
+   \end{center}
+   \end{widepage}
+
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:lemur:sq-herb-master}:
+      Experimental results across six single-query motion planning
+      instances for a 7-DOF robot arm.
+      Top: expected planning cost $p$ (in seconds)
+      vs. execution cost $x$ (in radians) for each parameterized
+      planner for various values of their parameters.
+      Bottom: the mean negative utility
+      $-U = \lambda_U p + (1\!-\!\lambda_U) x$
+      (solid lines) measured for each planner
+      (lower on plot is better) as the
+      utility parameter $\lambda_U$ is varied.
+      The 95\% confidence interval of the mean is also shown.
+      Planners used the same parameter schedule across the problems
+      as shown in Figure~\ref{fig:herbarm-schedules}.
+      The per-problem maximum acheivable mean utilities
+      (\ref{eqn:oracle-param-schedule})
+      for each planner are shown as dotted lines.
+      Planners are
+      \protect\tikz{\protect\node[fill=red,draw=black]{};}\;RRT-Connect with shortcutting,
+      \protect\tikz{\protect\node[fill=green,draw=black]{};}\;BIT*,
+      \protect\tikz{\protect\node[fill=blue,draw=black]{};}\;LEMUR (no roadmap cache),
+      and \protect\tikz{\protect\node[fill=black!80,draw=black]{};}\;LEMUR (with roadmap cache).
+   
+\end{figure*}
+
+\begin{figure*}
+   \begin{widepage}
+   \begin{center}
+   
+   \includegraphics{build/lemur-sq/herb-timing}
+
+   \caption[][99in]{x}
+   \label{fig:lemur:sq-herb-timing}
+
+   \end{center}
+   \end{widepage}
+
+   \vspace{0.1in}
+   \smallskip\noindent\small Figure \ref{fig:lemur:sq-herb-timing}:
+      Time breakdown of LEMUR for each of the six
+      experimental problems across various values of $\lambda_p$.
+      Cumulative time is shown performing the following operations:
+      \protect\tikz{\protect\node[fill=red!20,draw=black]{};}\;roadmap generation,
+      \protect\tikz{\protect\node[fill=blue!20,draw=black]{};}\;graph search,
+      \protect\tikz{\protect\node[fill=green!20,draw=black]{};}\;collision checking,
+      and \protect\tikz{\protect\node[fill=black!20,draw=black]{};}\;unaccounted for.
+      The bottom row shows the results of the algorithm over the same
+      set of 50 roadmaps when reading the cached roadmap from disk
+      to avoid online nearest-neighbor queries.
+   
+\end{figure*}
+
+\begin{figure*}
+   \begin{widepage}
+   \centering   
+   \includegraphics{build/lemur-sq/workcell-master}
+   \end{widepage}
+   \caption{$p$-vs-$x$ and utility results for each step in the
+      workcell problem.}
+   \label{fig:lemur:sq-workcell-master}
+\end{figure*}
+
+\begin{figure*}
+   \begin{widepage}
+   \centering   
+   \includegraphics{build/lemur-sq/workcell-timing}
+   \end{widepage}
+   \caption{Timing results for each step in the workcell problem.}
+   \label{fig:lemur:sq-workcell-timing}
+\end{figure*}
