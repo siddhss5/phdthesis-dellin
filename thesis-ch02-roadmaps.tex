@@ -29,7 +29,8 @@ enjoyed a considerable amount of attention over the past 40 years.
 We tailor our investigation towards aspects of the problem
 that are relevant to this thesis
 -- for a comprehensive treatment,
-we refer the to LaValle \citep{lavalle2006planningbook}.
+we refer to LaValle \citep{lavalle2006planningbook}
+and Choset et. al. \citep{choset2005robotmotion}.
 In particular,
 we provide an overview of a class of approaches called roadmap methods
 that are well-suited to motion planning for articulated robots.
@@ -200,6 +201,10 @@ have been proposed to accommodate such constraints.
 
 \section{Motion Planning by Discretizing C-Space}
 
+While the generalized mover's problem is computationally hard
+\citep{reif1979moverscomplexity},
+a large array of algorithms have been proposed that perform
+well on a large range of typical instances.
 We give a brief review of approaches to the motion planning problem
 that rely principally on discretizations of the configuration space.
 
@@ -301,8 +306,11 @@ Section~\ref{sec:roadmaps:sensitivity}.
 \paragraph{Other Approaches to Motion Planning.}
 The motion planning problem affords a number of different classes of
 algorithms.
-One such class which is especially well-suited to easier instances
-is trajectory optimization.
+The potential field methods \citep{khatib1986potentialfields}
+construct fields whose gradients can guide a path around
+local obstacles.
+Trajectory optimization approaches are especially well-suited to
+planning instances in which the basins of attraction are large.
 Approaches such as CHOMP \citep{zucker2013chomp}
 and TrajOpt \citep{schulman2013trajopt})
 commit to a trajectory representation for $\xi^{(1)}$
@@ -394,9 +402,18 @@ of these planners \citep{karaman2010rrtstar}.
 One key advantage to obstacle-sensative approaches is that
 they only construct the graph structure in the parts of the
 configuration space that are relevant to the planning query.
-The Vornoi bais of the RRT or the importance sampling of the EST
+The Vornoi bias of the RRT or the importance sampling of the EST
 attempt to focus sampling graph construction in ares
 which tend to improve the current solution.
+These techniques can also take account of the current distribution
+and connectivity of the discretization in order to focus new
+samples to their advantage
+(e.g. to address the narrow passage problem),
+such as the expansion phase of the original PRM
+\citep{kavrakietal1996prm}.
+Also obstacle-based \citep{boor1999prmgaussiansampling}
+and hybrid \citep{hsu2005hybridsampling}
+sampling strategies.
 
 Another advantage is that these algorithms handle densification
 naturally;
@@ -657,6 +674,9 @@ Unless otherwise noted,
 we build roadmaps directly in the joint space of the robot.
 See Table~\ref{table:roadmap-params} for the roadmap parameters
 that we use.
+
+\cdnote{Add a plot of roadmap sizes for each batch
+for each robotic platform}.
 
 %\subsection{Dispersion}
 %

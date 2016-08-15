@@ -1745,13 +1745,23 @@ in the results of Figure~\ref{fig:ibid:road-ne-stats}.
 
 Efforts to integrate heuristics into incremental search algorithms
 have taken a similar potential function approach.
+\cdnote{Add D* cites!}
 Koenig et. al. developed Lifelong Planning A* \citep{koenig2004lpastar},
 which implicitly applies this transformation
 and then applies the DynamicSWSF-FP incremental algorithm
 \citep{ramalingam1996dynamicswsffp}
 from Section~\ref{sec:ibid:incremental}
 to solve the dynamic problem.
+This approach has resulted in a number of commonly used algorithms
+such as D* Lite \citep{koenig2002dstarlite},
+Field D* \citep{ferguson2007fielddstar},
+and Anytime D* \citep{likhachevetal2008anytimedynamic}.
+\marginnote{We consider only optimal algorithms (with admissible
+heuristics); for an extentension to inflated search,
+see \citep{aine2016truncatedincremental}.}
+
 However,
+as discussed in Section~\ref{sec:ibid:incremental},
 the underlying incremental algorithm has a stricter requirements:
 while Dijkstra's algorithm requires $w \geq 0$,
 Theorem~\ref{thm:ibid-dynamicswsffp-sound} governing

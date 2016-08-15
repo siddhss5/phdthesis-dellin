@@ -10,7 +10,7 @@ Computer algorithms now trade our stocks,
 route our telephone calls and packages,
 and fly our planes,
 while simple machines clean our clothes and wash our dishes.
-Recent advances may soon enable real-world nagivation applications
+Recent advances may soon enable real-world navigation applications
 such as autonomous automobiles and drones.
 
 More complex tasks require robots with many degrees of freedom.
@@ -76,7 +76,7 @@ and calls for intelligent discretization schemes.
 The robot and its environment are geometrically complex.
 Homes and disaster areas are cluttered,
 and arms with revolute joints render corresponding 
-configuration space obstacles intractible to consider explicitly.
+configuration space obstacles intractable to consider explicitly.
 Further, since manipulation tasks require
 motions that begin and end close to collisions with objects,
 geometric models must have sufficiently high fidelity
@@ -93,7 +93,7 @@ it is essential that motions be neither under-optimized
 nor over-optimized (resulting in long planning pauses).
 This balance is especially important for tasks with or around
 humans,
-who are particularly intolerant of both unpredictible motion
+who are particularly intolerant of both unpredictable motion
 and planning pauses.
 
 \paragraph{Semi-Structured Environments.}
@@ -304,8 +304,11 @@ Table~\ref{table:intro:table-of-algorithms}
 \item Formulation of the C-space family motion planning problem,
    and application of LEMUR to it.
 \item An experimental evaluation of the above algorithms against a
-   selection of motion planning tasks.
-\item Open-source implementations of the above algorithms for the
+   selection of motion planning problems drawn from manipulation tasks.
+\item Open-source implementations\footnote[][1cm]{\texttt{%
+   https://github.com/personalrobotics/lemur}%
+   }
+   of the above algorithms for the
    Boost Graph Library (BGL) \citep{siek2001boostgraph},
    Open Motion Planning Library (OMPL), \citep{sucan2012ompl}
    and OpenRAVE \citep{diankov2010openrave} software packages.
@@ -325,7 +328,7 @@ Table~\ref{table:intro:table-of-algorithms}
 \begin{figure*}[t]
    \centering
    
-   \subfloat[The HERB home robot experimenal platform.]{%
+   \subfloat[The HERB home robot experimental platform.]{%
       \includegraphics[height=3.25cm]{figs/simple-table-clearing-task.png}
       \includegraphics[height=3.25cm]{figs/herbarm-traj0-t000.png}
       \label{subfig:intro:platform-herb}
@@ -348,16 +351,27 @@ Table~\ref{table:intro:table-of-algorithms}
 \end{figure*}
 
 We consider a number of motion and manipulation planning instances
-across three robotic platforms:
+across three robotic platforms.
+The tasks performed by each robot are described in more detail
+along with the experimental results
+in Chapters~\ref{chap:utility} and~\ref{chap:family}.
 \begin{itemize}
 \item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-herb}:
    HERB, the Home Exploring Robot Butler
    \citep{srinivasa2012herb20}.
+   HERB is composed of 7-DOF Barrett WAM arms mounted on a mobile base,
+   and performs home tasks such as table clearing and retrieving objects.
 \item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-irb4400}:
    IRB 4400, a compact industrial robot from ABB.
+   We consider a sheet metal bending application example
+   in an industrial workcell,
+   which is reproduced from the Lazy PRM paper
+   \citep{bohlin2000lazyprm}.
 \item Figure~\ref{fig:intro:platforms}\subref{subfig:intro:platform-chimp}:
    CHIMP, the CMU Highly Intelligent Mobile Platform
    \citep{stentz2014chimp}.
+   We include results on planning data from the DRC Robotics Challenge
+   Trials in December, 2013.
 \end{itemize}
 
 \cdnote{Forward ref to experimental evaluation sections.}
