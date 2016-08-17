@@ -1,0 +1,74 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}%
+\begin{tikzpicture}[font=\small]
+
+   % graph start
+   \coordinate (va) at ( 2.0,4.0);
+   \coordinate (vb) at ( 3.5,4.7);
+   \coordinate (vc) at ( 4.0,5.9);
+   \coordinate (vd) at ( 5.5,4.5);
+   \coordinate (ve) at ( 8.0,5.0);
+   \coordinate (vf) at (10.0,4.0);
+   \coordinate (vg) at ( 1.5,5.0);
+   \coordinate (vh) at ( 4.0,3.5);
+   \coordinate (vi) at ( 7.0,3.2);
+   \coordinate (vj) at ( 6.5,5.5);
+   \coordinate (vk) at ( 9.0,3.5);
+   
+   %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+   %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+   
+   \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+   \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   
+   \draw[solid,ultra thick] (va) -- (vb) coordinate [midway] (eab);
+   \draw[dashed] (vb) -- (vc) coordinate [midway] (ebc);
+   \draw[solid,ultra thick,red] (vb) -- (vd) coordinate [midway] (ebd);
+   \draw[dashed] (vc) -- (vd) coordinate [midway] (ecd);
+   \draw[dashed] (vd) -- (ve) coordinate [midway] (ede);
+   \draw[solid,ultra thick] (ve) -- (vf) coordinate [midway] (eef);
+   \draw[dashed] (va) -- (vg) coordinate [midway] (eag);
+   \draw[dashed] (vb) -- (vg) coordinate [midway] (ebg);
+   \draw[dashed] (va) -- (vh) coordinate [midway] (eah);
+   \draw[dashed] (vd) -- (vh) coordinate [midway] (edh);
+   \draw[dashed] (vb) -- (vh) coordinate [midway] (ebh);
+   \draw[dashed] (vd) -- (vi) coordinate [midway] (edi);
+   \draw[dashed] (ve) -- (vi) coordinate [midway] (eei);
+   \draw[dashed] (vc) -- (vj) coordinate [midway] (ecj);
+   \draw[dashed] (vd) -- (vj) coordinate [midway] (edj);
+   \draw[dashed] (ve) -- (vj) coordinate [midway] (eej);
+   \draw[dashed] (vf) -- (vk) coordinate [midway] (efk);
+   \draw[dashed] (vi) -- (vk) coordinate [midway] (eik);
+   \draw[dashed] (ve) -- (vk) coordinate [midway] (eek);
+
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eab) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebc) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebd) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecd) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ede) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eef) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eag) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebg) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eah) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edh) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebh) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edi) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eei) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecj) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edj) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eej) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (efk) {?};
+   %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eik) {?};
+
+\end{tikzpicture}
+\end{document}

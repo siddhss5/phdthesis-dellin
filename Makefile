@@ -2,7 +2,7 @@
 # requirements: GNU make, latexmk, pdflatex
 
 #DOCS = proposal proptalk thesis lazysptalk
-DOCS = thesis proposal
+DOCS = thesis defense
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
 all: $(DOCPDFS)

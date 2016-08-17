@@ -1,0 +1,132 @@
+\documentclass[serif,10pt]{beamer}
+
+\def\gridopacity{100}
+%\def\gridopacity{0}
+
+\usepackage{multimedia}
+
+% see http://tex.stackexchange.com/a/24491
+% for how to use enumitem with beamer
+\usepackage{enumitem}
+\setitemize{label=\usebeamerfont*{itemize item}%
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}}
+
+% default page size is:
+% \beamer@paperwidth 12.80cm%
+% \beamer@paperheight 9.60cm%
+
+\setbeamersize{text margin left=0.4cm,text margin right=0.4cm}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,decorations.pathreplacing,positioning}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+\usepackage[clock,misc]{ifsym} % for \showclock
+
+% pretty tables
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% this is from http://tex.stackexchange.com/a/103691
+% taken from manual
+\makeatletter
+\pgfdeclareshape{document}{
+\inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+\inheritanchorborder[from=rectangle]
+\inheritanchor[from=rectangle]{center}
+\inheritanchor[from=rectangle]{north}
+\inheritanchor[from=rectangle]{south}
+\inheritanchor[from=rectangle]{west}
+\inheritanchor[from=rectangle]{east}
+% ... and possibly more
+\backgroundpath{% this is new
+% store lower right in xa/ya and upper right in xb/yb
+\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+% compute corner of ‘‘flipped page’’
+\pgf@xc=\pgf@xb \advance\pgf@xc by-10pt % this should be a parameter
+\pgf@yc=\pgf@yb \advance\pgf@yc by-10pt
+% construct main path
+\pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+\pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+\pgfpathclose
+% add little corner
+\pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+}
+}
+\makeatother
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% symbols
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb} % for \square
+% non-italicized math subscripts
+\newcommand{\ms}[1]{\mbox{\scriptsize #1}}
+% from http://tex.stackexchange.com/a/5255
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% fonts
+\renewcommand\rmdefault{pplx}
+\renewcommand\mathfamilydefault{cmr}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{page number in head/foot}{size=\large}
+%\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{footline}{%
+   \raisebox{7pt}{\makebox[\paperwidth]{%
+   \hfill\makebox[10pt]{\textcolor{gray}{%
+   \large\insertframenumber\hspace{0.1in}}}}}}
+
+% dont number title page
+\addtocounter{framenumber}{-1}
+
+\title{Completing Manipulation Tasks Efficiently\\in Complex Environments}
+\author{Christopher M. Dellin}
+\date{August 22, 2016}
+
+\begin{document}
+
+\begin{frame}[plain]
+   %\begin{columns}
+   %   \column{1.2\textwidth}
+      \maketitle
+   %\end{columns}
+\end{frame}
+
+\input{defense-p0-intro}
+
+%\input{defense-p1-lazysp}
+
+\input{defense-p2-ibid}
+
+\input{defense-p3-utility}
+
+\input{defense-p4-family}
+
+
+%\input{proptalk-act1}
+
+%\input{proptalk-act2}
+
+%\input{proptalk-act3}
+
+{
+\setbeamercolor{background canvas}{bg=black}
+\begin{frame}
+\end{frame}
+}
+
+%\input{proptalk-backup}
+
+\end{document}
