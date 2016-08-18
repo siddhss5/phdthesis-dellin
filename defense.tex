@@ -1,7 +1,7 @@
 \documentclass[serif,10pt]{beamer}
 
 \def\gridopacity{100}
-%\def\gridopacity{0}
+\def\gridopacity{0}
 
 \usepackage{multimedia}
 
@@ -22,6 +22,8 @@
 \usetikzlibrary{calc,decorations.pathreplacing,positioning}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
+
+\usepackage{tikzvid}
 
 \usepackage[clock,misc]{ifsym} % for \showclock
 
@@ -81,12 +83,12 @@
 
 \setbeamertemplate{navigation symbols}{}
 
-\setbeamerfont{page number in head/foot}{size=\large}
+\setbeamerfont{page number in head/foot}{size=\small}
 %\setbeamertemplate{footline}[frame number]
 \setbeamertemplate{footline}{%
    \raisebox{7pt}{\makebox[\paperwidth]{%
    \hfill\makebox[10pt]{\textcolor{gray}{%
-   \large\insertframenumber\hspace{0.1in}}}}}}
+   \small\insertframenumber\hspace{0.1in}}}}}}
 
 % dont number title page
 \addtocounter{framenumber}{-1}
@@ -106,20 +108,15 @@
 
 \input{defense-p0-intro}
 
-%\input{defense-p1-lazysp}
+\input{defense-p1-lazysp}
 
 \input{defense-p2-ibid}
 
 \input{defense-p3-utility}
 
-\input{defense-p4-family}
+%\input{defense-p4-family}
 
-
-%\input{proptalk-act1}
-
-%\input{proptalk-act2}
-
-%\input{proptalk-act3}
+\input{defense-p5-conclusion}
 
 {
 \setbeamercolor{background canvas}{bg=black}

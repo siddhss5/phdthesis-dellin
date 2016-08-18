@@ -1,0 +1,17 @@
+\ProvidesPackage{tikzvid}
+
+\newwrite\tikzvidfile
+\begingroup\lccode`!=`\\\lowercase{\endgroup\def\@backslashchar{!}}
+
+% \tikzvidtarget{myid}
+\newcommand{\tikzvidtarget}[1] {run:\jobname-#1.tikzvid-sh}
+
+% \tikzvidplayat{myid}{mynode}{relative/path/to/movie.mp4}{args}
+\newcommand{\tikzvidplayat}[4] {
+   \openout\tikzvidfile=\jobname-#1.tikzvid-sh
+   \write\tikzvidfile{python `dirname $0`/play.py \@backslashchar}
+   \node[inner sep=0pt] at (#2.north east) {\pdfsavepos\write\tikzvidfile{ --ne-x=\the\pdflastxpos \space --ne-y=\the\pdflastypos \space \@backslashchar}};
+   \node[inner sep=0pt] at (#2.south west) {\pdfsavepos\write\tikzvidfile{ --sw-x=\the\pdflastxpos \space --sw-y=\the\pdflastypos \space \@backslashchar}};
+   \write\tikzvidfile{ --video=#3 #4}
+   \closeout\tikzvidfile
+}

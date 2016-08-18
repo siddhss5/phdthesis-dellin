@@ -1,0 +1,267 @@
+\documentclass[serif]{beamer}
+
+\def\gridopacity{100}
+\def\gridopacity{0}
+
+\usepackage{multimedia}
+
+% see http://tex.stackexchange.com/a/24491
+% for how to use enumitem with beamer
+\usepackage{enumitem}
+\setitemize{label=\usebeamerfont*{itemize item}%
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}}
+
+% default page size is:
+% \beamer@paperwidth 12.80cm%
+% \beamer@paperheight 9.60cm%
+
+\setbeamersize{text margin left=0.4cm,text margin right=0.4cm}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,decorations.pathreplacing,positioning}
+\usepackage{pgfplots}
+
+\usepackage[clock,misc]{ifsym} % for \showclock
+
+% pretty tables
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% this is from http://tex.stackexchange.com/a/103691
+% taken from manual
+\makeatletter
+\pgfdeclareshape{document}{
+\inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+\inheritanchorborder[from=rectangle]
+\inheritanchor[from=rectangle]{center}
+\inheritanchor[from=rectangle]{north}
+\inheritanchor[from=rectangle]{south}
+\inheritanchor[from=rectangle]{west}
+\inheritanchor[from=rectangle]{east}
+% ... and possibly more
+\backgroundpath{% this is new
+% store lower right in xa/ya and upper right in xb/yb
+\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+% compute corner of ‘‘flipped page’’
+\pgf@xc=\pgf@xb \advance\pgf@xc by-10pt % this should be a parameter
+\pgf@yc=\pgf@yb \advance\pgf@yc by-10pt
+% construct main path
+\pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+\pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+\pgfpathclose
+% add little corner
+\pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+}
+}
+\makeatother
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% symbols
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb} % for \square
+% non-italicized math subscripts
+\newcommand{\ms}[1]{\mbox{\scriptsize #1}}
+% from http://tex.stackexchange.com/a/5255
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% fonts
+\renewcommand\rmdefault{pplx}
+\renewcommand\mathfamilydefault{cmr}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{page number in head/foot}{size=\large}
+%\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{footline}{%
+   \raisebox{7pt}{\makebox[\paperwidth]{%
+   \hfill\makebox[10pt]{\textcolor{gray}{%
+   \large\insertframenumber\hspace{0.1in}}}}}}
+
+% dont number title page
+\addtocounter{framenumber}{-1}
+
+\title{Efficient Manipulation Task Planning via
+Reuse-Informed Optimization of Planning Effort}
+\author{Christopher M. Dellin}
+\date{April 7, 2015}
+
+\begin{document}
+
+\input{proptalk-intro}
+
+\input{proptalk-act1}
+
+\input{proptalk-act2}
+
+\input{proptalk-act3}
+
+\begin{frame}[t]
+   \frametitle{Summary of Proposed Work}
+   \centering
+   
+   \footnotesize{\renewcommand{\arraystretch}{1.0}
+   \begin{tabular}{lccl}
+   \toprule
+   {\bf Work Item} & {\bf Done} & {\bf Target Date} \\
+   \midrule
+   \PaperPortrait\; Guided Manipulation Planning at the DRC (ISER) & 100\% & Feb `14 \\
+   \PaperPortrait\; Comprehensive Multi-Root Planning (ICRA) & 100\% & Oct `14 \\
+   \midrule
+   Implement E$^8$-PRM (OMPL) & 80\% & Apr `15 \\
+   Q1: Implement E$^8$ using implemental LPA* search & 0\% & May `15 \\
+   Q2: E$^8$-PRM comparison experiments (Herb/Chimp) & 20\% & Jun `15 \\
+   %Q5: Optimizing ensemble effort in expectation & 0\% & May `15 \\
+   %Q1: E$^8$ theoretical guarantees & 10\% & Aug `15 \\
+   %Q3: Empirical comparison: E$^8$ vs. E-graphs, anytime, etc. & 10\% & Aug `15 \\
+   \PaperPortrait\; The E$^8$-PRM: Minimizing Planning Effort (Humanoids) & 0\% & Jun `15 \\
+   %Multi-Set Planning for the DRC (Humanoids) & QX & Jun `15 \\
+   \midrule
+   Q3: Multi-set literature survey & 40\% & Apr `15 \\
+   Q4: Managing subset explosion & 10\% & Jul `15 \\
+   %Q4: E$^8$-PRM experiments in 2D \& 7D & 10\% & Apr `15 \\
+   Q5: Multi-Set PRM experiments (Herb/Chimp) & 10\% & Aug `15 \\
+   \PaperPortrait\; Multi-Set Planning (ICRA) & 70\% & Oct `15 \\
+   \midrule
+   Implement Proteus task planner with CMR & 20\% & Aug `15 \\
+   Q6: Manipulation task experiments (Herb and Chimp) & 10\% & Jul-Aug `15 \\
+   %\PaperPortrait\; Proteus task planner (ICRA) & 0\% & Oct `15 \\
+   \midrule
+   \PaperPortrait\; Thesis Writing & 0\% & Sep-Nov `15 \\
+   Defense & 0\% & Dec `15 \\
+   \bottomrule
+   \end{tabular}
+   } %arraystretch
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Summary of Contributions}
+   
+   Algorithms:
+   \begin{itemize}
+   %\itemsep-3pt
+   \item E$^8$ graph search algorithm
+   \item E$^8$-PRM
+   \item Multi-Set PRM
+   \end{itemize}
+   
+   Software packages:
+   \begin{itemize}
+   \item {\tt https://github.com/personalrobotics/multiset-planning}
+   \item {\tt ompl\_multiset} -- Implementation for OMPL
+   \item {\tt or\_multiset} -- Auto-discovers manipulation subsets
+   \item {\tt or\_proteus} -- Manipulation task planner
+   \end{itemize}
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Thank you!}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   
+      % top left
+      \node[inner sep=0pt] at (3,5.3) {
+         \includegraphics[height=4cm]{figs/herb-fridge-b-skinny.png}
+      };
+      
+      \node[inner sep=0pt] at (9,5.3) {
+         \includegraphics[height=4cm]{build/multiset-roadmap-example,rightsol}
+      };
+   
+      % bottom
+      % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
+      
+      % root sets
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xgrasp) at (3,0) {};
+      \node[above=0cm of Xgrasp] {Grasp};
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xdrop) at (6,0) {};
+      \node[above=0cm of Xdrop] {Place};
+      
+      % cspace sets
+      \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+         (S1) at (1.5,0) {};
+      \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+         (S1) at (4.5,0) {};
+      \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      
+      % nodes
+      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      % xend
+      \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+      \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+      
+      % in S1
+      \draw[line width=1.5mm,white]
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      % draw s1 cfree
+      \begin{scope}[even odd rule]
+         \clip[rounded corners] (0.61,-0.89) rectangle (2.39,0.89);
+         \clip[rotate around={10:(1.1,0.5)}] (-3,-3) rectangle (3,3)
+                  (0.6,-0.0) rectangle (1.6,1.0);
+         \fill[blue!15,rotate around={-15:(1.5,-0.5)}] (1.5,-0.5) ellipse (1.4cm and 0.5cm);
+         \fill[blue!15,rotate around={-25:(1.5, 1.0)}] (1.5, 1.0) ellipse (1.4cm and 0.5cm);
+      \end{scope}
+      \node[draw,inner sep=0,fill=blue!20,minimum width=0.5cm,minimum height=0.2cm]
+            (Cfreebox1) at (1.2, -1.2) {};
+         \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free1}}$}; 
+      \draw
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      
+      % in s2
+      \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+      \draw[line width=1.5mm,white]
+         (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      % draw s2 cfree
+      \begin{scope}[even odd rule]
+         \clip[rounded corners] (3.61,-0.89) rectangle (5.39,0.89);
+         \clip[rotate around={10:(4.1,0.5)}] (0,-3) rectangle (6,3)
+               (3.6,-0.0) rectangle (4.6,1.0);
+         \fill[red!15,rotate around={15:(4.5,-0.2)}] (4.5,-0.2) ellipse (1.4cm and 0.5cm);
+      \end{scope}
+      \node[draw,inner sep=0,fill=red!20,minimum width=0.5cm,minimum height=0.2cm]
+         (Cfreebox1) at (4.2, -1.2) {};
+      \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free2}}$};
+      \draw
+         (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      
+      % in s3
+      \draw[line width=1.5mm,white]
+         (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      \draw
+         (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (3,0) {};
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (6,0) {};
+   \end{scope}
+   
+   \end{tikzpicture}
+\end{frame}
+
+{
+\setbeamercolor{background canvas}{bg=black}
+\begin{frame}
+\end{frame}
+}
+
+\input{proptalk-backup}
+
+\end{document}

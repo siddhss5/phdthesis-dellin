@@ -1,38 +1,157 @@
 \begin{frame}
-   \frametitle{Outline}
+   \frametitle{Lazy Shortest Path: Best-First Search over Paths}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      % graph start
+      \coordinate (va) at ( 2.0,5.6);
+      \coordinate (vb) at ( 3.5,6.3);
+      \coordinate (vc) at ( 4.0,7.5);
+      \coordinate (vd) at ( 5.5,6.1);
+      \coordinate (ve) at ( 8.0,6.6);
+      \coordinate (vf) at (10.0,5.6);
+      \coordinate (vg) at ( 1.5,6.6);
+      \coordinate (vh) at ( 4.0,5.1);
+      \coordinate (vi) at ( 7.0,4.8);
+      \coordinate (vj) at ( 6.5,7.1);
+      \coordinate (vk) at ( 9.0,5.1);
+      
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      % candidate paths
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (vj) -- (ve) -- (vf);
+      \draw[line width=0.2cm,color=blue!70,line cap=round]
+         (vj) -- (ve);
 
+      \draw[black!30] (va) -- (vb) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      \draw[black!30] (vb) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      \draw[black!30] (va) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      \draw[black!30] (vh) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      \draw[black!30] (vb) -- (vc) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      \draw[black!30] (vc) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      \draw[black!30] (va) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
+      \draw[black!30] (vb) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      \draw[black!30] (vb) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      \draw[black!30] (vc) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      \draw[black!30] (ve) -- (vf) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      \draw[black!30] (vd) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      \draw[black!30] (ve) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      \draw[black!30] (vd) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      \draw[black!30] (vf) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
+      \draw[black!30] (vi) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      \draw[black!30] (ve) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+
+      \draw[black,ultra thick] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {$\infty$};
+      \draw[black!30] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4?};
+
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+
+      \node[left=0.1cm of va] {$v_s$};
+      \node[right=0.1cm of vf] {$v_t$};
+      % graph end
+      
+      % here's an algorithm
+      
+      \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.3cm,minimum width=7.5cm] at (6,4.5) {};
+      \only<2>{
+         \node[inner sep=0.2cm,fill=blue!30,anchor=north,minimum height=0.5cm,minimum width=7.5cm] at (6,2.9) {};
+      }
+      \node[inner sep=0.0cm,anchor=north] at (6,4.4)
+      {\hspace*{-0.6cm}\begin{minipage}{7.5cm}\small{
+      \algrenewcommand{\alglinenumber}[1]{}
+      \begin{algorithmic}[1]
+         \Function {\textsc{LazySP}}{$G, v_s, v_g, w, w_{\ms{est}}$}
+         \State $E_{\ms{eval}} \leftarrow \emptyset$
+         \State $w_{\ms{lazy}}(e) \leftarrow w_{\ms{est}}(e) \quad \forall e \in E$
+         \Loop
+            \vspace{0.05cm}
+            \State $p_{\ms{candidate}} \leftarrow
+               \mbox{\sc InnerSP}(G, v_s, v_g, w_{\ms{lazy}})$ %\Comment Compute the shortest path with lazy edge weights
+            \vspace{0.1cm}
+            %\vspace{0.2cm}
+            %\If {$p_{\ms{candidate}} \subseteq E_{\ms{eval}}$} \Comment If path is fully evaluated,
+            %   \State \Return $p_{\ms{candidate}}$ \Comment return it
+            %\EndIf
+            \State \textbf{if} $p_{\ms{candidate}} \subseteq E_{\ms{eval}}$ \textbf{then return} $p_{\ms{candidate}}$
+            \vspace{0.1cm}
+            \State $E_{\ms{selected}} \leftarrow  \mbox{\sc EdgeSelector}(G, p_{\ms{candidate}})$ %\Comment Select edges on path to process
+            \For {$e \in E_{\ms{selected}} \setminus E_{\ms{eval}}$} %\Comment For all unevaluated selected edges
+               \State $w_{\ms{lazy}}(e) \leftarrow w(e)$
+               \State $E_{\ms{eval}} \leftarrow E_{\ms{eval}} \cup e$ %\Comment Add to evaluated edge set
+            \EndFor
+         \EndLoop
+         \EndFunction
+      \end{algorithmic}
+      }\end{minipage}};
+      
+   %Augment problem with inexpensive edge heuristic. (Show augmentation.)
+   %Each edge has binary state.
+   
+   %Show outline of algorithm.
+   
+   %Two core sub-routines: inner SP search, and edge selector.
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{LazySP Problem: Dynamic SP Algorithms}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      \node at (6,4) {\includegraphics{build/ibid-lazysp-plot,hideibid}};
+
+      %\node[draw=black!30,inner sep=0pt] at (3.5,5.0) {\includegraphics[width=2.5cm]{figs/herbarm-traj2-t031.png}};
+      \node[draw=black,inner sep=0pt,thick] at (5.15,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Talk Outline}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[fill=black!5,minimum width=11cm] at (6,7.5) {\strut How to Optimize?};
+      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut How to Optimize?};
 
-      \node[fill=blue!10,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,5.5) {};
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,5.6) {};
       \node[anchor=north] at (lazysp.north) {\strut Lazy Pathfinding};
-      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,5.25) {
+      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,5.4) {
          \includegraphics[width=3.8cm]{build/lazysp-icon}};
 
-      \node[fill=blue!10,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,5.5) {};
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,5.6) {};
       \node[anchor=north] at (ibid.north) {\strut Dynamic Pathfinding};
-      \node[draw=black!30,inner sep=0pt] at (8.75,5.25) {
+      \node[draw=black!30,inner sep=0pt] at (8.75,5.4) {
          \includegraphics[width=2.9cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+
+      \node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut What to Optimize?};
+
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,1.6) {};
+      \node[anchor=north] at (utility.north) {\strut Maximizing Utility};
+      \node at (3.25,1.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
+
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,1.6) {};
+      \node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
+      \node at (8.75,1.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
 
       \only<2>
       {
-         \node[draw,ultra thick,minimum width=5cm,minimum height=3cm] at (ibid) {};
+         \draw[ultra thick] (ibid.north east) rectangle (ibid.south west);
       }
-
-      \node[fill=black!5,minimum width=11cm] at (6,3.5) {\strut What to Optimize?};
-
-      \node[fill=blue!10,minimum width=5cm] at (3,2) {\strut Maximizing Utiliy};
-
-      \node[fill=blue!10,minimum width=5cm] at (9,2) {\strut C-Space Familes};
       
-   %Revisit talk outline.
-   %LazySP creates a dynamic SP problem underneath.
-   %Don't necessarily have good heuristics.
-
-   %Therefore, work on the incremental problem.
    \end{tikzpicture}
 \end{frame}
 
@@ -722,7 +841,7 @@
       \node[anchor=north] at (6,3.7) {\begin{minipage}{9.5cm}
          \definecolor{greenhighlight}{rgb}{0.8, 1.0, 0.8}
          \begin{algorithmic}[1]
-         \Procedure{BidirectionalTerminationB}{}
+         \Procedure{BidirectionalTerminationC}{}
          \State $p_{\ms{sofar}} \leftarrow$ best path found so far.
          \State Build approximations $d_s$ and $d_t$ (alternate arbitrarily).
          \State When $s$-expanding $u$, if edge $e_{uv}$ has $v$ is in CLOSED$_t$,
@@ -1079,36 +1198,81 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Revisiting LazySP Problems}
+   \frametitle{Experiment: Traffic Problem (VIDEO)}
    \begin{tikzpicture}[font=\small]
-      \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      \node[inner sep=0pt] (vidnode) at (6,4.0) {%
+         \href{\tikzvidtarget{incbi-roadne}}{%
+         \includegraphics[width=11cm]{videos/incbi-roadne.png}}};
+      \tikzvidplayat{incbi-roadne}{vidnode}{videos/incbi-roadne.mp4}{}
 
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Experiment: Traffic Problem (VIDEO)}
+   \frametitle{LazySP Problem: Dynamic SP Algorithms}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   \begin{center}
-      INSERT VIDEO!
-   \end{center}
-   
+      \node at (6,4) {\includegraphics{build/ibid-lazysp-plot}};
+
+      \node[draw=black,inner sep=0pt,thick] at (5.35,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+
+   \end{tikzpicture}
 \end{frame}
 
 
 \begin{frame}
-   \frametitle{Summary}
+   \frametitle{Outline of Selected Algorithms}
+   \begin{tikzpicture}[font=\small]
+      \tikzset{>=latex} % arrow heads
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   Summary of this portion of the talk!
+      \node at (2,6.3) {\includegraphics[width=3.5cm]{build/ibid-intro-focus-heuristic}};
+      \node at (2,7.6) {Heuristic Search};
+      
+      \node at (6,6.3) {\includegraphics[width=3.5cm]{build/ibid-intro-focus-bidirectional}};
+      \node at (6,7.6) {Bidirectional Search};
+      
+      \node at (10,6.3) {\includegraphics[width=3.5cm]{build/ibid-intro-focus-incremental}};
+      \node at (10,7.6) {Incremental Search};
 
-   IBiD is a generalization of
-   bidirectional Dijkstra's (from Goldberg),
-   heuristic bidirectional Dijkstra's (from Goldberg),
-   which each search from DynamicSWSF-FP.
+      \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
+         \begin{tabular}{ccc}
+            \toprule
+            & Complete & Incremental \\
+            \midrule
+            \addlinespace[0.2em]
+            \strut Unidirectional
+               & Dijkstra's Algorithm
+               & DynamicSWSF-FP \\
+            \addlinespace[-0.2em]
+            \strut \emph{(Heuristic)}
+               & \emph{A*}
+               & \emph{Lifelong Planning A*} \\
+            \addlinespace[0.3em]
+            \strut Bidirectional
+               & Bidirectional Dijkstra
+               & IBiD \\
+            \addlinespace[-0.2em]
+            \strut \emph{(Heuristic)}
+               & \emph{Bidirectional A*}
+               & \emph{Heuristic IBiD} \\
+            \addlinespace[0.2em]
+            \bottomrule
+         \end{tabular}
+      \end{minipage}};
 
-   ... in the same way that LPA* is a generalization of A*
-   and DynamicSWSF-FP (RR96).
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+         {\bf 3 Key Insights:}
+         \begin{itemize}
+         \item Complete and Incremental methods both create a \emph{trust region (TR)}
+         \item Bidirectional termination can be rewritten w.r.t. edges between TRs
+         \item {\only<1-2>{\color{gray}}\only<3>{}
+            Heuristic search is equivalent to search over a transformed graph}
+         \end{itemize}
+      \end{minipage}};
 
-   Experiments on LazySP problems later in the talk.
+   \end{tikzpicture}
 \end{frame}
