@@ -2075,6 +2075,9 @@
 %      
 %\end{frame}
 
+% to generate these:
+% $ for a in fwdexpand fwd rev alt even bisect worlddist1000 partall; do echo -n "$a "; for p in prob-*; do grep eval_edge $p/alg-$a-log.txt | wc -l; done | python -c 'import sys; import math; l=map(float,sys.stdin.read().split()); avg=sum(l)/len(l); finstddev_corrected =  math.sqrt(sum([(val-avg)**2 for val in l])/(len(l)-1)); print avg, 1.96*finstddev_corrected / math.sqrt(len(l))'; done
+
 \pgfplotstableread{
 selector mean error
 Expand 87.10 2.39
@@ -2085,6 +2088,17 @@ Bisect 44.81 1.11
 WeightSamp 20.66 0.57
 Partition 20.39 0.56
 }{\datapartconn}
+
+% NEW: (stderrmean)
+%fwdexpand 87.099 2.38650510278
+%fwd 35.858 1.03906664632
+%rev 34.842 1.03572378546
+%alt 22.227 0.597811717725
+%even 22.409 0.622905876301
+%bisect 44.809 1.10686298369
+%worlddist1000 20.663 0.570900480258
+%partall 20.395 0.564433840729
+
 
 \pgfplotstableread{
 selector mean error
@@ -2097,6 +2111,17 @@ WeightSamp 15.58 0.47
 Partition 14.08 0.46
 }{\dataunitsquare}
 
+% NEW: 1.96
+%fwdexpand 69.2077777778 2.55028628499
+%fwd 27.2888888889 1.02504835213
+%rev 27.6922222222 1.02028477535
+%alt 17.8211111111 0.597332883603
+%even 14.6466666667 0.628278955306
+%bisect 32.6233333333 0.721817175333
+%worlddist1000 15.5766666667 0.473857034803
+%partall 14.0833333333 0.455891208479
+
+
 \pgfplotstableread{
 selector mean error
 Expand 115 0.01
@@ -2107,6 +2132,17 @@ Bisect 68.01 3.86
 WeightSamp 56.93 3.37
 Partition 48.07 2.44
 }{\dataarmplan}
+
+% NEW stderr
+%Expand 949.0466666666664 63.46454650463161
+%Forward 63.62000000000001 4.1478023030971745
+%Reverse 74.93999999999998 5.070126727608847
+%Alternate 55.47999999999999 2.950293578535276
+%Even 63.99333333333334 3.994684563504954
+%Bisect 68.01333333333332 3.86218318531321
+%WeightSamp 60.99333333333333 3.651837545718 %% DIFFERENT!
+%Partition 48.06666666666667 2.44118108287056
+
 
 \begin{frame}
    \frametitle{Experimental Results: Edges Evaluated}

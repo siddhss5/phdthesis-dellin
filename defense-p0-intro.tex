@@ -562,30 +562,3 @@
    \end{tikzpicture}
 \end{frame}
 
-
-\begin{frame}
-   \frametitle{Approach: Roadmaps}
-   \begin{tikzpicture}[font=\small]
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-
-      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut How to Optimize?};
-      \node[fill=blue!15,minimum width=11cm] at (6,6.75) {\strut What to Optimize?};
-
-      \node at (2.25,3.25) {\includegraphics[width=3.0cm]{build/roadmap-stack-onramps}};
-
-      \node[anchor=north,fill=black!3,rounded corners] at (8,5.5) {\begin{minipage}{7cm}
-         \raggedright
-      
-         Focus: Roadmap methods
-
-         \medskip
-         Advantages:
-         \begin{itemize}
-         \item Well-studied asymptotic completeness and optimality properties
-         \item Easy to discretize
-         \item Roadmap structure shareable across planning queries
-         \end{itemize}
-      \end{minipage}};
-   \end{tikzpicture}
-\end{frame}
-

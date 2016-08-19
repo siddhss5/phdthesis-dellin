@@ -1,7 +1,7 @@
 \documentclass[serif,10pt]{beamer}
 
 \def\gridopacity{100}
-\def\gridopacity{0}
+%\def\gridopacity{0}
 
 \usepackage{multimedia}
 
@@ -19,9 +19,11 @@
 \setbeamersize{text margin left=0.4cm,text margin right=0.4cm}
 
 \usepackage{tikz}
-\usetikzlibrary{calc,decorations.pathreplacing,positioning}
+\usetikzlibrary{calc,decorations.pathreplacing,fadings,positioning}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
+
+\tikzfading[name=fade down, bottom color=transparent!0, top color=transparent!100]
 
 \usepackage{tikzvid}
 
@@ -76,6 +78,7 @@
 \newcommand{\ms}[1]{\mbox{\scriptsize #1}}
 % from http://tex.stackexchange.com/a/5255
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 % fonts
 \renewcommand\rmdefault{pplx}
@@ -106,17 +109,19 @@
    %\end{columns}
 \end{frame}
 
-\input{defense-p0-intro}
+%\input{defense-p0-intro}
 
-\input{defense-p1-lazysp}
+\input{defense-p1-utility}
 
-\input{defense-p2-ibid}
+%\input{defense-p2-lazysp}
 
-\input{defense-p3-utility}
+%\input{defense-p3-ibid}
 
-%\input{defense-p4-family}
+%\input{defense-p4-utility-results}
 
-\input{defense-p5-conclusion}
+%\input{defense-p5-family}
+
+%\input{defense-p6-conclusion}
 
 {
 \setbeamercolor{background canvas}{bg=black}
