@@ -542,6 +542,126 @@
    \end{tikzpicture}
 \end{frame}
 
+
+
+
+
+
+%\begin{frame}
+   %\frametitle{Motivation: The Shortest Path (SP) Problem}
+   %\begin{tikzpicture}[font=\small]
+      %\tikzset{>=latex} % arrow heads
+      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      
+      %\node at (1,7) {\includegraphics[width=1.5cm]{figs/rubik.png}};
+      %\node at (3,7) {\includegraphics[width=1.5cm]{figs/15puzzle.png}};
+      %\node at (5,7) {\includegraphics[width=1.5cm]{figs/internet-routers.jpg}};
+      %\node at (7,7) {\includegraphics[width=1.5cm]{figs/lazysp-herbarm/herbarm-path33.png}};
+      %\node at (9,7) {\includegraphics[width=1.5cm]{figs/quad.png}};
+      %\node at (11,7) {\includegraphics[width=1.5cm]{figs/military-truck.jpg}};
+         
+      %\coordinate (va) at ( 2.0,4.0);
+      %\coordinate (vb) at ( 3.5,4.7);
+      %\coordinate (vc) at ( 4.0,5.9);
+      %\coordinate (vd) at ( 5.5,4.5);
+      %\coordinate (ve) at ( 8.0,5.0);
+      %\coordinate (vf) at (10.0,4.0);
+      %\coordinate (vg) at ( 1.5,5.0);
+      %\coordinate (vh) at ( 4.0,3.5);
+      %\coordinate (vi) at ( 7.0,3.2);
+      %\coordinate (vj) at ( 6.5,5.5);
+      %\coordinate (vk) at ( 9.0,3.5);
+
+      %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+
+      %\draw[line width=0.2cm,color=black!30,line cap=round]
+         %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+
+      %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      
+      %\draw (va) -- (vb) coordinate [midway] (eab);
+      %\draw (vb) -- (vc) coordinate [midway] (ebc);
+      %\draw (vb) -- (vd) coordinate [midway] (ebd);
+      %\draw (vc) -- (vd) coordinate [midway] (ecd);
+      %\draw (vd) -- (ve) coordinate [midway] (ede);
+      %\draw (ve) -- (vf) coordinate [midway] (eef);
+      %\draw (va) -- (vg) coordinate [midway] (eag);
+      %\draw (vb) -- (vg) coordinate [midway] (ebg);
+      %\draw (va) -- (vh) coordinate [midway] (eah);
+      %\draw (vd) -- (vh) coordinate [midway] (edh);
+      %\draw (vb) -- (vh) coordinate [midway] (ebh);
+      %\draw (vd) -- (vi) coordinate [midway] (edi);
+      %\draw (ve) -- (vi) coordinate [midway] (eei);
+      %\draw (vc) -- (vj) coordinate [midway] (ecj);
+      %\draw (vd) -- (vj) coordinate [midway] (edj);
+      %\draw (ve) -- (vj) coordinate [midway] (eej);
+      %\draw (vf) -- (vk) coordinate [midway] (efk);
+      %\draw (vi) -- (vk) coordinate [midway] (eik);
+      %\draw (ve) -- (vk) coordinate [midway] (eek);
+         
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eab) {5};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebc) {5};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebd) {6};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecd) {7};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ede) {9};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eef) {7};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eag) {3};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebg) {6};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eah) {6};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edh) {7};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebh) {5};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edi) {8};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eei) {8};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecj) {8};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edj) {6};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eej) {4};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (efk) {3};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eik) {6};
+      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eek) {6};
+
+      %\node[draw,align=center,minimum height=1.0cm,minimum width=2.9cm,thick]
+         %at (4.0,2.05) {Graph\\$G=(V,E)$};
+
+      %\node[draw,align=center,minimum height=1.0cm,minimum width=2.9cm,thick]
+         %at (8.0,2.05) {Weight Function\\$w:E \rightarrow \mathbb{R}$};
+
+      %\node[draw,align=center,minimum height=1.0cm,minimum width=4cm,thick]
+         %(alg) at (6,0.55) {Shortest Path\\Algorithm};
+      %\draw[->] (4.5,1.55) -- (4.5,1.05);
+      %\draw[->] (7.5,1.55) -- (7.5,1.05);
+
+      %\node[draw,align=center,shape=document,minimum width=3.0cm,ultra thin]
+         %(query) at (2,0.55) {Query $v_s$, $v_t$\;\;};
+      %\draw[->] (query.east) -- (alg.west);
+      %\node[left=0.1cm of va] {$v_s$};
+      %\node[right=0.1cm of vf] {$v_t$};
+      
+      %\node[draw,align=center,shape=document,minimum width=2.0cm,ultra thin]
+         %(path) at (10,0.55) {Path $p^*$\;};
+      %\draw[->] (alg.east) -- (path.west);
+      
+   %\end{tikzpicture}
+%\end{frame}
+
+
+
+
+
+
+
+
+
 \begin{frame}
    \frametitle{Pathfinding with Expensive Edge Evaluations}
    
@@ -870,14 +990,14 @@
       \only<4-9>{
          \node[fill=blue!20,anchor=north,rounded corners] at (6,3.57) {\begin{minipage}{11cm}
             \hangindent=0.35cm
-            Approach 1: Run SP (e.g. A*) with JIT and memoized evaluations.\\
+            Approach 1: Run SP (e.g. A*) with Just-In-Time and memoized evaluations.\\
             (analogue to implicit graph representation)
          \end{minipage}};
       }
       \only<10->{
          \node[fill=blue!10,anchor=north,rounded corners] at (6,3.57) {\begin{minipage}{11cm}
             \hangindent=0.35cm
-            Approach 1: Run SP (e.g. A*) with JIT and memoized evaluations.\\
+            Approach 1: Run SP (e.g. A*) with Just-In-Time and memoized evaluations.\\
             (analogue to implicit graph representation)
          \end{minipage}};
       }
@@ -893,7 +1013,7 @@
       \only<10->{
       %\begin{scope}
       %\clip (0,0) rectangle (12,8);
-      \node[inner sep=0cm] at (6,0.55) {\begin{minipage}{11.0cm}\scriptsize
+      \node[inner sep=0cm] at (6,0.55) {\begin{minipage}{11.5cm}\scriptsize
          
          \hangindent=0.35cm \raggedright
          \PaperPortrait\; Cohen, Phillips, and Likhachev,
@@ -1134,10 +1254,12 @@
    \frametitle{Relation to the Dynamic Traversal Problem}
    \begin{tikzpicture}
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      \node[fill=black!3,draw=black!6,rounded corners,minimum width=11.6cm,minimum height=3.4cm] at (6,6.1) {};
       
-      \node at (1.7,6) {\includegraphics[width=3cm]{figs/dstar.png}};
+      \node at (1.9,6.1) {\includegraphics[width=3cm]{figs/dstar.png}};
       
-      \node[anchor=north] at (7.6,7.6) {\begin{minipage}{9cm}
+      \node[anchor=north] at (7.6,7.6) {\begin{minipage}{8.5cm}
          \begin{itemize}
          \raggedright
          \item An agent conducting a traversal continually
@@ -1156,8 +1278,8 @@
       \end{minipage}};
       
       \only<4->{
-      \node[fill=blue!20,anchor=north,rounded corners] at (6,4.2)
-      {\begin{minipage}{10cm}
+      \node[fill=blue!10,draw=blue!20,anchor=north,rounded corners] at (6,4.2)
+      {\begin{minipage}{9.0cm}
          In contrast,
          the expensive-evaluation pathfinding problem allows for
          edges to be evaluated arbitrarily.
@@ -1165,10 +1287,10 @@
       }
       
       \only<5->{
-      \node[fill=blue!20,anchor=north,rounded corners] at (6,2.9)
-      {\begin{minipage}{10cm}
+      \node[fill=blue!10,draw=blue!20,anchor=north,rounded corners] at (6,2.9)
+      {\begin{minipage}{9cm}
          LazySP exploits this freedom to focus its evaluations
-         via appropriate choice of the edge selector.
+         via appropriate choice of the \emph{edge selector}.
       \end{minipage}};
       }
       
@@ -1194,589 +1316,1112 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Simple Edge Selectors and Equivalences}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-      \tikzset{>=latex}
-   
-   
-      \only<2->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockexp) at (3,7.8) {};
-      \node[anchor=north,below=0cm of blockexp.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Expand Selector}
-         
-         (all out-edges of frontier vertex)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(1.75,10.2)}]
+   \frametitle{Edge Selectors and Equivalences}
+   \begin{tikzpicture}[font=\small]
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex}
+
+   \node at (2.8,7.7) {LazySP Selector};
+
+   \node at (7.2,7.7) {Illustration};
+
+   \node at (10.5,7.7) {Notes};
+
+   % Expand
+   \only<2->{
+
+   % Expand definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=5.4cm,minimum height=0.9cm] (blockexp) at (2.8,7.0) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{5.1cm}
+      \textbf{Expand}
       
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+      (all out-edges of frontier vertex)
+   \end{minipage}};
+
+   % Expand visualization
+   \fill[blue!5,draw=blue!10,rounded corners] (5.7,6.55) rectangle (8.7,7.45);
+   \begin{scope}[shift={(6.1,6.65)}]
+   \begin{scope}[scale=0.25]
+   
+      % graph start
+      \coordinate (va) at ( 0.5,0.8);
+      \coordinate (vb) at ( 2.0,1.5);
+      \coordinate (vc) at ( 2.5,2.7);
+      \coordinate (vd) at ( 4.0,1.3);
+      \coordinate (ve) at ( 6.5,1.8);
+      \coordinate (vf) at ( 8.5,0.8);
+      \coordinate (vg) at ( 0.0,1.8);
+      \coordinate (vh) at ( 2.5,0.3);
+      \coordinate (vi) at ( 5.5,0.0);
+      \coordinate (vj) at ( 5.0,2.3);
+      \coordinate (vk) at ( 7.5,0.3);
       
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
-         
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
-         
-         \only<3->{
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
-         }
-         
-         \only<4->{
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
-         }
-         
-         \only<5->{
-         % point to frontier vertex
-         \draw[blue!50!white,->,ultra thick] (0.5,3.0) -- (1.5,2.0);
-         }
-         
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
-         
-         \only<6->{
-         % highlight edges to return
-         \draw[blue,ultra thick] (va) -- (vb);
-         \draw[blue,ultra thick] (vb) -- (vc);
-         \draw[blue,ultra thick] (vb) -- (vd);
-         \draw[blue,ultra thick] (vb) -- (vg);
-         \draw[blue,ultra thick] (vb) -- (vh);
-         }
-         
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      \only<3->{
+      % candidate path
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
       }
-      \only<7->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,7.8) {};
-      \node[anchor=north,below=0cm of blockexp.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{Weighted A*}
-         
-         with JIT/memoized evaluations
-         
-      \end{minipage}};
-      \node[anchor=south,above=0cm of blockexp.south]
-      {\begin{minipage}{5.5cm}\scriptsize
       
-         \hangindent=0.35cm \raggedright
+      \only<4->{
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+      }
+      
+      \only<5->{
+      % point to frontier vertex
+      \draw[blue!50!white,->,ultra thick] (0.5,3.0) -- (1.5,2.0);
+      }
+      
+      % edges
+      \draw[black,ultra thick] (va) -- (vb);
+      \draw[black!30] (vb) -- (vd);
+      \draw[black,ultra thick] (va) -- (vh);
+      \draw[black!30] (vh) -- (vd);
+      \draw[black!30] (vb) -- (vc);
+      \draw[black!30] (vc) -- (vj);
+      \draw[black,ultra thick] (va) -- (vg);
+      \draw[black!30] (vb) -- (vg);
+      \draw[black!30] (vb) -- (vh);
+      \draw[black!30] (vc) -- (vd);
+      \draw[black!30] (vd) -- (ve);
+      \draw[black!30] (ve) -- (vf);
+      \draw[black!30] (vd) -- (vi);
+      \draw[black!30] (ve) -- (vi);
+      \draw[black!30] (vd) -- (vj);
+      \draw[black!30] (ve) -- (vj);
+      \draw[black!30] (vf) -- (vk);
+      \draw[black!30] (vi) -- (vk);
+      \draw[black!30] (ve) -- (vk);
+      
+      \only<6->{
+      % highlight edges to return
+      \draw[blue,ultra thick] (va) -- (vb);
+      \draw[blue,ultra thick] (vb) -- (vc);
+      \draw[blue,ultra thick] (vb) -- (vd);
+      \draw[blue,ultra thick] (vb) -- (vg);
+      \draw[blue,ultra thick] (vb) -- (vh);
+      }
+      
+      % nodes
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   \end{scope}
+   \end{scope}
+   }
+
+   \only<7->{
+      % Expand notes
+      \node[fill=blue!10,draw=blue!20,rounded corners,
+         minimum width=3.0cm,minimum height=0.9cm,align=center] (blockexp) at (10.4,7.0)
+      {Edge-equivalent to\\Weighted A* (JIT)};
+
+      \node[anchor=west,font=\scriptsize,inner sep=0pt] at (0.25,0.6) {\begin{minipage}{10cm}
+      \hangindent=0.3cm \raggedright
          \PaperPortrait\; Pohl,
          ``Heuristic Search Viewed as Path Finding in a Graph,''
          AI 1970.
-      
       \end{minipage}};
-      \node[fill=white,opacity=0.9,inner sep=0.1cm,rounded corners] at (6,6.3) {\LARGE =};
+   }
+
+   % Forward
+   \only<8->{
+
+   % Forward definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=5.4cm,minimum height=0.9cm] (blockexp) at (2.8,5.9) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{5.1cm}
+      \textbf{Forward}
+      
+      (first unevaluated edge)
+   \end{minipage}};
+
+   % Forward visualization
+   \fill[blue!5,draw=blue!10,rounded corners] (5.7,5.45) rectangle (8.7,6.35);
+   \begin{scope}[shift={(6.1,5.55)}]
+   \begin{scope}[scale=0.25]
+
+      % graph start
+      \coordinate (va) at ( 0.5,0.8);
+      \coordinate (vb) at ( 2.0,1.5);
+      \coordinate (vc) at ( 2.5,2.7);
+      \coordinate (vd) at ( 4.0,1.3);
+      \coordinate (ve) at ( 6.5,1.8);
+      \coordinate (vf) at ( 8.5,0.8);
+      \coordinate (vg) at ( 0.0,1.8);
+      \coordinate (vh) at ( 2.5,0.3);
+      \coordinate (vi) at ( 5.5,0.0);
+      \coordinate (vj) at ( 5.0,2.3);
+      \coordinate (vk) at ( 7.5,0.3);
+      
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      \only<9->{
+      % candidate path
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
       }
       
-      
-      
-      \only<8->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockfwd) at (3,4.5) {};
-      \node[anchor=north,below=0cm of blockfwd.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Forward Selector}
-         
-         (first unevaluated edge)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(1.75,3.6)}]
-      
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
-      
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
-         
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
-         
-         \only<9->{
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
-         }
-         
-         \only<10->{
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
-         }
-         
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
-         
-         \only<10->{
-         % highlight edges to return
-         \draw[blue,ultra thick] (vb) -- (vd);
-         }
-         
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
+      \only<10->{
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
       }
       
-      \only<11->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,4.5) {};
-      \node[anchor=north,below=0cm of blockexp.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{Lazy Weighted A*}
-         
-         with JIT/memoized evaluations
-         
-      \end{minipage}};
-      \node[anchor=south,above=0cm of blockexp.south]
-      {\begin{minipage}{5.5cm}\scriptsize
+      % edges
+      \draw[black,ultra thick] (va) -- (vb);
+      \draw[black!30] (vb) -- (vd);
+      \draw[black,ultra thick] (va) -- (vh);
+      \draw[black!30] (vh) -- (vd);
+      \draw[black!30] (vb) -- (vc);
+      \draw[black!30] (vc) -- (vj);
+      \draw[black,ultra thick] (va) -- (vg);
+      \draw[black!30] (vb) -- (vg);
+      \draw[black!30] (vb) -- (vh);
+      \draw[black!30] (vc) -- (vd);
+      \draw[black!30] (vd) -- (ve);
+      \draw[black!30] (ve) -- (vf);
+      \draw[black!30] (vd) -- (vi);
+      \draw[black!30] (ve) -- (vi);
+      \draw[black!30] (vd) -- (vj);
+      \draw[black!30] (ve) -- (vj);
+      \draw[black!30] (vf) -- (vk);
+      \draw[black!30] (vi) -- (vk);
+      \draw[black!30] (ve) -- (vk);
       
-         \hangindent=0.35cm 
+      \only<10->{
+      % highlight edges to return
+      \draw[blue,ultra thick] (vb) -- (vd);
+      }
+      
+      % nodes
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   \end{scope}
+   \end{scope}
+   }
+
+   \only<11->{
+      % Forward notes
+      \node[fill=blue!10,draw=blue!20,rounded corners,
+         minimum width=3.0cm,minimum height=0.9cm,align=center] (blockexp) at (10.4,5.9)
+      {Edge-equivalent to\\Lazy Weighted A*};
+
+      \node[anchor=west,font=\scriptsize,inner sep=0pt] at (0.25,0.2) {\begin{minipage}{11.5cm}
+      \hangindent=0.3cm \raggedright
          \PaperPortrait\; Cohen, Phillips, and Likhachev,
          ``Planning Single-arm Manipulations with n-Arm Robots,''
          RSS 2014.
-      
       \end{minipage}};
-      \node[fill=white,opacity=0.9,inner sep=0.1cm,rounded corners] at (6,3.0) {\LARGE =};
+   }
+
+
+   % Reverse
+   \only<12->{
+
+   % Reverse definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=5.4cm,minimum height=0.9cm] (blockexp) at (2.8,4.8) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{5.1cm}
+      \textbf{Reverse}
+      
+      (last unevaluated edge)
+   \end{minipage}};
+
+   % Reverse visualization
+   \fill[blue!5,draw=blue!10,rounded corners] (5.7,4.35) rectangle (8.7,5.25);
+   \begin{scope}[shift={(6.1,4.45)}]
+   \begin{scope}[scale=0.25]
+   
+      % graph start
+      \coordinate (va) at ( 0.5,0.8);
+      \coordinate (vb) at ( 2.0,1.5);
+      \coordinate (vc) at ( 2.5,2.7);
+      \coordinate (vd) at ( 4.0,1.3);
+      \coordinate (ve) at ( 6.5,1.8);
+      \coordinate (vf) at ( 8.5,0.8);
+      \coordinate (vg) at ( 0.0,1.8);
+      \coordinate (vh) at ( 2.5,0.3);
+      \coordinate (vi) at ( 5.5,0.0);
+      \coordinate (vj) at ( 5.0,2.3);
+      \coordinate (vk) at ( 7.5,0.3);
+      
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      % candidate path
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
+      
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
+      
+      % edges
+      \draw[black,ultra thick] (va) -- (vb);
+      \draw[black!30] (vb) -- (vd);
+      \draw[black,ultra thick] (va) -- (vh);
+      \draw[black!30] (vh) -- (vd);
+      \draw[black!30] (vb) -- (vc);
+      \draw[black!30] (vc) -- (vj);
+      \draw[black,ultra thick] (va) -- (vg);
+      \draw[black!30] (vb) -- (vg);
+      \draw[black!30] (vb) -- (vh);
+      \draw[black!30] (vc) -- (vd);
+      \draw[black!30] (vd) -- (ve);
+      \draw[black!30] (ve) -- (vf);
+      \draw[black!30] (vd) -- (vi);
+      \draw[black!30] (ve) -- (vi);
+      \draw[black!30] (vd) -- (vj);
+      \draw[black!30] (ve) -- (vj);
+      \draw[black!30] (vf) -- (vk);
+      \draw[black!30] (vi) -- (vk);
+      \draw[black!30] (ve) -- (vk);
+      
+      \draw[blue,ultra thick] (ve) -- (vf);
+      
+      % nodes
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   \end{scope}
+   \end{scope}
+   }
+
+
+   % Alternate
+   \only<13->{
+
+   % Alternate definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=5.4cm,minimum height=0.9cm] (blockexp) at (2.8,3.7) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{5.1cm}
+      \textbf{Alternate}
+      
+      (alternate Forward and Reverse)
+   \end{minipage}};
+
+   % Alternate visualization
+   \fill[blue!5,draw=blue!10,rounded corners] (5.7,3.25) rectangle (8.7,4.15);
+   \begin{scope}[shift={(6.1,3.35)}]
+   \begin{scope}[scale=0.25]
+
+      % graph start
+      \coordinate (va) at ( 0.5,0.8);
+      \coordinate (vb) at ( 2.0,1.5);
+      \coordinate (vc) at ( 2.5,2.7);
+      \coordinate (vd) at ( 4.0,1.3);
+      \coordinate (ve) at ( 6.5,1.8);
+      \coordinate (vf) at ( 8.5,0.8);
+      \coordinate (vg) at ( 0.0,1.8);
+      \coordinate (vh) at ( 2.5,0.3);
+      \coordinate (vi) at ( 5.5,0.0);
+      \coordinate (vj) at ( 5.0,2.3);
+      \coordinate (vk) at ( 7.5,0.3);
+      
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      % candidate path
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
+      
+      \only<14>{
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+      }
+      \only<15>{
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
+      }
+      \only<16->{
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
       }
       
-      \only<7->{
-      \node[fill=black!20,rounded corners] at (6,0.75)
-      {\begin{minipage}{7.3cm}
-         Edge-equivalence: algorithms will evaluate
-         the same edges in the same order.
-      \end{minipage}};
-      }
+      % edges
+      \draw[black,ultra thick] (va) -- (vb);
+      \draw[black!30] (vb) -- (vd);
+      \draw[black,ultra thick] (va) -- (vh);
+      \draw[black!30] (vh) -- (vd);
+      \draw[black!30] (vb) -- (vc);
+      \draw[black!30] (vc) -- (vj);
+      \draw[black,ultra thick] (va) -- (vg);
+      \draw[black!30] (vb) -- (vg);
+      \draw[black!30] (vb) -- (vh);
+      \draw[black!30] (vc) -- (vd);
+      \draw[black!30] (vd) -- (ve);
+      \draw[black!30] (ve) -- (vf);
+      \draw[black!30] (vd) -- (vi);
+      \draw[black!30] (ve) -- (vi);
+      \draw[black!30] (vd) -- (vj);
+      \draw[black!30] (ve) -- (vj);
+      \draw[black!30] (vf) -- (vk);
+      \draw[black!30] (vi) -- (vk);
+      \draw[black!30] (ve) -- (vk);
+      
+      % highlight edges to return
+      \only<14>{\draw[blue,ultra thick] (vb) -- (vd);}
+      \only<15->{\draw[black,ultra thick] (vb) -- (vd);}
+      \only<15>{\draw[blue,ultra thick] (ve) -- (vf);}
+      \only<16->{\draw[black,ultra thick] (ve) -- (vf);}
+      \only<16->{\draw[blue,ultra thick] (vd) -- (ve);}
+      
+      % nodes
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   \end{scope}
+   \end{scope}
+   }
+
+
+   % Bisect
+   \only<17->{
+
+   % Bisect definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=5.4cm,minimum height=0.9cm] (blockexp) at (2.8,2.6) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{5.1cm}
+      \textbf{Bisect}
+      
+      (furthest from an unevaluated edge)
+   \end{minipage}};
+
+   % Bisect visualization
+   \fill[blue!5,draw=blue!10,rounded corners] (5.7,2.15) rectangle (8.7,3.05);
+   \begin{scope}[shift={(6.1,2.25)}]
+   \begin{scope}[scale=0.25]
+
+      % graph start
+      \coordinate (va) at ( 0.5,0.8);
+      \coordinate (vb) at ( 2.0,1.5);
+      \coordinate (vc) at ( 2.5,2.7);
+      \coordinate (vd) at ( 4.0,1.3);
+      \coordinate (ve) at ( 6.5,1.8);
+      \coordinate (vf) at ( 8.5,0.8);
+      \coordinate (vg) at ( 0.0,1.8);
+      \coordinate (vh) at ( 2.5,0.3);
+      \coordinate (vi) at ( 5.5,0.0);
+      \coordinate (vj) at ( 5.0,2.3);
+      \coordinate (vk) at ( 7.5,0.3);
+      
+      % start/goal highlighting
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      
+      % candidate path
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
+      
+      % highlight first unevaled edge
+      \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
+      \draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
+      
+      % edges
+      \draw[black,ultra thick] (va) -- (vb);
+      \draw[black!30] (vb) -- (vd);
+      \draw[black,ultra thick] (va) -- (vh);
+      \draw[black!30] (vh) -- (vd);
+      \draw[black!30] (vb) -- (vc);
+      \draw[black!30] (vc) -- (vj);
+      \draw[black,ultra thick] (va) -- (vg);
+      \draw[black!30] (vb) -- (vg);
+      \draw[black!30] (vb) -- (vh);
+      \draw[black!30] (vc) -- (vd);
+      \draw[black!30] (vd) -- (ve);
+      \draw[black!30] (ve) -- (vf);
+      \draw[black!30] (vd) -- (vi);
+      \draw[black!30] (ve) -- (vi);
+      \draw[black!30] (vd) -- (vj);
+      \draw[black!30] (ve) -- (vj);
+      \draw[black!30] (vf) -- (vk);
+      \draw[black!30] (vi) -- (vk);
+      \draw[black!30] (ve) -- (vk);
+      
+      % highlight edges to return
+      \draw[black,ultra thick] (vd) -- (ve);
+      
+      % nodes
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+   \end{scope}
+   \end{scope}
+   }
+
+
+   % Most Likely
+   \only<18->{
+
+   % Most definition
+   \node[fill=blue!10,draw=blue!20,rounded corners,
+      minimum width=11.8cm,minimum height=0.9cm] (blockexp) at (6.0,1.5) {};
+   \node[anchor=north,below=0cm of blockexp.north]
+   {\begin{minipage}{11.5cm}
+      Novel selectors: \textbf{Path Distribution}
+      
+      (most likely on a shortest path drawn from $\mathcal{D}_p$)
+   \end{minipage}};
+   }
    
    \end{tikzpicture}
 \end{frame}
 
-\begin{frame}
-   \frametitle{Other Simple Edge Selectors}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-      \tikzset{>=latex}
+
+
+
+
+
+
+
+%\begin{frame}
+   %\frametitle{Simple Edge Selectors and Equivalences}
+   %\begin{tikzpicture}
+      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      %\tikzset{>=latex}
+   
+   
+      %\only<2->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockexp) at (3,7.8) {};
+      %\node[anchor=north,below=0cm of blockexp.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Expand Selector}
+         
+         %(all out-edges of frontier vertex)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(1.75,10.2)}]
+      
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+      
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
+         
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         
+         %\only<3->{
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+         %}
+         
+         %\only<4->{
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+         %}
+         
+         %\only<5->{
+         %% point to frontier vertex
+         %\draw[blue!50!white,->,ultra thick] (0.5,3.0) -- (1.5,2.0);
+         %}
+         
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
+         
+         %\only<6->{
+         %% highlight edges to return
+         %\draw[blue,ultra thick] (va) -- (vb);
+         %\draw[blue,ultra thick] (vb) -- (vc);
+         %\draw[blue,ultra thick] (vb) -- (vd);
+         %\draw[blue,ultra thick] (vb) -- (vg);
+         %\draw[blue,ultra thick] (vb) -- (vh);
+         %}
+         
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
+      %}
+      %\only<7->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,7.8) {};
+      %\node[anchor=north,below=0cm of blockexp.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{Weighted A*}
+         
+         %with JIT/memoized evaluations
+         
+      %\end{minipage}};
+      %\node[anchor=south,above=0cm of blockexp.south]
+      %{\begin{minipage}{5.5cm}\scriptsize
+      
+         %\hangindent=0.35cm \raggedright
+         %\PaperPortrait\; Pohl,
+         %``Heuristic Search Viewed as Path Finding in a Graph,''
+         %AI 1970.
+      
+      %\end{minipage}};
+      %\node[fill=white,opacity=0.9,inner sep=0.1cm,rounded corners] at (6,6.3) {\LARGE =};
+      %}
       
       
       
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockexp) at (3,7.8) {};
-      \node[anchor=north,below=0cm of blockexp.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Forward Selector}
+      %\only<8->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockfwd) at (3,4.5) {};
+      %\node[anchor=north,below=0cm of blockfwd.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Forward Selector}
          
-         (first unevaluated edge)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(1.75,10.2)}]
+         %(first unevaluated edge)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(1.75,3.6)}]
       
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
       
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
          
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
          
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
+         %\only<9->{
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+         %}
          
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+         %\only<10->{
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+         %}
          
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
          
-         \draw[blue,ultra thick] (vb) -- (vd);
+         %\only<10->{
+         %% highlight edges to return
+         %\draw[blue,ultra thick] (vb) -- (vd);
+         %}
          
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
+      %}
       
+      %\only<11->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,4.5) {};
+      %\node[anchor=north,below=0cm of blockexp.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{Lazy Weighted A*}
+         
+         %with JIT/memoized evaluations
+         
+      %\end{minipage}};
+      %\node[anchor=south,above=0cm of blockexp.south]
+      %{\begin{minipage}{5.5cm}\scriptsize
       
+         %\hangindent=0.35cm 
+         %\PaperPortrait\; Cohen, Phillips, and Likhachev,
+         %``Planning Single-arm Manipulations with n-Arm Robots,''
+         %RSS 2014.
       
-      \only<2->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,7.8) {};
-      \node[anchor=north,below=0cm of blockexp.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Reverse Selector}
-         
-         (last unevaluated edge)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(13.75,10.2)}]
+      %\end{minipage}};
+      %\node[fill=white,opacity=0.9,inner sep=0.1cm,rounded corners] at (6,3.0) {\LARGE =};
+      %}
       
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
-      
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
-         
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
-         
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
-         
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
-         
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
-         
-         \draw[blue,ultra thick] (ve) -- (vf);
-         
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
-      }
+      %\only<7->{
+      %\node[fill=black!20,rounded corners] at (6,0.75)
+      %{\begin{minipage}{7.3cm}
+         %Edge-equivalence: algorithms will evaluate
+         %the same edges in the same order.
+      %\end{minipage}};
+      %}
+   
+   %\end{tikzpicture}
+%\end{frame}
+
+%\begin{frame}
+   %\frametitle{Other Simple Edge Selectors}
+   %\begin{tikzpicture}
+      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      %\tikzset{>=latex}
       
       
       
-      \only<3->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockfwd) at (3,4.5) {};
-      \node[anchor=north,below=0cm of blockfwd.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Alternate Selector}
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockexp) at (3,7.8) {};
+      %\node[anchor=north,below=0cm of blockexp.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Forward Selector}
          
-         (alternate Forward and Reverse)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(1.75,3.6)}]
+         %(first unevaluated edge)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(1.75,10.2)}]
       
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
       
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
          
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
          
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
          
-         \only<4>{
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
-         }
-         \only<5>{
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
-         }
-         \only<6->{
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
-         }
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
          
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
          
-         % highlight edges to return
-         \only<4>{\draw[blue,ultra thick] (vb) -- (vd);}
-         \only<5->{\draw[black,ultra thick] (vb) -- (vd);}
-         \only<5>{\draw[blue,ultra thick] (ve) -- (vf);}
-         \only<6->{\draw[black,ultra thick] (ve) -- (vf);}
-         \only<6->{\draw[blue,ultra thick] (vd) -- (ve);}
+         %\draw[blue,ultra thick] (vb) -- (vd);
          
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
-      }
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
       
       
       
-      \only<7->{
-      \node[fill=blue!20,anchor=north,rounded corners,
-         minimum width=5.8cm,minimum height=3cm] (blockfwd) at (9,4.5) {};
-      \node[anchor=north,below=0cm of blockfwd.north]
-      {\begin{minipage}{5.5cm}
-         \textbf{LazySP w/ Bisect Selector}
+      %\only<2->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockexp) at (9,7.8) {};
+      %\node[anchor=north,below=0cm of blockexp.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Reverse Selector}
          
-         (alternate Forward and Reverse)
-      \end{minipage}};
-      \begin{scope}[scale=0.5,shift={(13.75,3.6)}]
+         %(last unevaluated edge)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(13.75,10.2)}]
       
-         \fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
       
-         % graph start
-         \coordinate (va) at ( 0.5,0.8);
-         \coordinate (vb) at ( 2.0,1.5);
-         \coordinate (vc) at ( 2.5,2.7);
-         \coordinate (vd) at ( 4.0,1.3);
-         \coordinate (ve) at ( 6.5,1.8);
-         \coordinate (vf) at ( 8.5,0.8);
-         \coordinate (vg) at ( 0.0,1.8);
-         \coordinate (vh) at ( 2.5,0.3);
-         \coordinate (vi) at ( 5.5,0.0);
-         \coordinate (vj) at ( 5.0,2.3);
-         \coordinate (vk) at ( 7.5,0.3);
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
          
-         % start/goal highlighting
-         \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-         \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
          
-         % candidate path
-         \draw[line width=0.2cm,color=black!30,line cap=round]
-            (va) -- (vb) -- (vd) -- (ve) -- (vf);
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
          
-         % highlight first unevaled edge
-         \draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
-         \draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
          
-         % edges
-         \draw[black,ultra thick] (va) -- (vb);
-         \draw[black!30] (vb) -- (vd);
-         \draw[black,ultra thick] (va) -- (vh);
-         \draw[black!30] (vh) -- (vd);
-         \draw[black!30] (vb) -- (vc);
-         \draw[black!30] (vc) -- (vj);
-         \draw[black,ultra thick] (va) -- (vg);
-         \draw[black!30] (vb) -- (vg);
-         \draw[black!30] (vb) -- (vh);
-         \draw[black!30] (vc) -- (vd);
-         \draw[black!30] (vd) -- (ve);
-         \draw[black!30] (ve) -- (vf);
-         \draw[black!30] (vd) -- (vi);
-         \draw[black!30] (ve) -- (vi);
-         \draw[black!30] (vd) -- (vj);
-         \draw[black!30] (ve) -- (vj);
-         \draw[black!30] (vf) -- (vk);
-         \draw[black!30] (vi) -- (vk);
-         \draw[black!30] (ve) -- (vk);
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
          
-         % highlight edges to return
-         \draw[black,ultra thick] (vd) -- (ve);
+         %\draw[blue,ultra thick] (ve) -- (vf);
          
-         % nodes
-         \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-         \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-      \end{scope}
-      }
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
+      %}
+      
+      
+      
+      %\only<3->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockfwd) at (3,4.5) {};
+      %\node[anchor=north,below=0cm of blockfwd.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Alternate Selector}
+         
+         %(alternate Forward and Reverse)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(1.75,3.6)}]
+      
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+      
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
+         
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+         
+         %\only<4>{
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vb) -- (vd);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vb) -- (vd);
+         %}
+         %\only<5>{
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (ve) -- (vf);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (ve) -- (vf);
+         %}
+         %\only<6->{
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
+         %}
+         
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
+         
+         %% highlight edges to return
+         %\only<4>{\draw[blue,ultra thick] (vb) -- (vd);}
+         %\only<5->{\draw[black,ultra thick] (vb) -- (vd);}
+         %\only<5>{\draw[blue,ultra thick] (ve) -- (vf);}
+         %\only<6->{\draw[black,ultra thick] (ve) -- (vf);}
+         %\only<6->{\draw[blue,ultra thick] (vd) -- (ve);}
+         
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
+      %}
+      
+      
+      
+      %\only<7->{
+      %\node[fill=blue!20,anchor=north,rounded corners,
+         %minimum width=5.8cm,minimum height=3cm] (blockfwd) at (9,4.5) {};
+      %\node[anchor=north,below=0cm of blockfwd.north]
+      %{\begin{minipage}{5.5cm}
+         %\textbf{LazySP w/ Bisect Selector}
+         
+         %(alternate Forward and Reverse)
+      %\end{minipage}};
+      %\begin{scope}[scale=0.5,shift={(13.75,3.6)}]
+      
+         %\fill[white,opacity=0.7,rounded corners] (-1.3,-0.4) rectangle (9.8,3.2);
+      
+         %% graph start
+         %\coordinate (va) at ( 0.5,0.8);
+         %\coordinate (vb) at ( 2.0,1.5);
+         %\coordinate (vc) at ( 2.5,2.7);
+         %\coordinate (vd) at ( 4.0,1.3);
+         %\coordinate (ve) at ( 6.5,1.8);
+         %\coordinate (vf) at ( 8.5,0.8);
+         %\coordinate (vg) at ( 0.0,1.8);
+         %\coordinate (vh) at ( 2.5,0.3);
+         %\coordinate (vi) at ( 5.5,0.0);
+         %\coordinate (vj) at ( 5.0,2.3);
+         %\coordinate (vk) at ( 7.5,0.3);
+         
+         %% start/goal highlighting
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+         %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+         
+         %% candidate path
+         %\draw[line width=0.2cm,color=black!30,line cap=round]
+            %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+         
+         %% highlight first unevaled edge
+         %\draw[line width=0.4cm,color=blue!50!white,line cap=round] (vd) -- (ve);
+         %\draw[line width=0.2cm,color=black!30,line cap=round] (vd) -- (ve);
+         
+         %% edges
+         %\draw[black,ultra thick] (va) -- (vb);
+         %\draw[black!30] (vb) -- (vd);
+         %\draw[black,ultra thick] (va) -- (vh);
+         %\draw[black!30] (vh) -- (vd);
+         %\draw[black!30] (vb) -- (vc);
+         %\draw[black!30] (vc) -- (vj);
+         %\draw[black,ultra thick] (va) -- (vg);
+         %\draw[black!30] (vb) -- (vg);
+         %\draw[black!30] (vb) -- (vh);
+         %\draw[black!30] (vc) -- (vd);
+         %\draw[black!30] (vd) -- (ve);
+         %\draw[black!30] (ve) -- (vf);
+         %\draw[black!30] (vd) -- (vi);
+         %\draw[black!30] (ve) -- (vi);
+         %\draw[black!30] (vd) -- (vj);
+         %\draw[black!30] (ve) -- (vj);
+         %\draw[black!30] (vf) -- (vk);
+         %\draw[black!30] (vi) -- (vk);
+         %\draw[black!30] (ve) -- (vk);
+         
+         %% highlight edges to return
+         %\draw[black,ultra thick] (vd) -- (ve);
+         
+         %% nodes
+         %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+         %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %\end{scope}
+      %}
       
    
-   \end{tikzpicture}
-\end{frame}
+   %\end{tikzpicture}
+%\end{frame}
 
 \begin{frame}
    \frametitle{Novel Selectors: Path Distribution}
-   
-   \begin{center}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (-6,-1.7) grid (6,1.7);
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \tikzset{>=latex}
-      
+
+      \node at (6,7.6) {
+         Select the edge most likely on a path
+         drawn from a proposed path distribution $\mathcal{D}_p$.
+      };
+
+      \begin{scope}[shift={(6,5.8)}]
       \only<2->{
          \node[draw,minimum width=2.4cm,minimum height=3.0cm] (startbox) at (-3.0,0) {};
          \node[inner sep=0pt] at (-3.0,-0.35) {\includegraphics[scale=2.0]{build/lazysp-fig-dists/fig-sofar}};
@@ -1803,189 +2448,103 @@
          \node[align=center,font=\footnotesize,below] at (goalbox.north) {edge indicator\\distributions};
          \draw[->] (pathsbox) -- (goalbox);
       }
-   \end{tikzpicture}
-   \end{center}
-   
-   Central idea behind novel selectors:
-   \pause
-   \begin{itemize}
-   \item Given known edges and the current lazy edge weights,
-   \pause
-   \item propose some distribution $\mathcal{D}_p$ over potential paths,
-   \pause
-   \item and select the unevaluated edge that is
-   \textbf{most likely} on the path drawn from $\mathcal{D}_p$.
-   \end{itemize}
-   
-\end{frame}
+      \end{scope}
 
-\begin{frame}
-   \frametitle{Path Distribution via Weight Function Sampling}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (-7,-3.1) grid (5,4.9);
-      \tikzset{>=latex}
-      
-      \node at (-1,4) {\begin{minipage}{11.0cm}
-      \raggedright
-      Given a distribution $\mathcal{D}_w$
-      over consistent edge weight functions,
-      compute the shortest path for each to form $\mathcal{D}_p$.
-      \end{minipage}};
-      
-      \node[draw,minimum width=1.8cm,minimum height=2.6cm] (startbox) at (-4.4,0) {};
-      \node[inner sep=0pt] at (-4.4,-0.35) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-sofar}};
-      \node[align=center,font=\footnotesize,below] at (startbox.north) {known\\edges};
-      
-      \only<2->{
-         \node[draw,minimum width=1.8cm,minimum height=6cm] (abox) at (-2.2,0) {};
-         \node[inner sep=0pt] at (-2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-00}};
-         \node[inner sep=0pt] at (-2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-01}};
-         \node[inner sep=0pt] at (-2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-02}};
-         \node[align=center,font=\footnotesize,below] at (abox.north) {obstacle\\distribution};
-         \node[align=center,font=\normalsize,above] at (abox.south) {$\dots$};
-         \draw[->] (startbox) -- (abox);
-      }
-      
-      \only<3->{
-         \node[draw,minimum width=1.8cm,minimum height=6cm] (bbox) at (0,0) {};
-         \node[inner sep=0pt] at (0, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-00}};
-         \node[inner sep=0pt] at (0,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-01}};
-         \node[inner sep=0pt] at (0,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-02}};
-         \node[align=center,font=\footnotesize,below] at (bbox.north) {weight fn\\distribution};
-         \node[align=center,font=\normalsize,above] at (bbox.south) {$\dots$};
-         \draw[->] (abox) -- (bbox);
-      }
-      
-      \only<4->{
-         \node[draw,minimum width=1.8cm,minimum height=6cm] (cbox) at (2.2,0) {};
-         \node[inner sep=0pt] at (2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-00}};
-         \node[inner sep=0pt] at (2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-01}};
-         \node[inner sep=0pt] at (2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-02}};
-         \node[align=center,font=\footnotesize,below] at (cbox.north) {path\\distribution};
-         \node[align=center,font=\normalsize,above] at (cbox.south) {$\dots$};
-         \draw[->] (bbox) -- (cbox);
-      }
-      
-   \end{tikzpicture}
-\end{frame}
+      % first thing: example
 
-\begin{frame}
-   \frametitle{Path Distribution via the Partition Function}
-   
-   \begin{itemize}
-   \item
-   Sampling weight functions and solving the corresponding SP problems
-   can be expensive.
-   
-   \pause
-   \item
-   How else can we efficiently generate a reasonable distribution
-   over potential paths?
-   \end{itemize}
-   
-   \pause
-   \begin{equation*}
-      P: \mbox{set of all paths from $v_s$ to $v_t$}
-   \end{equation*}%
-   \pause%
-   \vspace{-0.3cm}
-   \begin{equation*}
-      \arraycolsep=1pt
-      \begin{array}{ll}
-      \mathcal{D}_p : & \mbox{path distribution with PDF } \\
-      & f(p) \propto \exp( - \beta \, \mbox{len}(p, w_{\ms{lazy}}) ). \\
-      \end{array}
-   \end{equation*}
-   
-   \pause
-   \vspace{0.3cm}
-   \begin{itemize}
-   \item At each iteration,
-   the shortest path in $P$
-   (which is chosen as the LazySP candidate path)
-   is most likely under $\mathcal{D}_p$ ...
-   
-   \pause
-   \item ... but other paths also have probability mass,
-      with longer paths exponentially less likely.
-   \end{itemize}
-   
-\end{frame}
+      \only<5-6>{
+         \node[fill=blue!3,draw=blue!6,rounded corners,minimum width=9.6cm,minimum height=3.4cm] at (6,2.1) {};
+         \node[fill=white,draw=blue!6,rounded corners] (gap33left) at (3,2.1) {\includegraphics{build/lazysp-selscores/gap-33-nograph}};
+         \only<6>{
+            \node[fill=white,draw=blue!6,rounded corners] (gap33right) at (9,2.1) {\includegraphics{build/lazysp-selscores/gap-33}};
+            \draw[->,draw=black] (gap33left) -- (gap33right);
+         }
+      }
 
-\begin{frame}
-   \frametitle{Path Distribution via the Partition Function}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-      \tikzset{>=latex}
-   
-      \node at (6,7.5) {
-         Examples of the edge probabilities for various values of $\beta$:
-      };
-      
-      \only<2->{
-      \node (empty50) at (3,5.5) {\includegraphics{build/lazysp-selscores/empty-50}};
-      \node[anchor=north west, below right=0.2cm of empty50.north west,font=\small] {$\beta=50$};
-      }
-      \only<3->{
-      \node (empty33) at (6,5.5) {\includegraphics{build/lazysp-selscores/empty-33}};
-      \node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
-      }
-      \only<4->{
-      \node (empty28) at (9,5.5) {\includegraphics{build/lazysp-selscores/empty-28}};
-      \node[anchor=north west, below right=0.2cm of empty28.north west,font=\small] {$\beta=28$};
-      }
-      
-      \only<5->{
-      \node (gap50) at (3,2.3) {\includegraphics{build/lazysp-selscores/gap-50}};
-      \node[anchor=north west, below right=0.2cm of gap50.north west,font=\small] {$\beta=50$};
-      }
-      \only<6->{
-      \node (gap33) at (6,2.3) {\includegraphics{build/lazysp-selscores/gap-33}};
-      \node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
-      }
+      % left side (weight function sampling)
       \only<7->{
-      \node (gap28) at (9,2.3) {\includegraphics{build/lazysp-selscores/gap-28}};
-      \node[anchor=north west, below right=0.2cm of gap28.north west,font=\small] {$\beta=28$};
+      \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=5.5cm,minimum height=4cm] (leftside) at (3,2.1) {};
+      \node[anchor=north] at (leftside.north) {Weight Function Sampling};
+      \node at (3,1.9) {\includegraphics[width=4.7cm]{build/lazysp-weightfunc}};
       }
-   
+
+      % right side (partition sampling)
+      \only<8->{
+      \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=5.5cm,minimum height=4cm] (rightside) at (9,2.1) {};
+      \node[anchor=north] at (rightside.north) {Partition Functions};
+      \node[fill=blue!2,draw=blue!10,rounded corners] at (9,1.9) {\begin{minipage}{5cm}
+         \vspace{-0.3cm}
+         \begin{equation*}
+            P: \mbox{set of all paths from $s$ to $t$}
+         \end{equation*}%
+         \vspace{-0.3cm}
+         \begin{equation*}
+            \arraycolsep=1pt
+            \begin{array}{ll}
+            \mathcal{D}_p : & \mbox{path distribution with PDF } \\
+            & f(p) \propto \exp( - \beta \, \mbox{len}(p, w_{\ms{lazy}}) ). \\
+            \end{array}
+         \end{equation*}
+
+         We provide a novel incremental method to maintain
+         the partition function $Z_{st}$ over a changing graph.
+      \end{minipage}};
+      }
+      
    \end{tikzpicture}
 \end{frame}
 
-\begin{frame}
-   \frametitle{Partition Function: Incremental Formulation}
-   
-   Efficient implementation of the partition function selector
-   requires an incremental algorithm for calculating $Z_{st}$ over $G$.
-   
-   \begin{equation*}
-      P_{xy}: \mbox{set of all paths from $v_x$ to $v_y$}
-   \end{equation*}
-   \begin{equation*}
-      Z_{xy} = \sum_{p \in P_{xy}} \exp( - \beta \, \mbox{len}(p) )
-   \end{equation*}
-   
-   \pause
-   Consider two directed graphs, $G=(V,E)$ and $G'=(V,E')$,
-   with $E' = E \cup \{ e'_{ab} \}$
-   and $z'_{ab} = \exp(-\beta w(e'_{ab}))$.
-   Suppose that the values $Z_{xy}$ are known for all pairs $x,y$.
-   Then we can write:
-   \pause
-   \begin{equation*}
-      \arraycolsep=1pt
-      \def\arraystretch{1.8}
-      \begin{array}{ll}
-      Z'_{xy}
-         & = \left[ Z_{xy} \right]
-         + \left[ Z_{xa} \, z'_{ab} \, Z_{by} \right]
-         + \left[ Z_{xa} \, z'_{ab} \, Z_{ba} \, z'_{ab} \, Z_{by} \right]
-         + \dots \\
-      \pause
-      & = Z_{xy} + \frac{\displaystyle Z_{xa} Z_{by}}{\displaystyle 1 / z'_{ab} - Z_{ba}}
-      \end{array}
-   \end{equation*}
-   
-\end{frame}
+%\begin{frame}
+   %\frametitle{Path Distribution via Weight Function Sampling}
+   %\begin{tikzpicture}
+      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (-7,-3.1) grid (5,4.9);
+      %\tikzset{>=latex}
+      
+      %\node at (-1,4) {\begin{minipage}{11.0cm}
+      %\raggedright
+      %Given a distribution $\mathcal{D}_w$
+      %over consistent edge weight functions,
+      %compute the shortest path for each to form $\mathcal{D}_p$.
+      %\end{minipage}};
+      
+      %\node[draw,minimum width=1.8cm,minimum height=2.6cm] (startbox) at (-4.4,0) {};
+      %\node[inner sep=0pt] at (-4.4,-0.35) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-sofar}};
+      %\node[align=center,font=\footnotesize,below] at (startbox.north) {known\\edges};
+      
+      %\only<2->{
+         %\node[draw,minimum width=1.8cm,minimum height=6cm] (abox) at (-2.2,0) {};
+         %\node[inner sep=0pt] at (-2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-00}};
+         %\node[inner sep=0pt] at (-2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-01}};
+         %\node[inner sep=0pt] at (-2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-02}};
+         %\node[align=center,font=\footnotesize,below] at (abox.north) {obstacle\\distribution};
+         %\node[align=center,font=\normalsize,above] at (abox.south) {$\dots$};
+         %\draw[->] (startbox) -- (abox);
+      %}
+      
+      %\only<3->{
+         %\node[draw,minimum width=1.8cm,minimum height=6cm] (bbox) at (0,0) {};
+         %\node[inner sep=0pt] at (0, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-00}};
+         %\node[inner sep=0pt] at (0,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-01}};
+         %\node[inner sep=0pt] at (0,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-02}};
+         %\node[align=center,font=\footnotesize,below] at (bbox.north) {weight fn\\distribution};
+         %\node[align=center,font=\normalsize,above] at (bbox.south) {$\dots$};
+         %\draw[->] (abox) -- (bbox);
+      %}
+      
+      %\only<4->{
+         %\node[draw,minimum width=1.8cm,minimum height=6cm] (cbox) at (2.2,0) {};
+         %\node[inner sep=0pt] at (2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-00}};
+         %\node[inner sep=0pt] at (2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-01}};
+         %\node[inner sep=0pt] at (2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-02}};
+         %\node[align=center,font=\footnotesize,below] at (cbox.north) {path\\distribution};
+         %\node[align=center,font=\normalsize,above] at (cbox.south) {$\dots$};
+         %\draw[->] (bbox) -- (cbox);
+      %}
+      
+   %\end{tikzpicture}
+%\end{frame}
+
+
 
 %\begin{frame}
 %   \frametitle{Illustration of Selectors}
@@ -2434,5 +2993,6 @@ Partition   0.04  1.54  4.21 0.28
 %   \end{tikzpicture}
 %
 %\end{frame}
+
 
 

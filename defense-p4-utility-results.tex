@@ -105,7 +105,7 @@
    \end{array}$};
 
    \node[fill=black!2,draw=black!5,rounded corners,minimum width=5.3cm] at (9.1,3.7) {\begin{minipage}{5.0cm}
-      Experimental setup:
+      Planning \& execution cost model:
       \[\arraycolsep=2pt \def\arraystretch{1.5} \begin{array}{clc}
          x(\xi)
             & = \left\{ \def\arraystretch{1.0} \begin{array}{cl}
@@ -119,6 +119,36 @@
       with $N_{cc}(\xi)$ the number of collision checks necessary
       to validate $\xi$,
       and $\alpha$ a fixed checking cost parameter.
+   \end{minipage}};
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{LEMUR Single-Query Results}
+   \begin{tikzpicture}[font=\small]
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
+
+   \node[inner sep=0pt] (vizall-herbbin) at (3,6.5) {%
+      \href{\tikzvidtarget{vizall-herbbin}}{%
+      \includegraphics[width=5.8cm]{videos/vizall-herbbin.png}}};
+   \tikzvidplayat{vizall-herbbin}{vizall-herbbin}{videos/vizall-herbbin.mp4}{}
+
+   \node[inner sep=0pt] (vizall-workcell) at (9,6.5) {%
+      \href{\tikzvidtarget{vizall-workcell}}{%
+      \includegraphics[width=5.8cm]{videos/vizall-workcell.png}}};
+   \tikzvidplayat{vizall-workcell}{vizall-workcell}{videos/vizall-workcell.mp4}{}
+   
+   \node[fill=black!2,draw=black!5,rounded corners,minimum width=5.3cm] at (6,3.5)
+   {\begin{minipage}{9.0cm}
+      Comparing utility across planners:
+      \begin{itemize}
+      \item 50 runs for each planner (randomized)
+      \item 50 different roadmaps (random Halton offsets)
+      \item LEMUR: sweep $\lambda$ tradeoff parameter
+      \item Anytime algorithms: sweep optimization time budget
+      \end{itemize}
    \end{minipage}};
 
    \end{tikzpicture}

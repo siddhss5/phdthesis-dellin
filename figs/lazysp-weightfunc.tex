@@ -1,0 +1,47 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning,shapes,decorations.pathmorphing}
+\usetikzlibrary{hobby} % for blobs, see http://tex.stackexchange.com/a/145276
+
+\def\gridopacity{100}
+\def\gridopacity{0}
+
+\begin{document}%
+\begin{tikzpicture}
+
+   \node[draw,minimum width=1.8cm,minimum height=2.6cm,fill=white] (startbox) at (-4.4,0) {};
+   \node[inner sep=0pt] at (-4.4,-0.35) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-sofar}};
+   \node[align=center,font=\footnotesize,below] at (startbox.north) {known\\edges};
+   
+   %\only<2->{
+      \node[draw,minimum width=1.8cm,minimum height=6cm,fill=white] (abox) at (-2.2,0) {};
+      \node[inner sep=0pt] at (-2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-00}};
+      \node[inner sep=0pt] at (-2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-01}};
+      \node[inner sep=0pt] at (-2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-world-02}};
+      \node[align=center,font=\footnotesize,below] at (abox.north) {obstacle\\distribution};
+      \node[align=center,font=\normalsize,above] at (abox.south) {$\dots$};
+      \draw[->] (startbox) -- (abox);
+   %}
+   
+   %\only<3->{
+      \node[draw,minimum width=1.8cm,minimum height=6cm,fill=white] (bbox) at (0,0) {};
+      \node[inner sep=0pt] at (0, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-00}};
+      \node[inner sep=0pt] at (0,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-01}};
+      \node[inner sep=0pt] at (0,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-wfn-02}};
+      \node[align=center,font=\footnotesize,below] at (bbox.north) {weight fn\\distribution};
+      \node[align=center,font=\normalsize,above] at (bbox.south) {$\dots$};
+      \draw[->] (abox) -- (bbox);
+   %}
+   
+   %\only<4->{
+      \node[draw,minimum width=1.8cm,minimum height=6cm,fill=white] (cbox) at (2.2,0) {};
+      \node[inner sep=0pt] at (2.2, 1.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-00}};
+      \node[inner sep=0pt] at (2.2,-0.3) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-01}};
+      \node[inner sep=0pt] at (2.2,-1.9) {\includegraphics[scale=1.5]{build/lazysp-fig-dists/fig-path-02}};
+      \node[align=center,font=\footnotesize,below] at (cbox.north) {path\\distribution};
+      \node[align=center,font=\normalsize,above] at (cbox.south) {$\dots$};
+      \draw[->] (bbox) -- (cbox);
+   %}
+
+\end{tikzpicture}%
+\end{document}

@@ -1,0 +1,118 @@
+
+\begin{frame}
+   \frametitle{Path Distribution via the Partition Function}
+   
+   \begin{itemize}
+   \item
+   Sampling weight functions and solving the corresponding SP problems
+   can be expensive.
+   
+   \pause
+   \item
+   How else can we efficiently generate a reasonable distribution
+   over potential paths?
+   \end{itemize}
+   
+   \pause
+   \begin{equation*}
+      P: \mbox{set of all paths from $v_s$ to $v_t$}
+   \end{equation*}%
+   \pause%
+   \vspace{-0.3cm}
+   \begin{equation*}
+      \arraycolsep=1pt
+      \begin{array}{ll}
+      \mathcal{D}_p : & \mbox{path distribution with PDF } \\
+      & f(p) \propto \exp( - \beta \, \mbox{len}(p, w_{\ms{lazy}}) ). \\
+      \end{array}
+   \end{equation*}
+   
+   \pause
+   \vspace{0.3cm}
+   \begin{itemize}
+   \item At each iteration,
+   the shortest path in $P$
+   (which is chosen as the LazySP candidate path)
+   is most likely under $\mathcal{D}_p$ ...
+   
+   \pause
+   \item ... but other paths also have probability mass,
+      with longer paths exponentially less likely.
+   \end{itemize}
+   
+\end{frame}
+
+\begin{frame}
+   \frametitle{Path Distribution via the Partition Function}
+   \begin{tikzpicture}
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \tikzset{>=latex}
+   
+      \node at (6,7.5) {
+         Examples of the edge probabilities for various values of $\beta$:
+      };
+      
+      \only<2->{
+      \node (empty50) at (3,5.5) {\includegraphics{build/lazysp-selscores/empty-50}};
+      \node[anchor=north west, below right=0.2cm of empty50.north west,font=\small] {$\beta=50$};
+      }
+      \only<3->{
+      \node (empty33) at (6,5.5) {\includegraphics{build/lazysp-selscores/empty-33}};
+      \node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
+      }
+      \only<4->{
+      \node (empty28) at (9,5.5) {\includegraphics{build/lazysp-selscores/empty-28}};
+      \node[anchor=north west, below right=0.2cm of empty28.north west,font=\small] {$\beta=28$};
+      }
+      
+      \only<5->{
+      \node (gap50) at (3,2.3) {\includegraphics{build/lazysp-selscores/gap-50}};
+      \node[anchor=north west, below right=0.2cm of gap50.north west,font=\small] {$\beta=50$};
+      }
+      \only<6->{
+      \node (gap33) at (6,2.3) {\includegraphics{build/lazysp-selscores/gap-33}};
+      \node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
+      }
+      \only<7->{
+      \node (gap28) at (9,2.3) {\includegraphics{build/lazysp-selscores/gap-28}};
+      \node[anchor=north west, below right=0.2cm of gap28.north west,font=\small] {$\beta=28$};
+      }
+   
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Partition Function: Incremental Formulation}
+   
+   Efficient implementation of the partition function selector
+   requires an incremental algorithm for calculating $Z_{st}$ over $G$.
+   
+   \begin{equation*}
+      P_{xy}: \mbox{set of all paths from $v_x$ to $v_y$}
+   \end{equation*}
+   \begin{equation*}
+      Z_{xy} = \sum_{p \in P_{xy}} \exp( - \beta \, \mbox{len}(p) )
+   \end{equation*}
+   
+   \pause
+   Consider two directed graphs, $G=(V,E)$ and $G'=(V,E')$,
+   with $E' = E \cup \{ e'_{ab} \}$
+   and $z'_{ab} = \exp(-\beta w(e'_{ab}))$.
+   Suppose that the values $Z_{xy}$ are known for all pairs $x,y$.
+   Then we can write:
+   \pause
+   \begin{equation*}
+      \arraycolsep=1pt
+      \def\arraystretch{1.8}
+      \begin{array}{ll}
+      Z'_{xy}
+         & = \left[ Z_{xy} \right]
+         + \left[ Z_{xa} \, z'_{ab} \, Z_{by} \right]
+         + \left[ Z_{xa} \, z'_{ab} \, Z_{ba} \, z'_{ab} \, Z_{by} \right]
+         + \dots \\
+      \pause
+      & = Z_{xy} + \frac{\displaystyle Z_{xa} Z_{by}}{\displaystyle 1 / z'_{ab} - Z_{ba}}
+      \end{array}
+   \end{equation*}
+   
+\end{frame}

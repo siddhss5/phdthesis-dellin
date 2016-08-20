@@ -53,17 +53,17 @@
 
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \only<1>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawempty}};}
-      \only<2>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawaxes}};}
-      \only<3>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawa}};}
-      \only<4>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawab}};}
-      \only<5>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstar}};}
-      \only<6>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarc}};}
-      \only<7-8>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarcd}};}
-      \only<9->{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarcdutility}};}
+      \only<1>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawempty}};}
+      \only<2>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawaxes}};}
+      \only<3>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawa}};}
+      \only<4>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawab}};}
+      \only<5>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawabxstar}};}
+      \only<6>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawabxstarc}};}
+      \only<7-8>{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawabxstarcd}};}
+      \only<9->{\node at (2.75,5.5) {\includegraphics{build/pvx-graph-build,drawabxstarcdutility}};}
 
       \only<3->{
-      \node[fill=blue!5,draw=blue!10,rounded corners,align=center,anchor=north,minimum width=5cm] at (9,6.5) {
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center,anchor=north,minimum width=5cm] at (8.5,7.0) {
          \only<3>{$A_1$: a planner invocation}
          \only<4->{$A_1, A_2$: planner invocations}
          \only<6->{\\ $A_3$: an anytime planner}
@@ -71,13 +71,26 @@
       }
 
       \only<2->{
-      \node[fill=blue!5,draw=blue!10,rounded corners,align=center] at (4.5,2.0) {
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center] at (8.5,4.5) {
          $p$: planning cost incurred during invocation\\
          $x$: execution cost of resulting solution path};
       }
       \only<8->{
-      \node[fill=blue!5,draw=blue!10,rounded corners,align=center] at (4.5,1.0) {
-         $U(p,x)$: utility function which scores the invocation};
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center,anchor=north] at (6,3.0) {
+         $\arraycolsep=1.5pt \begin{array}{rc}
+            U(p,x): & \mbox{real-valued utility function} \\
+            & \mbox{which scores the invocation}
+            \only<9->{\\ & \mbox{(isocontours shown)}}
+         \end{array}$};
+      }
+
+      \only<8->{
+      \node[anchor=west,font=\scriptsize] at (1.0,0.5) {\begin{minipage}{10cm}
+      \hangindent=0.3cm \raggedright
+         \PaperPortrait\; Burns, Ruml, and Do,
+         ``Heuristic Search when Time Matters,''
+         IJCAI 2013.
+      \end{minipage}};
       }
 
    \end{tikzpicture}
@@ -89,26 +102,52 @@
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
+
       \only<1->{
       \node at (1.92,6.5) {\includegraphics{build/pvx-sm-firstfeas}};
-      \node[anchor=west] at (3.5,6.6) {First Feasible};
+      \node[anchor=west] at (3.5,6.6) {\begin{minipage}{8cm}
+         {\bf First Feasible} --
+
+         Find a feasible solution as quickly as possible \\
+         irrespective of its cost.
+      \end{minipage}};
       }
+
 
       \only<2->{
-      \node at (1.82,4.0) {\includegraphics{build/pvx-sm-xbudget}};
-      \node[anchor=west] at (3.5,4.1) {Bounded Cost};
+      \node at (1.92,4.0) {\includegraphics{build/pvx-sm-pbudget}};
+      \node[anchor=west] at (3.5,4.1) {\begin{minipage}{8cm}
+         {\bf Planning Budget} --
+
+         Return the lowest-cost path possible within a \\
+         specified planning resource budget.
+      \end{minipage}};
       }
 
+
       \only<3->{
-      \node at (1.92,1.5) {\includegraphics{build/pvx-sm-pbudget}};
-      \node[anchor=west] at (3.5,1.6) {Planning Budget};
+      \node at (1.82,1.5) {\includegraphics{build/pvx-sm-xbudget}};
+      \node[anchor=west] (boundedcost) at (3.5,1.6) {\begin{minipage}{8cm}
+         {\bf Bounded Cost} --
+
+         Find a solution as fast as possible within a \\
+         specified path cost bound.
+         
+      \end{minipage}};
+      \node[anchor=north,font=\scriptsize,below=-0.1cm of boundedcost.south] {\begin{minipage}{8cm}
+      \hangindent=0.3cm \raggedright
+         \PaperPortrait\; Stern et al,
+         ``Potential-based Bounded-cost Search and Anytime Non-Parametric A*,''
+         AI 2014.
+      \end{minipage}};
       }
+      
 
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{General Path Algorithm}
+   \frametitle{Maximizing Utility over Paths Algorithm Outline}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
@@ -136,16 +175,20 @@
       \end{minipage}};
 
       \only<1>{\node at (6.0,2.0) {\includegraphics{build/p-estimates}};}
-      \only<2>{
-      \node at (3.0,2.0) {\includegraphics{build/pvx-rrt}};
-      \node at (9.0,2.0) {\includegraphics{build/rrt}};
-      }
+
+      \only<2>{\node at (3.7,2.0) {\includegraphics{build/rrt-build,stonly}};}
+      \only<3>{\node at (3.7,2.0) {\includegraphics{build/rrt-build,stexisting}};}
+      \only<4>{\node at (3.7,2.0) {\includegraphics{build/rrt-build,target}};}
+      \only<5-6>{\node at (3.7,2.0) {\includegraphics{build/rrt-build,otherpaths}};}
+      \only<7>{\node at (3.7,2.0) {\includegraphics{build/rrt-build,all}};}
+      
+      \only<6->{\node at (8.7,2.0) {\includegraphics{build/pvx-rrt}};}
 
    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Maximizing Utility on Roadmaps}
+   \frametitle{Maximizing Utility over Roadmaps}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
@@ -204,7 +247,7 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Maximizing Linear Utilities over Additive Estimators}
+   \frametitle{Maximizing Linear Utilities with Additive Estimators}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \tikzset{>=latex} % arrow heads
@@ -238,7 +281,8 @@
       \end{minipage}};
 
       \only<3->{
-         \node[fill=black!3,rounded corners] at (3.0,3.0) {\begin{minipage}{4.9cm}
+         \node[fill=black!3,draw=black!6,rounded corners] at (3.0,3.0)
+         {\begin{minipage}{4.9cm}
             We consider \emph{linear utility functions}:
             \vspace{-0.2cm}
             \[
@@ -247,7 +291,7 @@
          \end{minipage}};
       }
       \only<5->{
-         \node[fill=black!3,rounded corners] at (8.7,3.0) {\begin{minipage}{5.6cm}
+         \node[fill=black!3,draw=black!6,rounded corners] at (8.7,3.0) {\begin{minipage}{5.6cm}
             We consider \emph{additive estimators}:
             \vspace{-0.2cm}
             \[
@@ -270,7 +314,7 @@
       \only<6->{
          \draw[->,very thick] (5.65,1.9) -- (5.65,1.4);
       
-         \node[fill=black!3,rounded corners] at (5.8,0.8) {\begin{minipage}{5cm}
+         \node[fill=black!3,draw=black!6,rounded corners] at (5.8,0.8) {\begin{minipage}{5cm}
             Shortest path problem with:
             \vspace{-0.2cm}
             \[
@@ -308,14 +352,16 @@ lam99 0.7430251334600001 3.0377397256199994
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \tikzset{>=latex} % arrow heads
 
-      \node at (8.2,7.5) {
+      \node at (8.2,7.4) {
          \protect\tikz{\protect\node[fill=red!20,draw=black]{};}\;graph search vs.
          \protect\tikz{\protect\node[fill=blue!20,draw=black]{};}\;edge evaluation
       };
 
-      \node at ( 2.5,5.7) {
+      \node[fill=black!3,draw=black!6,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,5.5) {};
+
+      \node at ( 2.5,5.5) {
          \includegraphics[width=1.7cm]{figs/herbbin/step0cropped.png}
-         \;\includegraphics[width=1.7cm]{figs/herbbin/step01cropped.png}};
+         \includegraphics[width=1.7cm]{figs/herbbin/step01cropped.png}};
 
       \begin{scope}[shift={(5.5,5.0)}]
       \begin{axis}[
@@ -354,10 +400,12 @@ lam99 0.7430251334600001 3.0377397256199994
       \end{axis}
       \end{scope}
 
+      \node[fill=black!3,draw=black!6,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,2.2) {};
+
       \node at ( 2.5,2.2) {
          \includegraphics[width=3.5cm]{videos/workcell-cropped.png}};
 
-      \begin{scope}[shift={(5.5,1.5)}]
+      \begin{scope}[shift={(5.5,1.7)}]
       \begin{axis}[
          width=7.0cm,
          height=3.2cm,
