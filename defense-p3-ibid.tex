@@ -163,27 +163,27 @@
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut How to Optimize?};
+      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut What to Optimize?};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,5.6) {};
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,5.6) {};
+      \node[anchor=north] at (utility.north) {\strut Maximizing Utility};
+      \node at (3.25,5.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
+
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,5.6) {};
+      \node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
+      \node at (8.75,5.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
+
+      \node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut How to Optimize?};
+
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,1.6) {};
       \node[anchor=north] at (lazysp.north) {\strut Lazy Pathfinding};
-      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,5.4) {
+      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,1.4) {
          \includegraphics[width=3.8cm]{build/lazysp-icon}};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,5.6) {};
+      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,1.6) {};
       \node[anchor=north] at (ibid.north) {\strut Dynamic Pathfinding};
-      \node[draw=black!30,inner sep=0pt] at (8.75,5.4) {
+      \node[draw=black!30,inner sep=0pt] at (8.75,1.4) {
          \includegraphics[width=2.9cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
-
-      \node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut What to Optimize?};
-
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,1.6) {};
-      \node[anchor=north] at (utility.north) {\strut Maximizing Utility};
-      \node at (3.25,1.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
-
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,1.6) {};
-      \node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
-      \node at (8.75,1.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
 
       \only<2>
       {
@@ -277,7 +277,7 @@
       }
 
       \only<8-10>{
-      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.9cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item {\only<8-9>{\color{gray}}
@@ -819,7 +819,7 @@
          \end{tabular}
       \end{minipage}};
 
-      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.9cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
@@ -1052,7 +1052,7 @@
          \end{tabular}
       \end{minipage}};
 
-      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.9cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
@@ -1196,7 +1196,7 @@
          \end{tabular}
       \end{minipage}};
 
-      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.9cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
@@ -1212,13 +1212,278 @@
 \begin{frame}
    \frametitle{Heuristics as Vertex Potential Functions}
    \begin{tikzpicture}[font=\small]
-      \tikzset{>=latex} % arrow heads
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   \node at (6,3) {(Gotta make this slide!)};
+   \begin{scope}[shift={(0.2,2.5)}]
+   \node at (2.4,4.1) {Directed graph $G = (V,E)$};
+   
+   % vertices
+   \node[fill=black,circle,inner sep=1.3pt] (s) at (1.8,2.0) {};
+   \node[fill=black,circle,inner sep=1.3pt] (a) at (2.9,2.9) {};
+   \node[fill=black,circle,inner sep=1.3pt] (b) at (3.6,1.2) {};
+   \node[fill=black,circle,inner sep=1.3pt] (c) at (2.7,1.7) {};
+   \node[fill=black,circle,inner sep=1.3pt] (d) at (1.2,3.6) {};
+   \node[fill=black,circle,inner sep=1.3pt] (e) at (1.9,3.1) {};
+   \node[fill=black,circle,inner sep=1.3pt] (f) at (3.5,2.0) {}; % frontier
+   \node[fill=black,circle,inner sep=1.3pt] (g) at (1.1,2.7) {};
+   \node[fill=black,circle,inner sep=1.3pt] (h) at (0.3,3.6) {};
+   \node[fill=black,circle,inner sep=1.3pt] (i) at (0.2,2.83) {};
+   \node[fill=black,circle,inner sep=1.3pt] (j) at (0.5,2.0) {};
+   \node[fill=black,circle,inner sep=1.3pt] (k) at (1.2,1.5) {};
+   \node[fill=black,circle,inner sep=1.3pt] (l) at (2.2,1.1) {};
+   \node[fill=black,circle,inner sep=1.3pt] (m) at (1.42,0.5) {};
+   \node[fill=black,circle,inner sep=1.3pt] (n) at (0.5,0.8) {};
+   \node[fill=black,circle,inner sep=1.3pt] (o) at (3.0,0.6) {};
+   \node[fill=black,circle,inner sep=1.3pt] (p) at (4.0,0.3) {};
+   \node[fill=black,circle,inner sep=1.3pt] (q) at (4.7,0.9) {};
+   \node[fill=black,circle,inner sep=1.3pt] (r) at (4.3,1.7) {};
+   \node[fill=black,circle,inner sep=1.3pt] (t) at (4.1,2.9) {};
+   \node[fill=black,circle,inner sep=1.3pt] (u) at (3.5,3.6) {};
+   \node[fill=black,circle,inner sep=1.3pt] (v) at (0.6,0.2) {};
 
-   \node at (6,2) {Talk about the $w > 0$ problem.};
-   \node at (6,1) {Lexographically sorted tuples!};
+   \draw[->,draw=black!50] (s) -- (c);
+   \draw[->,draw=black!50] (s) -- (e);
+   \draw[->,draw=black!50] (e) -- (a);
+   \draw[->,draw=black!50] (g) -- (e);
+   \draw[->,draw=black!50] (e) -- (d);
+   \draw[->,draw=black!50] (a) -- (f);
+   \draw[->,draw=black!50] (g) -- (j);
+   \draw[->,draw=black!50] (g) -- (d);
+   \draw[->,draw=black!50] (d) -- (h);
+   \draw[->,draw=black!50] (i) -- (h);
+   \draw[->,draw=black!50] (g) -- (i);
+   \draw[->,draw=black!50] (j) -- (i);
+   \draw[->,draw=black!50] (s) -- (g);
+   \draw[->,draw=black!50] (k) -- (j);
+   \draw[->,draw=black!50] (k) -- (l);
+   \draw[->,draw=black!50] (k) -- (n);
+   \draw[->,draw=black!50] (j) -- (n);
+   \draw[->,draw=black!50] (m) -- (n);
+   \draw[->,draw=black!50] (s) -- (j);
+   \draw[->,draw=black!50] (s) -- (k);
+   \draw[->,draw=black!50] (k) -- (m);
+   \draw[->,draw=black!50] (s) -- (l);
+   \draw[->,draw=black!50] (l) -- (m);
+   \draw[->,draw=black!50] (c) -- (l);
+   \draw[->,draw=black!50] (l) -- (o);
+   \draw[->,draw=black!50] (o) -- (p);
+   \draw[->,draw=black!50] (o) -- (b);
+   \draw[->,draw=black!50] (b) -- (p);
+   \draw[->,draw=black!50] (b) -- (f);
+   \draw[->,draw=black!50] (c) -- (f);
+   \draw[->,draw=black!50] (p) -- (q);
+   \draw[->,draw=black!50] (b) -- (r);
+   \draw[->,draw=black!50] (f) -- (r);
+   \draw[->,draw=black!50] (r) -- (q);
+   \draw[->,draw=black!50] (f) -- (t);
+   \draw[->,draw=black!50] (a) -- (t);
+   \draw[->,draw=black!50] (a) -- (u);
+   \draw[->,draw=black!50] (u) -- (t);
+   \draw[->,draw=black!50] (n) -- (v);
+   \end{scope}
+
+   \node[fill=black!3,rounded corners,align=center] (blocka) at (7.3,6.6) {
+      \strut $w : E \rightarrow \mathbb{R}$};
+
+   \only<2->{
+   \node[fill=black!3,rounded corners,align=center] (blockb) at (7.3,5.5) {
+      Vertex potential:\\
+      \strut $b : V \rightarrow \mathbb{R}$};
+   }
+
+   \only<3->{
+   \node[fill=black!3,rounded corners,align=center] (blockc) at (7.3,4.2) {
+      \strut $w' : E \rightarrow \mathbb{R}$\\
+      \strut $w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right)$};
+   }
+
+   \only<4->{
+   \node[fill=blue!5,rounded corners,align=center] at (8.5,1.8) {
+      $\arraycolsep=1.5pt \begin{array}{rl}
+         \vspace{0.1cm}
+         \mbox{len}(p_{st}, w') = & w'_{su} + w'_{uv} \dots \\
+          = & w_{su} - \left( b(s)\!-\!b(u) \right) \\
+          & + \; w_{su} - \left( b(u)\!-\!b(v) \right) \\
+          & + \; \dots \vspace{0.1cm} \\
+          = & \mbox{len}(p_{st}, w) - \left( b(s)\!-\!b(t) \right)
+      \end{array}$\\
+      \vspace{0.0cm}\\
+      Length difference independent of $p_{st}$!};
+   }
+
+   \only<5->{
+   \node[fill=blue!5,rounded corners,align=center] (blockd) at (10.7,4.2) {
+      Shortest path\\ \strut $p'_{st}$ w.r.t. $w'$};
+   }
+
+   \only<6->{
+   \node[fill=blue!5,rounded corners,align=center] (blocke) at (10.7,6.6) {
+      Shortest path\\ \strut $p_{st}$ w.r.t. $w$};
+   }
+
+   \only<7->{\draw[->] (blocka) -- (blockb);}
+   \only<8->{\draw[->] (blockb) -- (blockc);}
+   \only<9->{\draw[->] (blockc) -- (blockd);}
+   \only<10->{\draw[->] (blockd) -- (blocke);}
+   
+
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Heuristics as Vertex Potential Functions}
+   \begin{tikzpicture}[font=\small]
+   \tikzset{>=latex} % arrow heads
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+   \node[fill=black!3,minimum width=5.2cm] at (3.7,7.55) {\strut Non-Incremental};
+   \node[fill=black!3,minimum width=3.3cm,rotate=90] at (0.6,5.45) {\strut Unidirectional};
+   \only<6->{\node[fill=black!3,minimum width=5.2cm] at (9.0,7.55) {\strut Incremental};}
+   \only<17->{\node[fill=black!3,minimum width=3.45cm,rotate=90] at (0.6,1.85) {\strut Bidirectional};}
+
+   \only<2->{
+   \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.3cm] (dijk) at (3.7,7.1) {};
+   \node[anchor=north] at (dijk.north) {\begin{minipage}{4.7cm}
+      \setlength{\belowdisplayskip}{1pt} \setlength{\belowdisplayshortskip}{1pt}
+      \setlength{\abovedisplayskip}{1pt} \setlength{\abovedisplayshortskip}{1pt}
+
+      Use potential function:
+      \[
+         b(v) = h_t(v)
+      \]
+      \[
+         w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right) 
+      \]
+      
+      \only<5->{
+      \vspace{0.7cm}
+      \begin{center}
+         Dijkstra's algorithm on $w'$\\
+         yields A*
+      \end{center}}
+   \end{minipage}};
+   }
+   \only<3->{\node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dijkin) at (2.7,5.2) {$w \geq 0$\\$h_t$ consistent};}
+   \only<4->{
+      \node[fill=blue!10,rounded corners,inner sep=3pt] (dijkout) at (5.2,5.2) {$w_{uv}' \geq 0$};
+      \draw[->] (dijkin) -- (dijkout);}
+
+
+   \only<7->{
+   \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.3cm] (dynswsffp) at (9.0,7.1) {};
+   \only<24->{
+      \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.85cm of dynswsffp.north]  {};
+   }
+   \node[anchor=north] at (dynswsffp.north) {\begin{minipage}{4.7cm}
+      \setlength{\belowdisplayskip}{1pt} \setlength{\belowdisplayshortskip}{1pt}
+      \setlength{\abovedisplayskip}{1pt} \setlength{\abovedisplayshortskip}{1pt}
+      \only<8->{
+      Use potential function:
+      \[
+         b(v) = h_t(v)
+      \]}%
+      \only<9-11>{\[
+         w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right)
+      \]}%
+      \only<13-15>{\[
+         w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \;\;\, ? \;\;\; \right]
+      \]}%
+      \only<16->{\[
+         w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \; w_{uv} \right]
+      \]}%
+      
+      \only<15->{%
+      \vspace{0.7cm}
+      \begin{center}
+         DynamicSWSF-FP on $w'$\\
+         yields LPA*
+      \end{center}%
+      }
+   \end{minipage}};
+   }
+   \only<10->{\node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dynswsffpin) at (8.0,5.2) {$w_{uv} > 0$\\$h_t$ consistent};}
+   \only<11>{
+      \node[fill=blue!10,rounded corners,inner sep=3pt] (dynswsffpout) at (10.5,5.2) {$w_{uv}' \ngtr 0$};
+      \draw[->] (dynswsffpin) -- (dynswsffpout);}
+   \only<14->{
+      \node[fill=blue!10,rounded corners,inner sep=3pt] (dynswsffpout) at (10.5,5.2) {$w_{uv}' > [0,0]$};
+      \draw[->] (dynswsffpin) -- (dynswsffpout);}
+
+
+   \only<18->{
+   \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.5cm] (bidijk) at (3.7,3.6) {};
+   \only<22->{
+      \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.45cm of bidijk.north]  {};
+   }
+   \node[anchor=north] at (bidijk.north) {\begin{minipage}{4.7cm}
+      \setlength{\belowdisplayskip}{2pt} \setlength{\belowdisplayshortskip}{2pt}
+      \setlength{\abovedisplayskip}{2pt} \setlength{\abovedisplayshortskip}{2pt}
+
+      Use potential function:
+      \[
+         b(v) = \tfrac{1}{2} h_t(v) - \tfrac{1}{2} h_s(v)
+      \]
+      \[
+         w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right) 
+      \]
+
+      \vspace{0.7cm}
+      \begin{center}
+         Bidirectional Dijkstra's on $w'$\\
+         yields Bidirectional A*
+      \end{center}
+   \end{minipage}};
+   }
+   \only<18>{
+      \node[fill=blue!5,anchor=north,rounded corners,minimum width=5cm,minimum height=1.0cm,below=0.0cm of bidijk.north] {};
+   }
+   \only<18-19>{
+      \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (bidijkin) at (2.7,1.6) {$w \geq 0$\\ \strut $b$ consistent};
+   }
+   \only<20->{
+      \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (bidijkin) at (2.7,1.6) {$w \geq 0$\\ \strut $h_s, h_t$ consistent};
+   }
+   \only<18->{
+      \node[fill=blue!10,rounded corners,inner sep=3pt] (bidijkout) at (5.2,1.6) {$w' \geq 0$};
+      \draw[->] (bidijkin) -- (bidijkout);
+   }
+
+
+   \only<21->{
+   \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.5cm] (ibid) at (9.0,3.6) {};
+   \only<23-24>{
+      \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.45cm of ibid.north]  {};
+   }
+   \only<25->{
+      \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=1.05cm,below=0.45cm of ibid.north]  {};
+   }
+   \node[anchor=north] at (ibid.north) {\begin{minipage}{4.7cm}
+      \setlength{\belowdisplayskip}{2pt} \setlength{\belowdisplayshortskip}{2pt}
+      \setlength{\abovedisplayskip}{2pt} \setlength{\abovedisplayshortskip}{2pt}
+      \only<23->{
+      Use potential function:
+      \[
+         b(v) = \tfrac{1}{2} h_t(v) - \tfrac{1}{2} h_s(v)
+      \]}%
+      \only<25->{\[
+         w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \; w_{uv} \right]
+      \]}%
+      \only<26->{%
+      \vspace{0.38cm}
+      \begin{center}
+         IBiD on $w'$\\
+         yields Heuristic IBiD
+      \end{center}
+      }
+   \end{minipage}};
+   }
+   \only<26->{
+   \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (ibidin) at (8.0,1.6) {$w_{uv} > 0$\\$h_s, h_t$ consistent};
+   \node[fill=blue!10,rounded corners,inner sep=3pt] (ibidout) at (10.5,1.6) {$w_{uv}' > [0,0]$};
+   \draw[->] (ibidin) -- (ibidout);
+   }
+   
 
    \end{tikzpicture}
 \end{frame}
@@ -1235,7 +1500,7 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Experiment: Traffic Problem (VIDEO)}
+   \frametitle{Experiment: Traffic Problem}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
@@ -1303,7 +1568,7 @@
          \end{tabular}
       \end{minipage}};
 
-      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
+      \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.9cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
