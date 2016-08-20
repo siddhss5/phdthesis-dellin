@@ -3,73 +3,73 @@
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      % graph start
-      \coordinate (va) at ( 2.0,5.6);
-      \coordinate (vb) at ( 3.5,6.3);
-      \coordinate (vc) at ( 4.0,7.5);
-      \coordinate (vd) at ( 5.5,6.1);
-      \coordinate (ve) at ( 8.0,6.6);
-      \coordinate (vf) at (10.0,5.6);
-      \coordinate (vg) at ( 1.5,6.6);
-      \coordinate (vh) at ( 4.0,5.1);
-      \coordinate (vi) at ( 7.0,4.8);
-      \coordinate (vj) at ( 6.5,7.1);
-      \coordinate (vk) at ( 9.0,5.1);
-      
-      % start/goal highlighting
-      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
-      
-      % candidate paths
-      \draw[line width=0.2cm,color=black!30,line cap=round]
-         (va) -- (vb) -- (vd) -- (vj) -- (ve) -- (vf);
-      \draw[line width=0.2cm,color=blue!70,line cap=round]
-         (vj) -- (ve);
-
-      \draw[black!30] (va) -- (vb) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
-      \draw[black!30] (vb) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-      \draw[black!30] (va) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-      \draw[black!30] (vh) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
-      \draw[black!30] (vb) -- (vc) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
-      \draw[black!30] (vc) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
-      \draw[black!30] (va) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
-      \draw[black!30] (vb) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-      \draw[black!30] (vb) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
-      \draw[black!30] (vc) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
-      \draw[black!30] (ve) -- (vf) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
-      \draw[black!30] (vd) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
-      \draw[black!30] (ve) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
-      \draw[black!30] (vd) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-      \draw[black!30] (vf) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
-      \draw[black!30] (vi) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-      \draw[black!30] (ve) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
-
-      \draw[black,ultra thick] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {$\infty$};
-      \draw[black!30] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4?};
-
-      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
-
-      \node[left=0.1cm of va] {$v_s$};
-      \node[right=0.1cm of vf] {$v_t$};
+      %% graph start
+      %\coordinate (va) at ( 2.0,5.6);
+      %\coordinate (vb) at ( 3.5,6.3);
+      %\coordinate (vc) at ( 4.0,7.5);
+      %\coordinate (vd) at ( 5.5,6.1);
+      %\coordinate (ve) at ( 8.0,6.6);
+      %\coordinate (vf) at (10.0,5.6);
+      %\coordinate (vg) at ( 1.5,6.6);
+      %\coordinate (vh) at ( 4.0,5.1);
+      %\coordinate (vi) at ( 7.0,4.8);
+      %\coordinate (vj) at ( 6.5,7.1);
+      %\coordinate (vk) at ( 9.0,5.1);
+      %
+      %% start/goal highlighting
+      %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      %
+      %% candidate paths
+      %\draw[line width=0.2cm,color=black!30,line cap=round]
+      %   (va) -- (vb) -- (vd) -- (vj) -- (ve) -- (vf);
+      %\draw[line width=0.2cm,color=blue!70,line cap=round]
+      %   (vj) -- (ve);
+      %
+      %\draw[black!30] (va) -- (vb) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      %\draw[black!30] (vb) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %\draw[black!30] (va) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %\draw[black!30] (vh) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      %\draw[black!30] (vb) -- (vc) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      %\draw[black!30] (vc) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      %\draw[black!30] (va) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
+      %\draw[black!30] (vb) -- (vg) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %\draw[black!30] (vb) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
+      %\draw[black!30] (vc) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      %\draw[black!30] (ve) -- (vf) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {7?};
+      %\draw[black!30] (vd) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      %\draw[black!30] (ve) -- (vi) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {8?};
+      %\draw[black!30] (vd) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %\draw[black!30] (vf) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {3?};
+      %\draw[black!30] (vi) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %\draw[black!30] (ve) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
+      %
+      %\draw[black,ultra thick] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {$\infty$};
+      %\draw[black!30] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4?};
+      %
+      %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      %
+      %\node[left=0.1cm of va] {$v_s$};
+      %\node[right=0.1cm of vf] {$v_t$};
       % graph end
       
       % here's an algorithm
       
-      \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.3cm,minimum width=7.5cm] at (6,4.5) {};
+      \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.3cm,minimum width=7.5cm] at (6,7.75) {};
       \only<2>{
-         \node[inner sep=0.2cm,fill=blue!30,anchor=north,minimum height=0.5cm,minimum width=7.5cm] at (6,2.9) {};
+         \node[inner sep=0.2cm,fill=blue!30,anchor=north,minimum height=0.5cm,minimum width=7.5cm] at (6,6.15) {};
       }
-      \node[inner sep=0.0cm,anchor=north] at (6,4.4)
+      \node[inner sep=0.0cm,anchor=north] at (6,7.65)
       {\hspace*{-0.6cm}\begin{minipage}{7.5cm}\small{
       \algrenewcommand{\alglinenumber}[1]{}
       \begin{algorithmic}[1]
@@ -96,6 +96,43 @@
          \EndFunction
       \end{algorithmic}
       }\end{minipage}};
+
+
+      \node[align=center,fill=black!5,rounded corners,minimum width=2.5cm] at (3,1.75)
+      {\begin{minipage}{3.5cm}
+         For motion planning,
+         \vspace{-0.2cm}
+         \[
+            {\hat x}(e) = ||e||
+         \]
+         \vspace{-0.4cm}
+         \[
+            x(e) = \left\{ \arraycolsep=2pt \begin{array}{cl}
+               ||e|| & e \in C_{\ms{free}} \\
+               \infty & \mbox{otherwise}
+               \end{array} \right.
+         \]
+         \vspace{-0.2cm}
+         \[
+            h_x(v_a, v_b) = || v_a - v_b ||
+         \]
+      \end{minipage}};
+      
+      \node[align=center,fill=black!5,rounded corners,minimum width=5cm] at (9.0,1.75)
+      {\begin{minipage}{4.5cm}
+         For LEMUR:
+         \vspace{-0.2cm}
+         \[
+            w_{\ms{est}}(e) = \lambda_U \, \grave{p}(e) + (1 - \lambda_U) \, \hat{x}(e)
+         \]
+         \vspace{-0.5cm}
+         \[
+            w(e) = (1 - \lambda_U) \, x(e)
+         \]
+         \[
+            h_w(q_a, q_b) = (1 - \lambda_U) \, h_x(v_a, v_b)
+         \]
+      \end{minipage}};
       
    %Augment problem with inexpensive edge heuristic. (Show augmentation.)
    %Each edge has binary state.
@@ -114,7 +151,8 @@
       \node at (6,4) {\includegraphics{build/ibid-lazysp-plot,hideibid}};
 
       %\node[draw=black!30,inner sep=0pt] at (3.5,5.0) {\includegraphics[width=2.5cm]{figs/herbarm-traj2-t031.png}};
-      \node[draw=black,inner sep=0pt,thick] at (5.15,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+      \node[draw=black,inner sep=0pt,thick,anchor=north] at (5.15,7.325) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda_U) \, h_x$};
 
    \end{tikzpicture}
 \end{frame}
@@ -214,7 +252,7 @@
       \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
          \begin{tabular}{ccc}
             \toprule
-            & Complete & {\only<-4>{\color{white}}Incremental} \\
+            & Non-Incremental & {\only<-4>{\color{white}}Incremental} \\
             \midrule
             \addlinespace[0.2em]
             \strut {\only<-2>{\color{white}}Unidirectional}
@@ -243,7 +281,7 @@
          {\bf 3 Key Insights:}
          \begin{itemize}
          \item {\only<8-9>{\color{gray}}
-            Complete and Incremental methods both create a \emph{trust region (TR)}}
+            Non-Incremental and Incremental methods both create a \emph{trust region (TR)}}
          \item {\color{gray}
             Bidirectional termination can be rewritten w.r.t. edges between TRs}
          \item {\color{gray}
@@ -315,7 +353,7 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Approximating the Distance Function: Complete}
+   \frametitle{Approximating the Distance Function: Non-Incremental}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
@@ -339,7 +377,7 @@
       \end{minipage}};
 
       \only<2->{
-      \node[fill=black!5,minimum width=5.75cm] at (3,5.5) {\strut Complete Search};
+      \node[fill=black!5,minimum width=5.75cm] at (3,5.5) {\strut Non-Incremental Search};
       \node[fill=blue!10,align=center] at (1,4.6) {Fixed\\$w \geq 0$};
       }
       \only<3->{
@@ -431,7 +469,7 @@
       \end{minipage}};
 
       \only<-5>{
-      \node[fill=black!5,minimum width=5.75cm] at (3,5.5) {\strut Complete Search};
+      \node[fill=black!5,minimum width=5.75cm] at (3,5.5) {\strut Non-Incremental Search};
       \node[fill=blue!10,align=center] at (1,4.6) {Fixed\\$w \geq 0$};
       \node[fill=blue!10,align=center] at (3.5,4.6) {Approximation\\$d : V \rightarrow \mathbb{R}$};
       \node[fill=blue!10,minimum width=5.75cm,minimum height=2.5cm,anchor=north] (tens) at (3,4.0) {};
@@ -548,14 +586,13 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{Complete/Incremental Trust Regions}
+   \frametitle{Trust Regions}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-
       % complete side
-      \node[fill=black!5,minimum width=5.75cm] at (3,7.5) {\strut Complete Search};
+      \node[fill=black!5,minimum width=5.75cm] at (3,7.5) {\strut Non-Incremental Search};
       \node[fill=blue!10,align=center] at (1,6.6) {Fixed\\$w \geq 0$};
       \node[fill=blue!10,align=center] at (3.5,6.6) {Approximation\\$d : V \rightarrow \mathbb{R}$};
       \node[fill=blue!10,minimum width=5.75cm,minimum height=2.5cm,anchor=north] (tens) at (3,6.0) {};
@@ -759,7 +796,7 @@
       \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
          \begin{tabular}{ccc}
             \toprule
-            & Complete & Incremental \\
+            & Non-Incremental & Incremental \\
             \midrule
             \addlinespace[0.2em]
             \strut Unidirectional
@@ -785,7 +822,7 @@
       \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
-         \item Complete and Incremental methods both create a \emph{trust region (TR)}
+         \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
          \item {\only<1-2>{\color{gray}}\only<1-3>{}
             Bidirectional termination can be rewritten w.r.t. edges between TRs}
          \item {\color{gray}
@@ -855,8 +892,8 @@
       }
 
       \only<7-9>{\node[color=red,draw,anchor=west] at (6,1.5) {\strut Unsound!};}
-      \only<11>{\node[color=green!50!black,draw,anchor=west] at (6,0.4) {\strut Correct};}
-      \only<12>{\node[color=green!50!black,draw,anchor=west] at (6,0.4) {\strut Correct, {\color{red} but overconservative.}};}
+      \only<11>{\node[color=green!50!black,draw,anchor=west] at (6,0.4) {\strut Sound};}
+      \only<12>{\node[color=green!50!black,draw,anchor=west] at (6,0.4) {\strut Sound, {\color{red} but overconservative.}};}
 
       % from illustration of bidirectional termination problem!
       \only<9>{
@@ -991,7 +1028,7 @@
       \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
          \begin{tabular}{ccc}
             \toprule
-            & Complete & Incremental \\
+            & Non-Incremental & Incremental \\
             \midrule
             \addlinespace[0.2em]
             \strut Unidirectional
@@ -1018,7 +1055,7 @@
       \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
-         \item Complete and Incremental methods both create a \emph{trust region (TR)}
+         \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
          \item Bidirectional termination can be rewritten w.r.t. edges between TRs
          \item {\color{gray}
             Heuristic search is equivalent to search over a transformed graph}
@@ -1135,7 +1172,7 @@
       \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
          \begin{tabular}{ccc}
             \toprule
-            & Complete & Incremental \\
+            & Non-Incremental & Incremental \\
             \midrule
             \addlinespace[0.2em]
             \strut Unidirectional
@@ -1162,7 +1199,7 @@
       \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
-         \item Complete and Incremental methods both create a \emph{trust region (TR)}
+         \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
          \item Bidirectional termination can be rewritten w.r.t. edges between TRs
          \item {\only<1-2>{\color{gray}}\only<3>{}
             Heuristic search is equivalent to search over a transformed graph}
@@ -1217,7 +1254,9 @@
 
       \node at (6,4) {\includegraphics{build/ibid-lazysp-plot}};
 
-      \node[draw=black,inner sep=0pt,thick] at (5.35,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+      %\node[draw=black,inner sep=0pt,thick] at (5.35,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+      \node[draw=black,inner sep=0pt,thick,anchor=north] at (5.15,7.325) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
+      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda_U) \, h_x$};
 
    \end{tikzpicture}
 \end{frame}
@@ -1241,7 +1280,7 @@
       \node[inner sep=0pt,anchor=north] at (6,5.0) {\begin{minipage}{9.05cm}
          \begin{tabular}{ccc}
             \toprule
-            & Complete & Incremental \\
+            & Non-Incremental & Incremental \\
             \midrule
             \addlinespace[0.2em]
             \strut Unidirectional
@@ -1267,7 +1306,7 @@
       \node[inner sep=0pt,anchor=north] at (6,2.3) {\begin{minipage}{10.2cm}
          {\bf 3 Key Insights:}
          \begin{itemize}
-         \item Complete and Incremental methods both create a \emph{trust region (TR)}
+         \item Non-Incremental and Incremental methods both create a \emph{trust region (TR)}
          \item Bidirectional termination can be rewritten w.r.t. edges between TRs
          \item {\only<1-2>{\color{gray}}\only<3>{}
             Heuristic search is equivalent to search over a transformed graph}

@@ -51,7 +51,7 @@
 %\iffalse
 
 \begin{frame}
-   \frametitle{The Shortest Path Problem}
+   \frametitle{Motivation: The Shortest Path (SP) Problem}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
    
@@ -241,7 +241,7 @@
 %\end{frame}
 
 \begin{frame}
-   \frametitle{The Shortest Path Problem}
+   \frametitle{Motivation: The Shortest Path (SP) Problem}
    \begin{tikzpicture}[font=\small]
       \tikzset{>=latex} % arrow heads
       
@@ -428,7 +428,7 @@
          \begin{center}
          Graph $G=(V,E)$:
          \end{center}
-         \vspace{-0.4cm}
+         \vspace{-0.3cm}
          
          % puzzles
          \only<3-4>{
@@ -450,23 +450,24 @@
          \begin{center}
          Weight Function $w:E \rightarrow \mathbb{R}$:
          \end{center}
-         \vspace{-0.4cm}
+         \vspace{-0.3cm}
       
          % puzzles
          \only<4-4>{
+            \vspace{0.2cm}
             $w(e) = 1 \; \forall e \in E$
          }
          
          % highlight motion planning
          \only<7-7>{%
             $w(e) = \left\{ \arraycolsep=2pt \begin{array}{cl}
-            ||e|| & \mbox{if $e$ collision-free} \\
+            ||e|| & \mbox{if } e \in \mathcal{C}_{\ms{free}} \\
             & \\
             \end{array} \right.$
          }%
          \only<8-10>{%
             $w(e) = \left\{ \arraycolsep=2pt \begin{array}{cl}
-            ||e|| & \mbox{if $e$ collision-free} \\
+            ||e|| & \mbox{if } e \in \mathcal{C}_{\ms{free}} \\
             \infty & \mbox{otherwise} \\
             \end{array} \right.$
          }%
@@ -554,7 +555,7 @@
    
    \pause
    \vspace{0.4cm}
-   Outline of talk:
+   Outline:
    \begin{itemize}
    \pause
    \item Review of lazy search approaches
@@ -564,8 +565,8 @@
    \item Equivalence to existing algorithms
    \pause
    \item Novel edge selectors
-   \pause
-   \item Experimental results
+   %\pause
+   %\item Experimental results
    \end{itemize}
 \end{frame}
 
@@ -935,24 +936,24 @@
       \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
       
       % candidate paths
-      \only<5-11>{
+      \only<6-12>{
          \draw[line width=0.2cm,color=black!30,line cap=round]
             (va) -- (vb) -- (vd) -- (ve) -- (vf);
       }
-      \only<8-10>{
+      \only<9-11>{
          \draw[line width=0.2cm,color=blue!70,line cap=round]
             (vd) -- (ve);
       }
-      \only<13-15>{
+      \only<14-16>{
          \draw[line width=0.2cm,color=black!30,line cap=round]
             (va) -- (vb) -- (vd) -- (vj) -- (ve) -- (vf);
       }
-      \only<14>{
+      \only<15>{
          \draw[line width=0.2cm,color=blue!70,line cap=round]
             (vj) -- (ve);
       }
          
-      \only<1>{
+      \only<1-2>{
          \draw[black!30] (va) -- (vb);
          \draw[black!30] (vb) -- (vd);
          \draw[black!30] (va) -- (vh);
@@ -973,7 +974,7 @@
          \draw[black!30] (vi) -- (vk);
          \draw[black!30] (ve) -- (vk);
       }
-      \only<2->{
+      \only<3->{
          \draw[black!30] (va) -- (vb) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
          \draw[black!30] (vb) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
          \draw[black!30] (va) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
@@ -992,16 +993,16 @@
          \draw[black!30] (vi) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
          \draw[black!30] (ve) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
       }
-      \only<2-10>{
+      \only<3-11>{
          \draw[black!30] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {9?};
       }
-      \only<11->{
+      \only<12->{
          \draw[black,ultra thick] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {$\infty$};
       }
-      \only<2-14>{
+      \only<3-15>{
          \draw[black!30] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4?};
       }
-      \only<15->{
+      \only<16->{
          \draw[black,ultra thick] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4};
       }
       \node[circle,fill=black,inner sep=0.05cm] at (va) {};
@@ -1022,19 +1023,19 @@
       
       % here's an algorithm
       
-      \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.5cm,minimum width=8.5cm] at (4.5,4.5) {};
-      \node[inner sep=0.0cm,anchor=north] at (4.5,4.4)
-      {\hspace*{-0.6cm}\begin{minipage}{8.5cm}\small{
+      \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.3cm,minimum width=7.5cm] (algbox) at (4.0,4.5) {};
+      \node[inner sep=0.0cm,below=0.2cm of algbox.north,anchor=north]
+      {\hspace*{-0.6cm}\begin{minipage}{7.5cm}\small{
       \algrenewcommand{\alglinenumber}[1]{}
       \begin{algorithmic}[1]
          \Function {\textsc{LazySP}}{$G, v_s, v_g, w, w_{\ms{est}}$}
-         \only<2->{
+         \only<3->{
             \State $E_{\ms{eval}} \leftarrow \emptyset$
             \State $w_{\ms{lazy}}(e) \leftarrow w_{\ms{est}}(e) \quad \forall e \in E$
          }
-         \only<3->{
+         \only<4->{
          \Loop
-            \only<4->{
+            \only<5->{
                \State $p_{\ms{candidate}} \leftarrow
                   \mbox{\sc InnerSP}(G, v_s, v_g, w_{\ms{lazy}})$ %\Comment Compute the shortest path with lazy edge weights
             }
@@ -1042,16 +1043,16 @@
             %\If {$p_{\ms{candidate}} \subseteq E_{\ms{eval}}$} \Comment If path is fully evaluated,
             %   \State \Return $p_{\ms{candidate}}$ \Comment return it
             %\EndIf
-            \only<6->{
+            \only<7->{
                \State \textbf{if} $p_{\ms{candidate}} \subseteq E_{\ms{eval}}$ \textbf{then return} $p_{\ms{candidate}}$
             }
-            \only<7->{
+            \only<8->{
                \vspace{0.1cm}
                \State $E_{\ms{selected}} \leftarrow  \mbox{\sc EdgeSelector}(G, p_{\ms{candidate}})$ %\Comment Select edges on path to process
             }
-            \only<9->{
+            \only<10->{
             \For {$e \in E_{\ms{selected}} \setminus E_{\ms{eval}}$} %\Comment For all unevaluated selected edges
-               \only<10->{
+               \only<11->{
                   \State $w_{\ms{lazy}}(e) \leftarrow w(e)$
                   \State $E_{\ms{eval}} \leftarrow E_{\ms{eval}} \cup e$ %\Comment Add to evaluated edge set
                }
@@ -1062,14 +1063,32 @@
          \EndFunction
       \end{algorithmic}
       }\end{minipage}};
-      
-      \only<17->{
-         \node[align=center,fill=blue!10,rounded corners,minimum width=2.5cm] at (10.5,3.5)
-            {\textbf{Complete}};
+
+      \only<2-16>{
+         \node[align=center,fill=black!5,rounded corners,minimum width=2.5cm] at (10.0,3.5)
+         {\begin{minipage}{3.5cm}
+            For motion planning,
+            \vspace{-0.2cm}
+            \[
+               w(e) = \left\{ \arraycolsep=2pt \begin{array}{cl}
+                  ||e|| & e \in C_{\ms{free}} \\
+                  \infty & \mbox{otherwise}
+                  \end{array} \right.
+            \]
+            \vspace{-0.4cm}
+            \[
+               w_{\ms{est}}(e) = ||e||
+            \]
+         \end{minipage}};
       }
       
       \only<18->{
-         \node[align=center,fill=blue!10,rounded corners,minimum width=2.5cm] at (10.5,2)
+         \node[align=center,fill=blue!10,rounded corners,minimum width=2.5cm] at (10.0,3.5)
+            {\textbf{Complete}};
+      }
+      
+      \only<19->{
+         \node[align=center,fill=blue!10,rounded corners,minimum width=2.5cm] at (10.0,2)
             {\textbf{Optimal}\\(or bounded\\suboptimal)};
       }
       
@@ -1084,32 +1103,32 @@
 
 %\fi
 
-\begin{frame}
-   \frametitle{Theoretical Properties of LazySP}
-   
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-   
-      \node[inner sep=0.2cm,fill=blue!10,rounded corners] at (6,5) {\begin{minipage}{11cm}\small{
-         \textbf{Completeness.} If {\sc InnerSP} is complete,
-         {\sc EdgeSelector} always returns one unevaluated edge on
-         $p_{\ms{candidate}}$,
-         and $G$ is finite,
-         then {\sc LazySP} is complete.
-      }\end{minipage}};
-      
-      \node[inner sep=0.2cm,fill=blue!10,rounded corners] at (6,3) {\begin{minipage}{11cm}\small{
-         \textbf{Bounded suboptimality.}
-         If {\sc InnerSP} is optimal
-         and $w_{\ms{est}} \leq \epsilon \, w$
-         for some $\epsilon \geq 1$,
-         then the solution $p$ returned by {\sc LazySP}
-         satisfies $\mbox{len}(p) \leq \epsilon \, \ell^*$
-         with $\ell^*$ the length of an optimal path.
-      }\end{minipage}};
-   \end{tikzpicture}
-   
-\end{frame}
+%\begin{frame}
+%   \frametitle{Theoretical Properties of LazySP}
+%   
+%   \begin{tikzpicture}
+%      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%   
+%      \node[inner sep=0.2cm,fill=blue!10,rounded corners] at (6,5) {\begin{minipage}{11cm}\small{
+%         \textbf{Completeness.} If {\sc InnerSP} is complete,
+%         {\sc EdgeSelector} always returns one unevaluated edge on
+%         $p_{\ms{candidate}}$,
+%         and $G$ is finite,
+%         then {\sc LazySP} is complete.
+%      }\end{minipage}};
+%      
+%      \node[inner sep=0.2cm,fill=blue!10,rounded corners] at (6,3) {\begin{minipage}{11cm}\small{
+%         \textbf{Bounded suboptimality.}
+%         If {\sc InnerSP} is optimal
+%         and $w_{\ms{est}} \leq \epsilon \, w$
+%         for some $\epsilon \geq 1$,
+%         then the solution $p$ returned by {\sc LazySP}
+%         satisfies $\mbox{len}(p) \leq \epsilon \, \ell^*$
+%         with $\ell^*$ the length of an optimal path.
+%      }\end{minipage}};
+%   \end{tikzpicture}
+%   
+%\end{frame}
 
 \begin{frame}
    \frametitle{Relation to the Dynamic Traversal Problem}
@@ -1968,101 +1987,181 @@
    
 \end{frame}
 
+%\begin{frame}
+%   \frametitle{Illustration of Selectors}
+%   \begin{tikzpicture}
+%      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%      \tikzset{>=latex}
+%      
+%      \node at (0.9,7.0) {\footnotesize \strut Expand};
+%      \node at (0.9,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-after5}};
+%      \node at (0.9,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-end}};
+%      \node at (0.9,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-path-bars}};
+%   
+%      \node at (2.6,7.0) {\footnotesize \strut Forward};
+%      \node at (2.6,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-after5}};
+%      \node at (2.6,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-end}};
+%      \node at (2.6,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-path-bars}};
+%   
+%      \node at (4.3,7.0) {\footnotesize \strut Reverse};
+%      \node at (4.3,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-after5}};
+%      \node at (4.3,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-end}};
+%      \node at (4.3,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-path-bars}};
+%   
+%      \node at (6.0,7.0) {\footnotesize \strut Alternate};
+%      \node at (6.0,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-after5}};
+%      \node at (6.0,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-end}};
+%      \node at (6.0,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-path-bars}};
+%      
+%      \node at (7.7,7.0) {\footnotesize \strut Bisect};
+%      \node at (7.7,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-after5}};
+%      \node at (7.7,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-end}};
+%      \node at (7.7,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-path-bars}};
+%   
+%      \node at (9.4,7.0) {\footnotesize \strut WeightSamp};
+%      \node at (9.4,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-after5}};
+%      \node at (9.4,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-end}};
+%      \node at (9.4,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-path-bars}};
+%   
+%      \node at (11.1,7.0) {\footnotesize \strut Partition};
+%      \node at (11.1,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-after5}};
+%      \node at (11.1,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-end}};
+%      \node at (11.1,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-path-bars}};
+%   
+%   \end{tikzpicture}
+%\end{frame}
+
 \begin{frame}
    \frametitle{Illustration of Selectors}
-   \begin{tikzpicture}
+   \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \tikzset{>=latex}
+
+      \begin{scope}[font=\footnotesize]
+      \fill[blue] (0.2,6.9) circle (0.05cm);
+      \fill[green] (0.4,6.9) circle (0.05cm);
+      \node[anchor=west] at (0.6,6.9) {$q_s, q_t$};
+
+      \draw[black!30,thick] (0.1,6.6) -- (0.5,6.6);
+      \node[anchor=west] at (0.6,6.6) {$e$ unevaled};
       
-      \node at (0.9,7.0) {\footnotesize \strut Expand};
-      \node at (0.9,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-after5}};
-      \node at (0.9,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-end}};
-      \node at (0.9,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-path-bars}};
-   
-      \node at (2.6,7.0) {\footnotesize \strut Forward};
-      \node at (2.6,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-after5}};
-      \node at (2.6,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-end}};
-      \node at (2.6,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwd-path-bars}};
-   
-      \node at (4.3,7.0) {\footnotesize \strut Reverse};
-      \node at (4.3,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-after5}};
-      \node at (4.3,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-end}};
-      \node at (4.3,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-path-bars}};
-   
-      \node at (6.0,7.0) {\footnotesize \strut Alternate};
-      \node at (6.0,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-after5}};
-      \node at (6.0,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-end}};
-      \node at (6.0,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-alt-path-bars}};
+      \draw[thick,black] (0.1,6.3) -- (0.5,6.3);
+      \node[anchor=west] at (0.6,6.3) {$e \notin \mathcal{C}_{\ms{free}}$};
       
-      \node at (7.7,7.0) {\footnotesize \strut Bisect};
-      \node at (7.7,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-after5}};
-      \node at (7.7,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-end}};
-      \node at (7.7,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-bisect-path-bars}};
+      \draw[thick,red] (0.1,6.0) -- (0.5,6.0);
+      \node[anchor=west] at (0.6,6.0) {$e \in \mathcal{C}_{\ms{free}}$};
+      \end{scope}
+
+      \begin{scope}[font=\scriptsize]
+      \node[anchor=west,align=center,inner sep=0pt] at (0.05,2.45) {for each unique path,\\the edges that are:};
+
+      \draw[fill=black!10] (0.1,1.3) rectangle (0.3,2.1);
+      \draw[fill=red!60!black] (0.1,1.1) rectangle (0.3,1.3);
+      \draw[fill=green!60!black] (0.1,0.7) rectangle (0.3,1.1);
+      \draw[fill=green!30!white] (0.1,0.1) rectangle (0.3,0.7);
+
+      \node[anchor=west] at (0.45,1.7) {not evaled};
+      \node[anchor=west] at (0.45,1.2) {evaled $\notin \mathcal{C}_{\ms{free}}$};
+      \node[anchor=west] at (0.45,0.9) {evaled $\in \mathcal{C}_{\ms{free}}$};
+      \node[anchor=west] at (0.45,0.4) {already evaled};
+
+      \draw (0.2,1.7) -- (0.4,1.7);
+      \draw (0.2,1.2) -- (0.4,1.2);
+      \draw (0.2,0.9) -- (0.4,0.9);
+      \draw (0.2,0.4) -- (0.4,0.4);
+      \end{scope}
+
+      \node[font=\scriptsize,black!50,rotate={90}] at (2.3,4.6) {$\downarrow$ Final \; 5 Edges $\downarrow$};
+      
+      %\node at (0.9,7.0) {\footnotesize \strut Expand};
+      %\node at (0.9,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-after5}};
+      %\node at (0.9,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-end}};
+      %\node at (0.9,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-fwdexpand-path-bars}};
    
-      \node at (9.4,7.0) {\footnotesize \strut WeightSamp};
-      \node at (9.4,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-after5}};
-      \node at (9.4,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-end}};
-      \node at (9.4,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-path-bars}};
+      \node at (3.6,7.4) {\footnotesize \strut Forward};
+      \node at (3.6,6.0) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-fwd-after5}};
+      \node at (3.6,3.5) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-fwd-end}};
+      \node at (3.6,1.2) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-fwd-path-bars}};
    
-      \node at (11.1,7.0) {\footnotesize \strut Partition};
-      \node at (11.1,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-after5}};
-      \node at (11.1,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-end}};
-      \node at (11.1,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-partall-path-bars}};
+      %\node at (4.3,7.0) {\footnotesize \strut Reverse};
+      %\node at (4.3,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-after5}};
+      %\node at (4.3,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-end}};
+      %\node at (4.3,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-rev-path-bars}};
    
+      \node at (6.0,7.4) {\footnotesize \strut Alternate};
+      \node at (6.0,6.0) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-alt-after5}};
+      \node at (6.0,3.5) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-alt-end}};
+      \node at (6.0,1.2) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-alt-path-bars}};
+      
+      \node at (8.4,7.4) {\footnotesize \strut Bisect};
+      \node at (8.4,6.0) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-bisect-after5}};
+      \node at (8.4,3.5) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-bisect-end}};
+      \node at (8.4,1.2) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-bisect-path-bars}};
+
+      %\node at (9.4,7.0) {\footnotesize \strut WeightSamp};
+      %\node at (9.4,5.9) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-after5}};
+      %\node at (9.4,4.1) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-end}};
+      %\node at (9.4,2.5) {\includegraphics[width=1.6cm]{build/lazysp-example-1/alg-worlddist1000-path-bars}};
+   
+      \node at (10.8,7.4) {\footnotesize \strut Partition};
+      \node at (10.8,6.0) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-partall-after5}};
+      \node at (10.8,3.5) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-partall-end}};
+      \node at (10.8,1.2) {\includegraphics[width=2.1cm]{build/lazysp-example-1/alg-partall-path-bars}};
+
    \end{tikzpicture}
 \end{frame}
 
 %\fi % for iffalse
 
-\begin{frame}
-   \frametitle{Experimental Results}
-   \begin{tikzpicture}
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-      \tikzset{>=latex}
-   
-      \node at (6,7.25) {\begin{minipage}{11cm}
-         Problem domains:
-      \end{minipage}};
-      
-      \only<2->{
-      \node at (3.0,5.1) {\includegraphics{build/lazysp-partconn}};
-      \node at (3.0,6.3) {\footnotesize \textbf{PartConn}};
-      }
-      
-      \only<3->{
-      \node at (6.0,5.1) {\includegraphics[width=2.0cm]{build/lazysp-example-1/alg-partall-end}};
-      \node at (6.0,6.3) {\footnotesize \textbf{UnitSquare}};
-      }
-   
-      \only<4->{
-      \node at (9.0,5.1) {\includegraphics[width=2.0cm]{figs/lazysp-herbarm/herbarm-path33.png}};
-      \node at (9.0,6.3) {\footnotesize \textbf{ArmPlan}};
-      }
-   
-      \only<5->{
-      \node[anchor=north] at (6,3.5) {\begin{minipage}{11cm}
-   
-         Metrics:
-         \begin{itemize}
-         \item Primary metric: mean number of edge evaluations.
-         \only<6->{
-         \item Secondary metric: mean computation time.
-         }
-         \end{itemize}
-      
-      \end{minipage}};
-      }
-      
-      \only<6->{
-      \node[inner sep=0pt] at (6,0.4) {\begin{minipage}{11.5cm}\scriptsize{
-         \hangindent=0.35cm \raggedright
-         \PaperPortrait\; Extended version on arXiv with full timing results:
-         {\texttt http://arxiv.org/abs/1603.03490}
-      }\end{minipage}};
-      }
-   
-   \end{tikzpicture}
-\end{frame}
+%\begin{frame}
+%   \frametitle{Experimental Results}
+%   \begin{tikzpicture}
+%      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+%      \tikzset{>=latex}
+%   
+%      \node at (6,7.25) {\begin{minipage}{11cm}
+%         Problem domains:
+%      \end{minipage}};
+%      
+%      \only<2->{
+%      \node at (3.0,5.1) {\includegraphics{build/lazysp-partconn}};
+%      \node at (3.0,6.3) {\footnotesize \textbf{PartConn}};
+%      }
+%      
+%      \only<3->{
+%      \node at (6.0,5.1) {\includegraphics[width=2.0cm]{build/lazysp-example-1/alg-partall-end}};
+%      \node at (6.0,6.3) {\footnotesize \textbf{UnitSquare}};
+%      }
+%   
+%      \only<4->{
+%      \node at (9.0,5.1) {\includegraphics[width=2.0cm]{figs/lazysp-herbarm/herbarm-path33.png}};
+%      \node at (9.0,6.3) {\footnotesize \textbf{ArmPlan}};
+%      }
+%   
+%      \only<5->{
+%      \node[anchor=north] at (6,3.5) {\begin{minipage}{11cm}
+%   
+%         Metrics:
+%         \begin{itemize}
+%         \item Primary metric: mean number of edge evaluations.
+%         \only<6->{
+%         \item Secondary metric: mean computation time.
+%         }
+%         \end{itemize}
+%      
+%      \end{minipage}};
+%      }
+%      
+%      \only<6->{
+%      \node[inner sep=0pt] at (6,0.4) {\begin{minipage}{11.5cm}\scriptsize{
+%         \hangindent=0.35cm \raggedright
+%         \PaperPortrait\; Extended version on arXiv with full timing results:
+%         {\texttt http://arxiv.org/abs/1603.03490}
+%      }\end{minipage}};
+%      }
+%   
+%   \end{tikzpicture}
+%\end{frame}
 
 %\begin{frame}
 %   \frametitle{Experiment: Robot Arm Motion Planning}
@@ -2133,6 +2232,28 @@ WeightSamp 56.93 3.37
 Partition 48.07 2.44
 }{\dataarmplan}
 
+\pgfplotstableread{
+selector mean error
+Expand 115 0.01
+Forward 63.62 4.15
+Reverse 74.94 5.07
+Alternate 0 0
+Bisect 68.01 3.86
+WeightSamp 56.93 3.37
+Partition 48.07 2.44
+}{\dataarmplannoalt}
+
+\pgfplotstableread{
+selector mean error
+Expand 0 0
+Forward 0 0
+Reverse 0 0
+Alternate 55.48 2.95
+Bisect 0 0
+WeightSamp 0 0
+Partition 0 0
+}{\dataarmplanonlyalt}
+
 % NEW stderr
 %Expand 949.0466666666664 63.46454650463161
 %Forward 63.62000000000001 4.1478023030971745
@@ -2175,7 +2296,7 @@ Partition 48.07 2.44
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
       \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
+         table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
          {\datapartconn};
       \end{axis}
       \end{scope}
@@ -2206,7 +2327,7 @@ Partition 48.07 2.44
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
       \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
+         table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
          {\dataunitsquare};
       \end{axis}
       \end{scope}
@@ -2221,7 +2342,7 @@ Partition 48.07 2.44
       \begin{axis}[
          width=7.0cm,
          height=4.0cm,
-         xbar,
+         xbar stacked,
          bar width=7,
          xmin=0,xmax=115,
          %xtick pos=bottom,
@@ -2236,10 +2357,20 @@ Partition 48.07 2.44
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
       \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:100,-5.6) {\scriptsize 100};
-      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-         table[y expr=-\coordindex,x=mean,x error expr=\thisrow{error}]
-         {\dataarmplan};
-      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize $\rightarrow$};
+      \only<4>{
+         \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+            table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+            {\dataarmplan};
+      }
+      \only<5>{
+         \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+            table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+            {\dataarmplannoalt};
+         \addplot[color=black,fill=blue!40,error bars/.cd,x dir=both,x explicit]
+            table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+            {\dataarmplanonlyalt};
+      }
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
       \end{axis}
       \end{scope}
       }
@@ -2289,13 +2420,13 @@ Partition   0.04  1.54  4.21 0.28
 %      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
 %      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
 %      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-%      \addplot[color=black,fill=black!20]
+%      \addplot[color=black,fill=blue!30]
 %         table[y expr=-\coordindex,x=dursearch]
 %         {\dataarmplantime};
-%      \addplot[color=black,fill=black!20]
+%      \addplot[color=black,fill=purple!20]
 %         table[y expr=-\coordindex,x=dursel]
 %         {\dataarmplantime};
-%      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+%      \addplot[color=black,fill=green!20,error bars/.cd,x dir=both,x explicit]
 %         table[y expr=-\coordindex,x=dureval,x error expr=\thisrow{duronline-error}]
 %         {\dataarmplantime};
 %      \end{axis}
