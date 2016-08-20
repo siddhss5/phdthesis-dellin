@@ -53,18 +53,32 @@
 
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node at (4,5) {\includegraphics{build/pvx-graph}};
+      \only<1>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawempty}};}
+      \only<2>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawaxes}};}
+      \only<3>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawa}};}
+      \only<4>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawab}};}
+      \only<5>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstar}};}
+      \only<6>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarc}};}
+      \only<7-8>{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarcd}};}
+      \only<9->{\node at (4,5) {\includegraphics{build/pvx-graph-build,drawabxstarcdutility}};}
 
-      \node[fill=blue!5,align=center] at (9,5.5) {
-         $A_1$, $A_2$: planner invocations\\
-         $A_3$: a parameterized planner\\
-         $A_4$: an anytime planner};
+      \only<3->{
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center,anchor=north,minimum width=5cm] at (9,6.5) {
+         \only<3>{$A_1$: a planner invocation}
+         \only<4->{$A_1, A_2$: planner invocations}
+         \only<6->{\\ $A_3$: an anytime planner}
+         \only<7->{\\ $A_4$: a parameterized planner}};
+      }
 
-      \node[fill=blue!5,align=center] at (4.5,1.5) {
-         $A$: an invocation of a motion planner\\
+      \only<2->{
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center] at (4.5,2.0) {
          $p$: planning cost incurred during invocation\\
-         $x$: execution cost of resulting solution path\\
+         $x$: execution cost of resulting solution path};
+      }
+      \only<8->{
+      \node[fill=blue!5,draw=blue!10,rounded corners,align=center] at (4.5,1.0) {
          $U(p,x)$: utility function which scores the invocation};
+      }
 
    \end{tikzpicture}
 \end{frame}
@@ -75,14 +89,20 @@
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
+      \only<1->{
       \node at (1.92,6.5) {\includegraphics{build/pvx-sm-firstfeas}};
-      \node[anchor=west] at (3.5,6.5) {First Feasible};
-      
-      \node at (1.82,3.9) {\includegraphics{build/pvx-sm-xbudget}};
-      \node[anchor=west] at (3.5,3.9) {Bounded Cost};
-      
-      \node at (1.92,1.3) {\includegraphics{build/pvx-sm-pbudget}};
-      \node[anchor=west] at (3.5,1.3) {Planning Budget};
+      \node[anchor=west] at (3.5,6.6) {First Feasible};
+      }
+
+      \only<2->{
+      \node at (1.82,4.0) {\includegraphics{build/pvx-sm-xbudget}};
+      \node[anchor=west] at (3.5,4.1) {Bounded Cost};
+      }
+
+      \only<3->{
+      \node at (1.92,1.5) {\includegraphics{build/pvx-sm-pbudget}};
+      \node[anchor=west] at (3.5,1.6) {Planning Budget};
+      }
 
    \end{tikzpicture}
 \end{frame}
