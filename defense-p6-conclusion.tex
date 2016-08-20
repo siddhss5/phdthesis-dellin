@@ -1,11 +1,18 @@
 \begin{frame}
    \frametitle{Summary of Contributions}
 
+   Summary of contributions:
    \begin{itemize}
-   \item LazySP algorithm for graphs with expensive edge evaluations
-   \item IBiD algorithm for incremental bidirectional search
-   \item LEMUR algorithm for motion planning with utility functions
-   \item C-space family decomposition for multi-step planning tasks
+   \item {\bf LazySP} algorithm for graphs with expensive edge evaluations
+   \item {\bf IBiD} algorithm for incremental bidirectional search
+   \item {\bf LEMUR} algorithm for motion planning with utility functions
+   \item {\bf C-space family decomposition} for multi-step planning tasks
+   \end{itemize}
+
+   Code is available:
+   \begin{itemize}
+   \item {\tt http://lemur-planning.readthedocs.io}
+   \item {\tt https://github.com/personalrobotics/lemur}
    \end{itemize}
 
    %Future work?
@@ -14,4 +21,87 @@
 
    %Roadmap stacks!
    
+\end{frame}
+
+\begin{frame}
+   \frametitle{Thank You!}
+   \begin{tikzpicture}[font=\small]
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
+
+   % START LEMUR
+   \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=9.7cm,minimum height=5.8cm,anchor=north] (lemur) at (6,6.0) {};
+   \node[anchor=north west] at (lemur.north west) {LEMUR};
+
+   % left side
+
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=2.5cm,inner sep=0pt] at (3.3,4.5) {};
+   \node at (3.3,4.5) {\includegraphics[width=1.8cm]{build/roadmap-stack-short}};
+   \draw[->] (3.3,3.75) -- (3.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$G$};
+
+   % right side
+
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt] at (7.8,4.5) {
+      \qquad\qquad\; $ \arraycolsep=1.5pt \begin{array}{rcc}
+         w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+         w(e) = & & (1\!-\!\lambda) \, x(e)
+      \end{array} $
+   };
+   %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
+   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+
+   \draw[->] (7.3,3.75) -- (7.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w$};
+   \draw[->] (8.2,3.75) -- (8.2,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w_{\ms{est}}$};
+
+   % START LAZYSP
+   \node[fill=blue!10,draw=blue!20,rounded corners,minimum width=7cm,minimum height=2.5cm,anchor=north] (lazysp) at (6,3.0) {};
+   \node[anchor=north west] at (lazysp.north west) {LazySP};
+
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center] (dynsp) at (4.3,1.7) {DynamicSP\\(e.g. IBiD)};
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center] (selector) at (7.7,1.7) {Edge Selector\\(e.g. Alternate)};
+
+   \draw[->] (dynsp.south) -- (4.3,0.8) -- (7.7,0.8) -- (selector.south);
+   \draw[->] (selector.north) -- (7.7,2.6) -- (4.3,2.6) -- (dynsp.north);
+
+   \node[fill=blue!10,align=center,inner sep=2pt] at (6,2.6)
+      {$E_{\ms{changed}}$};
+
+   \node[fill=blue!10,align=center,inner sep=2pt] at (6,0.8)
+      {$\pi_{\ms{candidate}}$};
+   % END LAZYSP
+
+   % END LEMUR
+
+   % top left side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=1.8cm,inner sep=0pt] at (3.3,7.0) {};
+   \node[fill=white,inner sep=0pt] at (3.3,7.0) {\includegraphics[width=1.4cm]{build/c-space-simple}};
+   \node[font=\scriptsize] at (2.95,6.7) {$\mathcal{C}_{\mbox{\tiny free}}$};
+   \draw[->] (3.3,6.25) -- (3.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\mathcal{C}$};
+
+   %\node[inner sep=4pt] (cspace) at (3.3,7.0) {$\mathcal{C}$-Space};
+   %\draw[->] (cspace) -- (3.3,5.25);
+   
+   % top right side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm] at (7.9,7)
+   {$\arraycolsep=1.5pt \begin{array}{cl}
+      x(\xi)\!: & \mbox{execution cost} \;(\mathcal{C}_{\ms{free}}) \\
+      \hat{x}(\xi)\!: & \mbox{execution cost estimate} \\
+      \grave{p}(\xi)\!: & \mbox{planning cost estimate}
+   \end{array}$};
+   
+   \draw[->] (7.3,6.25) -- (7.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $x$};
+   \draw[->] (7.9,6.25) -- (7.9,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{x}$};
+   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\grave{p}$};
+
+   % left side
+   \draw[->] (0.5,2.0) -- (2.5,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (0.5,2.0)
+      {$q_{\ms{start}}$\\$q_{\ms{dest}}$};
+
+   % right side
+   \draw[->] (9.5,2.0) -- (11.3,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (11.5,2.0)
+      {$\xi$};
+
+   \end{tikzpicture}
 \end{frame}

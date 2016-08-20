@@ -27,13 +27,13 @@
    \draw[black!10.0,fill=black!0.0] (axis cs:0,15) -- (axis cs:0,19) -- (axis cs: 4,15) -- cycle;
    
    % rrt results
-   \addplot
-      plot[color=red,mark options={color=red},mark options={scale=0.5},
-         error bars/.cd,x dir=both,x explicit,y dir=both,y explicit]
-      table[x=python-totaltime-finmean,y=path-length-finmean,
-         x error expr=1.96*\thisrow{python-totaltime-stderrfinmean},
-         y error expr=1.96*\thisrow{path-length-stderrfinmean}]
-      {data/multistep-prescribed/stats-byparam-herbbinnom-rrtconnect-default.txt};
+   %\addplot
+   %   plot[color=red,mark options={color=red},mark options={scale=0.5},
+   %      error bars/.cd,x dir=both,x explicit,y dir=both,y explicit]
+   %   table[x=python-totaltime-finmean,y=path-length-finmean,
+   %      x error expr=1.96*\thisrow{python-totaltime-stderrfinmean},
+   %      y error expr=1.96*\thisrow{path-length-stderrfinmean}]
+   %   {data/multistep-prescribed/stats-byparam-herbbinnom-rrtconnect-default.txt};
 
    % incbi results
    \addplot
