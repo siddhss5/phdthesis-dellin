@@ -165,7 +165,142 @@
 
 
 \begin{frame}
-   \frametitle{Challenge 1: Motion Planning is Expensive}
+   \frametitle{Challenge 1: Capturing the Plan/Execute Tradeoff}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+   \node[inner sep=0pt] at (3,5.3) {%
+      \only<1->{\includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}}%
+      %\only<5>{\includegraphics[width=5.75cm]{figs/herb-fridge-b-skinny.png}}%
+      %\only<6->{\includegraphics[width=5.75cm]{figs/herb-fridge-c-skinny.png}}%
+   };
+
+   \only<2->{
+   \node[fill=black!10,rounded corners,font=\small,anchor=north] at (9,7.75)
+   {\begin{minipage}{5.7cm}\raggedright
+
+      There is an {\bf explicit cost tradeoff} between
+      \emph{planning motion} and \emph{executing it}.
+
+      \medskip
+      (Often comparable time and energy)
+      
+      \only<3->{
+      \medskip
+      Existing methods require parameters
+      that are often difficult to tune:
+      \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+      \item planning/shortcutting budgets
+      \item inflation factors
+      \end{itemize}
+      }
+
+      \only<4->{
+      \medskip
+      Anytime planners require a learned
+      termination condition and may not achieve the best tradeoff.
+      }
+      
+   \end{minipage}};
+   }
+
+   \only<1-4>{
+   % figure adapted from proposal doc
+   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
+       
+      % root sets
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xgrasp) at (3,0) {};
+      \node[above=0cm of Xgrasp] {Grasp};
+      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
+         (Xdrop) at (6,0) {};
+      \node[above=0cm of Xdrop] {Place};
+      
+      % nodes
+      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
+      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
+      %\node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
+      %\node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
+      \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
+      %\node[circle,fill=black,inner sep=2] (xd2) at (6.0,-0.4) {};
+      \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
+      \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
+
+      % in S1
+      %\draw[line width=1.5mm,white]
+      %   (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+      %\draw[line width=1.5mm,white]
+      %   (xstart) .. controls (1.5,0.2) .. (xg2);
+      \draw[line width=1.5mm,white]
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+      %\draw
+      %   (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
+      %\draw
+      %   (xstart) .. controls (1.5,0.2) .. (xg2);
+      \draw
+         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
+
+      % in s2
+      %\draw[line width=1.5mm,white]
+      %   (xg1) -- (4.7,0.6);
+      %\draw[line width=1.5mm,white]
+      %   (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+      %         .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+      %\draw
+      %   (xg1) -- (4.7,0.6);
+      %\draw
+      %   (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
+      %         .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
+      \draw[line width=1.5mm,white]
+         (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      \draw
+         (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+
+      % in s3
+      \draw[line width=1.5mm,white]
+         (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      \draw
+         (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
+      
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (3,0) {};
+
+      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
+         opacity=0.1] at (6,0) {};
+      
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(0.0,-0.9) -- (2.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in fridge};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(3.1,-0.9) -- (5.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle in hand};
+
+      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
+      %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
+      %   {bottle on tray};
+   \end{scope}
+   }
+
+   \only<5>{
+      \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
+      {\begin{minipage}{11cm}\large
+
+         \emph{Q1: {\bf \emph{What should we optimize}}
+         to effectively trade off between planning and execution cost
+         over a manipulation task?}
+
+      \end{minipage}};
+   }
+
+   \end{tikzpicture}
+\end{frame}
+
+
+
+\begin{frame}
+   \frametitle{Challenge 2: Motion Planning is Expensive}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
@@ -173,38 +308,44 @@
       \includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}
    };
 
-   \only<3->{
-      \node[fill=black!10,rounded corners,font=\small,anchor=north] at (9,7.5)
-         {\begin{minipage}{5.5cm}
+   \only<2->{
+      \node[fill=black!10,rounded corners,font=\small,anchor=north] at (9,7.75)
+         {\begin{minipage}{5.7cm}\raggedright
 
             Configuration space $\mathcal{C}$ is:
-            \only<4->{
+            \only<3->{
                \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
                \item continuous, high dimensional
-               \only<5->{\\$\rightarrow$ many candidate paths}
+               \only<4->{\\$\rightarrow$ many candidate paths}
                \end{itemize}
             }
          
-            \only<7->{
+            \only<5->{
                \medskip
                Valid subset $\mathcal{C}_{\ms{free}}$ is:
             }
-            \only<8->{
+            \only<6->{
                \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
                \item induced by complex geometry
-               \only<9->{\\$\rightarrow$ expensive to validate paths}
+               \only<7->{\\$\rightarrow$ expensive to validate paths}
                \end{itemize}
             }
 
-            \only<12->{
+            \only<8->{
                \medskip
-               Choices can render subsequent steps:
+               Choices affect subsequent steps:}
+            
+            \only<9->{%
+               $\rightarrow$ longer planning horizons
             }
-            \only<13->{
-               \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
-               \item {\bf{impossible}} \only<15->{or {\bf{difficult}}}
-               \only<18->{\\$\rightarrow$ long planning horizons}
-               \end{itemize}
+
+            \only<10->{
+            \medskip
+            Each step induces a distinct $\mathcal{C}_{\ms{free}}$
+            }
+
+            \only<11->{%
+               $\rightarrow$ caching for fast planning is difficult
             }
             
             %\only<11->{
@@ -238,41 +379,54 @@
    %}
 
    % figure adapted from proposal doc
-   \only<1-18>{
+   \only<1-11>{
    \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
       
       % root sets
       \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
          (Xgrasp) at (3,0) {};
       \node[above=0cm of Xgrasp] {Grasp};
-      \only<11->{
+      \only<8->{
          \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
             (Xdrop) at (6,0) {};
          \node[above=0cm of Xdrop] {Place};
       }      
       
       % cspace sets (lines only)
-      \only<2-9>{
+      \only<2-7,10-11>{
          \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
             (S1) at (1.5,0) {};
          \node[above left=-0.7cm of S1] {$\mathcal{C}$};
+      }
+      \only<10-11>{
+         \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
+            (S2) at (4.5,0) {};
+         \node[above left=-0.7cm of S2] {$\mathcal{C}$};
       }
       
       % nodes
       \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
       \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
-      \only<1-9>{
+      \only<1-11>{
          \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
+      }
+      \only<10-11>{
+         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
       }
       
       % in S1
-      \only<1-9>{
+      \only<1-7,10-11>{
       \draw[line width=1.5mm,white]
          (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
       }
+
+      \only<10-11>{
+         \draw[line width=1.5mm,white]
+            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      }
       
       % draw s1 cfree
-      \only<6-9>{
+      \only<5-7,10-11>{
          \begin{scope}[even odd rule]
             \clip[rounded corners] (0.61,-0.89) rectangle (2.39,0.89);
             \clip[rotate around={10:(1.1,0.5)}] (-3,-3) rectangle (3,3)
@@ -285,7 +439,20 @@
          \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free}}$}; 
       }
 
-      \only<1-9>{
+      % draw s2 cfree
+      \only<10-11>{
+         \begin{scope}[even odd rule]
+            \clip[rounded corners] (3.61,-0.89) rectangle (5.39,0.89);
+            \clip[rotate around={10:(4.1,0.5)}] (0,-3) rectangle (6,3)
+                  (3.6,-0.0) rectangle (4.6,1.0);
+            \fill[red!15,rotate around={15:(4.5,-0.2)}] (4.5,-0.2) ellipse (1.4cm and 0.5cm);
+         \end{scope}
+         \node[draw,inner sep=0,fill=red!20,minimum width=0.5cm,minimum height=0.2cm]
+            (Cfreebox1) at (4.2, -1.2) {};
+         \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free2}}$};
+      }
+
+      \only<1-7,9->{
       \draw
          (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
       }
@@ -302,12 +469,7 @@
       %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
       %   {bottle on tray};
 
-
-
-
-
-
-      \only<11->{
+      \only<8-9>{
          % grasp choices
          \node[circle,fill=black,inner sep=2] (xg1) at (2.8,0.5) {};
          \node[circle,fill=black,inner sep=2] (xg2) at (3.1,0.1) {};
@@ -319,45 +481,45 @@
          \node[circle,fill=black,inner sep=2] (xend) at (9,0) {};
          \node[above=0.1cm of xend] {$q_{\mbox{\scriptsize end}}$};
       }
-      
+
       %\only<2->{
       %   
       %}
       
       % in S1
-      \only<12->{
+      \only<8-9>{
          \draw[line width=1.5mm,white]
             (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
       }
-      \only<14->{
+      \only<8-9>{
          \draw[line width=1.5mm,white]
             (xstart) .. controls (1.5,0.2) .. (xg2);
       }
-      \only<16->{
+      \only<9>{
          \draw[line width=1.5mm,white]
             (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
       }
-      \only<12->{
+      \only<8-9>{
          \draw
             (xstart) .. controls (1,0.2) and (1.4,0.9) .. (xg1);
       }
-      \only<14->{
+      \only<8-9>{
          \draw
             (xstart) .. controls (1.5,0.2) .. (xg2);
       }
-      \only<16->{
+      \only<9->{
          \draw
             (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
       }
       
       % in s2
-      \only<13->{
+      \only<8-9>{
          \draw[line width=1.5mm,white]
             (xg1) -- (4.7,0.6);
          \draw
             (xg1) -- (4.7,0.6);
       }
-      \only<15->{
+      \only<8-9>{
          \draw[line width=1.5mm,white]
             (xg2) .. controls (4.5,1) and (3.5,-1.2) .. (4.5,-0.4)
                   .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
@@ -366,14 +528,16 @@
                   .. controls (5.5,0.5) and (5.0,-1.3) .. (xd2);
       }
       
-      \only<17->{
+      \only<9>{
          \draw[line width=1.5mm,white]
             (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
+      }
+      \only<9-11>{
          \draw
             (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
       }
       
-      \only<18->{
+      \only<9>{
          % in s3
          \draw[line width=1.5mm,white]
             (xd1) .. controls (8,0.3) and (8,0.1) .. (xend);
@@ -383,7 +547,7 @@
 
       \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
          opacity=0.1] at (3,0) {};
-      \only<11->{
+      \only<8->{
          \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
             opacity=0.1] at (6,0) {};
       }
@@ -391,11 +555,11 @@
    \end{scope}
    }
 
-   \only<19->{
+   \only<12->{
       \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
       {\begin{minipage}{11cm}\large
 
-         \emph{Q1: {\bf \emph{How can we optimize}}
+         \emph{Q2: {\bf \emph{How can we optimize}}
          paths for motion planning problems
          %in manipulation tasks
          in the face of expensive validity checking?}
@@ -405,161 +569,3 @@
 
    \end{tikzpicture}
 \end{frame}
-
-
-
-
-
-
-\begin{frame}
-   \frametitle{Challenge 2: Capturing the Plan/Execute Tradeoff}
-   \begin{tikzpicture}[font=\small]
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-
-   \node[inner sep=0pt] at (3,5.3) {%
-      \only<1-4>{\includegraphics[width=5.75cm]{figs/herb-fridge-a-skinny.png}}%
-      \only<5>{\includegraphics[width=5.75cm]{figs/herb-fridge-b-skinny.png}}%
-      \only<6->{\includegraphics[width=5.75cm]{figs/herb-fridge-c-skinny.png}}%
-   };
-
-   \only<2->{
-   \node[fill=black!10,rounded corners,font=\small,anchor=north] at (9,7.75)
-   {\begin{minipage}{5.5cm}
-
-      There is an {\bf explicit effort tradeoff} between
-      \emph{planning motion} and \emph{executing it}.
-      
-      \only<3->{
-      \medskip
-      Existing methods require parameters
-      that are often difficult to tune:
-      \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
-      \item planning/shortcutting budgets
-      \item inflation factors
-      \end{itemize}
-      }
-
-      \only<4->{
-      \medskip
-      Anytime planners require termination
-      and may not achieve the best tradeoff.
-      }
-
-      \only<8->{
-      \medskip
-      Caching for fast planning is difficult
-      since each step induces a distinct $\mathcal{C}_{\ms{free}}$.
-      }
-      
-   \end{minipage}};
-   }
-
-   \only<1-8>{
-   % figure adapted from proposal doc
-   \begin{scope}[font=\scriptsize,shift={(1.5,1.5)}]
-      
-      % root sets
-      \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
-         (Xgrasp) at (3,0) {};
-      \node[above=0cm of Xgrasp] {Grasp};
-      
-      \only<6->{
-         \node[draw,black,rounded corners,minimum height=1.5cm,minimum width=1cm]
-            (Xdrop) at (6,0) {};
-         \node[above=0cm of Xdrop] {Place};
-      }
-      
-      % cspace sets
-      \only<5->{
-         \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
-            (S1) at (1.5,0) {};
-         \node[above left=-0.7cm of S1] {$\mathcal{C}$};
-      }
-      
-      \only<7->{
-         \node[draw,black,rounded corners,minimum height=1.8cm,minimum width=1.8cm,dashed]
-            (S1) at (4.5,0) {};
-         \node[above left=-0.7cm of S1] {$\mathcal{C}$};
-      }
-      
-      % nodes
-      \node[circle,fill=black,inner sep=2] (xstart) at (0,0) {};
-      \node[above=0.1cm of xstart] {$q_{\mbox{\scriptsize start}}$};
-      \node[circle,fill=black,inner sep=2] (xg3) at (2.9,-0.5) {};
-      
-      % in S1
-      \draw[line width=1.5mm,white]
-         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
-      % draw s1 cfree
-      \only<5->{
-         \begin{scope}[even odd rule]
-            \clip[rounded corners] (0.61,-0.89) rectangle (2.39,0.89);
-            \clip[rotate around={10:(1.1,0.5)}] (-3,-3) rectangle (3,3)
-                     (0.6,-0.0) rectangle (1.6,1.0);
-            \fill[blue!15,rotate around={-15:(1.5,-0.5)}] (1.5,-0.5) ellipse (1.4cm and 0.5cm);
-            \fill[blue!15,rotate around={-25:(1.5, 1.0)}] (1.5, 1.0) ellipse (1.4cm and 0.5cm);
-         \end{scope}
-         \node[draw,inner sep=0,fill=blue!20,minimum width=0.5cm,minimum height=0.2cm]
-               (Cfreebox1) at (1.2, -1.2) {};
-            \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free1}}$};
-      }
-      \draw
-         (xstart) .. controls (1.8,-0.6) and (1.6,-0.8) .. (xg3);
-      
-      % in s2
-      \only<6->{
-         \node[circle,fill=black,inner sep=2] (xd1) at (5.9,0.3) {};
-         \draw[line width=1.5mm,white]
-            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
-         \only<7->{
-            % draw s2 cfree
-            \begin{scope}[even odd rule]
-               \clip[rounded corners] (3.61,-0.89) rectangle (5.39,0.89);
-               \clip[rotate around={10:(4.1,0.5)}] (0,-3) rectangle (6,3)
-                     (3.6,-0.0) rectangle (4.6,1.0);
-               \fill[red!15,rotate around={15:(4.5,-0.2)}] (4.5,-0.2) ellipse (1.4cm and 0.5cm);
-            \end{scope}
-            \node[draw,inner sep=0,fill=red!20,minimum width=0.5cm,minimum height=0.2cm]
-               (Cfreebox1) at (4.2, -1.2) {};
-            \node[right=0cm of Cfreebox1] {: $\mathcal{C}_{\mbox{\tiny free2}}$};
-         }
-         \draw
-            (xg3) .. controls (4.3, 0.2) and (4.5,-0.2) .. (xd1);
-      }
-      
-      \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
-         opacity=0.1] at (3,0) {};
-      \only<6->{
-         \node[fill,black,rounded corners,minimum height=1.5cm,minimum width=1cm,
-            opacity=0.1] at (6,0) {};
-      }
-      
-      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
-      %(0.0,-0.9) -- (2.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
-      %   {bottle in fridge};
-
-      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
-      %(3.1,-0.9) -- (5.9,-0.9) node [black,midway,yshift=-0.4cm,align=center]
-      %   {bottle in hand};
-
-      %\draw [decorate,decoration={brace,mirror,amplitude=5pt}]
-      %(6.1,-0.9) -- (9.0,-0.9) node [black,midway,yshift=-0.4cm,align=center]
-      %   {bottle on tray};
-
-   \end{scope}
-   }
-
-   \only<9->{
-      \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
-      {\begin{minipage}{11cm}\large
-
-         \emph{Q2: {\bf \emph{What should we optimize}}
-         to effectively trade off between planning and execution cost
-         over a manipulation task?}
-
-      \end{minipage}};
-   }
-
-   \end{tikzpicture}
-\end{frame}
-
