@@ -547,88 +547,88 @@
 
 
 
-%\begin{frame}
-   %\frametitle{Motivation: The Shortest Path (SP) Problem}
-   %\begin{tikzpicture}[font=\small]
-      %\tikzset{>=latex} % arrow heads
-      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+\begin{frame}
+   \frametitle{Motivation: The Shortest Path (SP) Problem}
+   \begin{tikzpicture}[font=\small]
+      \tikzset{>=latex} % arrow heads
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
-      %\node at (1,7) {\includegraphics[width=1.5cm]{figs/rubik.png}};
-      %\node at (3,7) {\includegraphics[width=1.5cm]{figs/15puzzle.png}};
-      %\node at (5,7) {\includegraphics[width=1.5cm]{figs/internet-routers.jpg}};
-      %\node at (7,7) {\includegraphics[width=1.5cm]{figs/lazysp-herbarm/herbarm-path33.png}};
-      %\node at (9,7) {\includegraphics[width=1.5cm]{figs/quad.png}};
-      %\node at (11,7) {\includegraphics[width=1.5cm]{figs/military-truck.jpg}};
+      \node at (1,7) {\includegraphics[width=1.5cm]{figs/rubik.png}};
+      \node at (3,7) {\includegraphics[width=1.5cm]{figs/15puzzle.png}};
+      \node at (5,7) {\includegraphics[width=1.5cm]{figs/internet-routers.jpg}};
+      \node at (7,7) {\includegraphics[width=1.5cm]{figs/lazysp-herbarm/herbarm-path33.png}};
+      \node at (9,7) {\includegraphics[width=1.5cm]{figs/quad.png}};
+      \node at (11,7) {\includegraphics[width=1.5cm]{figs/military-truck.jpg}};
          
-      %\coordinate (va) at ( 2.0,4.0);
-      %\coordinate (vb) at ( 3.5,4.7);
-      %\coordinate (vc) at ( 4.0,5.9);
-      %\coordinate (vd) at ( 5.5,4.5);
-      %\coordinate (ve) at ( 8.0,5.0);
-      %\coordinate (vf) at (10.0,4.0);
-      %\coordinate (vg) at ( 1.5,5.0);
-      %\coordinate (vh) at ( 4.0,3.5);
-      %\coordinate (vi) at ( 7.0,3.2);
-      %\coordinate (vj) at ( 6.5,5.5);
-      %\coordinate (vk) at ( 9.0,3.5);
+      \coordinate (va) at ( 2.0,4.0);
+      \coordinate (vb) at ( 3.5,4.7);
+      \coordinate (vc) at ( 4.0,5.9);
+      \coordinate (vd) at ( 5.5,4.5);
+      \coordinate (ve) at ( 8.0,5.0);
+      \coordinate (vf) at (10.0,4.0);
+      \coordinate (vg) at ( 1.5,5.0);
+      \coordinate (vh) at ( 4.0,3.5);
+      \coordinate (vi) at ( 7.0,3.2);
+      \coordinate (vj) at ( 6.5,5.5);
+      \coordinate (vk) at ( 9.0,3.5);
 
-      %\node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
-      %\node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (va) {};
+      \node[circle,fill=black!20,inner sep=0.1cm] at (vf) {};
 
-      %\draw[line width=0.2cm,color=black!30,line cap=round]
-         %(va) -- (vb) -- (vd) -- (ve) -- (vf);
+      \draw[line width=0.2cm,color=black!30,line cap=round]
+         (va) -- (vb) -- (vd) -- (ve) -- (vf);
 
-      %\node[circle,fill=black,inner sep=0.05cm] at (va) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vb) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vc) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vd) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (ve) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vf) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vg) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vh) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vi) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vj) {};
-      %\node[circle,fill=black,inner sep=0.05cm] at (vk) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (va) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vb) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vc) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vd) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (ve) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vf) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vg) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vh) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vi) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vj) {};
+      \node[circle,fill=black,inner sep=0.05cm] at (vk) {};
       
-      %\draw (va) -- (vb) coordinate [midway] (eab);
-      %\draw (vb) -- (vc) coordinate [midway] (ebc);
-      %\draw (vb) -- (vd) coordinate [midway] (ebd);
-      %\draw (vc) -- (vd) coordinate [midway] (ecd);
-      %\draw (vd) -- (ve) coordinate [midway] (ede);
-      %\draw (ve) -- (vf) coordinate [midway] (eef);
-      %\draw (va) -- (vg) coordinate [midway] (eag);
-      %\draw (vb) -- (vg) coordinate [midway] (ebg);
-      %\draw (va) -- (vh) coordinate [midway] (eah);
-      %\draw (vd) -- (vh) coordinate [midway] (edh);
-      %\draw (vb) -- (vh) coordinate [midway] (ebh);
-      %\draw (vd) -- (vi) coordinate [midway] (edi);
-      %\draw (ve) -- (vi) coordinate [midway] (eei);
-      %\draw (vc) -- (vj) coordinate [midway] (ecj);
-      %\draw (vd) -- (vj) coordinate [midway] (edj);
-      %\draw (ve) -- (vj) coordinate [midway] (eej);
-      %\draw (vf) -- (vk) coordinate [midway] (efk);
-      %\draw (vi) -- (vk) coordinate [midway] (eik);
-      %\draw (ve) -- (vk) coordinate [midway] (eek);
+      \draw (va) -- (vb) coordinate [midway] (eab);
+      \draw (vb) -- (vc) coordinate [midway] (ebc);
+      \draw (vb) -- (vd) coordinate [midway] (ebd);
+      \draw (vc) -- (vd) coordinate [midway] (ecd);
+      \draw (vd) -- (ve) coordinate [midway] (ede);
+      \draw (ve) -- (vf) coordinate [midway] (eef);
+      \draw (va) -- (vg) coordinate [midway] (eag);
+      \draw (vb) -- (vg) coordinate [midway] (ebg);
+      \draw (va) -- (vh) coordinate [midway] (eah);
+      \draw (vd) -- (vh) coordinate [midway] (edh);
+      \draw (vb) -- (vh) coordinate [midway] (ebh);
+      \draw (vd) -- (vi) coordinate [midway] (edi);
+      \draw (ve) -- (vi) coordinate [midway] (eei);
+      \draw (vc) -- (vj) coordinate [midway] (ecj);
+      \draw (vd) -- (vj) coordinate [midway] (edj);
+      \draw (ve) -- (vj) coordinate [midway] (eej);
+      \draw (vf) -- (vk) coordinate [midway] (efk);
+      \draw (vi) -- (vk) coordinate [midway] (eik);
+      \draw (ve) -- (vk) coordinate [midway] (eek);
          
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eab) {5};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebc) {5};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebd) {6};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecd) {7};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ede) {9};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eef) {7};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eag) {3};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebg) {6};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eah) {6};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edh) {7};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebh) {5};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edi) {8};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eei) {8};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecj) {8};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edj) {6};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eej) {4};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (efk) {3};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eik) {6};
-      %\node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eek) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eab) {5};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebc) {5};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebd) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecd) {7};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ede) {9};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eef) {7};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eag) {3};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebg) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eah) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edh) {7};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ebh) {5};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edi) {8};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eei) {8};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (ecj) {8};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (edj) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eej) {4};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (efk) {3};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eik) {6};
+      \node[circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] at (eek) {6};
 
       %\node[draw,align=center,minimum height=1.0cm,minimum width=2.9cm,thick]
          %at (4.0,2.05) {Graph\\$G=(V,E)$};
@@ -650,45 +650,51 @@
       %\node[draw,align=center,shape=document,minimum width=2.0cm,ultra thin]
          %(path) at (10,0.55) {Path $p^*$\;};
       %\draw[->] (alg.east) -- (path.west);
+
+      \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
+      {\begin{minipage}{8cm}
+
+         In some domains, determining edge weights\\
+         is a computationally expensive operation.
+
+         \vspace{0.1cm}
+         \large
+         \emph{Q: How can we solve shortest-path problems\\
+         while reducing the number of edges evaluated?}
+
+      \end{minipage}};
       
-   %\end{tikzpicture}
-%\end{frame}
-
-
-
-
-
-
-
-
-
-\begin{frame}
-   \frametitle{Pathfinding with Expensive Edge Evaluations}
-   
-   In some domains, determining edge weights\\
-   is a computationally expensive operation.
-   
-   \pause
-   \vspace{0.4cm}
-   \emph{Question: How can we solve shortest-path problems\\
-      \quad \quad \quad \quad \, while reducing the number of edges evaluated?}
-   
-   \pause
-   \vspace{0.4cm}
-   Outline:
-   \begin{itemize}
-   \pause
-   \item Review of lazy search approaches
-   \pause
-   \item LazySP algorithm outline (using \emph{edge selectors})
-   \pause
-   \item Equivalence to existing algorithms
-   \pause
-   \item Novel edge selectors
-   %\pause
-   %\item Experimental results
-   \end{itemize}
+   \end{tikzpicture}
 \end{frame}
+
+
+%\begin{frame}
+   %\frametitle{Pathfinding with Expensive Edge Evaluations}
+   
+   %In some domains, determining edge weights\\
+   %is a computationally expensive operation.
+   
+   %\pause
+   %\vspace{0.4cm}
+   %\emph{Question: How can we solve shortest-path problems\\
+      %\quad \quad \quad \quad \, while reducing the number of edges evaluated?}
+   
+   %\pause
+   %\vspace{0.4cm}
+   %Outline:
+   %\begin{itemize}
+   %\pause
+   %\item Review of lazy search approaches
+   %\pause
+   %\item LazySP algorithm outline (using \emph{edge selectors})
+   %\pause
+   %\item Equivalence to existing algorithms
+   %\pause
+   %\item Novel edge selectors
+   %%\pause
+   %%\item Experimental results
+   %\end{itemize}
+%\end{frame}
 
 \begin{frame}
    \frametitle{Review of Prior Approaches}
@@ -977,13 +983,13 @@
       \only<2-3>{
          \node[fill=blue!20,anchor=north,rounded corners] at (6,4.4) {\begin{minipage}{11cm}
             \hangindent=0.35cm
-            Approach 0: Pre-evaluate all edges, run SP algorithm.
+            Approach 0: Pre-evaluate all edges, run SP (a shortest-path algorithm).
          \end{minipage}};
       }
       \only<4->{
          \node[fill=blue!10,anchor=north,rounded corners] at (6,4.4) {\begin{minipage}{11cm}
             \hangindent=0.35cm
-            Approach 0: Pre-evaluate all edges, run SP algorithm.
+            Approach 0: Pre-evaluate all edges, run SP (a shortest-path algorithm).
          \end{minipage}};
       }
       
@@ -991,14 +997,14 @@
          \node[fill=blue!20,anchor=north,rounded corners] at (6,3.57) {\begin{minipage}{11cm}
             \hangindent=0.35cm
             Approach 1: Run SP (e.g. A*) with Just-In-Time and memoized evaluations.\\
-            (analogue to implicit graph representation)
+            (analogous to implicit graph representation)
          \end{minipage}};
       }
       \only<10->{
          \node[fill=blue!10,anchor=north,rounded corners] at (6,3.57) {\begin{minipage}{11cm}
             \hangindent=0.35cm
             Approach 1: Run SP (e.g. A*) with Just-In-Time and memoized evaluations.\\
-            (analogue to implicit graph representation)
+            (analogous to implicit graph representation)
          \end{minipage}};
       }
       
@@ -2472,10 +2478,10 @@
       \only<8->{
       \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=5.5cm,minimum height=4cm] (rightside) at (9,2.1) {};
       \node[anchor=north] at (rightside.north) {Partition Functions};
-      \node[fill=blue!2,draw=blue!10,rounded corners] at (9,1.9) {\begin{minipage}{5cm}
+      \node[fill=blue!2,draw=blue!10,rounded corners] at (9,1.9) {\begin{minipage}{5.1cm}
          \vspace{-0.3cm}
          \begin{equation*}
-            P: \mbox{set of all paths from $s$ to $t$}
+            P_{st}: \mbox{set of all paths from $s$ to $t$}
          \end{equation*}%
          \vspace{-0.3cm}
          \begin{equation*}
@@ -2486,6 +2492,7 @@
             \end{array}
          \end{equation*}
 
+         \centering
          We provide a novel incremental method to maintain
          the partition function $Z_{st}$ over a changing graph.
       \end{minipage}};
@@ -2826,7 +2833,7 @@ Partition 0 0
 
 \begin{frame}
    \frametitle{Experimental Results: Edges Evaluated}
-   \begin{tikzpicture}
+   \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \clip (0,0) rectangle (12,8);
       \tikzset{>=latex}
@@ -2913,23 +2920,29 @@ Partition 0 0
          xmajorticks=false,
          ticklabel style={font=\footnotesize}
          ]
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:100,-5.6) {\scriptsize 100};
+
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      
+      
       \only<4>{
          \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
             table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
             {\dataarmplan};
       }
-      \only<5>{
-         \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
-            table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
-            {\dataarmplannoalt};
-         \addplot[color=black,fill=blue!40,error bars/.cd,x dir=both,x explicit]
-            table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
-            {\dataarmplanonlyalt};
-      }
-      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      %\only<5>{
+      %   \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
+      %      table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+      %      {\dataarmplannoalt};
+      %   \addplot[color=black,fill=blue!40,error bars/.cd,x dir=both,x explicit]
+      %      table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+      %      {\dataarmplanonlyalt};
+      %}
+      %\node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      %\node[align=center,anchor=east,inner sep=0pt] at (axis cs:60,-5.6) {\scriptsize 949 $\rightarrow$};
+
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:100,-5.6) {\scriptsize 100};
       \end{axis}
       \end{scope}
       }
@@ -2948,51 +2961,146 @@ WeightSamp  0.02 10.00  9.39 0.0001
 Partition   0.04  1.54  4.21 0.28
 }{\dataarmplantime}
 
-%\begin{frame}
-%   \frametitle{Experimental Results: ArmPlan Computation Time}
-%
-%   \includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-roadmap.png}
-%   \includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path02.png}
-%   \includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path33.png}
-%   \includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path42.png}
-%   \includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path46.png}
-%   
-%   \begin{tikzpicture}
-%      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
-%      \tikzset{>=latex}
-%   
-%      \begin{axis}[
-%         width=7.0cm,
-%         height=4.0cm,
-%         xbar stacked,
-%         bar width=7,
-%         xmin=0,xmax=10,
-%         %xtick pos=bottom,
-%         %symbolic y coords={E, F, R, A, B, W, P},
-%         yticklabels from table={\dataarmplantime}{selector},
-%         ytick=data,
-%         ytick pos=left,
-%         xmajorgrids,
-%         xmajorticks=false,
-%         ticklabel style={font=\footnotesize}
-%         ] 
-%      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
-%      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-%      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
-%      \addplot[color=black,fill=blue!30]
-%         table[y expr=-\coordindex,x=dursearch]
-%         {\dataarmplantime};
-%      \addplot[color=black,fill=purple!20]
-%         table[y expr=-\coordindex,x=dursel]
-%         {\dataarmplantime};
-%      \addplot[color=black,fill=green!20,error bars/.cd,x dir=both,x explicit]
-%         table[y expr=-\coordindex,x=dureval,x error expr=\thisrow{duronline-error}]
-%         {\dataarmplantime};
-%      \end{axis}
-%      
-%   \end{tikzpicture}
-%
-%\end{frame}
+\begin{frame}
+   \frametitle{Experimental Results: ArmPlan Computation Time}
+   \begin{tikzpicture}[font=\small]
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex}
+      
+   \node at (8.2,7.4) {
+      \protect\tikz{\protect\node[fill=blue!30,draw=black]{};}\;graph search vs.
+      \protect\tikz{\protect\node[fill=cyan!30,draw=black]{};}\;selector vs.
+      \protect\tikz{\protect\node[fill=green!30,draw=black]{};}\;edge evaluation
+   };
 
+   %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-roadmap.png}
+   %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path02.png}
+   %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path33.png}
+   %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path42.png}
+   %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path46.png}
+
+   \node at (2.1,4.15) {\includegraphics[width=2.0cm]{figs/lazysp-herbarm/herbarm-path33.png}};
+   \node at (2.1,5.5) {\footnotesize \textbf{ArmPlan}};
+
+   \node[align=center] at (2.1,2.7) {$|V|=10^4$};
+
+
+
+   \begin{scope}[shift={(5.5,4.3)}]
+      \begin{axis}[
+         width=7.0cm,
+         height=4.0cm,
+         xbar stacked,
+         bar width=7,
+         xmin=0,xmax=115,
+         %xtick pos=bottom,
+         %symbolic y coords={E, F, R, A, B, W, P},
+         yticklabels from table={\dataarmplan}{selector},
+         ytick=data,
+         ytick pos=left,
+         xmajorgrids,
+         xmajorticks=true,
+         ticklabel style={font=\scriptsize},
+         xlabel={Edges evaluated},
+         xlabel near ticks,
+         xlabel shift=-0.1cm,
+         xlabel style={font=\scriptsize},
+         ]
+
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      
+      \addplot[color=black,fill=green!30,error bars/.cd,x dir=both,x explicit]
+         table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
+         {\dataarmplan};
+
+      %\node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      %\node[align=center,anchor=east,inner sep=0pt] at (axis cs:60,-5.6) {\scriptsize 949 $\rightarrow$};
+
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:100,-5.6) {\scriptsize 100};
+      \end{axis}
+   \end{scope}
+
+   
+   
+   \begin{scope}[shift={(5.5,0.9)}]
+      \begin{axis}[
+         width=7.0cm,
+         height=4.0cm,
+         xbar stacked,
+         bar width=7,
+         xmin=0,xmax=10,
+         %xtick pos=left,
+         %symbolic y coords={E, F, R, A, B, W, P},
+         yticklabels from table={\dataarmplantime}{selector},
+         ytick=data,
+         ytick pos=left,
+         xmajorgrids,
+         xmajorticks=true,
+         ticklabel style={font=\scriptsize},
+         xlabel={Online time (s)},
+         xlabel near ticks,
+         xlabel shift=-0.1cm,
+         xlabel style={font=\scriptsize},
+         ] 
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      \addplot[color=black,fill=blue!30]
+         table[y expr=-\coordindex,x=dursearch]
+         {\dataarmplantime};
+      \addplot[color=black,fill=cyan!30]
+         table[y expr=-\coordindex,x=dursel]
+         {\dataarmplantime};
+      \addplot[color=black,fill=green!30,error bars/.cd,x dir=both,x explicit]
+         table[y expr=-\coordindex,x=dureval,x error expr=\thisrow{duronline-error}]
+         {\dataarmplantime};
+      \end{axis}
+   \end{scope}
+      
+   \end{tikzpicture}
+
+\end{frame}
+
+
+\begin{frame}
+   \frametitle{Alternate as a Proxy for Explicit Path Distributions}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \tikzset{>=latex}
+   
+      \node at (6,7.5) {
+         Examples of the edge probabilities for various values of $\beta$:
+      };
+
+      \only<2->{
+      \node (gap50) at (3,5.5) {\includegraphics{build/lazysp-selscores/gap-50}};
+      \node[anchor=north west, below right=0.2cm of gap50.north west,font=\small] {$\beta=50$};
+      }
+      \only<3->{
+      \node (gap33) at (6,5.5) {\includegraphics{build/lazysp-selscores/gap-33}};
+      \node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
+      }
+      \only<4->{
+      \node (gap28) at (9,5.5) {\includegraphics{build/lazysp-selscores/gap-28}};
+      \node[anchor=north west, below right=0.2cm of gap28.north west,font=\small] {$\beta=28$};
+      }
+      
+      \only<5->{
+      \node (empty50) at (3,2.3) {\includegraphics{build/lazysp-selscores/empty-50}};
+      \node[anchor=north west, below right=0.2cm of empty50.north west,font=\small] {$\beta=50$};
+      }
+      \only<6->{
+      \node (empty33) at (6,2.3) {\includegraphics{build/lazysp-selscores/empty-33}};
+      \node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
+      }
+      \only<7->{
+      \node (empty28) at (9,2.3) {\includegraphics{build/lazysp-selscores/empty-28}};
+      \node[anchor=north west, below right=0.2cm of empty28.north west,font=\small] {$\beta=28$};
+      }
+   
+   \end{tikzpicture}
+\end{frame}
 
 
