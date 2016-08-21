@@ -647,3 +647,42 @@
 
    \end{tikzpicture}
 \end{frame}
+
+\begin{frame}
+   \frametitle{LazySP Partition Function Examples}
+   \begin{tikzpicture}[font=\small]
+      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+      \tikzset{>=latex}
+   
+      \node at (6,7.5) {
+         Examples of the edge probabilities for various values of $\beta$:
+      };
+
+      \only<2->{
+      \node (gap50) at (3,5.5) {\includegraphics{build/lazysp-selscores/gap-50}};
+      \node[anchor=north west, below right=0.2cm of gap50.north west,font=\small] {$\beta=50$};
+      }
+      \only<3->{
+      \node (gap33) at (6,5.5) {\includegraphics{build/lazysp-selscores/gap-33}};
+      \node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
+      }
+      \only<4->{
+      \node (gap28) at (9,5.5) {\includegraphics{build/lazysp-selscores/gap-28}};
+      \node[anchor=north west, below right=0.2cm of gap28.north west,font=\small] {$\beta=28$};
+      }
+      
+      \only<5->{
+      \node (empty50) at (3,2.3) {\includegraphics{build/lazysp-selscores/empty-50}};
+      \node[anchor=north west, below right=0.2cm of empty50.north west,font=\small] {$\beta=50$};
+      }
+      \only<6->{
+      \node (empty33) at (6,2.3) {\includegraphics{build/lazysp-selscores/empty-33}};
+      \node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
+      }
+      \only<7->{
+      \node (empty28) at (9,2.3) {\includegraphics{build/lazysp-selscores/empty-28}};
+      \node[anchor=north west, below right=0.2cm of empty28.north west,font=\small] {$\beta=28$};
+      }
+   
+   \end{tikzpicture}
+\end{frame}

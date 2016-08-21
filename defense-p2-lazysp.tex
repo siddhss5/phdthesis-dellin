@@ -2950,6 +2950,8 @@ Partition 0 0
    \end{tikzpicture}
 \end{frame}
 
+% expand is actually 0, 269.78
+% weightsamp is actually 3392.76, 9.39
 \pgfplotstableread{
 selector dursearch dursel dureval duronline-error
 Expand      0.02  0.00 10.00 0.0001
@@ -2966,12 +2968,6 @@ Partition   0.04  1.54  4.21 0.28
    \begin{tikzpicture}[font=\small]
    \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
    \tikzset{>=latex}
-      
-   \node at (8.2,7.4) {
-      \protect\tikz{\protect\node[fill=blue!30,draw=black]{};}\;graph search vs.
-      \protect\tikz{\protect\node[fill=cyan!30,draw=black]{};}\;selector vs.
-      \protect\tikz{\protect\node[fill=green!30,draw=black]{};}\;edge evaluation
-   };
 
    %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-roadmap.png}
    %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path02.png}
@@ -2979,14 +2975,20 @@ Partition   0.04  1.54  4.21 0.28
    %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path42.png}
    %\includegraphics[width=2.5cm]{figs/lazysp-herbarm/herbarm-path46.png}
 
-   \node at (2.1,4.15) {\includegraphics[width=2.0cm]{figs/lazysp-herbarm/herbarm-path33.png}};
-   \node at (2.1,5.5) {\footnotesize \textbf{ArmPlan}};
+   \node at (2.1,5.65) {\includegraphics[width=2.0cm]{figs/lazysp-herbarm/herbarm-path33.png}};
+   \node at (2.1,7.0) {\footnotesize \textbf{ArmPlan}};
 
-   \node[align=center] at (2.1,2.7) {$|V|=10^4$};
+   \only<3->{
+   \node[align=center,font=\footnotesize] at (2.1,4.2) {$|V|=10^4$};
+   }
 
+   \only<4->{
+   \node[align=center,rounded corners,font=\footnotesize] at (2.1,1.1) {
+      Partition is $O(n^2)$
+   };
+   }
 
-
-   \begin{scope}[shift={(5.5,4.3)}]
+   \begin{scope}[shift={(5.5,4.8)}]
       \begin{axis}[
          width=7.0cm,
          height=4.0cm,
@@ -3007,9 +3009,9 @@ Partition   0.04  1.54  4.21 0.28
          xlabel style={font=\scriptsize},
          ]
 
-      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,-0.05) {\scriptsize 949 $\rightarrow$};
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:113,0) {\scriptsize 949 $\rightarrow$};
       
-      \addplot[color=black,fill=green!30,error bars/.cd,x dir=both,x explicit]
+      \addplot[color=black,fill=black!20,error bars/.cd,x dir=both,x explicit]
          table[y expr=-\coordindex,x=mean,x error expr=1.96*\thisrow{error}]
          {\dataarmplan};
 
@@ -3022,7 +3024,14 @@ Partition   0.04  1.54  4.21 0.28
       \end{axis}
    \end{scope}
 
-   
+
+
+   \only<2->{
+   \node[font=\footnotesize] at (8.2,3.6) {
+      \protect\tikz{\protect\node[fill=blue!30,draw=black]{};}\;graph search vs.
+      \protect\tikz{\protect\node[fill=cyan!30,draw=black]{};}\;selector vs.
+      \protect\tikz{\protect\node[fill=green!30,draw=black]{};}\;edge evaluation
+   };
    
    \begin{scope}[shift={(5.5,0.9)}]
       \begin{axis}[
@@ -3044,9 +3053,13 @@ Partition   0.04  1.54  4.21 0.28
          xlabel shift=-0.1cm,
          xlabel style={font=\scriptsize},
          ] 
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
-      \node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:40,-5.6) {\scriptsize 40};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:60,-5.6) {\scriptsize 60};
+      %\node[circle,fill=white,inner sep=1pt,text=black!40] at (axis cs:80,-5.6) {\scriptsize 80};
+
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:9.8,-0.02) {\scriptsize 0.0,\,269.7 $\rightarrow$};
+      \node[align=center,anchor=east,inner sep=0pt] at (axis cs:9.8,-5.02) {\scriptsize 3392.76,\,9.39 $\rightarrow$};
+      
       \addplot[color=black,fill=blue!30]
          table[y expr=-\coordindex,x=dursearch]
          {\dataarmplantime};
@@ -3056,8 +3069,10 @@ Partition   0.04  1.54  4.21 0.28
       \addplot[color=black,fill=green!30,error bars/.cd,x dir=both,x explicit]
          table[y expr=-\coordindex,x=dureval,x error expr=\thisrow{duronline-error}]
          {\dataarmplantime};
+
       \end{axis}
    \end{scope}
+   }
       
    \end{tikzpicture}
 
@@ -3070,34 +3085,23 @@ Partition   0.04  1.54  4.21 0.28
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       \tikzset{>=latex}
    
-      \node at (6,7.5) {
-         Examples of the edge probabilities for various values of $\beta$:
-      };
+      %\node at (6,7.5) {
+      %   Examples of the edge probabilities for various values of $\beta$:
+      %};
+
+      \only<1->{
+      \node (gap33) at (3.5,4.5) {\includegraphics{build/lazysp-selscores/gap-33}};
+      %\node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
+      }
 
       \only<2->{
-      \node (gap50) at (3,5.5) {\includegraphics{build/lazysp-selscores/gap-50}};
-      \node[anchor=north west, below right=0.2cm of gap50.north west,font=\small] {$\beta=50$};
+      \node (empty33) at (8.5,4.5) {\includegraphics{build/lazysp-selscores/empty-33}};
+      %\node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
       }
+
       \only<3->{
-      \node (gap33) at (6,5.5) {\includegraphics{build/lazysp-selscores/gap-33}};
-      \node[anchor=north west, below right=0.2cm of gap33.north west,font=\small] {$\beta=33$};
-      }
-      \only<4->{
-      \node (gap28) at (9,5.5) {\includegraphics{build/lazysp-selscores/gap-28}};
-      \node[anchor=north west, below right=0.2cm of gap28.north west,font=\small] {$\beta=28$};
-      }
-      
-      \only<5->{
-      \node (empty50) at (3,2.3) {\includegraphics{build/lazysp-selscores/empty-50}};
-      \node[anchor=north west, below right=0.2cm of empty50.north west,font=\small] {$\beta=50$};
-      }
-      \only<6->{
-      \node (empty33) at (6,2.3) {\includegraphics{build/lazysp-selscores/empty-33}};
-      \node[anchor=north west, below right=0.2cm of empty33.north west,font=\small] {$\beta=33$};
-      }
-      \only<7->{
-      \node (empty28) at (9,2.3) {\includegraphics{build/lazysp-selscores/empty-28}};
-      \node[anchor=north west, below right=0.2cm of empty28.north west,font=\small] {$\beta=28$};
+         \node[fill=blue!5,draw=blue!15,rounded corners] at (6,2)
+         {With no obstacle knowledge, start/end edges are most likely under $\mathcal{D}_p$.};
       }
    
    \end{tikzpicture}
