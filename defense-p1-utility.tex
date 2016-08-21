@@ -1,38 +1,101 @@
 \begin{frame}
    \frametitle{Talk Outline}
    \begin{tikzpicture}[font=\small]
-      \tikzset{>=latex} % arrow heads
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut What to Optimize?};
+   % START LEMUR
+   \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=9.7cm,minimum height=5.8cm,anchor=north] (lemur) at (6,6.0) {};
+   \node[anchor=north west] at (lemur.north west) {Motion Planner};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,5.6) {};
-      \node[anchor=north] at (utility.north) {\strut Maximizing Utility};
-      \node at (3.25,5.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
+   % right side
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,5.6) {};
-      \node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
-      \node at (8.75,5.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt,minimum width=6cm] (maxutil) at (6.0,4.5) {
+      \hspace{0.8cm} Maximizing Utility
+   };
+   %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
+   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (3.8,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
 
-      \node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut How to Optimize?};
+   \only<2->{
+      \draw[thick,rounded corners] (maxutil.south west) rectangle (maxutil.north east);
+   }
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,1.6) {};
-      \node[anchor=north] at (lazysp.north) {\strut Lazy Pathfinding};
-      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,1.4) {
-         \includegraphics[width=3.8cm]{build/lazysp-icon}};
+   \draw[->] (6.0,3.75) -- (6.0,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$G$};
+   
+   % START LAZYSP
+   \node[fill=blue!10,draw=blue!20,rounded corners,minimum width=7cm,minimum height=2.5cm,anchor=north] (lazysp) at (6,3.0) {};
+   \node[align=center] at (4,2.4) {Lazy\\Pathfinding};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,1.6) {};
-      \node[anchor=north] at (ibid.north) {\strut Dynamic Pathfinding};
-      \node[draw=black!30,inner sep=0pt] at (8.75,1.4) {
-         \includegraphics[width=2.9cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+   \node[draw=black!30,fill=white,inner sep=5pt] at (4,1.4) {
+      \includegraphics[width=2.0cm]{build/lazysp-icon}};
 
-      \only<2>
-      {
-         \draw[ultra thick] (utility.north west) rectangle (utility.south east);
-      }
-      
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum width=3.3cm,minimum height=2.1cm,anchor=north] (dynsp) at (7.5,2.8) {};
+   \node[anchor=north west] at (dynsp.north west) {\begin{minipage}{3.1cm}Dynamic Pathfinding\end{minipage}};
+   \node[draw=black!30,inner sep=0pt] at (7.5,1.55) {
+      \includegraphics[width=2.0cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+
+   % END LAZYSP
+
+   % END LEMUR
+
+   % top left side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=1.8cm,inner sep=0pt] at (6.0,7.0) {};
+   \node[fill=white,inner sep=0pt] at (6.0,7.0) {\includegraphics[width=1.4cm]{build/c-space-simple}};
+   \node[font=\scriptsize] at (5.65,6.7) {$\mathcal{C}_{\mbox{\tiny free}}$};
+   \draw[->] (6.0,6.25) -- (6.0,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\mathcal{C}$};
+
+   %\node[inner sep=4pt] (cspace) at (3.3,7.0) {$\mathcal{C}$-Space};
+   %\draw[->] (cspace) -- (3.3,5.25);
+
+   % left side
+   \draw[->] (0.5,2.0) -- (2.5,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (0.5,2.0)
+      {$q_{\ms{start}}$\\$q_{\ms{dest}}$};
+
+   % right side
+   \draw[->] (9.5,2.0) -- (11.3,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (11.5,2.0)
+      {$\xi$};
+
    \end{tikzpicture}
 \end{frame}
+
+
+%\begin{frame}
+   %\frametitle{Talk Outline}
+   %\begin{tikzpicture}[font=\small]
+      %\tikzset{>=latex} % arrow heads
+      %\draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+
+      %\node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut What to Optimize?};
+
+      %\node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,5.6) {};
+      %\node[anchor=north] at (utility.north) {\strut Maximizing Utility};
+      %\node at (3.25,5.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
+
+      %\node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,5.6) {};
+      %\node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
+      %\node at (8.75,5.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
+
+      %\node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut How to Optimize?};
+
+      %\node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,1.6) {};
+      %\node[anchor=north] at (lazysp.north) {\strut Lazy Pathfinding};
+      %\node[draw=black!30,fill=white,inner sep=5pt] at (3.25,1.4) {
+         %\includegraphics[width=3.8cm]{build/lazysp-icon}};
+
+      %\node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,1.6) {};
+      %\node[anchor=north] at (ibid.north) {\strut Dynamic Pathfinding};
+      %\node[draw=black!30,inner sep=0pt] at (8.75,1.4) {
+         %\includegraphics[width=2.9cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+
+      %\only<2>
+      %{
+         %\draw[ultra thick] (utility.north west) rectangle (utility.south east);
+      %}
+      
+   %\end{tikzpicture}
+%\end{frame}
 
 %\begin{frame}
 %   \frametitle{Maximizing Utility in Motion Planning}

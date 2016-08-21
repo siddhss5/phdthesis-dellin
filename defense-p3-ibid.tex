@@ -1,5 +1,100 @@
 \begin{frame}
-   \frametitle{Lazy Shortest Path: Best-First Search over Paths}
+   \only<1-6>{\frametitle{Talk Outline}}
+   \only<7->{\frametitle{Lazily Evaluated Marginal Utility Roadmaps}}
+   \begin{tikzpicture}[font=\small]
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
+
+   % START LEMUR
+   \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=9.7cm,minimum height=5.8cm,anchor=north] (lemur) at (6,6.0) {};
+   \only<1-6>{\node[anchor=north west] at (lemur.north west) {Planner};}
+   \only<7->{\node[anchor=north west] at (lemur.north west) {LEMUR};}
+
+   % left side
+
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=2.5cm,inner sep=0pt] at (3.3,4.5) {};
+   \node at (3.3,4.5) {\includegraphics[width=1.8cm]{build/roadmap-stack-short}};
+   \draw[->] (3.3,3.75) -- (3.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$G$};
+
+   % right side
+
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt] at (7.8,4.5) {
+      \qquad\qquad\; $ \arraycolsep=1.5pt \begin{array}{rcc}
+         w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+         w(e) = & & (1\!-\!\lambda) \, x(e)
+      \end{array} $
+   };
+   %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
+   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+
+   \draw[->] (7.3,3.75) -- (7.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w$};
+   \draw[->] (8.2,3.75) -- (8.2,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w_{\ms{est}}$};
+
+   % START LAZYSP
+   \node[fill=blue!10,draw=blue!20,rounded corners,minimum width=7cm,minimum height=2.5cm,anchor=north] (lazysp) at (6,3.0) {};
+   \only<2->{\node[anchor=north west] at (lazysp.north west) {\strut LazySP};}
+
+   \only<3->{
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (dynsp) at (4.3,1.7) {DynamicSP};
+   }
+
+   \only<4->{
+      \draw[->] (dynsp.south) -- (4.3,0.8) -- (7.7,0.8) -- (7.7,1.2);
+      \node[fill=blue!10,align=center,inner sep=2pt] at (6,0.8)
+         {$\pi_{\ms{candidate}}$};
+   }
+   
+   \only<5->{
+      \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (selector) at (7.7,1.7) {Edge Selector\\(e.g. Alternate)};
+   }
+   
+   \only<6->{
+      \draw[->] (selector.north) -- (7.7,2.6) -- (4.3,2.6) -- (dynsp.north);
+      \node[fill=blue!10,align=center,inner sep=2pt] at (6,2.6)
+         {$E_{\ms{changed}}$};
+   }
+
+   % END LAZYSP
+
+   % END LEMUR
+
+   % top left side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=1.8cm,inner sep=0pt] at (3.3,7.0) {};
+   \node[fill=white,inner sep=0pt] at (3.3,7.0) {\includegraphics[width=1.4cm]{build/c-space-simple}};
+   \node[font=\scriptsize] at (2.95,6.7) {$\mathcal{C}_{\mbox{\tiny free}}$};
+   \draw[->] (3.3,6.25) -- (3.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\mathcal{C}$};
+
+   %\node[inner sep=4pt] (cspace) at (3.3,7.0) {$\mathcal{C}$-Space};
+   %\draw[->] (cspace) -- (3.3,5.25);
+   
+   % top right side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm] at (7.9,7)
+   {$\arraycolsep=1.5pt \begin{array}{cl}
+      x(\xi)\!: & \mbox{execution cost} \;(\mathcal{C}_{\ms{free}}) \\
+      \hat{x}(\xi)\!: & \mbox{execution cost estimate} \\
+      \grave{p}(\xi)\!: & \mbox{planning cost estimate}
+   \end{array}$};
+   
+   \draw[->] (7.3,6.25) -- (7.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $x$};
+   \draw[->] (7.9,6.25) -- (7.9,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{x}$};
+   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\grave{p}$};
+
+   % left side
+   \draw[->] (0.5,2.0) -- (2.5,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (0.5,2.0)
+      {$q_{\ms{start}}$\\$q_{\ms{dest}}$};
+
+   % right side
+   \draw[->] (9.5,2.0) -- (11.3,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (11.5,2.0)
+      {$\xi$};
+
+   \end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}
+   \frametitle{Lazy SP: The Inner DynamicSP Search}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
@@ -79,7 +174,7 @@
          \Loop
             \vspace{0.05cm}
             \State $p_{\ms{candidate}} \leftarrow
-               \mbox{\sc InnerSP}(G, v_s, v_g, w_{\ms{lazy}})$ %\Comment Compute the shortest path with lazy edge weights
+               \mbox{\sc DynamicSP}(G, v_s, v_g, w_{\ms{lazy}})$ %\Comment Compute the shortest path with lazy edge weights
             \vspace{0.1cm}
             %\vspace{0.2cm}
             %\If {$p_{\ms{candidate}} \subseteq E_{\ms{eval}}$} \Comment If path is fully evaluated,
@@ -98,41 +193,31 @@
       }\end{minipage}};
 
 
-      \node[align=center,fill=black!5,rounded corners,minimum width=2.5cm] at (3,1.75)
-      {\begin{minipage}{3.5cm}
-         For motion planning,
-         \vspace{-0.2cm}
-         \[
-            {\hat x}(e) = ||e||
-         \]
-         \vspace{-0.4cm}
-         \[
-            x(e) = \left\{ \arraycolsep=2pt \begin{array}{cl}
+      \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.8cm,inner sep=2pt,anchor=north] at (3.0,3.0) {
+         Motion Planning:\\
+         \vspace{-0.3cm}\\
+         $ \arraycolsep=1.5pt \def\arraystretch{1.5} \begin{array}{rl}
+            {\hat x}(e) = & ||e|| \\
+            x(e) = & \left\{ \arraycolsep=2pt \def\arraystretch{1.0} \begin{array}{cl}
                ||e|| & e \in C_{\ms{free}} \\
                \infty & \mbox{otherwise}
-               \end{array} \right.
-         \]
-         \vspace{-0.2cm}
-         \[
-            h_x(v_a, v_b) = || v_a - v_b ||
-         \]
-      \end{minipage}};
+               \end{array} \right. \\
+            h_x(v) = & || v - v_g ||
+         \end{array} $
+      };
       
-      \node[align=center,fill=black!5,rounded corners,minimum width=5cm] at (9.0,1.75)
-      {\begin{minipage}{4.5cm}
-         For LEMUR:
-         \vspace{-0.2cm}
-         \[
-            w_{\ms{est}}(e) = \lambda_U \, \grave{p}(e) + (1 - \lambda_U) \, \hat{x}(e)
-         \]
-         \vspace{-0.5cm}
-         \[
-            w(e) = (1 - \lambda_U) \, x(e)
-         \]
-         \[
-            h_w(q_a, q_b) = (1 - \lambda_U) \, h_x(v_a, v_b)
-         \]
-      \end{minipage}};
+
+      \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.8cm,inner sep=2pt,anchor=north] at (8.6,3.0) {
+         Maximizing Utility:\\
+         \vspace{-0.3cm}\\
+         \qquad\qquad\; $ \arraycolsep=1.5pt \def\arraystretch{1.2} \begin{array}{rcl}
+            w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+            w(e) = & & (1\!-\!\lambda) \, x(e) \\
+            h_w(v) = & & (1\!-\!\lambda) \, h_x(v)
+         \end{array} $
+      };
+      \node[fill=black!3,draw=blue!20,inner sep=2pt] at (6.35,1.85) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+         
       
    %Augment problem with inexpensive edge heuristic. (Show augmentation.)
    %Each edge has binary state.
@@ -144,7 +229,7 @@
 \end{frame}
 
 \begin{frame}
-   \frametitle{LazySP Problem: Dynamic SP Algorithms}
+   \frametitle{LazySP: DynamicSP Algorithms}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
@@ -152,7 +237,7 @@
 
       %\node[draw=black!30,inner sep=0pt] at (3.5,5.0) {\includegraphics[width=2.5cm]{figs/herbarm-traj2-t031.png}};
       \node[draw=black,inner sep=0pt,thick,anchor=north] at (5.15,7.325) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
-      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda_U) \, h_x$};
+      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda) \, h_x$};
 
    \end{tikzpicture}
 \end{frame}
@@ -160,36 +245,88 @@
 \begin{frame}
    \frametitle{Talk Outline}
    \begin{tikzpicture}[font=\small]
-      \tikzset{>=latex} % arrow heads
-      \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
+   \tikzset{>=latex} % arrow heads
 
-      \node[fill=blue!15,minimum width=11cm] at (6,7.5) {\strut What to Optimize?};
+   % START LEMUR
+   \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=9.7cm,minimum height=5.8cm,anchor=north] (lemur) at (6,6.0) {};
+   \node[anchor=north west] at (lemur.north west) {LEMUR};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (utility) at (3.25,5.6) {};
-      \node[anchor=north] at (utility.north) {\strut Maximizing Utility};
-      \node at (3.25,5.35) {\includegraphics[width=2.5cm]{build/pvx-utility-anytime}};
+   % left side
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (family) at (8.75,5.6) {};
-      \node[anchor=north] at (family.north) {\strut Utility in C-Space Familes};
-      \node at (8.75,5.4) {\includegraphics[width=3.0cm]{build/multiple-sets}};
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=2.5cm,inner sep=0pt] at (3.3,4.5) {};
+   \node at (3.3,4.5) {\includegraphics[width=1.8cm]{build/roadmap-stack-short}};
+   \draw[->] (3.3,3.75) -- (3.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$G$};
 
-      \node[fill=blue!15,minimum width=11cm] at (6,3.5) {\strut How to Optimize?};
+   % right side
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (lazysp) at (3.25,1.6) {};
-      \node[anchor=north] at (lazysp.north) {\strut Lazy Pathfinding};
-      \node[draw=black!30,fill=white,inner sep=5pt] at (3.25,1.4) {
-         \includegraphics[width=3.8cm]{build/lazysp-icon}};
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt] at (7.8,4.5) {
+      \qquad\qquad\; $ \arraycolsep=1.5pt \begin{array}{rcc}
+         w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+         w(e) = & & (1\!-\!\lambda) \, x(e)
+      \end{array} $
+   };
+   %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
+   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
 
-      \node[fill=black!3,minimum width=5cm,minimum height=3cm] (ibid) at (8.75,1.6) {};
-      \node[anchor=north] at (ibid.north) {\strut Dynamic Pathfinding};
-      \node[draw=black!30,inner sep=0pt] at (8.75,1.4) {
-         \includegraphics[width=2.9cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+   \draw[->] (7.3,3.75) -- (7.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w$};
+   \draw[->] (8.2,3.75) -- (8.2,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w_{\ms{est}}$};
 
-      \only<2>
-      {
-         \draw[ultra thick] (ibid.north east) rectangle (ibid.south west);
-      }
-      
+   % START LAZYSP
+   \node[fill=blue!10,draw=blue!20,rounded corners,minimum width=7cm,minimum height=2.5cm,anchor=north] (lazysp) at (6,3.0) {};
+   \node[anchor=north west] at (lazysp.north west) {\strut LazySP};
+
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (dynsp) at (4.3,1.7) {DynamicSP};
+
+   \draw[->] (dynsp.south) -- (4.3,0.8) -- (7.7,0.8) -- (7.7,1.2);
+   \node[fill=blue!10,align=center,inner sep=2pt] at (6,0.8)
+      {$\pi_{\ms{candidate}}$};
+
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (selector) at (7.7,1.7) {Edge Selector\\(e.g. Alternate)};
+
+   \draw[->] (selector.north) -- (7.7,2.6) -- (4.3,2.6) -- (dynsp.north);
+   \node[fill=blue!10,align=center,inner sep=2pt] at (6,2.6)
+      {$E_{\ms{changed}}$};
+
+   % END LAZYSP
+
+   % END LEMUR
+
+   % top left side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,minimum width=1.8cm,inner sep=0pt] at (3.3,7.0) {};
+   \node[fill=white,inner sep=0pt] at (3.3,7.0) {\includegraphics[width=1.4cm]{build/c-space-simple}};
+   \node[font=\scriptsize] at (2.95,6.7) {$\mathcal{C}_{\mbox{\tiny free}}$};
+   \draw[->] (3.3,6.25) -- (3.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\mathcal{C}$};
+
+   %\node[inner sep=4pt] (cspace) at (3.3,7.0) {$\mathcal{C}$-Space};
+   %\draw[->] (cspace) -- (3.3,5.25);
+   
+   % top right side
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm] at (7.9,7)
+   {$\arraycolsep=1.5pt \begin{array}{cl}
+      x(\xi)\!: & \mbox{execution cost} \;(\mathcal{C}_{\ms{free}}) \\
+      \hat{x}(\xi)\!: & \mbox{execution cost estimate} \\
+      \grave{p}(\xi)\!: & \mbox{planning cost estimate}
+   \end{array}$};
+   
+   \draw[->] (7.3,6.25) -- (7.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $x$};
+   \draw[->] (7.9,6.25) -- (7.9,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{x}$};
+   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\grave{p}$};
+
+   % left side
+   \draw[->] (0.5,2.0) -- (2.5,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (0.5,2.0)
+      {$q_{\ms{start}}$\\$q_{\ms{dest}}$};
+
+   % right side
+   \draw[->] (9.5,2.0) -- (11.3,2.0);
+   \node[fill=white,align=center,inner sep=2pt] at (11.5,2.0)
+      {$\xi$};
+
+   \only<2->{
+      \draw[thick,rounded corners] (dynsp.south west) rectangle (dynsp.north east);
+   }
+
    \end{tikzpicture}
 \end{frame}
 
@@ -1224,7 +1361,7 @@
 
       %\node[draw=black,inner sep=0pt,thick] at (5.35,6.235) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
       \node[draw=black,inner sep=0pt,thick,anchor=north] at (5.15,7.325) {\includegraphics[width=2.0cm]{figs/herbarm-traj2-t031.png}};
-      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda_U) \, h_x$};
+      \node[draw=black,fill=black!2,anchor=north] at (7.8,7.325) {\strut $h_w = (1 - \lambda) \, h_x$};
 
    \end{tikzpicture}
 \end{frame}
