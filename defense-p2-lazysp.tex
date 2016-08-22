@@ -2516,24 +2516,29 @@
 
       % first thing: example
 
-      \only<5-6>{
+      \only<5-7>{
          \node[fill=blue!3,draw=blue!6,rounded corners,minimum width=9.6cm,minimum height=3.4cm] at (6,2.1) {};
-         \node[fill=white,draw=blue!6,rounded corners] (gap33left) at (3,2.1) {\includegraphics{build/lazysp-selscores/gap-33-nograph}};
+         \only<5-6>{
+            \node[fill=white,draw=blue!6,rounded corners] (gap33left) at (3,2.1) {\includegraphics{build/lazysp-selscores/gap-33-nograph}};
+         }
          \only<6>{
             \node[fill=white,draw=blue!6,rounded corners] (gap33right) at (9,2.1) {\includegraphics{build/lazysp-selscores/gap-33}};
             \draw[->,draw=black] (gap33left) -- (gap33right);
          }
+         \only<7>{
+            \node[fill=white,draw=blue!6,rounded corners] (gap330right) at (9,2.1) {\includegraphics{build/lazysp-selscores/gap3-30}};
+         }
       }
 
       % left side (weight function sampling)
-      \only<7->{
+      \only<8->{
       \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=5.5cm,minimum height=4cm] (leftside) at (3,2.1) {};
       \node[anchor=north] at (leftside.north) {Weight Function Sampling};
       \node at (3,1.9) {\includegraphics[width=4.7cm]{build/lazysp-weightfunc}};
       }
 
       % right side (partition sampling)
-      \only<8->{
+      \only<9->{
       \node[fill=blue!5,draw=blue!10,rounded corners,minimum width=5.5cm,minimum height=4cm] (rightside) at (9,2.1) {};
       \node[anchor=north] at (rightside.north) {Partition Functions};
       \node[fill=blue!2,draw=blue!10,rounded corners] at (9,1.9) {\begin{minipage}{5.1cm}

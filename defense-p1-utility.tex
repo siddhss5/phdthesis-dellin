@@ -216,48 +216,56 @@
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \only<2->{
+      \only<2>{
+         \node[fill=blue!10,draw=blue!20,rounded corners,align=center] at (6,5)
+         {
+            Central assumption: planning cost is dominated by\\
+            \emph{validating paths} (i.e. evaluating their cost).
+         };
+      }
+
+      \only<3->{
       \node[fill=blue!5,rounded corners,anchor=north,minimum width=9.5cm,minimum height=3.6cm] (alg) at (6,7.75) {};
       \begin{scope} % highlights
          \clip[rounded corners] (alg.north west) rectangle (alg.south east);
-         \only<2>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.5cm,below=0cm of alg.north] {};} % pinit
-         \only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.4cm of alg.north] {};} % iters
-         \only<4,10,14>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.8cm of alg.north] {};} % pathset
-         \only<5>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.9cm,below=1.2cm of alg.north] {};} % estimators
-         \only<6,11,15>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.0cm of alg.north] {};} % argmin
-         \only<7,16>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.35cm of alg.north] {};} % return
-         \only<8,12>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.75cm of alg.north] {};} % eval
-         \only<9,13>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=3.15cm of alg.north] {};} % updatep
+         \only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.5cm,below=0cm of alg.north] {};} % pinit
+         \only<4>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.4cm of alg.north] {};} % iters
+         \only<5,11,15>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.8cm of alg.north] {};} % pathset
+         \only<6>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.9cm,below=1.2cm of alg.north] {};} % estimators
+         \only<7,12,16>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.0cm of alg.north] {};} % argmin
+         \only<8,17>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.35cm of alg.north] {};} % return
+         \only<9,13>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.75cm of alg.north] {};} % eval
+         \only<10,14>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=3.15cm of alg.north] {};} % updatep
       \end{scope}
       \node[left=0.1cm of alg.north,anchor=north] {\begin{minipage}{9cm}
          \begin{algorithmic}[1]
          \State $p_0 \leftarrow 0$
             \Comment planning cost incurred so far
-         \only<3->{
+         \only<4->{
          \For {iteration $i \in 1, 2, \dots$}
-            \only<4->{
+            \only<5->{
             \State $\Xi_i \leftarrow$ set of paths to consider at iteration $i$
             }%
-            \only<5->{
+            \only<6->{
             \State $\hat{x}_i : \Xi_i \rightarrow \mathbb{R}^+$
                \Comment execution cost estimator
             \State $\hat{p}_i : \Xi_i \rightarrow \mathbb{R}^+$
                \Comment additional planning cost estimator%
             }%
-            \only<6->{
+            \only<7->{
             \State $\xi_i = \argmax_{\xi \in \Xi_i}
                U\!\left( \; p_{i-1} \! + \! \hat{p}_i(\xi), \; \hat{x}_i(\xi) \; \right)$
                \label{line:outline-argmax}
             }%
-            \only<7->{
+            \only<8->{
             \State \Return $\xi_i$
                if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi) = 0$
             }%
-            \only<8->{
+            \only<9->{
             \State evaluate $\xi_i$
                \Comment incurs planning cost $\Delta p_i$
             }%
-            \only<9->{
+            \only<10->{
             \State $p_i \leftarrow p_{i-1} + \Delta p_i$
             }%
          \EndFor
@@ -267,25 +275,25 @@
       }
 
       \only<1-3>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,start}};}
-      \only<4-5>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesa}};}
-      \only<6-7>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatea}};}
-      \only<8-9>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidateaevaled}};}
-      \only<10>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesb}};}
-      \only<11>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidateb}};}
-      \only<12-13>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatebevaled}};}
-      \only<14>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesfinal}};}
-      \only<15->{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatefinal}};}
+      \only<5-6>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesa}};}
+      \only<7-8>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatea}};}
+      \only<9-10>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidateaevaled}};}
+      \only<11>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesb}};}
+      \only<12>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidateb}};}
+      \only<13-14>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatebevaled}};}
+      \only<15>{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatesfinal}};}
+      \only<16->{\node at (3.5,2.0) {\includegraphics{build/cspace-utility-intro,candidatefinal}};}
 
-      \only<2>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,start}};}
-      \only<3-5>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,iterlabel}};}
-      \only<6-7>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatea}};}
-      \only<8>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateadelta}};}
-      \only<9-10>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateaeval}};}
-      \only<11>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateb}};}
-      \only<12>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatebdelta}};}
-      \only<13>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatebeval}};}
-      \only<14-15>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,prefinal}};}
-      \only<16>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,final}};}
+      \only<3>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,start}};}
+      \only<4-6>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,iterlabel}};}
+      \only<7-8>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatea}};}
+      \only<9>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateadelta}};}
+      \only<10-11>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateaeval}};}
+      \only<12>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidateb}};}
+      \only<13>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatebdelta}};}
+      \only<14>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,candidatebeval}};}
+      \only<15-16>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,prefinal}};}
+      \only<17>{\node at (9.0,2.0) {\includegraphics{build/p-estimates-build,final}};}
 
    \end{tikzpicture}
 \end{frame}
@@ -434,7 +442,7 @@
          %\only<2>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.5cm,below=0cm of alg.north] {};} % pinit
          %\only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.4cm of alg.north] {};} % iters
          \only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=0.8cm of alg.north] {};} % pathset
-         \only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.9cm,below=1.2cm of alg.north] {};} % estimators
+         \only<3>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.9cm,below=1.10cm of alg.north] {};} % estimators
          \only<4,8->{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.0cm of alg.north] {};} % argmin
          %\only<7,16>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.35cm of alg.north] {};} % return
          \only<5-7>{\node[fill=blue!15,anchor=north,minimum width=9.5cm,minimum height=0.45cm,below=2.75cm of alg.north] {};} % eval
@@ -466,7 +474,7 @@
       \end{minipage}};
 
       \only<2->{
-         \node[fill=black!3,draw=black!6,rounded corners] at (3.0,3.0)
+         \node[fill=black!5,draw=black!20,rounded corners] at (3.0,3.0)
          {\begin{minipage}{4.9cm}
             We consider \emph{linear utility functions}:
             \vspace{-0.2cm}
@@ -476,7 +484,7 @@
          \end{minipage}};
       }
       \only<10->{
-         \node[fill=black!3,draw=black!6,rounded corners] at (8.7,3.0) {\begin{minipage}{5.6cm}
+         \node[fill=black!5,draw=black!20,rounded corners] at (8.7,3.0) {\begin{minipage}{5.6cm}
             We consider \emph{additive estimators}:
             \vspace{-0.2cm}
             \[
@@ -501,7 +509,7 @@
       \only<11->{
          \draw[->,very thick] (5.65,1.9) -- (5.65,1.4);
       
-         \node[fill=black!3,draw=black!6,rounded corners] at (5.8,0.8) {\begin{minipage}{5cm}
+         \node[fill=black!5,draw=black!20,rounded corners] at (5.8,0.8) {\begin{minipage}{5cm}
             Shortest path problem with:
             \vspace{-0.2cm}
             \[
@@ -545,7 +553,7 @@ lam99 0.7430251334600001 3.0377397256199994
          \protect\tikz{\protect\node[fill=blue!20,draw=black]{};}\;edge evaluation
       };
 
-      \node[fill=black!3,draw=black!6,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,5.5) {};
+      \node[fill=black!5,draw=black!20,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,5.5) {};
 
       \node at ( 2.5,5.5) {
          \includegraphics[width=1.7cm]{figs/herbbin/step0cropped.png}
@@ -588,7 +596,7 @@ lam99 0.7430251334600001 3.0377397256199994
       \end{axis}
       \end{scope}
 
-      \node[fill=black!3,draw=black!6,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,2.2) {};
+      \node[fill=black!5,draw=black!20,rounded corners,minimum width=11cm,minimum height=3cm] at (6.0,2.2) {};
 
       \node at ( 2.5,2.2) {
          \includegraphics[width=3.5cm]{videos/workcell-cropped.png}};
