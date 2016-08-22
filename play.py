@@ -37,17 +37,19 @@ for line in subprocess.check_output(['xwininfo','-root']).split('\n'):
 screen_width_px  = int(d['Width'])
 screen_height_px = int(d['Height'])
 
-# get size/offset of window (assume window is centered)
+# get size/offset of window within screen (assume window is centered)
 window_width_px = screen_width_px
 window_height_px = screen_height_px
 window_left_px = 0
 window_top_px = 0
 if screen_width_px * slide_height_cm > screen_height_px * slide_width_cm:
+   # there are black bars on top/bottom
    window_width_px = int(round(screen_height_px * slide_width_cm / slide_height_cm))
    window_left_px = int(round(0.5 * (screen_width_px - window_width_px)))
 else:
-   window_height_px = int(round(screen_width_px * slide_height_cm / slide_height_cm))
-   window_left_px = int(round(0.5 * (screen_height_px - window_height_px)))
+   # there are black bars on left/right
+   window_height_px = int(round(screen_width_px * slide_height_cm / slide_width_cm))
+   window_top_px = int(round(0.5 * (screen_height_px - window_height_px)))
 
 # get video location
 video_width_px = int(round(window_width_px * video_width_frac))

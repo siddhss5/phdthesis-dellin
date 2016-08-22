@@ -133,13 +133,15 @@
    \node[inner sep=0pt] (vizall-herbbin) at (3,6.5) {%
       \href{\tikzvidtarget{vizall-herbbin}}{%
       \includegraphics[width=5.8cm]{videos/vizall-herbbin.png}}};
-   \tikzvidplayat{vizall-herbbin}{vizall-herbbin}{videos/vizall-herbbin.mp4}{}
+   \tikzvidplayat{vizall-herbbin}{vizall-herbbin}{videos/vizall-herbbin.mp4}{-loop 0}
 
    \node[inner sep=0pt] (vizall-workcell) at (9,6.5) {%
       \href{\tikzvidtarget{vizall-workcell}}{%
       \includegraphics[width=5.8cm]{videos/vizall-workcell.png}}};
-   \tikzvidplayat{vizall-workcell}{vizall-workcell}{videos/vizall-workcell.mp4}{}
-   
+   \tikzvidplayat{vizall-workcell}{vizall-workcell}{videos/vizall-workcell.mp4}{-loop 0}
+
+   \tikzvidtargetboth{vizall-both}{vizall-herbbin}{vizall-workcell}
+
    \node[fill=black!2,draw=black!5,rounded corners,minimum width=5.3cm] at (6,3.5)
    {\begin{minipage}{9.0cm}
       Comparing utility across planners:
@@ -151,7 +153,11 @@
       \end{itemize}
    \end{minipage}};
 
-   \end{tikzpicture}
+   \end{tikzpicture}%
+   \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south west,fill=black!10,inner sep=0pt] at (current page.south west)
+      {\href{\tikzvidtarget{vizall-both}}{\tikz{\node[minimum width=2cm,minimum height=0.3cm]{}}}};
+   \end{tikzpicture}%
 \end{frame}
    
 %\begin{frame}

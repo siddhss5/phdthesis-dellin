@@ -1353,7 +1353,11 @@
          \includegraphics[width=11cm]{videos/incbi-roadne.png}}};
       \tikzvidplayat{incbi-roadne}{vidnode}{videos/incbi-roadne.mp4}{}
 
-   \end{tikzpicture}
+   \end{tikzpicture}%
+   \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south west,fill=black!10,inner sep=0pt] at (current page.south west)
+      {\href{\tikzvidtarget{incbi-roadne}}{\tikz{\node[minimum width=2cm,minimum height=0.3cm]{}}}};
+   \end{tikzpicture}%
 \end{frame}
 
 \begin{frame}

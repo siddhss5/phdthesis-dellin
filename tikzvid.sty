@@ -6,6 +6,14 @@
 % \tikzvidtarget{myid}
 \newcommand{\tikzvidtarget}[1] {run:\jobname-#1.tikzvid-sh}
 
+\newcommand{\tikzvidtargetboth}[3] {
+   \openout\tikzvidfile=\jobname-#1.tikzvid-sh
+   \write\tikzvidfile{pwd}
+   \write\tikzvidfile{sh `dirname $0`/\jobname-#2.tikzvid-sh &}
+   \write\tikzvidfile{sh `dirname $0`/\jobname-#3.tikzvid-sh &}
+   \closeout\tikzvidfile
+}
+
 % \tikzvidplayat{myid}{mynode}{relative/path/to/movie.mp4}{args}
 \newcommand{\tikzvidplayat}[4] {
    \openout\tikzvidfile=\jobname-#1.tikzvid-sh
