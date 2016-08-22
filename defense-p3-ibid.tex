@@ -20,7 +20,7 @@
 
    \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt] at (7.8,4.5) {
       \qquad\qquad\; $ \arraycolsep=1.5pt \begin{array}{rcc}
-         w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+         w_{\ms{est}}(e) = & \lambda \, \hat{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
          w(e) = & & (1\!-\!\lambda) \, x(e)
       \end{array} $
    };
@@ -72,12 +72,12 @@
    {$\arraycolsep=1.5pt \begin{array}{cl}
       x(\xi)\!: & \mbox{execution cost} \;(\mathcal{C}_{\ms{free}}) \\
       \hat{x}(\xi)\!: & \mbox{execution cost estimate} \\
-      \grave{p}(\xi)\!: & \mbox{planning cost estimate}
+      \hat{p}(\xi)\!: & \mbox{planning cost estimate}
    \end{array}$};
    
    \draw[->] (7.3,6.25) -- (7.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $x$};
    \draw[->] (7.9,6.25) -- (7.9,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{x}$};
-   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\grave{p}$};
+   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{p}$};
 
    % left side
    \draw[->] (0.5,2.0) -- (2.5,2.0);
@@ -215,7 +215,7 @@
          Maximizing Utility:\\
          \vspace{-0.3cm}\\
          \qquad\qquad\; $ \arraycolsep=1.5pt \def\arraystretch{1.2} \begin{array}{rcl}
-            w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+            w_{\ms{est}}(e) = & \lambda \, \hat{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
             w(e) = & & (1\!-\!\lambda) \, x(e) \\
             h_w(v) = & & (1\!-\!\lambda) \, h_x(v)
          \end{array} $
@@ -266,7 +266,7 @@
 
    \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.5cm,inner sep=0pt] at (7.8,4.5) {
       \qquad\qquad\; $ \arraycolsep=1.5pt \begin{array}{rcc}
-         w_{\ms{est}}(e) = & \lambda \, \grave{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
+         w_{\ms{est}}(e) = & \lambda \, \hat{p}(e) \; + & (1\!-\!\lambda) \, \hat{x}(e) \\
          w(e) = & & (1\!-\!\lambda) \, x(e)
       \end{array} $
    };
@@ -310,12 +310,12 @@
    {$\arraycolsep=1.5pt \begin{array}{cl}
       x(\xi)\!: & \mbox{execution cost} \;(\mathcal{C}_{\ms{free}}) \\
       \hat{x}(\xi)\!: & \mbox{execution cost estimate} \\
-      \grave{p}(\xi)\!: & \mbox{planning cost estimate}
+      \hat{p}(\xi)\!: & \mbox{planning cost estimate}
    \end{array}$};
    
    \draw[->] (7.3,6.25) -- (7.3,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $x$};
    \draw[->] (7.9,6.25) -- (7.9,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{x}$};
-   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\grave{p}$};
+   \draw[->] (8.5,6.25) -- (8.5,5.25) node [pos=0.55,fill=blue!5,align=center,inner sep=0pt] {\strut $\hat{p}$};
 
    % left side
    \draw[->] (0.5,2.0) -- (2.5,2.0);

@@ -259,7 +259,7 @@
             }%
             \only<8->{
             \State \Return $\xi_i$
-               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi) = 0$
+               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi_i) = 0$
             }%
             \only<9->{
             \State evaluate $\xi_i$
@@ -330,7 +330,7 @@
                U\!\left( \; p_{i-1} \! + \! \hat{p}_i(\xi), \; \hat{x}_i(\xi) \; \right)$
                \label{line:outline-argmax}
             \State \Return $\xi_i$
-               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi) = 0$
+               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi_i) = 0$
             \State evaluate $\xi_i$
                \Comment incurs planning cost $\Delta p_i$
             \State $p_i \leftarrow p_{i-1} + \Delta p_i$
@@ -393,7 +393,7 @@
                U\!\left( \; p_{i-1} \! + \! \hat{p}_i(\xi), \; \hat{x}_i(\xi) \; \right)$
                \label{line:outline-argmax}
             \State \Return $\xi_i$
-               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi) = 0$
+               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi_i) = 0$
             \State evaluate $\xi_i$
                \Comment incurs planning cost $\Delta p_i$
             \State $p_i \leftarrow p_{i-1} + \Delta p_i$
@@ -465,7 +465,7 @@
                U\!\left( \; \hat{p}_i(\xi), \; \hat{x}_i(\xi) \; \right)$
                \label{line:outline-argmax}}%
             \State \Return $\xi_i$
-               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi) = 0$
+               if $\xi_i$ fully evaluated, i.e. $\hat{p}(\xi_i) = 0$
             \State evaluate $\xi_i$
                \Comment incurs planning cost $\Delta p_i$
             \State $p_i \leftarrow p_{i-1} + \Delta p_i$
@@ -492,7 +492,7 @@
             \]
             \vspace{-0.5cm}
             \[
-               \grave{p}_i(\xi) = \sum_{e \in \xi} \hat{p}_i(e)
+               \hat{p}_i(\xi) = \sum_{e \in \xi} \hat{p}_i(e)
                \;\;\mbox{and}\;\;
                \hat{x}_i(\xi) = \sum_{e \in \xi} \hat{x}_i(e)
             \]
@@ -513,7 +513,7 @@
             Shortest path problem with:
             \vspace{-0.2cm}
             \[
-               w_i(e) = \lambda_U \, \hat{p}_i(e) + (1 - \lambda_U) \, \hat{x}_i(e)
+               w_i(e) = \lambda \, \hat{p}_i(e) + (1 - \lambda) \, \hat{x}_i(e)
             \]
          \end{minipage}};
       }
