@@ -217,19 +217,31 @@
       %   \includegraphics[width=4cm]{videos/workcell-cropped.png}}};
       %\tikzvidplayat{incbi-roadne}{vidnode}{videos/workcell-cropped.mp4}{}
 
-      \node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0}};
+      \only<1>{\node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0-build,a}};}
+      \only<2>{\node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0-build,b}};}
+      \only<3>{\node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0-build,c}};}
+      \only<4>{\node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0-build,d}};}
+      \only<5>{\node at (6,4) {\includegraphics[width=11cm]{build/lemur-sq/herbbin0-build,e}};}
 
+      \only<2->{
       \node[fill=red,draw=black,inner sep=4pt] (rrtconnect) at (6.7,5.3) {};
       \node[anchor=west,right=0cm of rrtconnect.east] {\strut RRT Connect + Shortcutting};
+      }
 
+      \only<3->{
       \node[fill=green,draw=black,inner sep=4pt] (bitstar) at (6.7,4.9) {};
       \node[anchor=west,right=0cm of bitstar.east] {\strut Batch Informed Trees (BIT*)};
+      }
 
+      \only<4->{
       \node[fill=cyan,draw=black,inner sep=4pt] (lazyarastar) at (6.7,4.5) {};
       \node[anchor=west,right=0cm of lazyarastar.east] {\strut Lazy ARA*};
+      }
 
+      \only<5->{
       \node[fill=black!80,draw=black,inner sep=4pt] (lemur) at (6.7,4.1) {};
       \node[anchor=west,right=0cm of lemur.east] {\strut LEMUR};
+      }
 
       \node[draw=black!40,rounded corners,inner sep=2pt,anchor=north,fill=white] at ( 9,7.9) {
          \includegraphics[width=1.4cm]{figs/herbbin/step0cropped.png}

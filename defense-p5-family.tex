@@ -129,21 +129,27 @@
       %   \includegraphics[width=2.7cm]{figs/workcell/cropped-config-f.png}
       %   \;\includegraphics[width=2.7cm]{figs/workcell/cropped-config-g.png}};
 
-      \node[inner sep=0pt] (herbbin-cropped) at (3.5,6.0) {%
+      \node[inner sep=0pt] (herbbin-cropped) at (3.5,6.2) {%
          \href{\tikzvidtarget{herbbin-cropped}}{%
          \includegraphics[width=3.5cm]{videos/herbbin-cropped.png}}};
       \tikzvidplayat{herbbin-cropped}{herbbin-cropped}{videos/herbbin-cropped.mp4}{-loop 0}
 
-      \node[inner sep=0pt] (workcell-cropped) at (8.5,6.0) {%
+      \node[inner sep=0pt] (workcell-cropped) at (8.5,6.2) {%
          \href{\tikzvidtarget{workcell-cropped}}{%
          \includegraphics[width=4cm]{videos/workcell-cropped.png}}};
       \tikzvidplayat{workcell-cropped}{workcell-cropped}{videos/workcell-cropped.mp4}{-loop 0}
 
       \tikzvidtargetboth{both-cropped}{herbbin-cropped}{workcell-cropped}
 
-      \node at (3.2,2.2) {\includegraphics[height=4cm]{build/multistep-prescribed/herbbinnom-g1ll-lemuronly}};
+      \node at (3.1,2.4) {\includegraphics[height=3.7cm]{build/multistep-prescribed/herbbinnom-g1ll-lemuronly}};
 
-      \node at (8.2,2.2) {\includegraphics[height=4cm]{build/multistep-prescribed/workcell-g1ll-lemuronly}};
+      \node at (8.2,2.4) {\includegraphics[height=3.7cm]{build/multistep-prescribed/workcell-g1ll-lemuronly}};\
+
+      \node[fill=black,draw=black,inner sep=4pt] (binary) at (6.4,0.3) {};
+      \node[anchor=west,right=0cm of binary.east,font=\footnotesize] {\strut LEMUR w/ binary cost};
+
+      \node[fill=blue,draw=black,inner sep=4pt] (family) at (2.3,0.3) {};
+      \node[anchor=west,right=0cm of family.east,font=\footnotesize] {\strut LEMUR w/ family cost};
       
    \end{tikzpicture}%
    \begin{tikzpicture}[remember picture,overlay]

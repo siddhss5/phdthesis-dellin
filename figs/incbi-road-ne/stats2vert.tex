@@ -3,6 +3,12 @@
 \usetikzlibrary{patterns}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
+
+\definecolor{colora}{rgb}{0.0,0.6,0.0}
+\definecolor{colorb}{rgb}{0.1,0.7,0.1}
+\definecolor{colorc}{rgb}{0.2,0.8,0.2}
+\definecolor{colord}{rgb}{0.3,0.9,0.3}
+
 \begin{document}%
 \begin{tikzpicture}[font=\small]
 
@@ -132,13 +138,13 @@ c1wincbi 28027.845833333333 1074.324688281415
    %symbolic y coords={E, F, R, A, B, W, P},
    xticklabels from table={\datainit}{barname},
    xtick=data,
-   %xtick pos=left,
+   xtick pos=left,
    ymajorgrids,
    %xmajorticks=false,
    ticklabel style={font=\footnotesize},
    xticklabel style={rotate=20},
    xticklabel shift=-0.1cm,
-   ylabel={Vertex Expansions},
+   ylabel={Vertex Expansions ($10^5$)},
    ylabel near ticks,
    ylabel shift=-0.2cm,
    %legend pos=south east,
@@ -146,28 +152,28 @@ c1wincbi 28027.845833333333 1074.324688281415
    %legend style={font=\footnotesize},
    ]
 
-\addplot[color=black,area legend,fill=black!50,error bars/.cd,y dir=both,y explicit]
-   table[x expr=\coordindex,y=mean,y error expr=1.96*\thisrow{meanstderr}]
+\addplot[color=black,area legend,fill=blue!50,error bars/.cd,y dir=both,y explicit]
+   table[x expr=\coordindex,y expr=0.00001*\thisrow{mean},y error expr=0.00001*1.96*\thisrow{meanstderr}]
    {\datainit};
 %\addlegendentry{P1-P4 Initial};
 
-\addplot[color=black,area legend,fill=black!40,error bars/.cd,y dir=both,y explicit]
-   table[x expr=\coordindex,y=mean,y error expr=1.96*\thisrow{meanstderr}]
+\addplot[color=black,area legend,fill=colora,error bars/.cd,y dir=both,y explicit]
+   table[x expr=\coordindex,y expr=0.00001*\thisrow{mean},y error expr=0.00001*1.96*\thisrow{meanstderr}]
    {\datacd};
 %\addlegendentry{P4 Replans};
 
-\addplot[color=black,area legend,fill=black!30,error bars/.cd,y dir=both,y explicit]
-   table[x expr=\coordindex,y=mean,y error expr=1.96*\thisrow{meanstderr}]
+\addplot[color=black,area legend,fill=colorb,error bars/.cd,y dir=both,y explicit]
+   table[x expr=\coordindex,y expr=0.00001*\thisrow{mean},y error expr=0.00001*1.96*\thisrow{meanstderr}]
    {\datacc};
 %\addlegendentry{P3 Replans};
 
-\addplot[color=black,area legend,fill=black!20,error bars/.cd,y dir=both,y explicit]
-   table[x expr=\coordindex,y=mean,y error expr=1.96*\thisrow{meanstderr}]
+\addplot[color=black,area legend,fill=colorc,error bars/.cd,y dir=both,y explicit]
+   table[x expr=\coordindex,y expr=0.00001*\thisrow{mean},y error expr=0.00001*1.96*\thisrow{meanstderr}]
    {\datacb};
 %\addlegendentry{P2 Replans};
 
-\addplot[color=black,area legend,fill=black!10,error bars/.cd,y dir=both,y explicit]
-   table[x expr=\coordindex,y=mean,y error expr=1.96*\thisrow{meanstderr}]
+\addplot[color=black,area legend,fill=colord,error bars/.cd,y dir=both,y explicit]
+   table[x expr=\coordindex,y expr=0.00001*\thisrow{mean},y error expr=0.00001*1.96*\thisrow{meanstderr}]
    {\dataca};
 %\addlegendentry{P1 Replans};
 

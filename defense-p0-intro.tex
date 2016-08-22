@@ -355,7 +355,7 @@
    }
 
    \only<8>{
-      \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
+      \node[fill=blue!10,draw=blue!30,rounded corners,font=\small,inner sep=6pt] at (6,1.75)
       {\begin{minipage}{11cm}\large
 
          \emph{Q1: {\bf \emph{What should we optimize}}
@@ -627,7 +627,7 @@
    }
 
    \only<12->{
-      \node[fill=blue!15,rounded corners,font=\small] at (6,1.75)
+      \node[fill=blue!10,draw=blue!30,rounded corners,font=\small,inner sep=6pt] at (6,1.75)
       {\begin{minipage}{11cm}\large
 
          \emph{Q2: {\bf \emph{How can we optimize}}
@@ -647,7 +647,29 @@
    \tikzset{>=latex} % arrow heads
    \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node at (6,4) {From Sidd: state a thesis.};
+      \node[fill=blue!10,draw=blue!30,rounded corners,font=\small,inner sep=6pt] at (6,6.7)
+      {\begin{minipage}{11cm}\large
+         \emph{Q1: {\bf \emph{What should we optimize}}
+         to effectively trade off between planning and execution cost
+         over a manipulation task?}
+      \end{minipage}};
+
+      \node[fill=blue!10,draw=blue!30,rounded corners,font=\small,inner sep=6pt] at (6,5)
+      {\begin{minipage}{11cm}\large
+         \emph{Q2: {\bf \emph{How can we optimize}}
+         paths for motion planning problems
+         %in manipulation tasks
+         in the face of expensive validity checking?}
+      \end{minipage}};
+
+      \only<2->{
+      \node[fill=black!10,draw=black!20,rounded corners,font=\small,inner sep=6pt,align=center] at (6,2.5)
+      {
+         \emph{\large A planner which considers its own planning cost}\\
+         \emph{\large and models that cost across similar queries}\\
+         \emph{\large can complete tasks more efficiently.}
+      };
+      }
 
    \end{tikzpicture}
 \end{frame}

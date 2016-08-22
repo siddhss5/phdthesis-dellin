@@ -25,7 +25,7 @@
       \end{array} $
    };
    %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
-   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+   \node[fill=black!5,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
 
    \draw[->] (7.3,3.75) -- (7.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w$};
    \draw[->] (8.2,3.75) -- (8.2,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w_{\ms{est}}$};
@@ -35,7 +35,7 @@
    \only<2->{\node[anchor=north west] at (lazysp.north west) {\strut LazySP};}
 
    \only<3->{
-   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (dynsp) at (4.3,1.7) {DynamicSP};
+   \node[fill=blue!20,draw=blue!30,rounded corners,align=center,minimum height=1cm] (dynsp) at (4.3,1.7) {InnerSP};
    }
 
    \only<4->{
@@ -98,7 +98,7 @@
 
 
 \begin{frame}
-   \frametitle{Lazy SP: The Inner DynamicSP Search}
+   \frametitle{Lazy SP: The Inner Search}
    \begin{tikzpicture}[font=\small]
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
       
@@ -165,7 +165,7 @@
       % here's an algorithm
       
       \node[inner sep=0.2cm,fill=blue!10,rounded corners,anchor=north,minimum height=4.3cm,minimum width=7.5cm] at (6,7.75) {};
-      \only<2>{
+      \only<2->{
          \node[inner sep=0.2cm,fill=blue!30,anchor=north,minimum height=0.5cm,minimum width=7.5cm] at (6,6.15) {};
       }
       \node[inner sep=0.0cm,anchor=north] at (6,7.65)
@@ -177,8 +177,8 @@
          \State $w_{\ms{lazy}}(e) \leftarrow w_{\ms{est}}(e) \quad \forall e \in E$
          \Loop
             \vspace{0.05cm}
-            \State $p_{\ms{candidate}} \leftarrow
-               \mbox{\sc DynamicSP}(G, v_s, v_g, w_{\ms{lazy}})$ %\Comment Compute the shortest path with lazy edge weights
+            \only<1-2>{\State $p_{\ms{candidate}} \leftarrow \mbox{\sc InnerSP}(G, v_s, v_g, w_{\ms{lazy}})$}%
+            \only<3->{\State $p_{\ms{candidate}} \leftarrow \mbox{\sc DynamicSP}(G, v_s, v_g, w_{\ms{lazy}})$}%
             \vspace{0.1cm}
             %\vspace{0.2cm}
             %\If {$p_{\ms{candidate}} \subseteq E_{\ms{eval}}$} \Comment If path is fully evaluated,
@@ -196,7 +196,7 @@
       \end{algorithmic}
       }\end{minipage}};
 
-
+      \only<4->{
       \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.8cm,inner sep=2pt,anchor=north] at (3.0,3.0) {
          Motion Planning:\\
          \vspace{-0.3cm}\\
@@ -209,8 +209,9 @@
             h_x(v) = & || v - v_g ||
          \end{array} $
       };
+      }
       
-
+      \only<5->{
       \node[fill=blue!10,draw=blue!20,rounded corners,align=center,minimum height=1.8cm,inner sep=2pt,anchor=north] at (8.6,3.0) {
          Maximizing Utility:\\
          \vspace{-0.3cm}\\
@@ -220,8 +221,8 @@
             h_w(v) = & & (1\!-\!\lambda) \, h_x(v)
          \end{array} $
       };
-      \node[fill=black!3,draw=blue!20,inner sep=2pt] at (6.35,1.85) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
-         
+      \node[fill=black!5,draw=blue!20,inner sep=2pt] at (6.35,1.85) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+      }
       
    %Augment problem with inexpensive edge heuristic. (Show augmentation.)
    %Each edge has binary state.
@@ -271,7 +272,7 @@
       \end{array} $
    };
    %\node[fill=black!3,draw=blue!20,inner sep=2pt] at (7,5.4) {\includegraphics[width=1.3cm]{build/pvx-utility-anytime-simple}};
-   \node[fill=black!3,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
+   \node[fill=black!5,draw=blue!20,inner sep=2pt] at (5.6,4.5) {\includegraphics[width=1.0cm]{build/pvx-linear-discounting-simple}};
 
    \draw[->] (7.3,3.75) -- (7.3,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w$};
    \draw[->] (8.2,3.75) -- (8.2,3.0) node [pos=0.45,fill=blue!5,align=center,inner sep=2pt] {$w_{\ms{est}}$};
@@ -814,7 +815,20 @@
       \end{scope}
       }
 
-      \node[inner sep=0pt,anchor=south east] at (11.9,0.1) {\scriptsize Amoebas!};
+      %\node[inner sep=0pt,anchor=south east] at (11.9,0.1) {\scriptsize Amoebas!};
+      \only<8-9>{
+      %\begin{scope}
+      %\clip (0,0) rectangle (12,8);
+      \node[inner sep=0cm] at (6,0.35) {\begin{minipage}{11.5cm}\scriptsize
+         
+         \hangindent=0.35cm \raggedright
+         \PaperPortrait\; Pohl.
+         ``Bi-directional and Heuristic Search in Path Problems.''
+         PhD thesis, Stanford University, 1969.
+
+      \end{minipage}};
+      %\end{scope}
+      }
 
    \end{tikzpicture}
 \end{frame}
@@ -828,7 +842,7 @@
       \node[anchor=north] at (6,7.5) {\begin{minipage}{9.5cm}
          \definecolor{greenhighlight}{rgb}{0.8, 1.0, 0.8}
          \begin{algorithmic}[1]
-         \Procedure{BidirectionalTerminationB}{}
+         \Procedure{BidirectionalTerminationC}{}
          \State $p_{\ms{sofar}} \leftarrow$ best path found so far.
          \State Build approximations $d_s$ and $d_t$ (alternate arbitrarily).
          \State When $s$-expanding $u$, if edge $e_{uv}$ has $v$ is in CLOSED$_t$,
@@ -960,7 +974,7 @@
       \tikzset{>=latex} % arrow heads
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-      \node at (3.2,6.4) {\begin{minipage}{6.1cm}
+      \node[fill=blue!5,draw=blue!15,rounded corners] at (3.2,6.3) {\begin{minipage}{6.1cm}
          9th DIMACS Implementation Challenge
 
          $G$: 1,524,453 vertices and 3,868,020 edges
@@ -977,22 +991,37 @@
          \end{itemize}
       \end{minipage}};
 
-      \node[draw=black!30,inner sep=0pt] (exdijk) at (1.7,3.7) {
-         \includegraphics[width=3cm]{figs/incbi-road-ne/singleshot/example-dijkstra.png}};
-      \node[draw=black!30,inner sep=0pt] (exdynswsf) at (4.8,3.7) {
-         \includegraphics[width=3cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}};
+      \node[draw=black!30,inner sep=0pt] (exdijk) at (1.8,3.4) {
+         \includegraphics[width=2.7cm]{figs/incbi-road-ne/singleshot/example-dijkstra.png}};
+      \node[draw=black!30,inner sep=0pt] (exdynswsf) at (4.7,3.4) {
+         \includegraphics[width=2.7cm]{figs/incbi-road-ne/singleshot/example-incuni-1.png}};
          
-      \node[draw=black!30,inner sep=0pt] (exbidijk) at (1.7,1.3) {
-         \includegraphics[width=3cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
-      \node[draw=black!30,inner sep=0pt] (exibid) at (4.8,1.3) {
-         \includegraphics[width=3cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}};
+      \node[draw=black!30,inner sep=0pt] (exbidijk) at (1.8,1.2) {
+         \includegraphics[width=2.7cm]{figs/incbi-road-ne/singleshot/example-bidijkstra.png}};
+      \node[draw=black!30,inner sep=0pt] (exibid) at (4.7,1.2) {
+         \includegraphics[width=2.7cm]{figs/incbi-road-ne/singleshot/example-incbi-1.png}};
 
       \node[anchor=south east] at (exdijk.south east) {Dijk};
       \node[anchor=south east] at (exdynswsf.south east) {DynSWSF};
       \node[anchor=south east] at (exbidijk.south east) {BiDijk};
       \node[anchor=south east] at (exibid.south east) {IBiD};
 
-      \node at (9.2,3.8) {\includegraphics{build/incbi-road-ne/stats2vert-nonheur}};
+      \begin{scope}
+         \clip (0,0) rectangle (12,8);
+         \node at (9.2,3.7) {\includegraphics{build/incbi-road-ne/stats2vert-nonheur}};
+      \end{scope}
+
+      \definecolor{colora}{rgb}{0.0,0.6,0.0}
+      \definecolor{colorb}{rgb}{0.1,0.7,0.1}
+      \definecolor{colorc}{rgb}{0.2,0.8,0.2}
+      \definecolor{colord}{rgb}{0.3,0.9,0.3}
+
+      \node[fill=blue!50,draw=black,inner sep=4pt] (first) at (7.0,7.7) {};
+      \node[anchor=west,right=0cm of first.east] {\strut first ep};
+
+      \node (oftenrare) at (10.4,7.7) {\strut $\leftarrow$ often rare $\rightarrow$};
+      \node[fill=colora,draw=black,inner sep=4pt,anchor=east,left=0cm of oftenrare.west] {};
+      \node[fill=colord,draw=black,inner sep=4pt,anchor=west,right=0cm of oftenrare.east] {};
 
    \end{tikzpicture}
 \end{frame}
@@ -1131,23 +1160,25 @@
    \draw[->,draw=black!50] (n) -- (v);
    \end{scope}
 
-   \node[fill=black!3,rounded corners,align=center] (blocka) at (7.3,6.6) {
+   \node[fill=black!5,draw=black!10,rounded corners,align=center] (blocka) at (7.3,6.6) {
       \strut $w : E \rightarrow \mathbb{R}$};
 
    \only<2->{
-   \node[fill=black!3,rounded corners,align=center] (blockb) at (7.3,5.5) {
+   \node[fill=black!5,draw=black!10,rounded corners,align=center] (blockb) at (7.3,5.5) {
       Vertex potential:\\
       \strut $b : V \rightarrow \mathbb{R}$};
+   \draw[->] (blocka) -- (blockb);
    }
 
    \only<3->{
-   \node[fill=black!3,rounded corners,align=center] (blockc) at (7.3,4.2) {
+   \node[fill=black!5,draw=black!10,rounded corners,align=center] (blockc) at (7.3,4.2) {
       \strut $w' : E \rightarrow \mathbb{R}$\\
       \strut $w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right)$};
+   \draw[->] (blockb) -- (blockc);
    }
 
    \only<4->{
-   \node[fill=blue!5,rounded corners,align=center] at (8.5,1.8) {
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center] at (8.5,1.8) {
       $\arraycolsep=1.5pt \begin{array}{rl}
          \vspace{0.1cm}
          \mbox{len}(p_{st}, w') = & w'_{su} + w'_{uv} \dots \\
@@ -1161,21 +1192,17 @@
    }
 
    \only<5->{
-   \node[fill=blue!5,rounded corners,align=center] (blockd) at (10.7,4.2) {
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center] (blockd) at (10.7,4.2) {
       Shortest path\\ \strut $p'_{st}$ w.r.t. $w'$};
+   \draw[->] (blockc) -- (blockd);
    }
 
    \only<6->{
-   \node[fill=blue!5,rounded corners,align=center] (blocke) at (10.7,6.6) {
+   \node[fill=blue!10,draw=blue!20,rounded corners,align=center] (blocke) at (10.7,6.6) {
       Shortest path\\ \strut $p_{st}$ w.r.t. $w$};
+   \draw[->] (blockd) -- (blocke);
    }
-
-   \only<7->{\draw[->] (blocka) -- (blockb);}
-   \only<8->{\draw[->] (blockb) -- (blockc);}
-   \only<9->{\draw[->] (blockc) -- (blockd);}
-   \only<10->{\draw[->] (blockd) -- (blocke);}
    
-
    \end{tikzpicture}
 \end{frame}
 
@@ -1185,10 +1212,10 @@
    \tikzset{>=latex} % arrow heads
    \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
-   \node[fill=black!3,minimum width=5.2cm] at (3.7,7.55) {\strut Non-Incremental};
-   \node[fill=black!3,minimum width=3.3cm,rotate=90] at (0.6,5.45) {\strut Unidirectional};
-   \only<6->{\node[fill=black!3,minimum width=5.2cm] at (9.0,7.55) {\strut Incremental};}
-   \only<17->{\node[fill=black!3,minimum width=3.45cm,rotate=90] at (0.6,1.85) {\strut Bidirectional};}
+   \node[fill=black!5,minimum width=5.2cm] at (3.7,7.55) {\strut Non-Incremental};
+   \node[fill=black!5,minimum width=3.3cm,rotate=90] at (0.6,5.45) {\strut Unidirectional};
+   \only<3->{\node[fill=black!5,minimum width=5.2cm] at (9.0,7.55) {\strut Incremental};}
+   \only<11->{\node[fill=black!5,minimum width=3.45cm,rotate=90] at (0.6,1.85) {\strut Bidirectional};}
 
    \only<2->{
    \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.3cm] (dijk) at (3.7,7.1) {};
@@ -1204,44 +1231,42 @@
          w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right) 
       \]
       
-      \only<5->{
       \vspace{0.7cm}
       \begin{center}
          Dijkstra's algorithm on $w'$\\
          yields A*
-      \end{center}}
+      \end{center}
    \end{minipage}};
+
+   \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dijkin) at (2.7,5.2) {$w \geq 0$\\$h_t$ consistent};
+   \node[fill=blue!10,rounded corners,inner sep=3pt] (dijkout) at (5.2,5.2) {$w_{uv}' \geq 0$};
+   \draw[->] (dijkin) -- (dijkout);
    }
-   \only<3->{\node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dijkin) at (2.7,5.2) {$w \geq 0$\\$h_t$ consistent};}
+
    \only<4->{
-      \node[fill=blue!10,rounded corners,inner sep=3pt] (dijkout) at (5.2,5.2) {$w_{uv}' \geq 0$};
-      \draw[->] (dijkin) -- (dijkout);}
-
-
-   \only<7->{
    \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.3cm] (dynswsffp) at (9.0,7.1) {};
-   \only<24->{
+   \only<17->{
       \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.85cm of dynswsffp.north]  {};
    }
    \node[anchor=north] at (dynswsffp.north) {\begin{minipage}{4.7cm}
       \setlength{\belowdisplayskip}{1pt} \setlength{\belowdisplayshortskip}{1pt}
       \setlength{\abovedisplayskip}{1pt} \setlength{\abovedisplayshortskip}{1pt}
-      \only<8->{
+      
       Use potential function:
       \[
          b(v) = h_t(v)
-      \]}%
-      \only<9-11>{\[
+      \]%
+      \only<5-6>{\[
          w'_{uv} = w_{uv} - \left( b(u)\!-\!b(v) \right)
       \]}%
-      \only<13-15>{\[
+      \only<7>{\[
          w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \;\;\, ? \;\;\; \right]
       \]}%
-      \only<16->{\[
+      \only<8->{\[
          w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \; w_{uv} \right]
       \]}%
       
-      \only<15->{%
+      \only<10->{%
       \vspace{0.7cm}
       \begin{center}
          DynamicSWSF-FP on $w'$\\
@@ -1249,19 +1274,19 @@
       \end{center}%
       }
    \end{minipage}};
-   }
-   \only<10->{\node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dynswsffpin) at (8.0,5.2) {$w_{uv} > 0$\\$h_t$ consistent};}
-   \only<11>{
+   \only<6->{\node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (dynswsffpin) at (8.0,5.2) {$w_{uv} > 0$\\$h_t$ consistent};}
+   \only<6>{
       \node[fill=blue!10,rounded corners,inner sep=3pt] (dynswsffpout) at (10.5,5.2) {$w_{uv}' \ngtr 0$};
       \draw[->] (dynswsffpin) -- (dynswsffpout);}
-   \only<14->{
+   \only<9->{
       \node[fill=blue!10,rounded corners,inner sep=3pt] (dynswsffpout) at (10.5,5.2) {$w_{uv}' > [0,0]$};
       \draw[->] (dynswsffpin) -- (dynswsffpout);}
+   }
 
 
-   \only<18->{
+   \only<11->{
    \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.5cm] (bidijk) at (3.7,3.6) {};
-   \only<22->{
+   \only<15->{
       \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.45cm of bidijk.north]  {};
    }
    \node[anchor=north] at (bidijk.north) {\begin{minipage}{4.7cm}
@@ -1283,41 +1308,40 @@
       \end{center}
    \end{minipage}};
    }
-   \only<18>{
-      \node[fill=blue!5,anchor=north,rounded corners,minimum width=5cm,minimum height=1.0cm,below=0.0cm of bidijk.north] {};
+   \only<11>{
+      \node[fill=blue!5,anchor=north,rounded corners,minimum width=5cm,minimum height=0.5cm,below=0.5cm of bidijk.north] {};
    }
-   \only<18-19>{
+   \only<11-12>{
       \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (bidijkin) at (2.7,1.6) {$w \geq 0$\\ \strut $b$ consistent};
    }
-   \only<20->{
+   \only<13->{
       \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (bidijkin) at (2.7,1.6) {$w \geq 0$\\ \strut $h_s, h_t$ consistent};
    }
-   \only<18->{
+   \only<11->{
       \node[fill=blue!10,rounded corners,inner sep=3pt] (bidijkout) at (5.2,1.6) {$w' \geq 0$};
       \draw[->] (bidijkin) -- (bidijkout);
    }
 
 
-   \only<21->{
+   \only<14->{
    \node[fill=blue!5,rounded corners,anchor=north,minimum width=5cm,minimum height=3.5cm] (ibid) at (9.0,3.6) {};
-   \only<23-24>{
+   \only<16-17>{
       \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=0.55cm,below=0.45cm of ibid.north]  {};
    }
-   \only<25->{
+   \only<18->{
       \node[fill=green!20,anchor=north,minimum width=5cm,minimum height=1.05cm,below=0.45cm of ibid.north]  {};
    }
    \node[anchor=north] at (ibid.north) {\begin{minipage}{4.7cm}
       \setlength{\belowdisplayskip}{2pt} \setlength{\belowdisplayshortskip}{2pt}
       \setlength{\abovedisplayskip}{2pt} \setlength{\abovedisplayshortskip}{2pt}
-      \only<23->{
       Use potential function:
-      \[
+      \only<16->{\[
          b(v) = \tfrac{1}{2} h_t(v) - \tfrac{1}{2} h_s(v)
       \]}%
-      \only<25->{\[
+      \only<18->{\[
          w'_{uv} = \left[ w_{uv} - \left( b(u)\!-\!b(v) \right), \; w_{uv} \right]
       \]}%
-      \only<26->{%
+      \only<19->{%
       \vspace{0.38cm}
       \begin{center}
          IBiD on $w'$\\
@@ -1326,7 +1350,7 @@
       }
    \end{minipage}};
    }
-   \only<26->{
+   \only<19->{
    \node[fill=blue!10,rounded corners,inner sep=3pt,align=center] (ibidin) at (8.0,1.6) {$w_{uv} > 0$\\$h_s, h_t$ consistent};
    \node[fill=blue!10,rounded corners,inner sep=3pt] (ibidout) at (10.5,1.6) {$w_{uv}' > [0,0]$};
    \draw[->] (ibidin) -- (ibidout);
@@ -1343,6 +1367,18 @@
       \draw[step=1,black!15,very thin,opacity=\gridopacity] (0,0) grid (12,8);
 
       \node at (6,3.8) {\includegraphics{build/incbi-road-ne/stats2vert}};
+
+      \definecolor{colora}{rgb}{0.0,0.6,0.0}
+      \definecolor{colorb}{rgb}{0.1,0.7,0.1}
+      \definecolor{colorc}{rgb}{0.2,0.8,0.2}
+      \definecolor{colord}{rgb}{0.3,0.9,0.3}
+
+      \node[fill=blue!50,draw=black,inner sep=4pt] (first) at (5.5,7.0) {};
+      \node[anchor=west,right=0cm of first.east] {\strut first ep};
+
+      \node (oftenrare) at (8.9,7.0) {\strut $\leftarrow$ often rare $\rightarrow$};
+      \node[fill=colora,draw=black,inner sep=4pt,anchor=east,left=0cm of oftenrare.west] {};
+      \node[fill=colord,draw=black,inner sep=4pt,anchor=west,right=0cm of oftenrare.east] {};
 
    \end{tikzpicture}
 \end{frame}

@@ -1137,7 +1137,7 @@
             (vj) -- (ve);
       }
          
-      \only<1-2>{
+      \only<1-1>{
          \draw[black!30] (va) -- (vb);
          \draw[black!30] (vb) -- (vd);
          \draw[black!30] (va) -- (vh);
@@ -1158,7 +1158,7 @@
          \draw[black!30] (vi) -- (vk);
          \draw[black!30] (ve) -- (vk);
       }
-      \only<3->{
+      \only<2->{
          \draw[black!30] (va) -- (vb) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {5?};
          \draw[black!30] (vb) -- (vd) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
          \draw[black!30] (va) -- (vh) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
@@ -1177,13 +1177,13 @@
          \draw[black!30] (vi) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
          \draw[black!30] (ve) -- (vk) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {6?};
       }
-      \only<3-11>{
+      \only<2-11>{
          \draw[black!30] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {9?};
       }
       \only<12->{
          \draw[black,ultra thick] (vd) -- (ve) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {$\infty$};
       }
-      \only<3-15>{
+      \only<2-15>{
          \draw[black!30] (ve) -- (vj) node[midway,circle,inner sep=0.02cm,fill=white,opacity=0.9,font=\scriptsize] {4?};
       }
       \only<16->{
@@ -1213,7 +1213,7 @@
       \algrenewcommand{\alglinenumber}[1]{}
       \begin{algorithmic}[1]
          \Function {\textsc{LazySP}}{$G, v_s, v_g, w, w_{\ms{est}}$}
-         \only<3->{
+         \only<2->{
             \State $E_{\ms{eval}} \leftarrow \emptyset$
             \State $w_{\ms{lazy}}(e) \leftarrow w_{\ms{est}}(e) \quad \forall e \in E$
          }
@@ -1248,7 +1248,7 @@
       \end{algorithmic}
       }\end{minipage}};
 
-      \only<2-16>{
+      \only<3-16>{
          \node[align=center,fill=black!5,rounded corners,minimum width=2.5cm] at (10.0,3.5)
          {\begin{minipage}{3.5cm}
             For motion planning,
@@ -2550,7 +2550,7 @@
          \begin{equation*}
             \arraycolsep=1pt
             \begin{array}{ll}
-            \mathcal{D}_p : & \mbox{path distribution with PDF } \\
+            \mathcal{D}_p : & \mbox{path distribution with p.m.f. } \\
             & f(p) \propto \exp( - \beta \, \mbox{len}(p, w_{\ms{lazy}}) ). \\
             \end{array}
          \end{equation*}
@@ -2929,6 +2929,11 @@ Partition 0 0
          {\datapartconn};
       \end{axis}
       \end{scope}
+
+      \node[fill=black!5,draw=black!10,rounded corners,align=center] at (10.5,6.8) {
+         Expand = A*\\
+         Forward = LWA*
+      };
       }
       
       
