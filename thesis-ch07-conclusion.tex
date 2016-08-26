@@ -1,15 +1,60 @@
-\chapter{Discussion}
+\chapter{Conclusion}
+\label{chap:conclusion}
 
-\cdnote{From Sidd:
-discussion section: long-term view
-Where should we be going?
-No need to justify things!
-What we want the world to know!
-}
+This dissertation presents a motion planning approach suited for
+multi-step manipulations tasks.
+Key to the approach are the complementary ideas of \emph{lazy}
+and \emph{utility-guided} search,
+which we integrated into the LEMUR motion planning algorithm.
+This concluding chapter begins by summarizing the dissertation
+and the individual algorithmic contributions
+in Section~\ref{sec:conclusion:summary}.
+This is followed by a discussion in Section~\ref{sec:conclusion:future}
+of a few promising avenues for future research
+which build on our results.
+Finally, we offer some concluding remarks
+in Section~\ref{sec:conclusion:remarks}.
 
-%Smarter sequences that are easy to densify.
-%Fractal patterns?
-%Not lattices.
+\section{Summary and Contributions}
+\label{sec:conclusion:summary}
+
+The central contribution of this dissertation is a collection of
+algorithms which efficently implement an approach to motion planning
+which explicitly addresses the inherent tradeoff between planning
+and execution costs via a utility-guided search,
+and then conducts its search lazily in order to minimize resources
+while accomplishing the task.
+We present an outline of the algorithms presented in this dissertation,
+along with the interrelationships between them,
+in Figure~\ref{fig:conclusion:outline}.
+
+\begin{figure}
+   \centering
+   \includegraphics{build/outline}
+   \caption{Outline of the algorithms developed in this dissertation.
+      LEMUR is solves a continuous motion planning problem via
+      discretization as a series of progressively densified roadmaps
+      (Chapter~\ref{chap:roadmaps}).
+      Since the shortest path problem over the resulting graph
+      in characterized by edge costs which are expensive to evaluate,
+      we exploit lazy search and edge selectors
+      (Chapter~\ref{chap:lazysp}) to minimize planning effort.
+      We also develop a novel incremental bidirectional search
+      algorithm (Chapter~\ref{chap:ibid}) to accommodate the resulting
+      dynamic pathfinding problem.
+      LEMUR conducts its search guided by a utility function
+      (Chapter~\ref{chap:utility}) which can employ distinct
+      domain-specific planning and execution cost heuristics.
+      In multi-step manipulation tasks,
+      one such cost model is derived from the family motion planning
+      problem (Chapter~\ref{chap:family}),
+      which leads to planner invocations which minimize combined
+      planning and execution cost.
+      }
+   \label{fig:conclusion:outline}
+\end{figure}
+
+Here I write about the conclusion!
 
 We have proposed a motion planning approach for motion planning
 using lazy search conducted over densified roadmaps
@@ -18,6 +63,78 @@ planning and execution cost heuristics.
 This approach has shown promising results on manipulation tasks
 when compared with state-of-the-art
 search-based and sampling-based anytime planners.
+
+We did these things.
+
+\paragraph{Motion Planning via Roadmaps.}
+
+Exploited roadmaps because of their good properties
+in Chapter~\ref{chap:roadmaps}.
+Can be cached.
+Can be progressively densified.
+We talk about ways to improve them later in the discussion.
+Roadmaps are easy to parallelize.
+
+Talk about distance functions.
+Opportunity to optimize them as a function of the collision
+probability in different parts of the space,
+or in terms of the maximal Jacobian value over the arm
+(bent elbow example).
+
+Progressive densification is a proxy for handling the
+spatial coherence in the scene.
+
+\paragraph{How should we optimize?}
+
+What should we do in the face of expensive state validity checking?
+
+Once we commit to a discretization,
+we take advantage of the planning cost structure
+by conducting a lazy search.
+We outline the LazySP algorithm.
+This enables different edge selectors
+which we discuss in Chapter~\ref{chap:lazysp}.
+
+Conducting a lazy search produces an underlying dynamic shortest
+path problem.
+In particular, in some cases our estimate $w_{\ms{est}}$
+may not be great.
+This motivates us to look at approaches which are both
+bidirectional and incremental.
+This leads to the development of the IBiD algorithm.
+We show that this has good performance,
+both for road network routing and motion planning examples.
+
+What is the effect of the tradeoff
+between bidirectional and incremental search,
+when a good heuristic is not available?
+
+\paragraph{What should we optimize?}
+
+Next,
+we consider what we should be optimized in order to capture
+the inherent tradeoff in manipulation tasks
+between planning and execution cost.
+We apply the concept of utility,
+first described in BUGSY,
+to the lazy search regime for the motion planning problem.
+
+Utility allows domain-specific planning cost estimates
+to be leveraged.
+
+One example is a family of sets.
+In Chapter~\ref{chap:family},
+we talk about the family motion planning problem,
+and give some examples where it is applicable.
+
+\section{Future Directions}
+\label{sec:conclusion:future}
+
+\paragraph{Discussion.}
+The remainder of this chapter discusses both the implications
+and limitations of the presented approach,
+as well as possible directions for future work.
+
 In this chapter,
 we discuss opportunities to extend our approach to acheive even
 better performance,
@@ -25,7 +142,37 @@ examine options to better integrate motion planning into a
 task planning system,
 and expound on other promising future directions.
 
-\section{LEMUR: Extensions and Improvements}
+\subsection{Roadmaps}
+
+Smarter sequences that are easy to densify.
+Fractal patterns?
+Not lattices.
+
+\subsection{LazySP and Edge Selectors}
+
+Faster ways to maintain the partition selector.
+Locate pinch points (crux evaluation).
+
+Dynamically balance between sides?
+Where is the maze?
+
+\subsection{Incremental Bidirectional Search}
+
+When used by LazySP,
+if we do forward,
+can we dynamically adjust the distance balance criterion
+so that the location of the dynamic interface
+matches the radius of the update?
+
+How to do balanced cardinality with incremental search?
+
+\subsection{Approaches for Roadmap Densification}
+
+One of the fundamental questions in any motion planning approach
+is how should the continuous problem be approximated in order
+to search for a solution.
+Usually,
+this is accomplished through discretization.
 
 We first consider some possible extensions to the core
 LEMUR planner from Chapter~\ref{chap:utility}.
@@ -56,7 +203,7 @@ appropriately.
    \label{fig:discussion:roadmap-stack}
 \end{figure}
 
-\paragraph{Hard Batching}
+\paragraph{Hard batching.}
 Like many existing roadmap-based algorithms
 \citep{starek2015bfmtstar, gammell2015bitstar},
 LEMUR implements a hard batching approach to densification --
@@ -95,7 +242,7 @@ There are two shortcomings that arise from this hard batching approach:
 \end{itemize}
 
 There are a number of promising avenues for a solution
-to the uniform densification problem.
+to the problems that arise from uniform densification..
 Informed anytime algorithms
 \citep{gammell2014informedrrtstar, gammell2015bitstar}
 restrict densification once an initial path is found to a subset of
@@ -238,6 +385,8 @@ The planner then uses this model in order to select candidate paths
 for partial evaluation that minimize some combination of the path's
 execution cost and its probability of collision.
 
+
+
 %\cdnote{Talk about Shushman's POMP stuff.}
 %
 %The purpose of the incremental graph densification strategy
@@ -324,157 +473,161 @@ execution cost and its probability of collision.
 %   \label{fig:example-in-expectation}
 %\end{figure}
 
-%\section{Tighter Motion Planner Integration in a Planning System}
-%
-%A motion planner is one component in a larger planning system for
-%an articulated robot performing real-world tasks.
-%There are opportunities for improved system performance by
-%integrating the planner more tightly with other system components.
-%
-%\subsection{Integration with Collision Checking}
-%
-%Most sampling-based planners consider the collision checker
-%to be a block box;
-%given a configuration $q_{\ms{test}}$,
-%this procedure considers the environment
-%and the robot's kinematics,
-%and returns a boolean answer -- True or False.
-%Depending on the fidelity of the geoemtric model of the robot
-%and environment,
-%each check can entail tens, hundreds, or even thousands
-%of microseconds;
-%precious planning time which can detract from the robot's overall
-%task performance.
-%
-%One avenue for minimizing the computation effort spent performing
-%collision checks is integrate directly with the broad-phase
-%algorithm which effectively identifies configurations for which
-%many (or all) geometric pairs are sufficiently far from collision
-%that the more expensive narrow-phase checks need not be applied.
-%
-%\begin{figure}
-%   \centering
-%
-%   % left side
-%   \subfloat[Paths with lambda=0][%
-%      \centering
-%      Paths with $\lambda = 0$\par
-%      Average length: 733.0\par
-%      Average check cost: 7219.5
-%   ]{
-%      \includegraphics[width=0.45\textwidth]
-%      {figs/bean-allpaths-lambda0.png}
-%   }
-%   % right side
-%   \subfloat[Paths with lambda=1][%
-%      \centering
-%      Paths with $\lambda = 1$\par
-%      Average length: 836.5\par
-%      Average check cost: 4692.6
-%   ]{
-%      \includegraphics[width=0.45\textwidth]
-%      {figs/bean-allpaths-lambda1.png}
-%   }
-%   \\
-%   \subfloat[Paths with lambda=0][%
-%      \centering
-%      Paths with $\lambda = 0$\par
-%      Average length: 733.0\par
-%      Average check cost: 2685.7
-%   ]{
-%      \includegraphics[width=0.45\textwidth]
-%      {figs/bean-allpaths-padded-lambda0.png}
-%   }
-%   % right side
-%   \subfloat[Paths with lambda=1][%
-%      \centering
-%      Paths with $\lambda = 1$\par
-%      Average length: 907.1\par
-%      Average check cost: 1064.5
-%   ]{
-%      \includegraphics[width=0.45\textwidth]
-%      {figs/bean-allpaths-padded-lambda1.png}
-%   }
-%
-%   \caption{A simple 2D example of the Multi-Set PRM using
-%     a broad-phase check.
-%     Checking for collision with the grey box is 10x less expensive
-%     than with the actual black obstacle.}
-%     %\cdnote{I need to talk about this in the text.}}
-%   \label{fig:broad-phase-2d}
-%\end{figure}
-%
-%\begin{figure*}
-%   \centering
-%   
-%   \subfloat[
-%      A motion planner testing simply for membership in
-%      $\mathcal{C}_{\mbox{\scriptsize free}}$
-%      treats a collision validity checker as a
-%      ``black box.''
-%      Internally,
-%      modern checkers first employ an inexpensive broad-phase check
-%      using a low-dimensional conservative representation
-%      to quickly identify non-colliding bodies before
-%      resorting to an expensive narrow-phase check.
-%   ]{%
-%      \includegraphics{build/broadphase-single}%
-%   }%
-%   \quad%
-%   \subfloat[
-%      A family motion planner can explicitly reason about the
-%      conservative nature of the broad-phase check.
-%      This allows it to defer some narrow phase checks
-%      (often indefinitely)
-%      and instead prefer paths that require fewer expensive checks.
-%   ]{%
-%      \includegraphics{build/broadphase-multi}%
-%   }
-%   
-%   \caption[][0.0in]{Collision validity checking is a commonly used
-%     indicator function.
-%     The family motion planning formulation allows an intelligent
-%     planner to reach inside the checker's ``black box''
-%     and reduce the number of costly narrow-phase checks.
-%     Resulting paths tend to be cheaper to compute and
-%     stay further from obstacles.}
-%   \label{fig:broad-phase}
-%\end{figure*}
-%
-%Consider the illustrative motion planning example shown
-%in Figure~\ref{fig:broad-phase-2d},
-%and the corresponding two-phase system described
-%in Figure~\ref{fig:broad-phase}.
-%
-%\cdnote{
-%More caching!
-%Hypothesized volumes / Cell decompositions.
-%Bored robots.
-%Similarity to Leven/Hutchenson.
-%}
-%
-%\section{Integration with stuff above}
-%
-%ISER task planning.
-%Cite ISER paper.
-%
-%Task and motion planning.
-%
-%I did some work on CMR stuff for multi-step problems,
-%for instance.
-%Cite this.
-%
-%\paragraph{Task and Motion Planning.}
-%Other recent work has married symbolic reasoning with geometric planning
-%for tasks with multiple subtasks
-%as multi-modal planning \citep{hauser2010multi},
-%temporal logic \citep{bhatia2010temporalgoals},
-%or hierarchical or bridged representations and interfaces
-%\citep{cambon2009hybrid}, \citep{gravot2005asymov},
-%\citep{srivastava2014taskmotion}.
-%
-%Treat an entire multi-step plan using LazySP (each edge is expensive after all!)
-%
-%\paragraph{Other Applications of LazySP.}
-%\cdnote{Talk about satellite application from that guy.}
-%
+\subsection{Integration with Collision Checking}
+
+Most sampling-based planners consider the collision checker
+to be a block box;
+given a configuration $q_{\ms{test}}$,
+this procedure considers the environment
+and the robot's kinematics,
+and returns a boolean answer -- True or False.
+Depending on the fidelity of the geoemtric model of the robot
+and environment,
+each check can entail tens, hundreds, or even thousands
+of microseconds;
+precious planning time which can detract from the robot's overall
+task performance.
+
+One avenue for minimizing the computation effort spent performing
+collision checks is integrate directly with the broad-phase
+algorithm which effectively identifies configurations for which
+many (or all) geometric pairs are sufficiently far from collision
+that the more expensive narrow-phase checks need not be applied.
+
+\begin{figure}
+   \centering
+
+   % left side
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 7219.5
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda0.png}
+   }
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 836.5\par
+      Average check cost: 4692.6
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-lambda1.png}
+   }
+   \\
+   \subfloat[Paths with lambda=0][%
+      \centering
+      Paths with $\lambda = 0$\par
+      Average length: 733.0\par
+      Average check cost: 2685.7
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda0.png}
+   }
+   % right side
+   \subfloat[Paths with lambda=1][%
+      \centering
+      Paths with $\lambda = 1$\par
+      Average length: 907.1\par
+      Average check cost: 1064.5
+   ]{
+      \includegraphics[width=0.45\textwidth]
+      {figs/bean-allpaths-padded-lambda1.png}
+   }
+
+   \caption{A simple 2D example of the Multi-Set PRM using
+     a broad-phase check.
+     Checking for collision with the grey box is 10x less expensive
+     than with the actual black obstacle.}
+     %\cdnote{I need to talk about this in the text.}}
+   \label{fig:broad-phase-2d}
+\end{figure}
+
+\begin{figure*}
+   \centering
+   
+   \subfloat[
+      A motion planner testing simply for membership in
+      $\mathcal{C}_{\mbox{\scriptsize free}}$
+      treats a collision validity checker as a
+      ``black box.''
+      Internally,
+      modern checkers first employ an inexpensive broad-phase check
+      using a low-dimensional conservative representation
+      to quickly identify non-colliding bodies before
+      resorting to an expensive narrow-phase check.
+   ]{%
+      \includegraphics{build/broadphase-single}%
+   }%
+   \quad%
+   \subfloat[
+      A family motion planner can explicitly reason about the
+      conservative nature of the broad-phase check.
+      This allows it to defer some narrow phase checks
+      (often indefinitely)
+      and instead prefer paths that require fewer expensive checks.
+   ]{%
+      \includegraphics{build/broadphase-multi}%
+   }
+   
+   \caption[][0.0in]{Collision validity checking is a commonly used
+     indicator function.
+     The family motion planning formulation allows an intelligent
+     planner to reach inside the checker's ``black box''
+     and reduce the number of costly narrow-phase checks.
+     Resulting paths tend to be cheaper to compute and
+     stay further from obstacles.}
+   \label{fig:broad-phase}
+\end{figure*}
+
+Consider the illustrative motion planning example shown
+in Figure~\ref{fig:broad-phase-2d},
+and the corresponding two-phase system described
+in Figure~\ref{fig:broad-phase}.
+
+\cdnote{
+More caching!
+Hypothesized volumes / Cell decompositions.
+Bored robots.
+Similarity to Leven/Hutchenson.
+}
+
+\subsection{Tighter Motion Planner Integration in a Planning System}
+
+A motion planner is one component in a larger planning system for
+an articulated robot performing real-world tasks.
+There are opportunities for improved system performance by
+integrating the planner more tightly with other system components.
+
+\subsection{Integration with stuff above}
+
+ISER task planning.
+Cite ISER paper.
+
+Task and motion planning.
+
+I did some work on CMR stuff for multi-step problems,
+for instance.
+Cite this.
+
+\paragraph{Task and Motion Planning.}
+Other recent work has married symbolic reasoning with geometric planning
+for tasks with multiple subtasks
+as multi-modal planning \citep{hauser2010multi},
+temporal logic \citep{bhatia2010temporalgoals},
+or hierarchical or bridged representations and interfaces
+\citep{cambon2009hybrid}, \citep{gravot2005asymov},
+\citep{srivastava2014taskmotion}.
+
+Treat an entire multi-step plan using LazySP (each edge is expensive after all!)
+
+\paragraph{Other Applications of LazySP.}
+\cdnote{Talk about satellite application from that guy.}
+
+\section{Concluding Remarks}
+\label{sec:conclusion:remarks}
+
+Here are some concluding remarks.

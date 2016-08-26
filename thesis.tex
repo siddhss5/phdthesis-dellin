@@ -1,9 +1,12 @@
 \documentclass[nobib]{tufte-book}
 
-\def\hidenotes{}
+%\def\hidenotes{}
 
 % marginfigure textwidth is 144.0pt = 5.0610cm
-%\usepackage{natbib}
+% main line width = 10.96 cm
+
+\usepackage{natbib}
+\usepackage[nottoc]{tocbibind} % for fig/table lists in toc
 
 \usepackage{standalone}
 
@@ -137,7 +140,7 @@
 
 % Efficient Manipulation Task Planning via
 % Reuse-Informed Optimization of Planning Effort
-\title{Completing Manipulation Tasks Efficiently in Complex Environments}
+\title{Completing Manipulation Tasks Efficiently\\in Complex Environments}
 \author{Christopher M. Dellin}
 \date{\today}
 %\date{March 28, 2015}
@@ -148,7 +151,7 @@
 
 \renewcommand{\maketitlehookd}{
 \begin{center}
-\vspace{0.7in}
+\vspace{0.4in}
 The Robotics Institute\\
 Carnegie Mellon University\\
 Pittsburgh, PA 15213\\
@@ -158,9 +161,11 @@ Siddhartha Srinivasa, CMU RI (Chair)\\
 Anthony Stentz, CMU RI\\
 Maxim Likhachev, CMU RI\\
 Lydia Kavraki, Rice University\\
-%\vspace{0.7in}
-%\emph{Submitted in partial fulfillment of the requirements\\
-%for the degree of Doctor of Philosophy.}
+\vspace{0.4in}
+\emph{Submitted in partial fulfillment of the requirements\\
+for the degree of Doctor of Philosophy.}\\ 
+\vspace{0.7in}
+Copyright~\textcopyright~Christopher M. Dellin
 \end{center}
 \end{fullwidth}
 }
@@ -180,13 +185,16 @@ Lydia Kavraki, Rice University\\
 \include{thesis-ch05-lemur}
 \include{thesis-ch06-family}
 %%\include{thesis-ch06-family-extra}
-\include{thesis-ch07-discussion}
+\include{thesis-ch07-conclusion}
 
 \appendix
 \include{thesis-ch03-lazysp-proofs}
 \include{thesis-ch04-ibid-proofs}
 \include{thesis-ch05-lemur-appendix}
 \include{thesis-ch06-family-appendix}
+
+\listoffigures
+\listoftables
 
 \bibliographystyle{abbrv}
 \bibliography{references}
