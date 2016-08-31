@@ -6,6 +6,9 @@ multi-step manipulations tasks.
 Key to the approach are the complementary ideas of \emph{lazy}
 and \emph{utility-guided} search,
 which we integrated into the LEMUR motion planning algorithm.
+This approach has shown promising results on manipulation tasks
+when compared with state-of-the-art
+search-based and sampling-based anytime planners.
 This concluding chapter begins by summarizing the dissertation
 and the individual algorithmic contributions
 in Section~\ref{sec:conclusion:summary}.
@@ -15,20 +18,39 @@ which build on our results.
 Finally, we offer some concluding remarks
 in Section~\ref{sec:conclusion:remarks}.
 
+
 \section{Summary and Contributions}
 \label{sec:conclusion:summary}
 
-The central contribution of this dissertation is a collection of
-algorithms which efficently implement an approach to motion planning
-which explicitly addresses the inherent tradeoff between planning
-and execution costs via a utility-guided search,
-and then conducts its search lazily in order to minimize resources
-while accomplishing the task.
-We present an outline of the algorithms presented in this dissertation,
-along with the interrelationships between them,
-in Figure~\ref{fig:conclusion:outline}.
+This dissertation focuses on motion planning problems
+which arise in autonomous manipulation tasks.
+Such tasks induce continuous, high dimensional robot configuration
+spaces
+in which path validity checking is particularly expensive
+due to complex robot kinematics and workspacee geometry.
+Furthermore,
+there is an inherent cost tradeoff between
+planning a motion and subsequently executing it.
+For manipulation tasks in human-scale environments in particular,
+whether measured in time or energy,
+the cost of planning (principally path validity checking)
+is comparable to the cost of execution.
+Therefore,
+reasoning over both sources of cost -- and their tradeoff --
+is paramount.
 
-\begin{figure}
+To address these challenging motion planning problems,
+this dissertation proposes a collection of algorithms
+(Figure~\ref{fig:conclusion:outline})
+which work in concert to minimize both planning and execution cost.
+We first motivate our focus on roadmap methods for motion
+planning,
+and then consider two central questions concerning the search
+over those roadmaps:
+(a) how should we conduct the optimization,
+and (b) what objective should we optimize?
+
+\begin{figure}[t]
    \centering
    \includegraphics{build/outline}
    \caption{Outline of the algorithms developed in this dissertation.
@@ -54,132 +76,275 @@ in Figure~\ref{fig:conclusion:outline}.
    \label{fig:conclusion:outline}
 \end{figure}
 
-Here I write about the conclusion!
+\subsection{Motion Planning via Roadmaps}
 
-We have proposed a motion planning approach for motion planning
-using lazy search conducted over densified roadmaps
-which maximizes utility using domain-informed
-planning and execution cost heuristics.
-This approach has shown promising results on manipulation tasks
-when compared with state-of-the-art
-search-based and sampling-based anytime planners.
+In Chapter~\ref{chap:roadmaps},
+we outlined the motion planning problem,
+as well as a selection of algorithms designed to solve it.
+A wide variety of such algorithms exist,
+including optimization-based, search-based, and sampling-based
+planners.
+We motivate our focus on sampling-based roadmap planners
+based on the following advantages:
+\begin{itemize}
+\item Roadmap methods are well-studied and posess favorable
+   theoretical properties such as asymptotic optimality.
+\item It is straightforward to incrementally densify the
+   discretization by adding new samples to the roadmap.
+\item The cost of constructing a roadmap which is
+   insensitive to the distribution of obstacles can be amortized
+   across all planning queries
+   (e.g. loaded from disk and persisted in memory between queries).
+\end{itemize}
 
-We did these things.
+The algorithms presented in this dissertation are agnostic to the
+particular roadmap structure used for the discretization.
+Our experiments were conducted over roadmaps generated
+via Halton sequences,
+with edges between vertices within a connection radius
+determined by the critical value $\gamma^*_{\mathcal{C}}$.
+For example, the LEMUR motion planner
+(Algorithm~\ref{alg:lemur} in Chapter~\ref{chap:utility})
+densifies its roadmap by introducing new batches of
+vertices and edges;
+in our experiments,
+we reduce the connection radius as recommended in
+\citep{janson2015deterministicsampling}.
+We discuss future avenues for treating roadmaps
+in Section~\ref{subsec:conclusion:future-roadmaps}.
 
-\paragraph{Motion Planning via Roadmaps.}
+\subsection{How to Optimize?}
+Committing to a particular discretization (e.g. roadmaps)
+reduces the continuous motion planning problem
+to a discrete graph pathfinding problem.
+The first central question considered in this dissertation, then,
+is how a motion planning objective should be optimized over
+such a roadmap graph.
 
-Exploited roadmaps because of their good properties
-in Chapter~\ref{chap:roadmaps}.
-Can be cached.
-Can be progressively densified.
-We talk about ways to improve them later in the discussion.
-Roadmaps are easy to parallelize.
+\paragraph{Lazy Pathfinding.}
+Pathfinding for motion planning problems is distinguished from other
+shortest-path applications because
+the primary component in its edge objective
+depends on its \emph{validity},
+which expensive to determine for articulated robots.
+This motivates lazy pathfinding approaches,
+which decouple the search for candidate solutions
+from the process of evaluating each solution for its cost.
 
-Talk about distance functions.
-Opportunity to optimize them as a function of the collision
-probability in different parts of the space,
-or in terms of the maximal Jacobian value over the arm
-(bent elbow example).
+The first contribution of this dissertation is a study of
+the LazySP algorithm outline in Chapter~\ref{chap:lazysp},
+\marginnote{Contribution: The LazySP algorithm,
+which exploits an edge selector to find paths while
+minimizing the number of necessary edge weight evaluations.}
+which allows for this edge evaluation to be specified arbitrarily
+by way of an \emph{edge selector} function.
+We show that simple selectors are equivalent to the existing
+Weighted A* and Lazy Weighted A* pathfinding algorithms,
+and we also consider the efficacy of bidirectional
+and bisection selectors.
 
-Progressive densification is a proxy for handling the
-spatial coherence in the scene.
+We then introduce novel selectors based on path distributions,
+which focus evaluations towards edges which most likely lie on
+a shortest path.
+One such path distribution selector is based on the partition
+function over paths on a graph.
+\marginnote{Contribution: an incremental method to maintain
+the partition function over paths under changing edge weights.}
+We develop an incremental method for 
+We show that these selectors can lead to fewer expected edge
+evaluations than their simple alternatives over a set of example
+problems.
+We also motivate why the alternating strategy serves as
+a simple proxy for the more complex path distribution selectors
+for common cases where no a priori knowledge of the obstacle
+distribution exists.
 
-\paragraph{How should we optimize?}
+\paragraph{Dynamic Pathfinding.}
+Conducting our roadmap search over candidate paths via lazy
+pathfinding
+induces an underlying inner dynamic shortest path problem.
+This arises because the decoupled nature of lazy search
+is indistiguishable from a search over an unknown or changing objective.
+Each iteration of our lazy search constitutes a new dynamic planning
+episode --
+after our edge selector nominates particular edges of our roadmap
+for evaluation and their true costs are determined,
+the inner search must accommodate these changes in order to produce
+new candidate paths on subsequent iterations.
 
-What should we do in the face of expensive state validity checking?
+Existing incremental algorithms for dynamic pathfinding problems,
+such as Lifelong Planning A* \citep{koenig2004lpastar},
+make use of heuristic potential functions to reduce the subset of
+the graph that must be considered when solving each planning episode.
+During a lazy search,
+the strength of this heuristic depends on
+the relationship between the true and estimated edge weights
+($w$ and $w_{\ms{est}}$ in LazySP, respectively)
+-- and in many cases, a strong lower bound on $w$,
+and therefore a strong heuristic, may not exist.
+This motivates our study of the dynamic problem
+in Chapter~\ref{chap:ibid}.
 
-Once we commit to a discretization,
-we take advantage of the planning cost structure
-by conducting a lazy search.
-We outline the LazySP algorithm.
-This enables different edge selectors
-which we discuss in Chapter~\ref{chap:lazysp}.
+A common approach to solving pathfinding problems in domains without
+a strong heuristic is the notion of bidirectional search.
+Unifying bidirectional and incremental methods presents a unique
+challenge,
+since the subtle bidirectional termination condition must be
+posed in such a way that it remains applicable even under the
+changing edge weights which arise in a dynamic problem.
+This allows us to formulate the Incremental Bidirectional Dijkstra's
+(IBiD) algorithm,
+\marginnote{Contribution: the IBiD algorithm,
+an incremental and bidirectional shortest path algorithm
+for dynamic graphs.}
+which generalizes the bidirectional Dijkstra's algorithm
+\citep{goldberg2005spexternalmemory}
+in the same way that the DynamicSWSF-FP algorithm
+\citep{ramalingam1996dynamicswsffp} generalizes the original
+Dijkstra's algorithm \citep{dijkstra1959anote}.
+We also show how this algorithm can be adapted in the presence of
+heuristic potential functions.
+This algorithm shows promising results both on road network routing
+problems (Chapter~\ref{chap:ibid})
+as well as inflated lazy search problems from motion planning.
 
-Conducting a lazy search produces an underlying dynamic shortest
-path problem.
-In particular, in some cases our estimate $w_{\ms{est}}$
-may not be great.
-This motivates us to look at approaches which are both
-bidirectional and incremental.
-This leads to the development of the IBiD algorithm.
-We show that this has good performance,
-both for road network routing and motion planning examples.
+\subsection{What to Optimize?}
+Our treatment of lazy roadmap search deliberatively leaves open
+the question of what objective should be optimized.
+The approach is applicable to any pathfinding domain in which
+the edge weight function $w$ is expensive to evaluate,
+and where an inexpensive estimate $w_{\ms{est}}$ may be available.
+In the case of motion planning for articulated robots,
+where planning and execution cost are both important,
+how should we instantiate these functions?
 
-What is the effect of the tradeoff
-between bidirectional and incremental search,
-when a good heuristic is not available?
+\paragraph{Search over Candidate Utility.}
+In Chapter~\ref{chap:utility},
+we introduce the notion of \emph{utility},
+and argue that it is the correct form of the objective in order
+to capture the tradeoff between planning and execution costs.
+Our conception of utility borrows heavily from the BUGSY algorithm
+\citep{burns2013bugsy} for conventional graph search.
+The key insight is that marrying utility with lazy search
+allows for the incorporation of planning cost estimators over
+concrete candidate paths -- and not just over frontier vertices.
+This enables many domain-specific planning heuristics to be
+represented naturally.
 
-\paragraph{What should we optimize?}
+We next show that by committing to
+(a) a utility function that is linear in planning and execution cost,
+and (b) estimators that are additive over path edges,
+we can represent our utility optimization as a lazy shortest path
+problem.
+Mediated by the tradeoff parameter $\lambda_p$,
+the LEMUR algorithm
+\marginnote{Contribution: the LEMUR motion planning algorithm
+which conducts a lazy search guided by path utility over a set of
+sequence of densified roadmaps.}
+conducts this optimization
+over a sequence of progressively densified roadmaps.
 
-Next,
-we consider what we should be optimized in order to capture
-the inherent tradeoff in manipulation tasks
-between planning and execution cost.
-We apply the concept of utility,
-first described in BUGSY,
-to the lazy search regime for the motion planning problem.
+We examine a set of manipulation planning tasks using three
+robot platforms,
+and conduct experiments using a planning cost heuristic which
+captures the remaining collision checks on each candidate path.
+We show that LEMUR exhibits favorable performance
+when compared against a set of anytime planners
+such as RRT-Connect, BIT*, and Lazy ARA*.
 
-Utility allows domain-specific planning cost estimates
+\paragraph{Utility Estimates in Manipulation Planning.}
+Importantly,
+the utility-based objective described in Chapter~\ref{chap:utility}
+allows arbitrary domain-specific planning cost estimates
 to be leveraged.
+Chapter~\ref{chap:family} explores intelligent heuristics
+in manipulation tasks by formulating such multi-step tasks as
+a \emph{family motion planning problem}.
+\marginnote{Contribution:
+the family motion planning problem
+a formulation of manipulation planning that yields a natural
+planning cost estimate for utility-guided motion planners.}
+We show this representation,
+in which multi-step tasks are given over a family of related
+$\mathcal{C}$-space subsets,
+allows for a planning cost heuristic
+which naturally incentivizes a utility-based planner (such as LEMUR)
+to reuse planning computation from prior queries.
 
-One example is a family of sets.
-In Chapter~\ref{chap:family},
-we talk about the family motion planning problem,
-and give some examples where it is applicable.
 
 \section{Future Directions}
 \label{sec:conclusion:future}
 
-\paragraph{Discussion.}
-The remainder of this chapter discusses both the implications
-and limitations of the presented approach,
-as well as possible directions for future work.
+Treating motion planning as a lazy search over roadmaps
+prompts an array of promising directions for further work.
+Improvements in roadmap discretization,
+focusing of edge evaluations,
+better inner search algorithms,
+more expressive domain-specific planning and execution cost
+heuristics,
+and probabilistic optimization techniques might all improve performance
+over a wide array of planning domains.
+In this section,
+we survey a few such promising directions that arise from our
+approach.
 
-In this chapter,
-we discuss opportunities to extend our approach to acheive even
-better performance,
-examine options to better integrate motion planning into a
-task planning system,
-and expound on other promising future directions.
+%The remainder of this chapter discusses both the implications
+%and limitations of the presented approach,
+%as well as possible directions for future work.
+%In this chapter,
+%we discuss opportunities to extend our approach to acheive even
+%better performance,
+%examine options to better integrate motion planning into a
+%task planning system,
+%and expound on other promising future directions.
 
-\subsection{Roadmaps}
-
-Smarter sequences that are easy to densify.
-Fractal patterns?
-Not lattices.
-
-\subsection{LazySP and Edge Selectors}
-
-Faster ways to maintain the partition selector.
-Locate pinch points (crux evaluation).
-
-Dynamically balance between sides?
-Where is the maze?
-
-\subsection{Incremental Bidirectional Search}
-
-When used by LazySP,
-if we do forward,
-can we dynamically adjust the distance balance criterion
-so that the location of the dynamic interface
-matches the radius of the update?
-
-How to do balanced cardinality with incremental search?
-
-\subsection{Approaches for Roadmap Densification}
+\subsection{Improved Roadmaps}
+\label{subsec:conclusion:future-roadmaps}
 
 One of the fundamental questions in any motion planning approach
 is how should the continuous problem be approximated in order
 to search for a solution.
-Usually,
-this is accomplished through discretization.
+The approach to motion planning presented in this dissertation
+relies fundamentally on the roadmap discretization method.
+The approach can therefore benefit from any technique which improves
+the efficacy of this discretization.
 
-We first consider some possible extensions to the core
-LEMUR planner from Chapter~\ref{chap:utility}.
-First, what kind of roadmap should be used
-(Section~\ref{sec:discussion:disc})?
-This is a fundamental question because it specifies how the
-continuous problem is discretized.
+\paragraph{Better Connection Heuristics.}
+Roadmap methods rely on a connection rule to determine whether
+two vertices representing configurations in the $\mathcal{C}$-space
+should be connected with an edge
+-- the existance of such an edge implies that the local planner
+has high likelihood of successfully finding a valid path between them.
+To this end,
+most approaches make use of arbitrary thresholds of
+simple distance functions over $\mathcal{C}$ as their decision rules.
+In our experiments, for example,
+we used a simple Euclidean distance rule.
+
+However, for articulated robots
+(and especially for recurring tasks in similar environments),
+it is easy to conceived of more intelligent connection rules.
+For example, consider a na\"{\i}ve execution cost model in which
+obstacles are distributed unformly in the robot's workspace.
+In this case,
+the likelihood of collision over some edge length
+depends intimately on the configuration of the arm itself
+-- configurations in which the Jacobian matrix is large
+(where changes in the location of robot geometry are large
+with respect to changes in configuration)
+entail higher collision probability.
+In the case of recurring motion planning queries for the same
+robot geometry,
+it would seem beneficial to pre-compute a roadmap structure
+in which the edge connection rule depends on some similar measure
+of the robot's configuration.
+
+\paragraph{Efficient Densification.}
+Smarter sequences that are easy to densify.
+Fractal patterns?
+Not lattices.
+Parallelization.
+Recent RSS results?
 
 \subsection{Adaptive Roadmap Densification via an Infinite Roadmap Stack}
 \label{sec:discussion:disc}
@@ -317,6 +482,86 @@ an additional planning cost component in the LEMUR algorithm,
 so it will commit to a denser layer only when the predicted path
 savings outweigh the requisite planning cost.
 
+\subsection{Improved Lazy and Dynamic Search}
+
+The core of our approach is a lazy search over candidate paths,
+which makes use of an inner dynamic shortest path problem
+in order to select candidates at each iteration.
+There are a number of potential avenues available for making this
+search more efficient.
+
+\paragraph{Intelligent Selection of Key Edges.}
+In Chapter~\ref{chap:lazysp},
+we presented novel edge selectors which maintain a distribution over
+candidate paths
+in order to focus edge evaluations towards edges which most likely
+lie on a short path.
+While this showed promising results across a range of problem instances,
+maintaining this distribution can incur its own computational cost
+(quadratic in the number of vertices in the case of the Partition
+selector),
+and therefore it can be intractable over large roadmap graphs.
+
+The effect of these selectors is to automatically discover
+and focus on the parts of the motion planning problem that are
+most constrained.
+It would be worthwhile to explore ways of more efficiently maintaining
+such path distributions for larger graphs.
+In the case of a bidirectional evaluation strategy
+(such as the Alternate selector),
+it may be beneficial to attempt to discover online which end
+of the problem proves to be the most constrained.
+
+It may also be instructive to investigate the ``oracle'' selector.
+Consider that for any graph,
+there exists some minimal set of edges which, if evaluated,
+would proveably demonstrate that the best remaining candidate is
+correct.
+Investigating the distribution of edges required for such a selector
+for particular problem instances
+may aid in desigining new selectors.
+It also serves as a useful benchmark against which to compare performance.
+
+\paragraph{Exploring the Interaction between Lazy and Dynamic Search}
+Lazy search induces an inner dynamic shortest path problem,
+as edge weights are updated and intermediate candidate paths are
+required.
+When LEMUR addresses a problem with $\lambda_p > 0$,
+so that planning cost is to be considered in its utility objective,
+it generally selects candidates that do not solely minimize execution cost
+in favor of candidates that lower remaining planning cost.
+
+Paradoxically,
+as the $\lambda_p$ parameter is increased,
+the underlying dynamic search problem becomes more difficult,
+because its heuristic is no longer as strong.
+(A consistent heuristic typically only exists for the component of
+the edge weight function derived from the execution cost component.)
+It would therefore be beneficial to investigate schemes whereby
+the requirement for optimal shortest paths from the inner
+dynamic search is relaxed.
+For example,
+consider a variant of the LazySP algorithm
+in which the candidate path at each iteration only maximizes utility
+up to a particular suboptimality bound. 
+One suitable algorithm for this relaxed dynamic serach problem
+is Truncated Incremental Search \citep{aine2016truncatedincremental}.
+
+\paragraph{Adjusting the Incremental Balancing Criterion.}
+It is well-known \citep{pohl1969bidirectional}
+that using the cardinality of each OPEN list as the decision rule
+to balance expansion of the two sides of a bidirectional search
+generally outerforms using the distance (key) value itself.
+Unfortunately,
+it is not clear how to adapty this criterion to the incremental
+search setting,
+since the size of the queue of inconsistent vertices is no longer
+indicative of the density of the graph on the two sides.
+Can we dynamically adjust the distance balance criterion
+so that the location of the interface between the two trees
+(represented as the edge connection queue)
+approximates this balanced cardinality criterion?
+
 \subsection{Better Planning Cost Estimates}
 
 The planning cost model we used for our experiments in this thesis
@@ -338,29 +583,11 @@ There are a number of ways that our model can be improved:
    termination condition as well.
 \end{itemize}
 
-\subsection{Exploring the Interaction between Lazy and Dynamic Search}
-
-Lazy search induces a dynamic shortest path problem,
-as edge weights are updated and intermediate candidate paths are
-required.
-When LEMUR addresses a problem with $\lambda_p > 0$,
-so that planning cost is to be considered in its utility objective,
-it generally selects candidates that are no longer the fastest
-to execute (e.g. the shortest) in the hopes of reducing planning time.
-
-Paradoxically,
-as the $\lambda_p$ parameter is increased,
-the underlying dynamic search problem becomes more difficult,
-because its heuristic is no longer as strong.
-(A consistent heuristic typically only exists for the component of
-the edge weight function derived from the execution cost component.)
-It may would be beneficial to investigate schemes whereby
-the requirement for optimal shortest paths from the inner
-dynamic search is relaxed.
-One suitable algorithm for this problem is Truncated
-Incremental Search \citep{aine2016truncatedincremental}.
-
 \subsection{Maximizing Utility in Expectation}
+
+Progressive densification is a proxy for handling the
+spatial coherence in the scene.
+What if we handle this more explicitly?
 
 The LEMUR algorithm exploints an optimistic assumption when considering
 candidate paths for prospective evaluation:
@@ -631,3 +858,8 @@ Treat an entire multi-step plan using LazySP (each edge is expensive after all!)
 \label{sec:conclusion:remarks}
 
 Here are some concluding remarks.
+
+Lazy and utility-guided are complementary.
+
+Lazy effectively decouples planning from evaluation.
+Accomplishes the same thing as BIT* ellipsoid.

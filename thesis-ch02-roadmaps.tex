@@ -168,7 +168,7 @@ intended to measure properties intrinsic to the path.
 Common choices for $x_{\ms{path}}$ include
 the path's arc length,
 the total time or energy necessary to execute the path,
-the squared time derivatives averaged over the path.
+or the squared time derivatives averaged over the path.
 See \citep{karaman2011samplingoptimal} for a comprehensive treatment
 of sampling-based methods for the optimal motion planning problem.
 
@@ -614,7 +614,7 @@ planning, see Janson \citep{janson2015deterministicsampling}.
 Previous work \citep{karaman2011samplingoptimal} has established
 that a roadmap planner which uses a uniformly randomly generated
 point set is asymptotically optimal almost surely
-if if the edge connection radius $r$ is sufficiently large w.r.t.
+if the edge connection radius $r$ is sufficiently large w.r.t.
 the number the number of samples $n$.
 In particular,
 it defines the critical value $\gamma^*_{\mathcal{C}}$:
@@ -627,7 +627,7 @@ where $d$ is the dimensionality of the configuration space,
 $\lambda_d(\cdot)$ represents the Lebesgue measure (e.g. volume),
 and $\zeta_d$ is the Lebesgue measure of the $d$-dimensional unit ball.
 
-Asymptotically optimal under uniform sampling requires
+Asymptotic optimality under uniform sampling requires
 an edge connection radius $r_{\ms{log}}$:
 \begin{equation}
    r_{\ms{log}}(n) =  \gamma^*_{\mathcal{C}} \, \eta
