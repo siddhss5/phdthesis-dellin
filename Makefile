@@ -2,7 +2,7 @@
 # requirements: GNU make, latexmk, pdflatex
 
 #DOCS = proposal proptalk thesis lazysptalk
-DOCS = thesis
+DOCS = defense thesis
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
 all: $(DOCPDFS)
@@ -36,8 +36,12 @@ proptalk.pdf: proptalk-backup.tex
 
 lazysptalk.pdf: lazysptalk.tex
 
+defense.pdf: %.pdf: %.tex
+	pdflatex -halt-on-error $*
+	pdflatex -halt-on-error $*
+
 # latexmk dumps deps
-$(DOCPDFS): %.pdf: %.tex
+thesis.pdf: %.pdf: %.tex
 	#latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -dvi- -ps- -recorder -use-make -deps-out=$*.mk -e '@cus_dep_list = ();' -e 'show_cus_dep();' $* \
 	#	|| (rm -f $(PAPER).fdb_latexmk; pdflatex -halt-on-error -output-directory /tmp $*)
 	pdflatex -halt-on-error $*
@@ -51,6 +55,114 @@ EXTS = aux bbl blg dvi fdb_latexmk fls log mk nav out pdf ps snm toc
 clean:
 	rm -rf build/
 	rm -f $(foreach doc,$(DOCS),$(foreach ext,$(EXTS),$(doc).$(ext)) $(doc)-*.aux)
+
+defense.pdf: build/pvx-linear-discounting-simple.pdf
+defense.pdf: build/lazysp-icon.pdf
+defense.pdf: build/c-space-simple.pdf
+defense.pdf: build/pvx-graph-build,drawaxes.pdf
+defense.pdf: build/pvx-graph-build,drawa.pdf
+defense.pdf: build/pvx-graph-build,drawab.pdf
+defense.pdf: build/pvx-graph-build,drawabxstar.pdf
+defense.pdf: build/pvx-graph-build,drawabxstarc.pdf
+defense.pdf: build/pvx-graph-build,drawabxstarcd.pdf
+defense.pdf: build/pvx-graph-build,drawabxstarcdutility.pdf
+defense.pdf: build/pvx-sm-firstfeas.pdf
+defense.pdf: build/pvx-sm-pbudget.pdf
+defense.pdf: build/pvx-sm-xbudget.pdf
+defense.pdf: build/cspace-utility-intro,start.pdf
+defense.pdf: build/p-estimates-build,start.pdf
+defense.pdf: build/p-estimates-build,iterlabel.pdf
+defense.pdf: build/cspace-utility-intro,candidatesa.pdf
+defense.pdf: build/cspace-utility-intro,candidatea.pdf
+defense.pdf: build/p-estimates-build,candidatea.pdf
+defense.pdf: build/cspace-utility-intro,candidateaevaled.pdf
+defense.pdf: build/p-estimates-build,candidateadelta.pdf
+defense.pdf: build/p-estimates-build,candidateaeval.pdf
+defense.pdf: build/cspace-utility-intro,candidatesb.pdf
+defense.pdf: build/cspace-utility-intro,candidateb.pdf
+defense.pdf: build/p-estimates-build,candidateb.pdf
+defense.pdf: build/cspace-utility-intro,candidatebevaled.pdf
+defense.pdf: build/p-estimates-build,candidatebdelta.pdf
+defense.pdf: build/p-estimates-build,candidatebeval.pdf
+defense.pdf: build/cspace-utility-intro,candidatesfinal.pdf
+defense.pdf: build/p-estimates-build,prefinal.pdf
+defense.pdf: build/cspace-utility-intro,candidatefinal.pdf
+defense.pdf: build/p-estimates-build,final.pdf
+defense.pdf: build/rrt-build,stonly.pdf
+defense.pdf: build/rrt-build,stexisting.pdf
+defense.pdf: build/rrt-build,target.pdf
+defense.pdf: build/rrt-build,otherpaths.pdf
+defense.pdf: build/rrt-build,all.pdf
+defense.pdf: build/pvx-rrt.pdf
+defense.pdf: build/roadmap-stack-onramps.pdf
+defense.pdf: build/pvx-linear-discounting-build,beforeeval.pdf
+defense.pdf: build/pvx-linear-discounting-build,selectcandidate.pdf
+defense.pdf: build/pvx-linear-discounting-build,newcandidate.pdf
+defense.pdf: build/pvx-linear-discounting-build,newshared.pdf
+defense.pdf: build/pvx-linear-discounting-build,newother.pdf
+defense.pdf: build/pvx-linear-discounting-build,newaxes.pdf
+defense.pdf: build/roadmap-stack-short.pdf
+defense.pdf: build/lazysp-fig-dists/fig-sofar.pdf
+defense.pdf: build/lazysp-fig-dists/fig-path-00.pdf
+defense.pdf: build/lazysp-fig-dists/fig-path-01.pdf
+defense.pdf: build/lazysp-fig-dists/fig-path-02.pdf
+defense.pdf: build/lazysp-fig-dists/fig-path-03.pdf
+defense.pdf: build/lazysp-fig-dists/fig-dist-probs.pdf
+defense.pdf: build/lazysp-selscores/gap-33-nograph.pdf
+defense.pdf: build/lazysp-selscores/gap-33.pdf
+defense.pdf: build/lazysp-selscores/gap3-30.pdf
+defense.pdf: build/lazysp-weightfunc.pdf
+defense.pdf: build/lazysp-example-1/alg-fwd-after5.pdf
+defense.pdf: build/lazysp-example-1/alg-fwd-end.pdf
+defense.pdf: build/lazysp-example-1/alg-fwd-path-bars.pdf
+defense.pdf: build/lazysp-example-1/alg-alt-after5.pdf
+defense.pdf: build/lazysp-example-1/alg-alt-end.pdf
+defense.pdf: build/lazysp-example-1/alg-alt-path-bars.pdf
+defense.pdf: build/lazysp-example-1/alg-bisect-after5.pdf
+defense.pdf: build/lazysp-example-1/alg-bisect-end.pdf
+defense.pdf: build/lazysp-example-1/alg-bisect-path-bars.pdf
+defense.pdf: build/lazysp-example-1/alg-partall-after5.pdf
+defense.pdf: build/lazysp-example-1/alg-partall-end.pdf
+defense.pdf: build/lazysp-example-1/alg-partall-path-bars.pdf
+defense.pdf: build/lazysp-partconn.pdf
+defense.pdf: build/lazysp-selscores/empty-33.pdf
+defense.pdf: build/ibid-lazysp-plot,hideibid.pdf
+defense.pdf: build/ibid-intro-focus-incremental.pdf
+defense.pdf: build/ibid-intro-focus-bidirectional.pdf
+defense.pdf: build/ibid-intro-focus-heuristic.pdf
+defense.pdf: build/ibid-dijkstra-trust-build,winctrust.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,e.pdf
+defense.pdf: build/ibid-potentials.pdf
+defense.pdf: build/ibid-dijkstra-trust-build,wtrust.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,a.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,b.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,c.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,d.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,f.pdf
+defense.pdf: build/ibid-bidijkstra-viz-build,g.pdf
+defense.pdf: build/ibid-bidijkstra-sep.pdf
+defense.pdf: build/incbi-road-ne/stats2vert-nonheur.pdf
+defense.pdf: build/incbi-road-ne/stats2vert.pdf
+defense.pdf: build/ibid-lazysp-plot.pdf
+defense.pdf: build/workcell/configs.pdf
+defense.pdf: build/lemur-sq/herbbin0-build,a.pdf
+defense.pdf: build/lemur-sq/herbbin0-build,b.pdf
+defense.pdf: build/lemur-sq/herbbin0-build,c.pdf
+defense.pdf: build/lemur-sq/herbbin0-build,d.pdf
+defense.pdf: build/lemur-sq/herbbin0-build,e.pdf
+defense.pdf: build/lemur-sq/workcellfg.pdf
+defense.pdf: build/family-composite/plot-g-manifold.pdf
+defense.pdf: build/multiple-sets.pdf
+defense.pdf: build/family-belief-graph-example-wrels-policy.pdf
+defense.pdf: build/multistep-prescribed/herbbinnom-g1ll-lemuronly.pdf
+defense.pdf: build/multistep-prescribed/workcell-g1ll-lemuronly.pdf
+defense.pdf: build/lazysp-selscores/empty-50.pdf
+defense.pdf: build/lazysp-selscores/empty-28.pdf
+defense.pdf: build/lazysp-selscores/gap-50.pdf
+defense.pdf: build/lazysp-selscores/gap-28.pdf
+defense.pdf: build/ibid-dijkstra-trust-build,init.pdf
+defense.pdf: build/ibid-dijkstra-trust-build,wtensioned.pdf
+defense.pdf: build/ibid-dijkstra-trust-build,wincons.pdf
 
 thesis.pdf: build/broadphase-single.pdf
 thesis.pdf: build/broadphase-multi.pdf
