@@ -328,7 +328,7 @@ For example, consider a na\"{\i}ve execution cost model in which
 obstacles are distributed unformly in the robot's workspace.
 In this case,
 the likelihood of collision over some edge length
-depends intimately on the configuration of the arm itself
+depends on the configuration of the arm itself
 -- configurations in which the Jacobian matrix is large
 (where changes in the location of robot geometry are large
 with respect to changes in configuration)
@@ -339,14 +339,20 @@ it would seem beneficial to pre-compute a roadmap structure
 in which the edge connection rule depends on some similar measure
 of the robot's configuration.
 
-\paragraph{Efficient Densification.}
-Smarter sequences that are easy to densify.
-Fractal patterns?
-Not lattices.
-Parallelization.
-Recent RSS results?
+%\paragraph{Efficient Densification.}
+%The LEMUR motion planner conducts its search over a series of
+%progressively densified roadmaps.
+%We currently precompute these roadmaps up to a particular level
+%of discretization.
+%Smarter sequences that are easy to densify.
+%Fractal patterns?
+%Not lattices.
+%Parallelization.
+%Recent RSS results?
 
 \subsection{Adaptive Roadmap Densification via an Infinite Roadmap Stack}
+\label{subsec:conclusion:infinite-stack}
+
 \label{sec:discussion:disc}
 The LEMUR planner effectively conducts its search over a sequence of
 progressively densified roadmaps
@@ -479,6 +485,8 @@ adjacent to obstacles blocking the path.
 Furthermore,
 the computational cost of such densification can be captured as
 an additional planning cost component in the LEMUR algorithm,
+\marginnote{Opportunity for a more accurate planning cost estimate:
+adding a term for expected cost of a further roadmap densification.}
 so it will commit to a denser layer only when the predicted path
 savings outweigh the requisite planning cost.
 
@@ -550,8 +558,8 @@ is Truncated Incremental Search \citep{aine2016truncatedincremental}.
 \paragraph{Adjusting the Incremental Balancing Criterion.}
 It is well-known \citep{pohl1969bidirectional}
 that using the cardinality of each OPEN list as the decision rule
-to balance expansion of the two sides of a bidirectional search
-generally outerforms using the distance (key) value itself.
+to balance expansion of the two sides of a conventional bidirectional
+search generally outerforms using the distance (key) value itself.
 Unfortunately,
 it is not clear how to adapty this criterion to the incremental
 search setting,
@@ -562,34 +570,285 @@ so that the location of the interface between the two trees
 (represented as the edge connection queue)
 approximates this balanced cardinality criterion?
 
-\subsection{Better Planning Cost Estimates}
+\paragraph{Modeling and Incorporating Search Cost.}
+The LEMUR planning cost heuristic allows estimates of remaining
+planning cost to be incorporated into the planner's utility function.
+For our experiments in this dissertation,
+this planning cost term included a measure of the expected
+collision checking cost remaining.
+However,
+for larger or denser graphs,
+the time to conduct the inner search may become important to model
+as well.
+\marginnote{Opportunity for a more accurate planning cost estimate:
+adding a term for expected search cost.}
+If such a model exists,
+the planner could (for example) use it to determine
+whether to proceed with a new search,
+or whether to terminate immediately with the best path it has
+found so far.
 
-The planning cost model we used for our experiments in this thesis
-was very simple:
-each collision check entails a constant amount of computational cost.
-There are a number of ways that our model can be improved:
+\subsection{Tighter Integration with Collision Validity Checking}
+
+The basic motion planning problem described in Chapter~\ref{chap:roadmaps}
+considers arbitrary configuration space obstacles.
+When most sampling and search based motion planners test
+candidate path segments for validity,
+they treat validity checking
+-- usually via a geometric collision checker --
+as a ``black box'' operation.
+Given a test configuration $q_{\ms{test}}$,
+such a checker considers the environment
+and the robot's kinematics,
+and returns a boolean answer -- True or False.
+Depending on the fidelity of the geoemtric model of the robot
+and environment,
+each check can entail tens, hundreds, or even thousands
+of microseconds.
+There are a number of opportunities for extending LEMUR in order
+to better predict and account for the internal mechanisms of these
+checkers.
+
+Chapter~\ref{chap:family} explored one such opportunity --
+decomposing the validity checks performed over multiple steps of
+a manipulation task as a family motion planning problem.
+Doing so allows a planning cost model to be formualated naturally
+in terms of different subsets of $\mathcal{C}$-space,
+so that a utility-aware planner (such as LEMUR)
+is incentivized to reuse partial validity information
+from cached or previous similar planning episodes.
+In this section,
+we discuss other opportunities for characterizing and breaking
+the black box collision checking abstraction.
+
+\paragraph{Better Estimates of Expected Validity Checking Cost.}
+The experiments in this dissertation relied on a simple model for
+the planning cost required for each collision check.
+First,
+a single averaged duration per collision check was learned over an array
+of problems for each robot platform.
+Then, during the course of a planning query,
+the remaining planning cost required for each candidate path
+consisted simply of this duration summed across all remaining
+configurations to be checked.
+\marginnote{Opportunity for a more accurate planning cost estimate:
+a model for the different planning cost required in different parts of the space.}
+
+This simple model could be improved in at least two ways:
 \begin{itemize}
-\item The planning cost incurred by performing a collision check
-   can be estimated dynamically,
-   either across a planning episode,
-   or as a function of the check's location in the C-space.
-\item We can include planning cost models for additional aspects of
-   the planner which can be costly.
-   Two immediate candidates are
-   (a) the cost of conducting an additional inner search
-   over the lazy graph,
-   and (b) the cost of progressing to a denser roadmap graph.
-   Accommodating these estimates may lead to a more natural
-   termination condition as well.
+\item First, the planning cost required for a collision check could
+   be learned dynamically during a planning episode.
+   The cost per check depends on the complexity of the workspace
+   obstacles and the areas of the configuration space actually
+   explored,
+   and a planner which incorporates such learning could better adapt to
+   particular planning queries and manage its search more accurately.
+\item Second, the planning cost required for a collision check depends
+   on the area of confiuration space itself.
+   For example,
+   checks in wide open spaces tend to complete much more quicly than
+   those near obstacle boundaries.
+   A planning cost estimator could build and maintain a spatial model
+   of this checking cost during the course of a planning episode,
+   and adjust the predicted remaining planning costs for candidate
+   paths as a result.
 \end{itemize}
 
-\subsection{Maximizing Utility in Expectation}
+\begin{figure*}[t]
+   \centering
+   
+   \subfloat[
+      A motion planner testing simply for membership in
+      $\mathcal{C}_{\mbox{\scriptsize free}}$
+      treats a collision validity checker as a
+      ``black box.''
+      Internally,
+      modern checkers first employ an inexpensive broad-phase check
+      using a simple conservative representation
+      to quickly identify non-colliding bodies before
+      resorting to an expensive narrow-phase check.
+   ]{%
+      \includegraphics{build/broadphase-single}%
+   }%
+   \quad%
+   \subfloat[
+      A family motion planner can explicitly reason about the
+      conservative nature of the broad-phase check.
+      This allows it to defer many narrow phase checks
+      (often indefinitely)
+      and instead prefer paths that require fewer expensive checks.
+   ]{%
+      \includegraphics{build/broadphase-multi}%
+   }
+   
+   \caption[][0.0in]{Collision validity checking is a commonly used
+     indicator function.
+     The family motion planning formulation allows an intelligent
+     planner to reach inside the checker's ``black box''
+     and reduce the number of costly narrow-phase checks.
+     Resulting paths tend to be cheaper to compute and
+     stay further from obstacles.}
+   \label{fig:broad-phase}
+\end{figure*}
 
-Progressive densification is a proxy for handling the
-spatial coherence in the scene.
+\paragraph{Exploiting Multi-Phase Collision Checkers.}
+Many geometric collision checkers build a multi-phase hierarchy,
+both to quickly answer easy validity queries,
+and to focus computation to areas where determining validity
+requires checking at a finer resolution.
+One of the most widely used approaches entails building
+a simple conservative geometric approximation
+(e.g. a bounding box),
+and first checking that approximation for collision during an
+initial ``broad-phase'' check.
+Only geometry which fails this check is then subjected for
+subsequent (and more expensive) ``narrow-phase'' checking.
+See Figure~\ref{fig:broad-phase} for example of such a multi-phase
+validity checker.
+
+Most motion planners treat the validity checker as a binary
+``black box,''
+and do not explicitly reason about this underlying multi-phase process.
+However,
+it may be advantageous for the planner to be made aware of these
+phases.
+This allows the planner to effectively identify configurations for which
+many (or all) geometric pairs are sufficiently far from collision
+that the more expensive narrow-phase checks need not be applied.
+In fact,
+this structure can be represented simply as a family motion planning
+problem.
+Consider the two subsets of configuration space
+$B \subseteq \mathcal{C}$ and $N \subseteq \mathcal{C}$
+which satisfy the inexpensive broad-phase and expensive narrow-phase
+checks, respectively.
+It is clear that $B \subseteq N$,
+so that if indicators ${\bf 1}_B[\cdot]$ and ${\bf 1}_N[\cdot]$
+are available with the former less expensive than the latter,
+the planner would prefer to evaluate the former before resorting to
+the latter.
+
+We show an illustrative 2D example of this idea
+in Figure~\ref{fig:broad-phase-2d}.
+Here, the behavior of LEMUR is shown,
+for the two extreme values of the $\lambda$ tradeoff parameter,
+across three different models of the underlying collision checker.
+In the first model \subref{subfig:broad-phase-2d:nopadding} at left,
+only the narrow-phase checker is available,
+which tests directly for collision against the black obstacle.
+At middle \subref{subfig:broad-phase-2d:paddedblackbox},
+the collision checker has available to it a broad-phase check,
+which first validates the test configuration against grey conservative
+approximation;
+this incurs a planning cost which is 10x less expensive than the
+narrow-phase checker.
+Since this is unknown to the motion planner,
+the solution paths are identical,
+but this does result in a significant savings in planning cost.
+At right \subref{subfig:broad-phase-2d:paddedutility},
+LEMUR is told about each checker explicitly,
+which allows it to defer many expensive narrow-phase checks indefinitely.
+The resulting paths tend to be more expensive to execute,
+since they largely stay free from the conservative approximation,
+but the planner realizes a significant savings in planning cost.
+
+\begin{figure*}[t]
+   \centering
+
+   % top: lambda=0
+
+   % left
+   \subfloat[][%
+      \centering
+      LEMUR with narrow-phase checking only,
+      for $\lambda=0$ (top) and $\lambda=1$ (bottom).
+      \label{subfig:broad-phase-2d:nopadding}
+   ]{
+      \begin{tikzpicture}[font=\small]
+      \node[inner sep=0pt] (pic1) at (0,0) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typenopadding-lambda0p0000.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 0$};
+      \node[anchor=north] at (pic1.south) {Length: 724.3 \quad Plan Cost: 6740.4};
+      \node[inner sep=0pt] (pic1) at (0,-4.7) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typenopadding-lambda0p9999.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 1$};
+      \node[anchor=north] at (pic1.south) {Length: 804.8 \quad Plan Cost: 4540.7};
+      \end{tikzpicture}
+   }
+   % middle
+   \subfloat[][%
+      \centering
+      LEMUR with ``black-box'' broad-phase check
+      (not exposed to planner).
+      \label{subfig:broad-phase-2d:paddedblackbox}
+   ]{
+      \begin{tikzpicture}[font=\small]
+      \node[inner sep=0pt] (pic1) at (0,0) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typepaddedblackbox-lambda0p0000.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 0$};
+      \node[anchor=north] at (pic1.south) {Length: 724.3 \quad Plan Cost: 2144.7};
+      \node[inner sep=0pt] (pic1) at (0,-4.7) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typepaddedblackbox-lambda0p9999.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 1$};
+      \node[anchor=north] at (pic1.south) {Length: 804.8 \quad Plan Cost: 1960.6};
+      \end{tikzpicture}
+   }
+   % right
+   \subfloat[][%
+      \centering
+      LEMUR with broad-phase check exposed as a distinct testable subset.
+      \label{subfig:broad-phase-2d:paddedutility}
+   ]{
+      \begin{tikzpicture}[font=\small]
+      \node[inner sep=0pt] (pic1) at (0,0) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typepaddedutility-lambda0p0000.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 0$};
+      \node[anchor=north] at (pic1.south) {Length: 724.3 \quad Plan Cost: 2176.0};
+      \node[inner sep=0pt] (pic1) at (0,-4.7) {
+         \includegraphics[width=5.5cm]
+         {figs/bean/bean-typepaddedutility-lambda0p9999.png}};
+      \node[anchor=south east] at (pic1.south east) {$\lambda = 1$};
+      \node[anchor=north] at (pic1.south) {Length: 911.4 \quad Plan Cost: 1012.4};
+      \end{tikzpicture}
+   }
+
+   \caption[][0.5cm]{A simple 2D motion planning example
+      in which LEMUR has a broad-phase check available.
+      Testing agaist the bounding box (grey)
+      is 10x less expensive than testing
+      against the actual obstacle (black).
+      Exposing the broad-phase check to LEMUR as a distinct subset
+      allows for reduced planning cost.}
+   \label{fig:broad-phase-2d}
+\end{figure*}
+
+\cdnote{
+More caching!
+Hypothesized volumes / Cell decompositions.
+Bored robots.
+Similarity to Leven/Hutchenson.
+}
+
+\paragraph{Maximizing Utility in Expectation.}
+The strategy of progressively densifying the roadmap discretization
+(including the infinite stack approach discussed
+in Section~\ref{subsec:conclusion:infinite-stack})
+is commonly used for motion planning problems.
+Its purpose is to serve as a proxy for handling the spatial coherence
+between $\mathcal{C}$-space obstacles in the scene.
+For example,
+consider motion planning in an environment with many very small
+randomly placed obstacles --
+in such a scene, it would be difficult to motivate using a coarse
+roadmap to confine the search.
 What if we handle this more explicitly?
 
-The LEMUR algorithm exploints an optimistic assumption when considering
+The LEMUR algorithm exploits an optimistic assumption when considering
 candidate paths for prospective evaluation:
 it assumes all unevaluated edges are collision-free.
 While this assumption allows the inner loop to process candidates
@@ -598,8 +857,8 @@ it requires the hard batching approach to strike an artificial
 balance between local and global exploration.
 It is worth investigating whether abandoning the optimistic
 assumption is worthwhile --
-a replacement would reason explicitly about the collision probability
-across the configuation space.
+a replacement could then reason explicitly about the collision
+probability across the configuation space.
 
 We recently proposed a first step in this direction
 via the Pareto Optimal Motion Planner \citep{choudhury2016pomp}.
@@ -611,11 +870,11 @@ agains the environment.
 The planner then uses this model in order to select candidate paths
 for partial evaluation that minimize some combination of the path's
 execution cost and its probability of collision.
+We show that this combination is equivalent to maximizing utility
+in expectation if colliding trajectories are assigned some large
+penalty cost.
+\cdnote{Is this really true?}
 
-
-
-%\cdnote{Talk about Shushman's POMP stuff.}
-%
 %The purpose of the incremental graph densification strategy
 %achieved by hard batching (Chapter~\ref{chap:utility})
 %is to account for spatial correlation
@@ -700,136 +959,14 @@ execution cost and its probability of collision.
 %   \label{fig:example-in-expectation}
 %\end{figure}
 
-\subsection{Integration with Collision Checking}
-
-Most sampling-based planners consider the collision checker
-to be a block box;
-given a configuration $q_{\ms{test}}$,
-this procedure considers the environment
-and the robot's kinematics,
-and returns a boolean answer -- True or False.
-Depending on the fidelity of the geoemtric model of the robot
-and environment,
-each check can entail tens, hundreds, or even thousands
-of microseconds;
-precious planning time which can detract from the robot's overall
-task performance.
-
-One avenue for minimizing the computation effort spent performing
-collision checks is integrate directly with the broad-phase
-algorithm which effectively identifies configurations for which
-many (or all) geometric pairs are sufficiently far from collision
-that the more expensive narrow-phase checks need not be applied.
-
-\begin{figure}
-   \centering
-
-   % left side
-   \subfloat[Paths with lambda=0][%
-      \centering
-      Paths with $\lambda = 0$\par
-      Average length: 733.0\par
-      Average check cost: 7219.5
-   ]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/bean-allpaths-lambda0.png}
-   }
-   % right side
-   \subfloat[Paths with lambda=1][%
-      \centering
-      Paths with $\lambda = 1$\par
-      Average length: 836.5\par
-      Average check cost: 4692.6
-   ]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/bean-allpaths-lambda1.png}
-   }
-   \\
-   \subfloat[Paths with lambda=0][%
-      \centering
-      Paths with $\lambda = 0$\par
-      Average length: 733.0\par
-      Average check cost: 2685.7
-   ]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/bean-allpaths-padded-lambda0.png}
-   }
-   % right side
-   \subfloat[Paths with lambda=1][%
-      \centering
-      Paths with $\lambda = 1$\par
-      Average length: 907.1\par
-      Average check cost: 1064.5
-   ]{
-      \includegraphics[width=0.45\textwidth]
-      {figs/bean-allpaths-padded-lambda1.png}
-   }
-
-   \caption{A simple 2D example of the Multi-Set PRM using
-     a broad-phase check.
-     Checking for collision with the grey box is 10x less expensive
-     than with the actual black obstacle.}
-     %\cdnote{I need to talk about this in the text.}}
-   \label{fig:broad-phase-2d}
-\end{figure}
-
-\begin{figure*}
-   \centering
-   
-   \subfloat[
-      A motion planner testing simply for membership in
-      $\mathcal{C}_{\mbox{\scriptsize free}}$
-      treats a collision validity checker as a
-      ``black box.''
-      Internally,
-      modern checkers first employ an inexpensive broad-phase check
-      using a low-dimensional conservative representation
-      to quickly identify non-colliding bodies before
-      resorting to an expensive narrow-phase check.
-   ]{%
-      \includegraphics{build/broadphase-single}%
-   }%
-   \quad%
-   \subfloat[
-      A family motion planner can explicitly reason about the
-      conservative nature of the broad-phase check.
-      This allows it to defer some narrow phase checks
-      (often indefinitely)
-      and instead prefer paths that require fewer expensive checks.
-   ]{%
-      \includegraphics{build/broadphase-multi}%
-   }
-   
-   \caption[][0.0in]{Collision validity checking is a commonly used
-     indicator function.
-     The family motion planning formulation allows an intelligent
-     planner to reach inside the checker's ``black box''
-     and reduce the number of costly narrow-phase checks.
-     Resulting paths tend to be cheaper to compute and
-     stay further from obstacles.}
-   \label{fig:broad-phase}
-\end{figure*}
-
-Consider the illustrative motion planning example shown
-in Figure~\ref{fig:broad-phase-2d},
-and the corresponding two-phase system described
-in Figure~\ref{fig:broad-phase}.
-
-\cdnote{
-More caching!
-Hypothesized volumes / Cell decompositions.
-Bored robots.
-Similarity to Leven/Hutchenson.
-}
-
-\subsection{Tighter Motion Planner Integration in a Planning System}
+\subsection{Tighter Integration with Task Planning}
 
 A motion planner is one component in a larger planning system for
 an articulated robot performing real-world tasks.
 There are opportunities for improved system performance by
 integrating the planner more tightly with other system components.
 
-\subsection{Integration with stuff above}
+\paragraph{Integration with stuff above.}
 
 ISER task planning.
 Cite ISER paper.
@@ -851,11 +988,11 @@ or hierarchical or bridged representations and interfaces
 
 Treat an entire multi-step plan using LazySP (each edge is expensive after all!)
 
-\paragraph{Other Applications of LazySP.}
-\cdnote{Talk about satellite application from that guy.}
-
 \section{Concluding Remarks}
 \label{sec:conclusion:remarks}
+
+\paragraph{Other Applications of LazySP.}
+\cdnote{Talk about satellite application from that guy.}
 
 Here are some concluding remarks.
 
