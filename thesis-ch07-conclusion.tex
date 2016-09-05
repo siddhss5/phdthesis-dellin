@@ -159,6 +159,16 @@ a simple proxy for the more complex path distribution selectors
 for common cases where no a priori knowledge of the obstacle
 distribution exists.
 
+We note that lazy planning over roadmaps accomplishes
+the same evaluation focusing behavior exhibited by
+informed sampling-based motion planners
+\citep{gammell2014informedrrtstar, gammell2015bitstar}.
+\cdnote{Add informed FMT* cite.}
+LazySP naturally focuses evaluations only to areas which might improve
+path cost of the particular query under consideration,
+but due to the edge selector is not constrained to evaluate edges
+only in cost-to-come order.
+
 \paragraph{Dynamic Pathfinding.}
 Conducting our roadmap search over candidate paths via lazy
 pathfinding
@@ -870,10 +880,9 @@ agains the environment.
 The planner then uses this model in order to select candidate paths
 for partial evaluation that minimize some combination of the path's
 execution cost and its probability of collision.
-We show that this combination is equivalent to maximizing utility
-in expectation if colliding trajectories are assigned some large
-penalty cost.
-\cdnote{Is this really true?}
+We show that this combination is approximately equivalent
+to maximizing utility in expectation
+if each colliding path segment is assigned a penalty cost.
 
 %The purpose of the incremental graph densification strategy
 %achieved by hard batching (Chapter~\ref{chap:utility})
@@ -963,40 +972,129 @@ penalty cost.
 
 A motion planner is one component in a larger planning system for
 an articulated robot performing real-world tasks.
-There are opportunities for improved system performance by
+For example,
+we have solved multi-step motion and manipulation planning tasks
+using a hierarchical planning architecture for the CHIMP robot
+\citep{dellin2014drc}.
+LEMUR aims to serve as a performant lower-level geometric motion
+planner which is congizant of both the quality of its solutions
+and the planning cost it incurs to find it,
+and we have found that LEMUR provides improved performance for
+such tasks.
+
+\paragraph{Heuristics for Task and Motion Planners.}
+While it can be used effectively in any task planning environment,
+there are  opportunities for improved system performance by
 integrating the planner more tightly with other system components.
-
-\paragraph{Integration with stuff above.}
-
-ISER task planning.
-Cite ISER paper.
-
-Task and motion planning.
-
-I did some work on CMR stuff for multi-step problems,
-for instance.
-Cite this.
-
-\paragraph{Task and Motion Planning.}
-Other recent work has married symbolic reasoning with geometric planning
+Recent work has married symbolic reasoning with geometric planning
 for tasks with multiple subtasks
 as multi-modal planning \citep{hauser2010multi},
 temporal logic \citep{bhatia2010temporalgoals},
 or hierarchical or bridged representations and interfaces
 \citep{cambon2009hybrid}, \citep{gravot2005asymov},
 \citep{srivastava2014taskmotion}.
+In many cases, these task planners can take as input estimates
+of solution quality
+for prospective geometric groundings of symbolic subtasks.
+The utility model over candidate paths maintained by LEMUR could
+serve as an effective feedback mechanism for these higher-level
+task planners.
 
-Treat an entire multi-step plan using LazySP (each edge is expensive after all!)
+\paragraph{Many-to-Many Objectives.}
+As a low-level motion planner,
+LEMUR has been formulated for solving single-pair
+(``one-to-one'') motion planning queries.
+This can be trivially extended to address ``one-to-any''
+or ``any-to-any'' queries, where the start or goal configurations are
+extended to multiple candidates expressed as start or goal regions.
+This can be captured naturally in a shortest-path framework by extending
+the graph representation with virtual vertices and edges connecting
+to all candidates starts and goals.
+However, a higher-level multi-step task planner is often incentivized
+to explore many candidate intermediate configurations,
+and cultivate propsective paths through them.
+One method for expressing these ``many-to-many'' queries is by
+modifying the objective given to the lower-level motion planner;
+we explored the comprehensive multi-root objective
+\citep{dellin2015cmr} to that end.
+It would be worthwhile to apply this objective to lazy roadmap motion
+planners such as LEMUR.
+
+\paragraph{Edge Selectors for Manipulation Graphs.}
+We also highlight that task planners can be viewed as searching
+the \emph{manipulation graph} \citep{simeon2004manipulation}
+for a feasible solution to the task.
+Each edge in the manipulation graph comprises a transit or transfer
+path
+(or, in more general problem domains, other non-prehensile actions).
+The computationally intensive part of solving these graphs is
+commonly finding feasible geometric groundings for each edge of this
+manipulation graph.
+We contend that this problem could be solved directly using the LazySP
+algorithm (Chapter~\ref{chap:lazysp}.
+In this formulation,
+each edge of the task graph would itself entail an invocation of LEMUR
+-- but each invocation would share the same underlying roadmap
+managed as described in Chapter~\ref{chap:family}.
+Edge selectors could then be employed to allocate motion planning
+resources only on edges in the manipulation graph
+most likely to contribute to a short solution to the task.
 
 \section{Concluding Remarks}
 \label{sec:conclusion:remarks}
 
-\paragraph{Other Applications of LazySP.}
-\cdnote{Talk about satellite application from that guy.}
+This dissertation explores the integration of two ideas
+for efficient motion planning
+-- \emph{lazy} and \emph{utility-guided} evaluation.
+These key ideas are complementary;
+while lazy pathfinding serves to decouple the process of
+discovering our options from determining their validity,
+utility-guided planning gives us the means to select intelligently
+between these options for the most promising.
 
-Here are some concluding remarks.
+We exploit roadmaps as a way to discretize our continuous planning
+problem into a pathfinding problem on a graph.
+But importantly, we do not lose sight of our motion planning domain:
+evaluating edge weights is expensive.
+Not only does this motivate our approach of lazily determining edge
+weights,
+but it opens the door to intelligent strategies for allocating our
+precious planning resources in the right places.
+We proposed edge selectors as a mechanism for doing this over the
+edges of a graph
+(and we have had fruitful discussions with researchers from other
+domains such as satellite trajectory planning
+which share our problem's cost structure).
 
-Lazy and utility-guided are complementary.
+While selectors can capture the problem of resource allocation
+over the discrete space,
+there is also the question of allocating planning resources between
+different levels of densification.
+LEMUR addresses this question via batching -- switching to a
+progressively better discrete approximation to the continuous problem
+until a path is found.
+However, we discussed ways in Section~\ref{subsec:conclusion:infinite-stack}
+to represent this more naturally during the course of the search itself.
+This also opens the door to specialized motion planning hardware
+(e.g. GPUs and FPGAs) which can maintain roadmaps efficiently
+and in parallel.
+\cdnote{Add RSS roadmap cite!}
 
-Lazy effectively decouples planning from evaluation.
-Accomplishes the same thing as BIT* ellipsoid.
+Importantly,
+performing lazy search over roadmaps enables the use of grounded
+heuristic estimates over concrete prospective motion path segments.
+This directly enables our use of utility functions to guide the planner's
+evaluation,
+which is especially relevant for autonomous robots performing
+human-scale tasks
+-- performing tasks with and around people requires robots
+that are efficient both in computation and in action,
+since people are unaccommodating both of long planning pauses
+and of wild and inefficient motions.
+The expressiveness of out utility function approach,
+which can take advantage of any domain-specific planning heuristics
+available,
+opens the doors to many opportunities for getting better performance
+out of autonomous robots performing helpful recurring tasks in our
+day-to-day lives.
+
