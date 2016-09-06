@@ -27,6 +27,7 @@ thesis.pdf: thesis-ch03-lazysp-proofs.tex
 thesis.pdf: thesis-ch04-ibid-proofs.tex
 thesis.pdf: thesis-ch05-lemur-appendix.tex
 thesis.pdf: thesis-ch06-family-appendix.tex
+thesis.pdf: references.bib
 
 proptalk.pdf: proptalk-intro.tex
 proptalk.pdf: proptalk-act1.tex
@@ -44,17 +45,19 @@ defense.pdf: %.pdf: %.tex
 thesis.pdf: %.pdf: %.tex
 	#latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -dvi- -ps- -recorder -use-make -deps-out=$*.mk -e '@cus_dep_list = ();' -e 'show_cus_dep();' $* \
 	#	|| (rm -f $(PAPER).fdb_latexmk; pdflatex -halt-on-error -output-directory /tmp $*)
-	pdflatex -halt-on-error $*
-	bibtex $*
-	pdflatex -halt-on-error $*
-	pdflatex -halt-on-error $*
+	# i think this works ...
+	X=`md5sum /dev/null $*.bbl` && Y=`md5sum /dev/null $**.aux` \
+	   && pdflatex -halt-on-error $* \
+	   && bibtex $* \
+	   && ([ "$$X" = "`md5sum /dev/null $*.bbl`" ] || pdflatex -halt-on-error $*) \
+	   && ([ "$$Y" = "`md5sum /dev/null $**.aux`" ] || pdflatex -halt-on-error $*)
 
 # how to clean after latex
 EXTS = aux bbl blg dvi fdb_latexmk fls log mk nav out pdf ps snm toc
 .PHONY: clean
 clean:
 	rm -rf build/
-	rm -f $(foreach doc,$(DOCS),$(foreach ext,$(EXTS),$(doc).$(ext)) $(doc)-*.aux)
+	rm -f $(foreach doc,$(DOCS),$(foreach ext,$(EXTS),$(doc).$(ext)) $(doc)-*.aux $(doc)-*.tikzvid-sh)
 
 defense.pdf: build/pvx-linear-discounting-simple.pdf
 defense.pdf: build/lazysp-icon.pdf

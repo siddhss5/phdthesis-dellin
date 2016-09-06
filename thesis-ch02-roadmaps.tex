@@ -314,6 +314,7 @@ algorithms,
 many of which do not construct graphs of local motions in the
 problem's configuration space.
 Potential field methods \citep{khatib1986potentialfields}
+and navigation functions \citep{rimon1989navigationfunctions}
 construct fields whose gradients can guide a path around
 local obstacles.
 Trajectory optimization approaches are especially well-suited to
@@ -362,10 +363,13 @@ as constructing an approximation to $\mathcal{C}_{\ms{free}}$
 as directly as possible.
 
 \paragraph{Exact Algorithms.}
-The earliest work on the motion planning problem studied exact
+The earliest work on the motion planning problem studied
+\emph{exact} or \emph{semi-algebraic}
 algorithms which worked directly on an explicit representation
-of the obstacles (e.g. polygons) in the search space
+of the obstacles (e.g. polygons) in the configuration space
 \citep{lozanoperez1983cspace}.
+This formulation of motion planning was shown to be
+PSPACE-hard \citep{reif1979moverscomplexity,canny1988complexitymotionplanning}.
 These approaches can guarantee optimal solutions,
 and may be even be able to guarantee the validity of certain edges
 by construction.
@@ -501,9 +505,9 @@ application of search-based methods often represents the space
 implicitly via a set of operators or motion primitives
 which reproduce a regular lattice over the configuration space
 \citep{pivtoraiko2005statelattice}.
-When the lattice is rectangular,
+When the vertices comprising the lattice are rectangular
+(also called a Sukharev point set \citep{sukharev1971extremum}),
 seach-based planning is also called ``grid search.''
-\cdnote{Add Sukharev grid cite.}
 
 \paragraph{Lazy Validity Checking.}
 Because obstacle-insensitive approaches decouple graph construction
@@ -525,21 +529,31 @@ One difficulty with these obstacle-insensitive approaches
 is that they commit to a particular discretization,
 and once their search is exhausted,
 they must return the best path found,
-or nothing if no path was found so far.
+or report failure if no path was found.
 This property is known as resolution completeness
 \citep{cheng2004rescomplete}.
-Algorithms such as BIT* \citep{gammell2015bitstar}
-consider a sequence of progressively densified approximations
-in order to produce an anytime sequence of improving solution paths.
 
-\cdnote{Relate this to the C-space pyramids approach from
-\citep{barraquand1991distributedrepresentation}.}
+Many instance of prior work endeavor to progressively
+densify their discretization until a suitable solution is found.
+Early examples of this approach include
+hierarchical cell decompositions \citep{faverjon1984octree}
+and workspace and C-space bitmap pyramids for search over potential fields
+\citep{barraquand1991distributedrepresentation}.
+More recent asymptotically optimal motion planners such as
+Lazy PRM* \citep{hauser2015lazy}.
+and BIT* \citep{gammell2015bitstar} take a similar approach to
+roadmap search,
+which we also adopt as described in Chapter~\ref{chap:utility}
+(see Figure~\ref{fig:roadmaps:roadmap-stack}).
 
 \begin{figure}
    \centering
    \includegraphics{build/roadmap-stack}
    \caption{A stack of progressively densified roadmaps
-      over a given free configuration space $\mathcal{C}$.}
+      over a given configuration space $\mathcal{C}$.
+      Each deeper roadmap constitutes a more accurate approximation
+      to the true continuous problem space.}
+   \label{fig:roadmaps:roadmap-stack}
 \end{figure}
 
 \paragraph{Advantages of Obstacle Insensitivity.}
@@ -623,11 +637,16 @@ planning, see Janson \citep{janson2015deterministicsampling}.
 \begin{figure}
    \centering
    \includegraphics{build/roadmaps/gen/aagrid}
+   \;
    \includegraphics{build/roadmaps/gen/rgg}
+   \;
    \includegraphics{build/roadmaps/gen/halton}
-   \caption{Examples of roadmap types over the unit square
-      (axis-aligned lattice, RGG, and Halton graphs).
-      In this case, all roadmaps have a connection radius of 0.3.}
+   \caption{Examples of three roadmap types over the unit square:
+      an axis-aligned lattice (left),
+      random geometric graph (middle),
+      and Halton graph with primes $(2,3)$ (right).
+      All three roadmaps have a connection radius of 0.3.
+      The latter two roadmaps have 30 vertices.}
 \end{figure}
 
 \paragraph{Connection Radii.}
@@ -646,6 +665,14 @@ it defines the critical value $\gamma^*_{\mathcal{C}}$:
 where $d$ is the dimensionality of the configuration space,
 $\lambda_d(\cdot)$ represents the Lebesgue measure (e.g. volume),
 and $\zeta_d$ is the Lebesgue measure of the $d$-dimensional unit ball.
+Note that while other publications consider $n$ to be the number
+of milestones in the collision-free subset of the space
+(and therefore also rely on the measure of that subset),
+we measure the volume of the entire C-space,
+and let $n$ correspond to the total number of vertices.
+We do this because we will be determining the validity of roadmap edges
+in a separate step,
+as described in Chapter~\ref{chap:lazysp}.
 
 Asymptotic optimality under uniform sampling requires
 an edge connection radius $r_{\ms{log}}$:
@@ -695,8 +722,8 @@ we build roadmaps directly in the joint space of the robot.
 See Table~\ref{table:roadmap-params} for the roadmap parameters
 that we use.
 
-\cdnote{Add a plot of roadmap sizes for each batch
-for each robotic platform}.
+%\cdnote{Add a plot of roadmap sizes for each batch
+%for each robotic platform}.
 
 %\subsection{Dispersion}
 %
