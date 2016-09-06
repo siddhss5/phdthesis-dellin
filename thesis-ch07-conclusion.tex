@@ -276,7 +276,7 @@ a formulation of manipulation planning that yields a natural
 planning cost estimate for utility-guided motion planners.}
 We show this representation,
 in which multi-step tasks are given over a family of related
-$\mathcal{C}$-space subsets,
+C-space subsets,
 allows for a planning cost heuristic
 which naturally incentivizes a utility-based planner (such as LEMUR)
 to reuse planning computation from prior queries.
@@ -321,7 +321,7 @@ the efficacy of this discretization.
 
 \paragraph{Better Connection Heuristics.}
 Roadmap methods rely on a connection rule to determine whether
-two vertices representing configurations in the $\mathcal{C}$-space
+two vertices representing configurations in the C-space
 should be connected with an edge
 -- the existance of such an edge implies that the local planner
 has high likelihood of successfully finding a valid path between them.
@@ -623,7 +623,7 @@ Chapter~\ref{chap:family} explored one such opportunity --
 decomposing the validity checks performed over multiple steps of
 a manipulation task as a family motion planning problem.
 Doing so allows a planning cost model to be formualated naturally
-in terms of different subsets of $\mathcal{C}$-space,
+in terms of different subsets of C-space,
 so that a utility-aware planner (such as LEMUR)
 is incentivized to reuse partial validity information
 from cached or previous similar planning episodes.
@@ -850,7 +850,7 @@ The strategy of progressively densifying the roadmap discretization
 in Section~\ref{subsec:conclusion:infinite-stack})
 is commonly used for motion planning problems.
 Its purpose is to serve as a proxy for handling the spatial coherence
-between $\mathcal{C}$-space obstacles in the scene.
+between C-space obstacles in the scene.
 For example,
 consider motion planning in an environment with many very small
 randomly placed obstacles --
@@ -897,10 +897,10 @@ if each colliding path segment is assigned a penalty cost.
 %we can motivate the incremental densification idea,
 %with a graduated cost model
 %to approximate a probabalistic model
-%of the $\mathcal{C}$-space.
+%of the C-space.
 %
 %How should discrete graphs be constructed in continuous
-%   $\mathcal{C}$-spaces with spatially correlated execution costs?
+%   C-spaces with spatially correlated execution costs?
 %
 %Chapter~\ref{chap:graphs-in-continuous}
 %discusses how to embed roadmaps in $\mathcal{C}$

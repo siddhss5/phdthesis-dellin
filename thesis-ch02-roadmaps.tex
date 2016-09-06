@@ -151,7 +151,7 @@ if one exists.
    \centering
    \begin{tikzpicture}
       \node at (0,0) {
-         $x_{\ms{path}}[\xi] = L_2[\xi]$
+         $x_{\ms{int}}[\xi] = L_2[\xi]$
       };
    \end{tikzpicture}
    \caption{Example dynamical cost function for the optimal
@@ -163,9 +163,9 @@ if one exists.
 The \emph{optimal motion planning problem}
 is a generalization of the motion planning problem which
 includes an additional objective over solution paths
-$x_{\ms{path}} : \Xi \rightarrow \mathbb{R}$
+$x_{\ms{int}} : \Xi \rightarrow \mathbb{R}$
 intended to measure properties intrinsic to the path.
-Common choices for $x_{\ms{path}}$ include
+Common choices for $x_{\ms{int}}$ include
 the path's arc length,
 the total time or energy necessary to execute the path,
 or the squared time derivatives averaged over the path.
@@ -174,7 +174,7 @@ of sampling-based methods for the optimal motion planning problem.
 
 \marginnote{An optimal moption planner
    typically considers both feasibility dynamical properties of candidate paths --
-   this objective is simply $x_{\ms{opt}} = x_{\ms{valid}} + x_{\ms{path}}$.
+   this objective is simply $x_{\ms{opt}} = x_{\ms{valid}} + x_{\ms{int}}$.
    We treat them separately because they exhibit fundamentally different
    computational profiles.}
 
@@ -218,7 +218,8 @@ and the configuration-space obstacles cannot be represented explicitly.
 In this case,
 it is necessary to test prospective paths
 for membership in $\mathcal{C}_{\ms{free}}$ using a predicate
-called an \emph{indicator function},
+that we express as a binary-valued
+\emph{indicator function},
 \begin{equation}
    \mathbf{1}_{\mathcal{C}\ms{free}} : \mathcal{C} \rightarrow
       \{ \mbox{True}, \mbox{False} \} 
@@ -238,17 +239,19 @@ including C-space bubbles \citep{quinlan1994modification}
 and computing a path discretization resolution and corresponding
 workspace obstacle padding
 \citep{barraquand1991distributedrepresentation}.
-We will simply assume that a functional variant of the indicator
-function is available:
+We will generally assume that a functional variant of the indicator
+function is available:%
+\marginnote{The experiments in this document commit to a particular
+collision checking resolution for motion validity.}%
 \begin{equation}
    \mathbf{1}_{\Xi\ms{free}} : \Xi \rightarrow
-      \{ \mbox{True}, \mbox{False} \} 
+      \{ \mbox{True}, \mbox{False} \} .
 \end{equation}
 
 \paragraph{Motion Planning as Pathfinding.}
 Importantly,
-two paths $\xi_{ab}$ and $\xi{bc}$ with $\xi_{ab}(1) = \xi_{bc}(0)$
-can be concatenated to a path $\xi{ac}$,
+two paths $\xi_{ab}$ and $\xi_{bc}$ with $\xi_{ab}(1) = \xi_{bc}(0)$
+can be concatenated to a path $\xi_{ac}$,
 with
 \begin{equation}
    \mathbf{1}_{\Xi\ms{free}}(\xi_{ab})
@@ -262,16 +265,17 @@ smaller valid motions in the configuration space.
 Consider a graph $G = (V,E)$,
 with each vertex $v \in V$ a configuration $q_v \in \mathcal{C}$,
 and each edge $e_{uv} \in E$ a path $\xi_e \in \Xi$
-s.t. $\xi(0) = q_u$ and $\xi(1) = q_v$.
-If $v_{\ms{start}}, v_{\ms{dest}} \in V$
-correspond to the query vertices $q_{\ms{start}}, q_{\ms{dest}}$,
-then a path $p$ through $G$ from
-$v_{\ms{start}}$ to $v_{\ms{dest}}$
+s.t. $\xi(0) = q_u$ and $\xi(1) = q_v$,
+and consider vertices $v_{\ms{start}}, v_{\ms{dest}} \in V$
+corresponding to query vertices $q_{\ms{start}}, q_{\ms{dest}}$.
+Then a path $p$ through $G$ from
+$v_{\ms{start}}$ to $v_{\ms{dest}}$,
+on which each edge $e$ has $\mathbf{1}_{\Xi\ms{free}}(\xi_e) = \mbox{True}$,
 corresponds to a valid solution to the motion planning problem.
 
 \paragraph{Optimal Motion Planning as Pathfinding.}
 Furthermore,
-if the optimization objective $x_{\ms{path}}$
+if the intrinsic optimization objective $x_{\ms{int}}$
 from Figure~\ref{fig:roadmaps:cost-model-path} is \emph{additive},
 then the optimal motion planning problem can be solved on $G$
 via a shortest path algorithm
@@ -280,10 +284,11 @@ This is accomplished by defining an edge weight function
 $w : E \rightarrow \mathbb{R}$
 by $w(e) = x_{\ms{opt}}(\xi_e)$.
 
-The approach for constructing, searching, and validating this graph
-differs significantly between algorithms.
-We will broadly review different options in
-Section~\ref{sec:roadmaps:sensitivity}.
+A wide variety of approaches exist in the literature for
+constructing, searching, and validating this graph
+for motion planning problems.
+We will broadly review a selection of different algorithms later
+in this chapter (Section~\ref{sec:roadmaps:sensitivity}).
 
 %\paragraph{Resolution and Probabalistic Completeness.}
 %Any discretization is only an approximation of the actual configuration
@@ -305,8 +310,10 @@ Section~\ref{sec:roadmaps:sensitivity}.
 
 \paragraph{Other Approaches to Motion Planning.}
 The motion planning problem affords a number of different classes of
-algorithms.
-The potential field methods \citep{khatib1986potentialfields}
+algorithms,
+many of which do not construct graphs of local motions in the
+problem's configuration space.
+Potential field methods \citep{khatib1986potentialfields}
 construct fields whose gradients can guide a path around
 local obstacles.
 Trajectory optimization approaches are especially well-suited to
@@ -326,16 +333,16 @@ changes (e.g. \citep{quinlan1994modification}).
 \label{sec:roadmaps:sensitivity}
 
 Generally,
-graph-based motion planners require the following three stages:
+graph-based motion approaches as described
+in Section~\ref{subsec:roadmaps:building-graphs}
+require the following three processes:
 (a) constructing the graph,
 (b) searching the graph, and
 (c) validating the graph.
-
-One of the key differentiators between graph-building techniques
-for motion planning available in the literature
-is how they interleave constructing, searching, and validating
-the graph.
-This section reviews one important consideration:
+One of the key differentiators between the many graph-building
+techniques for motion planning
+is how they interleave these three processes.
+This section considers one important factor:
 the degree of dependence of the graph structure
 on the distribution of obstacles in the scene.
 We broadly categorize algorithms into two groups:
@@ -345,25 +352,32 @@ and those that are \emph{obstacle-insensitive}.
 \subsection{Obstacle-Sensitive Approaches}
 \label{subsec:roadmaps:sensitive}
 
-In obstacle sensitive approach,
+In an obstacle sensitive approach,
 the graph is built incrementally,
-and construction of new elements
-is directly interleaved with validating them,
+and construction of new elements (e.g. vertices and edges)
+is directly interleaved with validating those elements
 in response to the distribution of valid or costly states.
+These approaches might be best understood
+as constructing an approximation to $\mathcal{C}_{\ms{free}}$
+as directly as possible.
 
 \paragraph{Exact Algorithms.}
 The earliest work on the motion planning problem studied exact
 algorithms which worked directly on an explicit representation
-of the obstacles (e.g. polygons) \citep{lozanoperez1983cspace}.
+of the obstacles (e.g. polygons) in the search space
+\citep{lozanoperez1983cspace}.
 These approaches can guarantee optimal solutions,
-and may not require explicit edge validation.
+and may be even be able to guarantee the validity of certain edges
+by construction.
 However,
 they are difficult to apply to problems on articulated
 robots for two reasons.
-First, many are only applicable to problems in two or three dimensions,
-or to robots that can only translate \citep{kavraki1995cspacefft}.
+First, many approaches are only applicable to problems
+in two or three dimensions,
+or to robots with only translational degrees of freedome
+\citep{kavraki1995cspacefft}.
 Second, an explicit representation of obstacles in the
-configuration space is exceedingly difficult due to the
+configuration space is exceedingly difficult to achieve due to the
 nonlinearity in the forward kinematics function.
 While some approaches are able to construct explicit
 analytical or approximate configuraion space obstacles from
@@ -371,97 +385,100 @@ workspace geometry (e.g. \citep{newmanbranicky1991cspacetransforms}),
 they are often only applicable to simple kinematics.
 
 \paragraph{Treebuilding Algorithms.}
-Other approaches treat the configuration space implicitly.
-The most common algorithms grow and validate trees simulteneously,
-either unidirectionally or bidirectionally.
-At each iterations,
+Many approaches do treat the configuration space implicitly
+(i.e. using indicator functions for validity checking as described
+in Section~\ref{subsec:roadmaps:building-graphs}).
+The most common algorithms simulteneously grow and validate trees,
+either unidirectionally from the $v_{\ms{start}}$ or bidirectionally
+from both start and goal configurations.
+At each iteration,
 these algorithms use a sampling strategy to propose a new extension,
 and then augment their tree(s) if the new motion is found to be valid.
-
 Key examples of this approach include
 Expansive Space Trees (EST) \citep{hsu1997expansive}
 and Rapidly-exploring Random Trees (RRT)
 \citep{lavalle1998rrt, kuffner2000rrtconnect}.
-SBL \citep{sanchezante2001sbl}
-is a bidirectional EST with lazy edge validity checking.
+The SBL planner \citep{sanchezante2001sbl}
+is a bidirectional variant of EST with lazy edge validity checking.
 
 \paragraph{Planning vs. Execution Cost.}
-The core algorithms in this category are primarily feasibility
-algorithms;
-there is no mechanism explicitly biasing them to select
+The foundational algorithms in this category are primarily concerned
+with path \emph{feasibility} -- that is, the objective $x_{\ms{valid}}$
+from Figure~\ref{fig:roadmaps:cost-model-feasible};
+there is often no mechanism explicitly biasing them to select
 low-cost paths.
-\marginnote{We talk about this tradeoff in detail
-in Chapter~\ref{chap:utility}.}
+\marginnote{We talk about this tradeoff between planning and
+execution cost in detail in Chapter~\ref{chap:utility}.}
 Therefore, solutions found tend to be of low quality,
 and they are customarily optimized using a path shortcutting
-algorithm.
+algorithm in a post-processing phase before they can be executed.
 More recent work has also focused on asymptotically optimal variants
-of these planners \citep{karaman2010rrtstar}.
+of these planners
+\citep{karaman2010rrtstar, karaman2011samplingoptimal, gammell2015bitstar, hauser2015lazy}
+which do address more general cost objectives.
 
 \paragraph{Advantages of Obstacle Sensitivity.}
 One key advantage to obstacle-sensative approaches is that
 they only construct the graph structure in the parts of the
 configuration space that are relevant to the planning query.
-The Vornoi bias of the RRT or the importance sampling of the EST
-attempt to focus sampling graph construction in ares
-which tend to improve the current solution.
+The Vornoi sampling bias of the RRT or the importance sampling of the EST
+attempt to focus graph construction in areas of the configuration space
+which tend to find feasible paths quickly.
 These techniques can also take account of the current distribution
 and connectivity of the discretization in order to focus new
 samples to their advantage
 (e.g. to address the narrow passage problem),
-such as the expansion phase of the original PRM
-\citep{kavrakietal1996prm}.
-Also obstacle-based \citep{boor1999prmgaussiansampling}
-and hybrid \citep{hsu2005hybridsampling}
-sampling strategies.
+such as visibility tests \citep{simeon2000visibilityprms}
+or the expansion phase of the original PRM
+\citep{kavrakietal1996prm}
+or the visibility test of the Visibili
+These heuristics can also be incorporated into sampling-based planners
+as obstacle-based \citep{boor1999prmgaussiansampling}
+or hybrid \citep{hsu2005hybridsampling} sampling strategies.
 
-Another advantage is that these algorithms handle densification
-naturally;
-the graph structure is augmented automatically,
+An additional advantage of these approaches
+is that they handle densification naturally.
+The graph structure is augmented automatically,
 so the resolution of the discretization need not be explicitly
-increased as the instance reveals to be more difficult.
-
-%It's important to compare against these.
-%But we focus on insensitive approaches.
-
-\cdnote{Visibility PRMs \citep{simeon2000visibilityprms}.}
-
-%Usually, densification comes for free.
+increased as the instance reveals itself to be more difficult.
 
 %Probabalistic completeness.
 
 \subsection{Obstacle-Insensitive Approaches}
 
-In contrast to the obstacle-sensitive approaches described in
-Section~\ref{subsec:roadmaps:sensitive},
-the approaches in this section commit to a particular discretization
+In contrast to obstacle-sensitive approaches,
+the approaches we describe here
+commit to a particular discretization
 of the configuration space a priori,
-independent of the distribution of obstacles or costs.
+independent of the distribution of obstacles.
 While this simpler method forgoes some of the advantages of
-obstacle sensitivity,
+obstacle sensitivity discussed previously,
 this idependence does confer some advantages of its own.
 
 \paragraph{Roadmap Methods.}
 
-The earliest obstacle-insensitive methods particular to the motion
+The foundational obstacle-insensitive methods particular to the motion
 planning problem are called \emph{roadmap methods}.
 The term roadmap usually connotes a graph embedded in a continous
 ambient space in the presence of obstacles.
-Vertices in the graph are also called milestones.
+Vertices in the graph,
+which correspond to configurations in the configuration space,
+are also called milestones.
 The first roadmap methods such as the
 Probabalistic RoadMap (PRM) \citep{kavrakietal1996prm}
 initialized the milestones arrangement
 from a uniform distribution over the free space.
 
-Key to sampling-based approaches
-to motion planning for such problems
-is the concept of the \emph{local planner}.
+Key to roadmap methods to motion planning
+is the concept of the \emph{local planner}
+which governs the validity of roadmap edges.
 Given two configurations $q_a, q_b \in \mathcal{C}$,
-the local planner first produces a candidate path $\xi_{ab}$ between
+the local planner considers a candidate path $\xi_{ab}$ between
 them.
-(A common implementation simply produces the straight-line path
+(A common implementation simply uses the straight-line path
 in configuration space.)
-Edges are only attempted when they meet certain restrictions.
+Edges are only attempted when they meet certain restrictions,
+such as distance with respect to some metric.
 
 There are some variants of roadmap planners that are not independent
 of the obstacle distribution.
@@ -478,13 +495,15 @@ the same connected component.
 \paragraph{Search-based Methods.}
 Graph pathfinding algorithms such as A* \citep{hart1968astar}
 are applicable to the motion planning problem if a suitable
-space discretization is considered.
-The search space is often represented implicitly via a set of
-operators or motion primitives
+discretization of the continuous space is considered.
+While roadmaps can serve as this discretization,
+application of search-based methods often represents the space
+implicitly via a set of operators or motion primitives
 which reproduce a regular lattice over the configuration space
-\citep{pivtoraiko2005statelattice};
-when the lattice is rectangular,
+\citep{pivtoraiko2005statelattice}.
+When the lattice is rectangular,
 seach-based planning is also called ``grid search.''
+\cdnote{Add Sukharev grid cite.}
 
 \paragraph{Lazy Validity Checking.}
 Because obstacle-insensitive approaches decouple graph construction
@@ -495,10 +514,11 @@ Lazy validity checking has been exploited
 in roadmap methods such as the Lazy PRM
 \citep{bohlin2000lazyprm, hauser2015lazy},
 search methods such as Lazy Weighted A* \citep{cohen2014narms},
-and methods which bridge the two such as FMT* \citep{janson2015fmtstar}
-and BFMT* \citep{starek2015bfmtstar}.
-We discuss laziness in graph search comprehensively
-in Chapter~\ref{chap:lazysp}
+and methods which bridge the two
+such as Fast Marching Trees (FMT*) \citep{janson2015fmtstar}
+and Bidirectional FMT* (BFMT*) \citep{starek2015bfmtstar}.
+We discuss laziness in the context of graph search
+more comprehensively in Chapter~\ref{chap:lazysp}
 
 \paragraph{Adaptive Densification.}
 One difficulty with these obstacle-insensitive approaches
