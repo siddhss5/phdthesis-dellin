@@ -16,6 +16,8 @@ proposal.pdf: proposal-intro.tex
 proposal.pdf: proposal-framework.tex
 proposal.pdf: proposal-summary.tex
 
+thesis.pdf: thesis-abstract.tex
+thesis.pdf: thesis-acknowledgements.tex
 thesis.pdf: thesis-ch01-intro.tex
 thesis.pdf: thesis-ch02-roadmaps.tex
 thesis.pdf: thesis-ch03-lazysp.tex
