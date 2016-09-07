@@ -1,0 +1,173 @@
+\chapter{Appendix: Incrementally Calculating Partition Functions on Graphs}
+\label{chap:appendix-partition}
+
+\paragraph{Problem Definition.}
+Consider a directed graph $G=(V,E)$ endowed with an edge weight
+function $w : E \rightarrow \mathbb{R}$.
+Between any two vertices $x,y \in V$,
+there exist a (potentially infinite) set of paths $P_{xy}$,
+\marginnote{Note that we do not restrict consideration
+to only simple paths on $G$.}
+with the length of any path given by
+$\mbox{len} : P_{xy} \rightarrow \mathbb{R}$ as in
+(\ref{eqn:lazysp:len-definition}).
+Between each such pair of vertices $x,y$,
+one can compute the \emph{partition function} denoted $Z_{xy}$,
+defined as a sum over all possible paths as follows:
+\begin{equation}
+   Z_{xy} = \sum_{p_{xy} \in P_{xy}} \exp(- \beta \, \mbox{len}(p_{xy})),
+   \label{eqn:def}
+\end{equation}
+with $\beta$ a fixed real-valued parameter
+(commonly called an inverse temperature in statistical mechanics).
+We wish to compute and maintain this partition function value
+between all pairs of vertices $x$ and $y$ on $G$.
+
+\paragraph{An Incremental Approach.}
+We propose an incremental method for calculating $Z$ between all pairs
+on a graph.
+We will proceed by initializing the values $Z_{xy}$ for each pair
+on a graph with no edges,
+and then show how we can update these values as edges are added
+or removed.
+
+First,
+consider the graph with no edges $G_0 = (V, \emptyset)$.
+On this graph, there exists no paths between each pair of vertices
+$x,y$ with $x \neq y$.
+On the other hand,
+for $x=y$ there exists exactly one path
+containing no edges (and therefore with length $0$).
+Thus, we can initialize our values $Z_{xy}$ with:
+\begin{equation}
+   Z_{xy} = \left\{ \begin{array}{cl}
+      1 & \mbox{if } x = y, \\
+      0 & \mbox{otherwise}.
+   \end{array}\right.
+\end{equation}
+
+\paragraph{Adding Edges.}
+We can next establish the inductive step.
+Suppose we compare two directed graphs $G$ and $G'$,
+where $V' = V$ and $E' = E \cup \{ e_{ab} \}$,
+and with new edge $e_{ab} : a \rightarrow b$ having weight $w_{ab}$.
+For arbitrary vertices $x$ and $y$, we can write $Z'_{xy}$ as follows:
+\begin{equation}
+   Z'_{xy} = S^{(0)} + S^{(1)} + S^{(2)} + \dots
+   \label{eqn:sums}
+\end{equation}
+where $S^{(k)}$ is the sum from (\ref{eqn:def})
+over only the subset of paths that traverse $e_{ab}$ exactly $k$ times.
+We note immedately that $S^{(0)} = Z_{xy}$.
+
+Next, we consider the sum $S^{(1)}$,
+that is, the sum over all paths which use the new edge $e_{ab}$
+exactly once.
+We note that each path which contributes to this sum consists of
+three segments:
+(a) a path segment from $x$ to $a$,
+followed by (b) the new edge $e_{ab}$,
+followed by (c) a path segment from $b$ to $y$.
+Since the sum in question consists exactly of the sum over all unique
+paths which follow this template,
+we see that we can write $S^{(1)}$ as follows:
+\begin{equation}
+   S^{(1)} = \sum_{p_{xa}} \sum_{p_{by}}
+      \exp\left(
+         - \beta \left[ \mbox{len}(p_{xa}) + w_{ab} + \mbox{len}(p_{by}) \right]
+         \right)
+\end{equation}
+Note that both $p_{xa} \in P_{xa}$ and $p_{by} \in P_{by}$
+are over all paths on the original graph $G$.
+We can then rewrite this simply as:
+\begin{equation}
+   S^{(1)} = Z_{xa} \, \exp(-\beta \, w_{ab}) \, Z_{by}.
+\end{equation}
+We can likewise write $S^{(2)}$ as:
+\begin{equation}
+   S^{(2)} = Z_{xa} \, \exp(-\beta \, w_{ab}) \, Z_{ba} \, \exp(-\beta \,  w_{ab}) \, Z_{by}.
+\end{equation}
+That is,
+this sum consists of paths which arrive from $x$ to $a$ through $G$,
+traverse the edge $e_{ab}$ once,
+then traverse the original $G$ in some way from $b$ back to $a$,
+traverse the edge $e_{ab}$ a second time,
+and then proceed from $b$ to $y$.
+This decomposition allows us to rewrite
+the entire sum from (\ref{eqn:sums}) as:
+\begin{equation}
+   Z'_{xy} = Z_{xy} + Z_{xa} \, \exp(-\beta \, w_{ab}) \, Z_{by}
+      \sum_{k=0}^{\infty} \left[ Z_{ba} \, \exp(-\beta \, w_{ab}) \right]^k. 
+\end{equation}
+As this is a geometric series, it will converge as long as
+$Z_{ba} < \exp(\beta \, w_{ab})$.
+In this case,
+we have:
+\begin{equation}
+   Z'_{xy} = Z_{xy} + \frac{Z_{xa} \, Z_{by}}{\exp(\beta \, w_{ab}) - Z_{ba}}.
+   \label{eqn:partition:addition}
+\end{equation}
+\marginnote{Note that the addition of an undirected edge between
+$a$ and $b$ must entail two successive applications of
+(\ref{eqn:partition:addition}).}
+This allows us to accommodate arbitrary edge additions while maintaining
+the correct values $Z_{xy}$ over all pairs of vertices on $G$.
+
+\paragraph{Removing Edges.}
+We can establish a similar result in the case that an existing edge
+is removed from the graph.
+Consider the case that you have a graph $G'$,
+with partition function values $Z'$ between all pairs of vertices.
+You then remove some existing edge $e_{ab}$ with weight $w_{ab}$,
+yielding new graph $G$.
+What can we say about the new values $Z$?
+
+We proceed by applying (\ref{eqn:partition:addition})
+to the edge to be removed $e_{ab}$:
+\begin{equation}
+   Z'_{ba} - Z_{ba} - \frac{Z_{ba}^2}{\exp(\beta w_{ab}) - Z_{ba}} = 0
+\end{equation}
+\begin{equation}
+   \left[\exp(\beta w_{ab}) - Z_{ba} \right] Z'_{ba} - \exp(\beta w_{ab}) Z_{ba} = 0
+\end{equation}
+\begin{equation}
+   \left[ \exp(\beta w_{ab}) - Z_{ba} \right]
+   \left[ \exp(\beta w_{ab}) + Z'_{ba} \right]
+   = \exp(2 \beta w_{ab})
+\end{equation}
+\begin{equation}
+   \exp(\beta w_{ab}) - Z_{ba}
+   = \frac{\exp(2 \beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}}
+   \label{eqn:zba-convert}
+\end{equation}
+We can then use (\ref{eqn:zba-convert}) to express
+$Z_{xa}$ and $Z_{by}$ in terms of $Z'_{xa}$ and $Z'_{by}$,
+respectively:
+\begin{equation}
+   Z_{xa} + \frac{Z_{xa} \, Z_{ba}}{\exp(\beta w_{ab}) - Z_{ba}} = Z'_{xa}
+   \longrightarrow
+   Z_{xa} = \frac{\exp(\beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}} Z'_{xa}
+\end{equation}
+\begin{equation}
+   Z_{by} + \frac{Z_{ba} \, Z_{by}}{\exp(\beta w_{ab}) - Z_{ba}} = Z'_{by}
+   \longrightarrow
+   Z_{by} = \frac{\exp(\beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}} Z'_{by}
+\end{equation}
+Lastly, we can combine (\ref{eqn:partition:addition})
+and (\ref{eqn:zba-convert}) to express the desired value $Z_{xy}$
+only in terms of values on $G'$:
+\begin{equation}
+   Z_{xy} = Z'_{xy} -
+   \frac{
+   \left[ \frac{\exp(\beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}} Z'_{xa} \right]
+   \,
+   \left[ \frac{\exp(\beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}} Z'_{by} \right]
+   }{
+   \left[ \frac{\exp(2 \beta w_{ab})}{\exp(\beta w_{ab}) + Z'_{ba}} \right]
+   }
+\end{equation}
+\begin{equation}
+   Z_{xy} = Z'_{xy} -
+   \frac{Z'_{xa} Z'_{by}}{\exp(\beta w_{ab}) + Z'_{ba}}
+\end{equation}
+This allows us to accommodate edge deletions.

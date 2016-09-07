@@ -24,6 +24,7 @@ thesis.pdf: thesis-ch05-lemur.tex
 thesis.pdf: thesis-ch06-family.tex
 thesis.pdf: thesis-ch07-conclusion.tex
 thesis.pdf: thesis-ch03-lazysp-proofs.tex
+thesis.pdf: thesis-ch03-lazysp-partition.tex
 thesis.pdf: thesis-ch04-ibid-proofs.tex
 thesis.pdf: thesis-ch05-lemur-appendix.tex
 thesis.pdf: thesis-ch06-family-appendix.tex
