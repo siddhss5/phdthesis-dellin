@@ -2,7 +2,7 @@
 # requirements: GNU make, latexmk, pdflatex
 
 #DOCS = proposal proptalk thesis lazysptalk
-DOCS = defense thesis
+DOCS = thesis
 DOCPDFS = $(foreach doc,$(DOCS),$(doc).pdf)
 
 all: $(DOCPDFS)
@@ -49,11 +49,11 @@ thesis.pdf: %.pdf: %.tex
 	#latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -dvi- -ps- -recorder -use-make -deps-out=$*.mk -e '@cus_dep_list = ();' -e 'show_cus_dep();' $* \
 	#	|| (rm -f $(PAPER).fdb_latexmk; pdflatex -halt-on-error -output-directory /tmp $*)
 	# i think this works ...
-	X=`md5sum $*.bbl || true` && Y=`md5sum /dev/null $**.aux` \
+	X=`md5sum $*.bbl || true` && Y=`md5sum /dev/null $**.aux || true` \
 	   && pdflatex -halt-on-error $* \
 	   && bibtex $* \
 	   && ([ "$$X" = "`md5sum $*.bbl`" ] || pdflatex -halt-on-error $*) \
-	   && ([ "$$Y" = "`md5sum /dev/null $**.aux`" ] || pdflatex -halt-on-error $*)
+	   && ([ "$$Y" = "`md5sum $**.aux`" ] || pdflatex -halt-on-error $*)
 
 # how to clean after latex
 EXTS = aux bbl blg dvi fdb_latexmk fls log mk nav out pdf ps snm toc
