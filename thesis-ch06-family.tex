@@ -506,7 +506,16 @@ in Figure~\ref{fig:family:example}.
       \end{tabular}%
    }
 
-   \caption[][99in]{x}
+   \caption[
+      An illustration of a family motion planning
+      problem in a common configuration space $\mathcal{C}$.
+      The problem definition generalizes to an artibrary number of
+      configuration space subsets and set relations between them.
+      When two queries in different subests are solved sequentially,
+      a family motion planner can reuse path segments less expensively.
+      See Section~\ref{subsec:family:app-multi-step} for examples in
+      manipulation.
+   ][99in]{x}
    \label{fig:family:example}
 
    \end{center}
@@ -1287,7 +1296,15 @@ as well as the total planning time as measured by a wall clock (s).
 \begin{figure}
    \centering
    \includegraphics{build/multistep-prescribed/herbbinnom-g1ll}
-   \caption{Comparison of measured planning time $p$ and solution
+   \caption[
+      Comparison of measured planning time $p$ and solution
+      execution cost $x$ for the HERB table-clearing example.
+      RRT is shown in red.
+      Results for LEMUR with the simple edge cost model are shown in blue,
+      while the family edge cost model is shown in green.
+      The LEMUR results show the effect of adjusting the $\lambda_p$
+      tradeoff parameter from $0$ to $0.99$.
+   ]{Comparison of measured planning time $p$ and solution
       execution cost $x$ for the HERB table-clearing example.
       RRT is shown in red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Results for LEMUR with the simple edge cost model are shown in
@@ -1413,7 +1430,14 @@ as well as the total planning time as measured by a wall clock (s).
 \begin{figure}
    \centering
    \includegraphics{build/multistep-prescribed/workcell-g1ll}
-   \caption[]{Comparison of measured planning time $p$ and solution
+   \caption[Comparison of measured planning time $p$ and solution
+      execution cost $x$ for the industrial workcell example.
+      RRT is shown in red.
+      Results for LEMUR with the simple edge cost model are shown in blue,
+      while the family edge cost model is shown in green.
+      The LEMUR results show the effect of adjusting the $\lambda_p$
+      tradeoff parameter from $0$ to $0.99$.
+   ]{Comparison of measured planning time $p$ and solution
       execution cost $x$ for the industrial workcell example.
       RRT is shown in red \protect\tikz{\protect\node[fill=red,draw=black]{};}.
       Results for LEMUR with the simple edge cost model are shown in

@@ -144,7 +144,7 @@ as well as graphs with edges to and from the same vertex.
 
 The length of a path is equal to the sum of the weights of its
 constituent edges.
-\marginnote{
+\marginnote{%
 The single-pair problem is also called the \emph{two-terminal} or
 \emph{point-to-point} problem.}
 We consider the \emph{single-pair shortest path} (SPSP) problem,
@@ -153,7 +153,8 @@ between distinct start and destination vertices
 $s,t \in V$.
 (We can also handle planning problems with multiple
 start/destination configurations as an SPSP problem
-as described in Section~\ref{subsec:roadmaps:planning-as-pathfinding}.)
+by introducing virtual vertices and edges connecting to each candidate
+start/goal.)
 
 Our review is applicable to problems where $w$ is everywhere finite.
 The algorithms that we consider do not distinguish between non-existant

@@ -370,7 +370,22 @@ for each problem class (Figure~\ref{fig:table-timing-results}).
       \bottomrule
    \end{tabular}%
    }%
-   \caption[][99in]{x}%
+   \caption[Detailed timing results for each selector.
+      The actual edge weights for the illustrative
+      PartConn and UnitSquare problems were pre-computed,
+      and therefore their timings are not included.
+      The Partition selector requires initialization of the $Z$-values
+      (\ref{eqn:partitionfn}) for the graph using only the estimated
+      edge weights.
+      Since this is not particular to either the actual edge weights
+      (e.g. from the obstacle distribution)
+      or the start/goal vertices from a particular instance,
+      this initialization (\emph{sel-init}) is considered separately.
+      The online running time (\emph{online}) is broken into LazySP's
+      three primary steps: the inner search (\emph{search}),
+      invoking the edge selector (\emph{sel}),
+      and evaluating edges (\emph{eval}).
+      We also show the number of edges evaluated.][99in]{x}%
    \label{fig:table-timing-results}%
    \end{widepage}%
    \vspace{0.05in}

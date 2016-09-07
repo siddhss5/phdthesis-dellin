@@ -7,7 +7,25 @@
     
    \includegraphics{build/lemur-sq/herb-master}
 
-   \caption[][99in]{x}
+   \caption[Experimental results across six single-query motion planning
+      instances for a 7-DOF robot arm.
+      Top: expected planning cost $p$ (in seconds)
+      vs. execution cost $x$ (in radians) for each parameterized
+      planner for various values of their parameters.
+      Bottom: the mean negative utility
+      $-U = \lambda_U p + (1\!-\!\lambda_U) x$
+      (solid lines) measured for each planner
+      (lower on plot is better) as the
+      utility parameter $\lambda_U$ is varied.
+      The 95\% confidence interval of the mean is also shown.
+      Planners used the same parameter schedule across the problems
+      as shown in Figure~\ref{fig:herbarm-schedules}.
+      The per-problem maximum acheivable mean utilities
+      (\ref{eqn:oracle-param-schedule})
+      for each planner are shown as dotted lines.
+      Planners are RRT-Connect with shortcutting, BIT*,
+      LEMUR (no roadmap cache), and LEMUR (with roadmap cache).
+   ][-30cm]{x}
    \label{fig:lemur:sq-herb-master}
 
    \end{center}
@@ -45,7 +63,14 @@
    
    \includegraphics{build/lemur-sq/herb-timing}
 
-   \caption[][99in]{x}
+   \caption[Time breakdown of LEMUR for each of the six
+      experimental problems across various values of $\lambda_p$.
+      Cumulative time is shown performing the following operations:
+      roadmap generation, graph search, collision checking, and unaccounted for.
+      The bottom row shows the results of the algorithm over the same
+      set of 50 roadmaps when reading the cached roadmap from disk
+      to avoid online nearest-neighbor queries.
+   ][-30cm]{x}
    \label{fig:lemur:sq-herb-timing}
 
    \end{center}
@@ -71,7 +96,7 @@
    \centering   
    \includegraphics{build/lemur-sq/workcell-master}
    \end{widepage}
-   \caption{$p$-vs-$x$ and utility results for each step in the
+   \caption{Summary of $p$-vs-$x$ and utility results for each step in the
       workcell problem.}
    \label{fig:lemur:sq-workcell-master}
 \end{figure*}

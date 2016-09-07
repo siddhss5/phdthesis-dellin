@@ -449,7 +449,21 @@ and statistical mechanics.
          \node at (0,-4.8) {\includegraphics{build/lazysp-example-1/alg-partall-path-bars}};
       \end{tikzpicture}%
    }%
-   \caption[lazysp snapshots]{Snapshots of the LazySP algorithm using each edge selector
+   \caption[Snapshots of the LazySP algorithm using each edge selector
+      discussed in this chapter on the same obstacle roadmap graph problem,
+      with start and goal.
+      At top, the algorithms after evaluating five edges
+      (evaluated edges labeled as valid or invalid).
+      At middle, the final set of evaluated edges.
+      At bottom, for each unique path considered from left to right,
+      the number of edges on the path that are
+      already evaluated, evaluated and valid, evaluated and invalid,
+      and unevaluated.
+      The total number of edges evaluated is noted in brackets.
+      Note that the scale on the Expand plot has been adjusted
+      because the selector evaluates many edges not on the candidate
+      path at each iteration.
+   ]{Snapshots of the LazySP algorithm using each edge selector
       discussed in this chapter on the same obstacle roadmap graph problem,
       with start (\protect\tikz[baseline=-0.5ex]{\protect\node[circle,fill=blue,inner sep=1pt]{};})
       and goal (\protect\tikz[baseline=-0.5ex]{\protect\node[circle,fill=green,inner sep=1pt]{};}).
@@ -1482,7 +1496,7 @@ For the Partition selector, we used $\beta = 3$.
 \end{figure}
 
 \section{Discussion}
-\label{sec:discussion}
+%\label{sec:discussion}
 
 The first observation that is evident from the experimental results
 is that lazy evaluation
