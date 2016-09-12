@@ -11,7 +11,9 @@ when compared with state-of-the-art
 search-based and sampling-based anytime planners.
 This concluding chapter begins by summarizing the dissertation
 and the individual algorithmic contributions
-in Section~\ref{sec:conclusion:summary}.
+in Section~\ref{sec:conclusion:summary},
+as well as some lessons learned
+in Section~\ref{sec:conclusion:lessons-learned}.
 This is followed by a discussion in Section~\ref{sec:conclusion:future}
 of a few promising avenues for future research
 which build on our results.
@@ -1039,6 +1041,97 @@ managed as described in Chapter~\ref{chap:family}.
 Edge selectors could then be employed to allocate motion planning
 resources only on edges in the manipulation graph
 most likely to contribute to a short solution to the task.
+
+
+\section{Lessons Learned}
+\label{sec:conclusion:lessons-learned}
+
+%\ssnote{I think the only thing I'd add to the conclusions is a ``Lessons
+%learned''. What did you think were hard or easy when you started and
+%did they actually turn out that way?}
+
+A number of issues and questions arose during the design and
+implementation of the algorithms in this thesis
+that may be useful to researchers that may build on this work.
+
+\paragraph{The Importance of Search.}
+My initial examination of motion planning begun with a clear
+perceived separation between search-based and sampling-based
+approaches.
+By focusing on roadmap methods,
+I envisioned that the question of how to construct roadmaps
+over the configuration space would dominate my investigation.
+But my exploration of lazy roadmaps resulted in two
+personal realizations.
+First,
+search-based and sampling-based methods are more similar than they are
+usually treated
+(a connection first identified by LaValle et. al.
+\citep{lavalle2004deterministic}).
+And second,
+the question of how best to search over roadmaps is far from a settled
+question.
+This motivated by study of both lazy and dynamic search problems,
+and lead directly to the development of LazySP and IBiD,
+respectively.
+Indeed,
+the interaction between edge selection and search is rich
+with opportunities for future work.
+
+\paragraph{The Importance of Performance Metrics.}
+Progress in robotics depends on a delicate interplay between
+new research ideas and motivating real-world applications.
+While novel ideas can often have a direct benefit on a wide variety
+of applications,
+the potential for a particular applications or examples
+to drive new research is equally powerful.
+In particular,
+a performance shortfall of an existing algorithm
+often serves not only as a motivation for a new idea,
+but as a springboard for developing that idea in the first place.
+During my thesis,
+I found that comitting to a set of benchmark problems,
+and being guided by rigorous performance metrics such as path
+quality and planning time,
+allowed me to identify fruitful research areas.
+It also lead to many other implementation improvements
+-- such as the pre-allocated (or ``baked'') data structures feature
+in our implementation of FCL -- which improved performance
+across all motion planners in our arsenal.
+
+\paragraph{Fair Comparisons with Non-Determinism.}
+If performance metrics are to be trusted,
+it is of paramount importance that planner comparions be fair
+and repeatable,
+so that only the factor in question
+(e.g. the search or sampling strategy) is varied between experiments.
+Not only must all outside factors be held constant,
+such as collision checker parameters, resolutions, samplers, roadmaps, etc.,
+but I found that the most robust way to handle planners which depend
+on randomness is to treat the random seed as an additional parameter,
+and to commit to ranges of these seeds for testing.
+Not only does this allow for a fairer comparison between planners,
+but it allows for a direct comparison between revisions of a particular
+planner's implementation,
+to more easily measure improvement and spot regressions.
+In research we often don't have the bandwidth to implement full
+unit test coverage, so such ensemble testing must suffice to maintain
+the quality of our implementations.
+
+\paragraph{Implementation Details.}
+Writing a performant motion planning implementation,
+especially one which relies on cached data structures,
+requires focus on inner loops, profiling, and iterative development.
+Care must be taken so that the roadmap data structure can be loaded
+into memory quickly during planner initialization,
+and so that the roadmap can be densified efficiently without
+reallocating large blocks of the data structure.
+The core roadmap generation and search code should be well-tested --
+the implementation used in this thesis was developed over several years,
+and was used for everything from figure generation to experiments.
+I also found it useful to rely on common data formats,
+such as GraphML \citep{brandesetal2002graphml},
+to allow interoperability with other software packages.
 
 \section{Concluding Remarks}
 \label{sec:conclusion:remarks}
