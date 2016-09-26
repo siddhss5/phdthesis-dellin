@@ -95,7 +95,8 @@ an algorithm which combines bidirectional and incremental search.
 In Section~\ref{sec:ibid:heuristic},
 we review heuristic search methods,
 and discuss a heuristic-informed generalization of IBiD.
-The chapter concludes with experimental results and implentation notes.
+The chapter concludes with experimental results and implementation
+notes.
 
 \begin{table}
    \centering
@@ -127,7 +128,7 @@ The chapter concludes with experimental results and implentation notes.
       bidirectional Dijkstra's search \citep{goldberg2005spexternalmemory}
       and DynamicSWSF-FP \citep{ramalingam1996dynamicswsffp}.
       There are a great many algorithms that we could place in each cell;
-      we provide only a represetative choice in each.}
+      we provide only a representative choice in each.}
    \label{tab:ibid:alg-overview}
 \end{table}
 
@@ -157,7 +158,7 @@ by introducing virtual vertices and edges connecting to each candidate
 start/goal.)
 
 Our review is applicable to problems where $w$ is everywhere finite.
-The algorithms that we consider do not distinguish between non-existant
+The algorithms that we consider do not distinguish between non-existent
 and infinite-weight edges,
 and so will return that no path exists in the case where shortest
 paths contain infinite-weight edges.
@@ -199,7 +200,7 @@ and it is commonly used for benchmarking and easy to visualize.
       Implementation Challenge
       comprises 1,524,453 vertices and 3,868,020 directed edges.
       A shortest path problem from a start $s$ in New Jersey
-      to a destination $t$ outisde Boston
+      to a destination $t$ outside Boston
       will be used as an example.}%
    \label{fig:ibid:example-intro}%
 \end{marginfigure}
@@ -217,7 +218,7 @@ the algorithms we propose may be complementary to these techniques.
 \label{sec:ibid:distance-functions}
 
 This section contains a unified presentation of unidirectional,
-bidirectional, and incremental search stategies
+bidirectional, and incremental search strategies
 by examining the properties of the distance functions that they
 maintain.
 These properties and invariants can be established for arbitrary
@@ -262,7 +263,7 @@ by walking backwards to $s$ guided by $d^*$.}
 \end{equation}
 where $P_{sv}$ is the set of all paths from $s$ to $v$,
 and $\mbox{len}$ is given by (\ref{eqn:lazysp:len-definition})
-as the sum of the path's consitutent weights
+as the sum of the path's constituent weights
 with respect to the edge weight function $w$.
 Where no paths to $v$ exist,
 we take $d^*(v) = \infty$.
@@ -278,12 +279,12 @@ Importantly, $d^*$ can also be characterized locally by
    \end{array} \right.
    \label{eqn:distance-function-char}
 \end{equation}
-where $\mbox{Pred}(v)$ yeilds the predecessor vertices of $v$,
+where $\mbox{Pred}(v)$ yields the predecessor vertices of $v$,
 and a vertex $v \neq s$ with no predecessors takes $d^*(v) = \infty$.
 \marginnote{Note that
 while the distance function $d^*$ necessarily satisfies
 the equations (\ref{eqn:distance-function-char}),
-they are not generally a sufficint condition;
+they are not generally a sufficient condition;
 if a reachable cycle of zero length exists,
 (\ref{eqn:distance-function-char}) will not have a unique solution.}
 The distance function is akin to the \emph{value function}
@@ -312,13 +313,13 @@ the destination $t$ and progressively prepending the predecessor
 edge $e_{uv}$ (and vertex $u$)
 which locally minimizes $d^*(u) + w(e_{uv})$.
 Any path constructed in this way is guaranteed to be a shortest path,
-and this process is gauranteed to terminate if the graph
+and this process is guaranteed to terminate if the graph
 contains no zero-length cycles.
 
 \subsection{Approximating $d^*$ via Tensioned Estimates}
 \label{subsec:ibid-tension}
 
-How can we compute $d^*$ efficently over the graph?
+How can we compute $d^*$ efficiently over the graph?
 Consider an approximation function $d$
 which satisfies the following four properties:%
 \begin{subequations}%
@@ -487,12 +488,12 @@ any negative-length cycles reachable from $s$).
 \paragraph{Approximation Soundness.}
 The need for multiple cycles of Bellman-Ford stems from the fact
 that each edge may need to be relaxed several times.
-This occurrs because relaxing an edge changes the
+This occurs because relaxing an edge changes the
 $d$-value of the destination vertex,
 which may newly tension downstream edges
 (see Figure~\ref{fig:ibid:bellman-ford-repetitions}).
 
-We can exploit our intution to order relaxations from start to destination
+We can exploit our intuition to order relaxations from start to destination
 in the special case where $w \geq 0$
 (note that this requirement is stronger than requiring no reachable
 negative-length cycles).
@@ -564,7 +565,7 @@ it is not by itself insufficient
 to demonstrate that such a shortest path to $t$ can be reconstructed.
 An illustration of such a problem case is given in
 Figure~\ref{fig:ibid:relaxation-completeness-issue}.
-This requres the addition of
+This requires the addition of
 Theorem~\ref{thm:ibid-relaxation-reconstruct} below.
 Notably,
 the proof for Theorem~\ref{thm:ibid-relaxation-reconstruct}
@@ -745,7 +746,7 @@ counter-example that illustrates this point.
    \label{fig:ibid:bidirectional-termination-issue}
 \end{marginfigure}
 
-Importantly, is nececessary to consider the \emph{edges} connecting
+Importantly, is necessary to consider the \emph{edges} connecting
 the two distance function approximations.
 A correct termination condition is surprisingly subtle,%
 \marginnote{There were early incorrect attempts at a sound
@@ -862,7 +863,7 @@ We concern ourselves with the \emph{fully dynamic} case,
 in which arbitrary edge weight changes are allowed.
 As mentioned in Section~\ref{subsec:ibid-probdef},
 for our pathfinding problems,
-we treat edges with infinite weight equivalently with non-existant
+we treat edges with infinite weight equivalently with non-existent
 edges.
 Therefore,
 deleting or inserting an edge can be represented by
@@ -871,7 +872,7 @@ We include here a brief review of the approach underlying common
 algorithms for the dynamic pathfinding problem.
 
 The dynamic problem has been studied in the literature.
-Eary results demonstrated properties of optimal spanning trees
+Early results demonstrated properties of optimal spanning trees
 under certain types of update operations
 \citep{spirapan1975updatingsp}.
 Early algorithms considered restricted problem such as
@@ -905,7 +906,7 @@ entails finding shortest paths $p^{(1)}, p^{(2)}, \dots$
 between fixed start and destination vertices $s,t \in V$
 for each episode.
 
-\paragraph{Approches to the Dynamic Problem.}
+\paragraph{Approaches to the Dynamic Problem.}
 The simplest class of solutions to the dynamic SPSP problem
 entails running a conventional SPSP algorithm to compute a solution
 path for episode in turn.
@@ -947,7 +948,7 @@ of tensioned edges to be iteratively relaxed.
 Unfortunately,
 the incremental setting precludes this approach.
 Consider a new episode in which the estimate $d^{(i+1)}$
-is initialized with the preceeding estimate $d^{(i)}$.
+is initialized with the preceding estimate $d^{(i)}$.
 Since the weight function $w^{(i+1)}$ has changed,
 there is no guarantee that either of the invariants
 (\ref{eqn:ibid-relaxation-props-nounder})
@@ -1202,7 +1203,7 @@ Because it is derived from DynamicSWSF-FP,
 the IBiD algorithm is applicable to graphs with $w > 0$.
 (If zero weights are present,
 the algorithm can be adapted by transforming $w$ to use
-lexographically sorted tuples as developed
+lexicographically sorted tuples as developed
 by LPA* \citep{koenig2004lpastar},
 described in Section~\ref{subsec:ibid:heuristic-incremental}.)
 Note also that as an extension of
@@ -1253,7 +1254,7 @@ and $e^*_{uv}$ lies on one such path.
 Note that the first half of the conditions
 from Theorem~\ref{thm:ibid-sound}
 is drawn from the soundness conditions for incremental search
-from Theoem~\ref{thm:ibid-dynamicswsffp-sound},
+from Theorem~\ref{thm:ibid-dynamicswsffp-sound},
 while the second half resembles the bidirectional termination
 conditions from Theorem~\ref{thm:ibid-bidir-sound}.
 
@@ -1354,7 +1355,7 @@ with each maintaining a separate priority queue of
 inconsistent vertices $Q_s$ and $Q_t$ respectively
 (Algorithm~\ref{alg:ibid-two-dynamicswsffps}).
 
-As with a convential bidirectional search,
+As with a conventional bidirectional search,
 the two sides can be alternated arbitrarily,
 except that the each queue must be processed once upon initialization
 so that $d_s(s) = 0$ and $d_t(t) = 0$.
@@ -1378,10 +1379,10 @@ we track all potential connection edges in a connection queue $Q_c$.
 Members of this queue are edges on the graph $e_{uv}$
 for which vertex $u$ is $s$-consistent,
 and vertex $v$ is $t$-consistent.
-This queue is sorted bythe key $d_s(u) + w(u,v) + d_t(v)$.
+This queue is sorted by the key $d_s(u) + w(u,v) + d_t(v)$.
 As an optimization,
 the queue does not include edges for which the key is infinite,
-since that corresponds to a non-existant path.
+since that corresponds to a non-existent path.
 The resulting algorithm outline is shown in Algorithm~\ref{alg:ibid}.
 
 \begin{algorithm}[t]
@@ -1414,7 +1415,7 @@ The resulting algorithm outline is shown in Algorithm~\ref{alg:ibid}.
       \EndProcedure
       \Procedure {NotifyWeightChanges} {$E_{\ms{delta}}$}
          \ForAll {$(u,v) \in E_{\ms{delta}}$}
-            \State $\mbox{\sc UpdateStargDistance}(v)$
+            \State $\mbox{\sc UpdateStartDistance}(v)$
             \State $\mbox{\sc UpdateDestDistance}(u)$
          \EndFor
          \State Ensure $(u,v) \in Q_c$ iff
@@ -1524,7 +1525,7 @@ was shown to be incorrect due in large part to the difficulty
 establishing a correct bidirectional termination condition.}
 While this approach does not suffer from the region overlap problem
 inherent in front-to-back methods,
-it instead incurrs the very high cost of computing full pairwise
+it instead incurs the very high cost of computing full pairwise
 heuristics, and updating all vertices on \textsc{Open}
 after each vertex expansion.
 
@@ -1567,7 +1568,7 @@ A simple summation reveals that
 \end{equation}
 That is, the difference between the initial and transformed lengths
 of the path from $x$ to $y$ is independent of the path itself
-(its consituent vertices and edges),
+(its constituent vertices and edges),
 and only a function of the endpoint vertices.
 In particular,
 this implies that a shortest path from $x$ to $y$ w.r.t. $w_b$
@@ -1696,7 +1697,7 @@ $b$ is also consistent.
    \;\;%
    \includegraphics{build/incbi-lpastar-fig1/incbi-heurfull-original}%
    
-   \caption{Illustration of behavior of bidirectional heuristic serach
+   \caption{Illustration of behavior of bidirectional heuristic search
       on a shortest path problem reproduced
       from \citep{koenig2004lpastar}.
       Vertices that are start-expanded are shown in blue,
@@ -1705,7 +1706,7 @@ $b$ is also consistent.
       which approximates the behavior of a unidirectional algorithm.
       At right, the algorithm  performs distance-balanced expansions
       between the two searches.
-      The top row shoes the behavior of the algorithm with no
+      The top row shows the behavior of the algorithm with no
       heuristic potential function.
       Start and destination heuristic functions are available,
       and their effect are shown at bottom.
@@ -1758,7 +1759,7 @@ such as D* Lite \citep{koenig2002dstarlite},
 Field D* \citep{ferguson2007fielddstar},
 and Anytime D* \citep{likhachevetal2008anytimedynamic}.
 \marginnote{We consider only optimal algorithms (with admissible
-heuristics); for an extentension to inflated search,
+heuristics); for an extension to inflated search,
 see \citep{aine2016truncatedincremental}.}
 
 However,
@@ -1790,15 +1791,15 @@ with the transformation defined as
    w_b(e_{uv}) = \big[ w(e_{uv}) - [b(u) - b(v)]; \; w(e_{uv}) \big].
    \label{eqn:ibid:incremental-potential-key}
 \end{equation}
-Note that the first element of the tuple concides with the
+Note that the first element of the tuple coincides with the
 non-incremental potential function transformation from
 (\ref{eqn:ibid:potential-transformation}).
-Elements of the product space are sorted lexographically;
+Elements of the product space are sorted lexicographically;
 that is, their comparison only considers the first component,
 with the exception that when the first component is equal,
 the second component is then considered.
 Summing two elements is performed component-wise.
-\marginnote{Note that in order to maintaion $w_b > 0$,
+\marginnote{Note that in order to maintain $w_b > 0$,
 the second element need only be positive,
 and could even be constant (e.g. unity).
 We keep the value $w(e_{uv})$ for consistency with LPA*.}
@@ -2097,7 +2098,7 @@ and are broken down by problem class.
       problem instance
       (with identical behavior between problems P1-P4 because
       no traffic changes affect the initial episode).
-      The ``Replans'' series capture an averave over the remaining
+      The ``Replans'' series capture an average over the remaining
       nine episodes.
       Note that
       (a) only the latter four incremental planners see savings during
@@ -2115,7 +2116,7 @@ episodes.
 This is expected,
 because the joint edge weight distribution for each episode treated
 individually is identical
-(edges blocked with independenth probability 0.002),
+(edges blocked with independent probability 0.002),
 and the non-incremental algorithms address each episode from scratch.
 
 The performance of the four incremental algorithms on the initial
@@ -2210,11 +2211,11 @@ at the following address:
 %   \end{tabular}
 %   
 %   \caption{Comparison between various heuristic strengths and
-%      balancing strageties on a single-pair road network problem.
+%      balancing strategies on a single-pair road network problem.
 %      A path with shortest transit time is sought.
 %      The heuristic strength varies from no heuristic (top)
 %      to a full-strength heuristic (bottom).
-%      At left, a foward-only balancer is used, so that the
+%      At left, a forward-only balancer is used, so that the
 %      top-left is equivalent to Dijkstra's algorithm,
 %      and the bottom-left is equivalent to A*.
 %      The middle column uses a balanced distance strategy.

@@ -14,7 +14,7 @@ Underlying this rich tapestry of robotic motion
 is the most fundamental abstraction of motion planning --
 finding a path for a system which accomplishes a motion task
 without colliding with obstacles.
-While this might at first seem straightfoward,
+While this might at first seem straightforward,
 finding such paths for articulated robotics in
 complex semi-structured environments
 is no easy feat,
@@ -63,7 +63,7 @@ this representation and variations thereof were extensively studied
 for small dimensionalities (e.g. two or three)
 and obstacle representations (e.g. polygonal regions).
 Importantly,
-these earlest problems exhibited two fundamental properties
+these earliest problems exhibited two fundamental properties
 inherent in all motion planning problems:
 (a) that solutions,
 called \emph{motions} or \emph{paths},
@@ -119,7 +119,7 @@ We can then establish path validity:
    \xi(t) \in \mathcal{C}_{\ms{free}} \;\forall t \in [0,1]
    \label{eqn:roadmaps:path-validity}
 \end{equation}
-We can capture this defininition for use in an optimization
+We can capture this definition for use in an optimization
 framework via the functional
 $x_{\ms{valid}} : \Xi \rightarrow \mathbb{R}$
 shown in Figure~\ref{fig:roadmaps:cost-model-feasible}.
@@ -176,7 +176,7 @@ or the squared time derivatives averaged over the path.
 See \citep{karaman2011samplingoptimal} for a comprehensive treatment
 of sampling-based methods for the optimal motion planning problem.
 
-\marginnote{An optimal moption planner
+\marginnote{An optimal motion planner
    typically considers both feasibility dynamical properties of candidate paths --
    this objective is simply $x_{\ms{opt}} = x_{\ms{valid}} + x_{\ms{int}}$.
    We treat them separately because they exhibit fundamentally different
@@ -294,7 +294,7 @@ for motion planning problems.
 We will broadly review a selection of different algorithms later
 in this chapter (Section~\ref{sec:roadmaps:sensitivity}).
 
-%\paragraph{Resolution and Probabalistic Completeness.}
+%\paragraph{Resolution and Probabilistic Completeness.}
 %Any discretization is only an approximation of the actual configuration
 %space.
 %Of course, the discretization is always just an approximation
@@ -382,13 +382,13 @@ they are difficult to apply to problems on articulated
 robots for two reasons.
 First, many approaches are only applicable to problems
 in two or three dimensions,
-or to robots with only translational degrees of freedome
+or to robots with only translational degrees of freedom
 \citep{kavraki1995cspacefft}.
 Second, an explicit representation of obstacles in the
 configuration space is exceedingly difficult to achieve due to the
 nonlinearity in the forward kinematics function.
 While some approaches are able to construct explicit
-analytical or approximate configuraion space obstacles from
+analytical or approximate configuration space obstacles from
 workspace geometry (e.g. \citep{newmanbranicky1991cspacetransforms}),
 they are often only applicable to simple kinematics.
 
@@ -426,10 +426,10 @@ of these planners
 which do address more general cost objectives.
 
 \paragraph{Advantages of Obstacle Sensitivity.}
-One key advantage to obstacle-sensative approaches is that
+One key advantage to obstacle-sensitive approaches is that
 they only construct the graph structure in the parts of the
 configuration space that are relevant to the planning query.
-The Vornoi sampling bias of the RRT or the importance sampling of the EST
+The Voronoi sampling bias of the RRT or the importance sampling of the EST
 attempt to focus graph construction in areas of the configuration space
 which tend to find feasible paths quickly.
 These techniques can also take account of the current distribution
@@ -449,7 +449,7 @@ The graph structure is augmented automatically,
 so the resolution of the discretization need not be explicitly
 increased as the instance reveals itself to be more difficult.
 
-%Probabalistic completeness.
+%Probabilistic completeness.
 
 \subsection{Obstacle-Insensitive Approaches}
 
@@ -460,19 +460,19 @@ of the configuration space a priori,
 independent of the distribution of obstacles.
 While this simpler method forgoes some of the advantages of
 obstacle sensitivity discussed previously,
-this idependence does confer some advantages of its own.
+this independence does confer some advantages of its own.
 
 \paragraph{Roadmap Methods.}
 
 The foundational obstacle-insensitive methods particular to the motion
 planning problem are called \emph{roadmap methods}.
-The term roadmap usually connotes a graph embedded in a continous
+The term roadmap usually connotes a graph embedded in a continuous
 ambient space in the presence of obstacles.
 Vertices in the graph,
 which correspond to configurations in the configuration space,
 are also called milestones.
 The first roadmap methods such as the
-Probabalistic RoadMap (PRM) \citep{kavrakietal1996prm}
+Probabilistic RoadMap (PRM) \citep{kavrakietal1996prm}
 initialized the milestones arrangement
 from a uniform distribution over the free space.
 
@@ -510,7 +510,7 @@ which reproduce a regular lattice over the configuration space
 \citep{pivtoraiko2005statelattice}.
 When the vertices comprising the lattice are rectangular
 (also called a Sukharev point set \citep{sukharev1971extremum}),
-seach-based planning is also called ``grid search.''
+search-based planning is also called ``grid search.''
 
 \paragraph{Lazy Validity Checking.}
 Because obstacle-insensitive approaches decouple graph construction
@@ -580,14 +580,14 @@ this thesis build on top of obstacle-insensitive roadmaps.
 
 Roadmap methods operate over a graph constructed in the
 robot's configuration space.
-Roadmap miletones are commonly genererated by a number of different
+Roadmap milestones are commonly generated by a number of different
 types of point sequences,
 and edges are considered between vertices pairs that meet
 certain constraints.
 While most algorithms methods are generally agnostic
 to the class of roadmap that they operate on,
 choosing a suitable class and its parameters has a large effect
-on both theoretical and practical perforamce.
+on both theoretical and practical performance.
 
 \paragraph{Random Sequences.}
 The original roadmap algorithms
@@ -620,7 +620,7 @@ non-deterministic sequence for each motion planning query
 is that the constructed graph is different for each query.
 This makes it impractical to pre-compute and amortize nearest
 neighbor queries across problem instances,
-as well as to pre-compute edge states as decribed in
+as well as to pre-compute edge states as described in
 Chapter~\ref{chap:family}.
 
 Further,
@@ -634,7 +634,7 @@ but it is demonstrably larger than the dispersion of other
 well-known point sequences,
 such as the Halton or Hammersley set,
 or the Sukharev grid.
-For an in-depth analysis of differet point sets for roadmap
+For an in-depth analysis of different point sets for roadmap
 planning, see Janson \citep{janson2015deterministicsampling}.
 
 \begin{figure}

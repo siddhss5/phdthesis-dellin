@@ -193,7 +193,7 @@ and multi-query planners can then reuse the resulting graph
 for other queries in the same collision-free subset.
 
 However,
-for manipuation problems,
+for manipulation problems,
 this subset of the robot's configuration space
 is sensitive to the locations and shapes of
 both people and objects in the environment,
@@ -216,7 +216,7 @@ $\mathcal{C}$.
    \includegraphics[width=2.5cm]{figs/herbbin/step12cropped.png}%
    \includegraphics[width=2.5cm]{figs/herbbin/step2cropped.png}
 
-   \caption{A simple manipulation task: retreive the mug from
+   \caption{A simple manipulation task: retrieve the mug from
       the table, and drop it in the blue bin.
       This task requires plans in three distinct C-space free subsets.}
    \label{fig:family:herbbin-multistep-example}
@@ -268,7 +268,7 @@ object, or static environment are intersecting each other (colliding),
 while others may denote configurations of the object where it is
 not at a stable placement or grasp configuration.
 
-\paragraph{Visualizating the Composite Configuration Space.}
+\paragraph{Visualizing the Composite Configuration Space.}
 While the composite configuration space for any interesting
 manipulation task
 is of too high dimension to effectively visualize in full,
@@ -365,7 +365,7 @@ with manifolds shown as red surfaces.
 In the first step,
 the robot must transit from its current configuration at left
 to a grasp configuration at right,
-while constained to the transit manifold shown in red.
+while constrained to the transit manifold shown in red.
 Next,
 the second step is constrained to a transfer manifold
 in which both the robot and the object move together
@@ -509,9 +509,9 @@ in Figure~\ref{fig:family:example}.
    \caption[
       An illustration of a family motion planning
       problem in a common configuration space $\mathcal{C}$.
-      The problem definition generalizes to an artibrary number of
+      The problem definition generalizes to an arbitrary number of
       configuration space subsets and set relations between them.
-      When two queries in different subests are solved sequentially,
+      When two queries in different subsets are solved sequentially,
       a family motion planner can reuse path segments less expensively.
       See Section~\ref{subsec:family:app-multi-step} for examples in
       manipulation.
@@ -525,9 +525,9 @@ in Figure~\ref{fig:family:example}.
    \smallskip\noindent\small Figure \ref{fig:family:example}:
    An illustration of a family motion planning
    problem in a common configuration space $\mathcal{C}$.
-   The problem definition generalizes to an artibrary number of
+   The problem definition generalizes to an arbitrary number of
    configuration space subsets and set relations between them.
-   When two queries in different subests are solved sequentially,
+   When two queries in different subsets are solved sequentially,
    a family motion planner can reuse path segments less expensively.
    See Section~\ref{subsec:family:app-multi-step} for examples in
    manipulation.
@@ -640,7 +640,7 @@ $\mathcal{C}$-subset $U \in \mathcal{F}$
    \label{fig:family:relations}
 \end{marginfigure}
 
-Finally, the family problem incudes a list of set relations
+Finally, the family problem includes a list of set relations
 $\mathcal{R}$
 between the $\mathcal{C}$-subsets in $\mathcal{F}$.
 These can be expressed directly using set theoretic relations,
@@ -648,7 +648,7 @@ or equivalently as logical statements
 on the corresponding indicator functions.
 Common types of such relations
 (containment and intersection)
-are illustated in Fig.~\ref{fig:family:relations}.
+are illustrated in Fig.~\ref{fig:family:relations}.
 Fig.~\ref{fig:family:example} gives an example of intersection relations;
 an example of containment is a padded (conservative) robot model.
 
@@ -659,7 +659,7 @@ a set of queries $\mathcal{U}$,
 and a list of subset relations $\mathcal{R}$)
 comprise a family motion planning problem.
 
-\paragraph{Revisting the Example (as a Family Motion Planning Problem).}
+\paragraph{Revisiting the Example (as a Family Motion Planning Problem).}
 Consider the diagram from Fig.~\ref{fig:family:example}.
 $\mathcal{F}$ consists of five $\mathcal{C}$-subsets labeled
 $A$, $B$, $C$, $S_{12}$, and $S_{23}$,
@@ -1119,7 +1119,7 @@ may not fully evaluate the edge --
 for example, in the belief graph
 from Figure~\ref{fig:family:belief-graph-example-wrels-policy},
 the optimistic optimal path selects the $S_1$ indicator,
-optmistically assuming that it will return True,
+optimistically assuming that it will return True,
 the belief state $b_e$ will transition to $(T,T)$,
 and the edge will be demonstrated valid.
 But if the indicator returns False,

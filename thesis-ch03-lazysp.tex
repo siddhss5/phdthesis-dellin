@@ -323,7 +323,7 @@ focus on cases with $\epsilon = 1$.
 \end{algorithm}
 
 %The algorithm purposely leaves undecided
-%the edge evaulation selector codified in
+%the edge evaluation selector codified in
 %\textsc{Selector} (line~\ref{line:lazy-outline-chooseedges}),
 %and therefore describes a class of algorithms
 %differentiated by the choice of this selector.
@@ -990,7 +990,7 @@ with respect to how they maintain this distribution over potential paths.
       (usually conditioned on the known edge evaluations)
       induces on each edge $e$ a Bernoulli distribution
       with parameter $p(e)$
-      giving the probablility that it belongs to the path.
+      giving the probability that it belongs to the path.
       The selector chooses the edge with the largest such probability.}
    \label{fig:maxprob-selectors-overview}
 \end{figure}
@@ -1079,9 +1079,9 @@ by assuming that each edge is independently distributed.
 \subsection{Partition Function Selector}
 
 While the WeightSamp selector captures the intuition that it is
-preferrable to focus edge evaluations in areas that are useful for
+preferable to focus edge evaluations in areas that are useful for
 many potential paths,
-the computational cost required to calculate it at each iteraction
+the computational cost required to calculate it at each iteration
 may render it intractable.
 One candidate path distribution that is more efficient to compute
 follows an exponential form:
@@ -1230,7 +1230,7 @@ so that all runs produced optimal paths.
 The experimental results serve primarily to illustrate that
 the A* and LWA* algorithms
 (i.e. Expand and Forward)
-are not optimially edge-efficient,
+are not optimally edge-efficient,
 but they also expose differences in behavior and prompt
 future research directions.
 All experiments were conducted using an open-source
@@ -1533,7 +1533,7 @@ Alternate often evaluates several edges on each path before finding
 an obstacle.
 Its early evaluations also tend to be useful later,
 and it terminates after considering 10 paths on the illustrated problem.
-In contast, Bisection exhibits a fail-fast strategy,
+In contrast, Bisection exhibits a fail-fast strategy,
 quickly invalidating most paths after a single evaluation,
 but needing 16 such paths (with very little reuse)
 before it terminates.
@@ -1548,7 +1548,7 @@ edge evaluations on the problems we considered.
 While the WeightSamp selector performs similarly to Partition on the
 simpler problems,
 it performs less well in the ArmPlan domain.
-This may be because many more samples are needed to appoximate
+This may be because many more samples are needed to approximate
 the requisite path distribution.
 
 The path distribution selectors are motivated by focusing evaluation
@@ -1565,6 +1565,6 @@ more complex selectors.
 We note that
 an optimal edge selector could be theoretically achieved by posing the
 edge selection problem as a POMDP,
-given a probabalistic model of the true costs.
+given a probabilistic model of the true costs.
 While likely intractable in complex domains,
 exploring this solution may yield useful approximations or insights.

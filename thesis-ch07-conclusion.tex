@@ -29,7 +29,7 @@ which arise in autonomous manipulation tasks.
 Such tasks induce continuous, high dimensional robot configuration
 spaces
 in which path validity checking is particularly expensive
-due to complex robot kinematics and workspacee geometry.
+due to complex robot kinematics and workspace geometry.
 Furthermore,
 there is an inherent cost tradeoff between
 planning a motion and subsequently executing it.
@@ -89,7 +89,7 @@ planners.
 We motivate our focus on sampling-based roadmap planners
 based on the following advantages:
 \begin{itemize}
-\item Roadmap methods are well-studied and posess favorable
+\item Roadmap methods are well-studied and possess favorable
    theoretical properties such as asymptotic optimality.
 \item It is straightforward to incrementally densify the
    discretization by adding new samples to the roadmap.
@@ -134,7 +134,7 @@ which decouple the search for candidate solutions
 from the process of evaluating each solution for its cost.
 
 The first contribution of this dissertation is a study of
-the LazySP algorithm outline in Chapter~\ref{chap:lazysp},
+the LazySP algorithm outlined in Chapter~\ref{chap:lazysp},
 \marginnote{Contribution: The LazySP algorithm,
 which exploits an edge selector to find paths while
 minimizing the number of necessary edge weight evaluations.}
@@ -176,7 +176,7 @@ Conducting our roadmap search over candidate paths via lazy
 pathfinding
 induces an underlying inner dynamic shortest path problem.
 This arises because the decoupled nature of lazy search
-is indistiguishable from a search over an unknown or changing objective.
+is indistinguishable from a search over an unknown or changing objective.
 Each iteration of our lazy search constitutes a new dynamic planning
 episode --
 after our edge selector nominates particular edges of our roadmap
@@ -304,7 +304,7 @@ approach.
 %and limitations of the presented approach,
 %as well as possible directions for future work.
 %In this chapter,
-%we discuss opportunities to extend our approach to acheive even
+%we discuss opportunities to extend our approach to achieve even
 %better performance,
 %examine options to better integrate motion planning into a
 %task planning system,
@@ -325,7 +325,7 @@ the efficacy of this discretization.
 Roadmap methods rely on a connection rule to determine whether
 two vertices representing configurations in the C-space
 should be connected with an edge
--- the existance of such an edge implies that the local planner
+-- the existence of such an edge implies that the local planner
 has high likelihood of successfully finding a valid path between them.
 To this end,
 most approaches make use of arbitrary thresholds of
@@ -335,9 +335,9 @@ we used a simple Euclidean distance rule.
 
 However, for articulated robots
 (and especially for recurring tasks in similar environments),
-it is easy to conceived of more intelligent connection rules.
+it is easy to conceive of more intelligent connection rules.
 For example, consider a na\"{\i}ve execution cost model in which
-obstacles are distributed unformly in the robot's workspace.
+obstacles are distributed uniformly in the robot's workspace.
 In this case,
 the likelihood of collision over some edge length
 depends on the configuration of the arm itself
@@ -371,11 +371,11 @@ progressively densified roadmaps
 (Figure~\ref{fig:discussion:roadmap-stack}).
 The results presented in this thesis have used Halton sequences
 as discussed in Chapter~\ref{chap:roadmaps}
-for their prefereable dispersion properties,
+for their preferable dispersion properties,
 and form a roadmap graph using an $r$-disk connection rule.
 As discussed in \citep{janson2015deterministicsampling},
-the shorest path on such a sequence of roadmaps
-posesses asymptotic optimality if the connection radius is adjusted
+the shortest path on such a sequence of roadmaps
+possesses asymptotic optimality if the connection radius is adjusted
 appropriately.
 
 \begin{figure}
@@ -445,7 +445,7 @@ each underlying roadmap is a superset of the one above it.
 But now,
 instead of progressively considering each layer individually
 (using batching),
-consider conductiong a single search over the entire stack.
+consider conducting a single search over the entire stack.
 Note that the stack includes additional edges
 (shown dotted in the figure)
 connecting corresponding vertices in two adjacent layers;
@@ -473,10 +473,10 @@ Consider a search over this infinite stack $G$
 between two start and destination
 configurations corresponding to distinguished vertices on $G$,
 and consider an optimal solution path with strong $\delta$-clearance.
-If the roadmap layers satsify the appropriate conditions
+If the roadmap layers satisfy the appropriate conditions
 (e.g. connection radius
 \citep{karaman2011samplingoptimal, janson2015deterministicsampling}),
-and all roadmap edges have non-negative weight,
+and all roadmap edges have nonnegative weight,
 and all ``offramp'' edges have some constant positive weight $\alpha$,
 then we conjecture that there exists a shortest path $p$ through $G$
 of finite length (which traverses a finite number of layers of $G$).
@@ -485,13 +485,13 @@ we conjecture that the length of $p$ approaches the length of an
 optimal path as $\alpha \rightarrow 0$.
 
 We find this representation of the continuous problem compelling
-because it natually integrates the densification problem with
+because it naturally integrates the densification problem with
 the search problem.
 One can imagine a unidirectional or bidirectional search
 effectively trading off between
 exploring more widely on a particular layer
-and descendng to a denser layer in order to traverse a narrow passage.
-Descending to a denser layer occurs natually during the search,
+and descending to a denser layer in order to traverse a narrow passage.
+Descending to a denser layer occurs naturally during the search,
 and denser regions can be sampled on demand only in areas of the space
 adjacent to obstacles blocking the path.
 Furthermore,
@@ -535,11 +535,11 @@ of the problem proves to be the most constrained.
 It may also be instructive to investigate the ``oracle'' selector.
 Consider that for any graph,
 there exists some minimal set of edges which, if evaluated,
-would proveably demonstrate that the best remaining candidate is
+would probably demonstrate that the best remaining candidate is
 correct.
 Investigating the distribution of edges required for such a selector
 for particular problem instances
-may aid in desigining new selectors.
+may aid in designing new selectors.
 It also serves as a useful benchmark against which to compare performance.
 
 \paragraph{Exploring the Interaction between Lazy and Dynamic Search}
@@ -564,16 +564,16 @@ For example,
 consider a variant of the LazySP algorithm
 in which the candidate path at each iteration only maximizes utility
 up to a particular suboptimality bound. 
-One suitable algorithm for this relaxed dynamic serach problem
+One suitable algorithm for this relaxed dynamic search problem
 is Truncated Incremental Search \citep{aine2016truncatedincremental}.
 
 \paragraph{Adjusting the Incremental Balancing Criterion.}
 It is well-known \citep{pohl1969bidirectional}
 that using the cardinality of each OPEN list as the decision rule
 to balance expansion of the two sides of a conventional bidirectional
-search generally outerforms using the distance (key) value itself.
+search generally outperforms using the distance (key) value itself.
 Unfortunately,
-it is not clear how to adapty this criterion to the incremental
+it is not clear how to adapt this criterion to the incremental
 search setting,
 since the size of the queue of inconsistent vertices is no longer
 indicative of the density of the graph on the two sides.
@@ -613,7 +613,7 @@ Given a test configuration $q_{\ms{test}}$,
 such a checker considers the environment
 and the robot's kinematics,
 and returns a boolean answer -- True or False.
-Depending on the fidelity of the geoemtric model of the robot
+Depending on the fidelity of the geometric model of the robot
 and environment,
 each check can entail tens, hundreds, or even thousands
 of microseconds.
@@ -624,7 +624,7 @@ checkers.
 Chapter~\ref{chap:family} explored one such opportunity --
 decomposing the validity checks performed over multiple steps of
 a manipulation task as a family motion planning problem.
-Doing so allows a planning cost model to be formualated naturally
+Doing so allows a planning cost model to be formulated naturally
 in terms of different subsets of C-space,
 so that a utility-aware planner (such as LEMUR)
 is incentivized to reuse partial validity information
@@ -656,9 +656,9 @@ This simple model could be improved in at least two ways:
    and a planner which incorporates such learning could better adapt to
    particular planning queries and manage its search more accurately.
 \item Second, the planning cost required for a collision check depends
-   on the area of confiuration space itself.
+   on the area of configuration space itself.
    For example,
-   checks in wide open spaces tend to complete much more quicly than
+   checks in wide open spaces tend to complete much more quickly than
    those near obstacle boundaries.
    A planning cost estimator could build and maintain a spatial model
    of this checking cost during the course of a planning episode,
@@ -831,7 +831,7 @@ but the planner realizes a significant savings in planning cost.
 
    \caption[][0.5cm]{A simple 2D motion planning example
       in which LEMUR has a broad-phase check available.
-      Testing agaist the bounding box (grey)
+      Testing against the bounding box (grey)
       is 10x less expensive than testing
       against the actual obstacle (black).
       Exposing the broad-phase check to LEMUR as a distinct subset
@@ -870,7 +870,7 @@ balance between local and global exploration.
 It is worth investigating whether abandoning the optimistic
 assumption is worthwhile --
 a replacement could then reason explicitly about the collision
-probability across the configuation space.
+probability across the configuration space.
 
 We recently proposed a first step in this direction
 via the Pareto Optimal Motion Planner \citep{choudhury2016pomp}.
@@ -878,7 +878,7 @@ In this work,
 we maintain a probabilistic model of the probability of collision
 across the configuration space,
 which we update incrementally as collision checks are performed
-agains the environment.
+against the environment.
 The planner then uses this model in order to select candidate paths
 for partial evaluation that minimize some combination of the path's
 execution cost and its probability of collision.
@@ -893,12 +893,12 @@ if each colliding path segment is assigned a penalty cost.
 %We would like to motivate this more formally.
 %
 %We propose to extend the E$^8$-PRM planner
-%to minimize ensemble effort \emph{in expection}
-%using a probabalistic model of $\mathcal{C}_{\mbox{\scriptsize free}}$.
+%to minimize ensemble effort \emph{in expectation}
+%using a probabilistic model of $\mathcal{C}_{\mbox{\scriptsize free}}$.
 %Even if this is too expensive,
 %we can motivate the incremental densification idea,
 %with a graduated cost model
-%to approximate a probabalistic model
+%to approximate a probabilistic model
 %of the C-space.
 %
 %How should discrete graphs be constructed in continuous
@@ -915,7 +915,7 @@ if each colliding path segment is assigned a penalty cost.
 %to a graph search ignores the spatial correlation
 %inherent in $\mathcal{C}_{\mbox{\scriptsize free}}$.
 %
-%One way to capture this is to maintain a probabalistic model
+%One way to capture this is to maintain a probabilistic model
 %of $\mathcal{C}_{\mbox{\scriptsize free}}$,
 %and then optimize in expectation.
 %In particular,
@@ -937,7 +937,7 @@ if each colliding path segment is assigned a penalty cost.
 %Consider the the problem from Figure~\ref{fig:example-in-expectation}.
 %There are an infinite number of paths to the goal,
 %each consisting of walking along the sidewalk,
-%followed by crossing the street perpendicuarly at a particular
+%followed by crossing the street perpendicularly at a particular
 %position $x$.
 %The sidewalk is known to be collision-free,
 %whereas each position on the street must be tested for collision
@@ -979,7 +979,7 @@ we have solved multi-step motion and manipulation planning tasks
 using a hierarchical planning architecture for the CHIMP robot
 \citep{dellin2014drc}.
 LEMUR aims to serve as a performant lower-level geometric motion
-planner which is congizant of both the quality of its solutions
+planner which is cognizant of both the quality of its solutions
 and the planning cost it incurs to find it,
 and we have found that LEMUR provides improved performance for
 such tasks.
@@ -1014,7 +1014,7 @@ the graph representation with virtual vertices and edges connecting
 to all candidates starts and goals.
 However, a higher-level multi-step task planner is often incentivized
 to explore many candidate intermediate configurations,
-and cultivate propsective paths through them.
+and cultivate prospective paths through them.
 One method for expressing these ``many-to-many'' queries is by
 modifying the objective given to the lower-level motion planner;
 we explored the comprehensive multi-root objective
@@ -1090,7 +1090,7 @@ a performance shortfall of an existing algorithm
 often serves not only as a motivation for a new idea,
 but as a springboard for developing that idea in the first place.
 During my thesis,
-I found that comitting to a set of benchmark problems,
+I found that committing to a set of benchmark problems,
 and being guided by rigorous performance metrics such as path
 quality and planning time,
 allowed me to identify fruitful research areas.
@@ -1101,7 +1101,7 @@ across all motion planners in our arsenal.
 
 \paragraph{Fair Comparisons with Non-Determinism.}
 If performance metrics are to be trusted,
-it is of paramount importance that planner comparions be fair
+it is of paramount importance that planner comparisons be fair
 and repeatable,
 so that only the factor in question
 (e.g. the search or sampling strategy) is varied between experiments.
@@ -1183,7 +1183,7 @@ human-scale tasks
 that are efficient both in computation and in action,
 since people are unaccommodating both of long planning pauses
 and of wild and inefficient motions.
-The expressiveness of out utility function approach,
+The expressiveness of our utility function approach,
 which can take advantage of any domain-specific planning heuristics
 available,
 opens the doors to many opportunities for getting better performance
