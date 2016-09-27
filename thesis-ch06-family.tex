@@ -22,7 +22,7 @@ In this chapter,
 we introduce the \emph{family motion planning problem},
 a generalization of the motion planning problem to a family of sets
 over $\mathcal{C}$.
-We then show how such a problem over familes can be represented
+We then show how such a problem over families can be represented
 as in the utility function framework,
 and given as input to the LEMUR motion planner described
 in Chapter~\ref{chap:utility}.
@@ -55,7 +55,7 @@ We include here a broad survey of existing approaches.
 \paragraph{Exact Algorithms.}
 Exact planning methods construct explicit obstacles
 directly in the configuration space.
-Many such approaches allow for precomputation of primitives,
+Many such approaches allow for pre-computation of primitives,
 such as bitmaps \citep{kavraki1995cspacefft}
 or C-space primitives for different workspace obstacles
 \citep{newmanbranicky1991cspacetransforms}.
@@ -97,12 +97,12 @@ obstacles that induce $\mathcal{C}_{free}$.
 Leven and Hutchinson \citep{leven2000changing, leven2002changing}
 and similar work \citep{kallman2004dynamicroadmaps}
 handle changing environments by
-precomputing a self-collision-free roadmap offline,
+pre-computing a self-collision-free roadmap offline,
 and then pruning it at query time
 using a mapping from workspace cells to roadmap edges.
 %This can also be viewed through the multi-space lens
 %-- I think this is just an instantiation of a bunch of sets.
-%They're very focused on the precomputation stuff.
+%They're very focused on the pre-computation stuff.
 %However, this approach this can't directly handle grasped objects.
 Other methods \citep{jaillet2004dynamicprm}
 exploit the dichotomy between static and dynamic parts of
@@ -242,7 +242,7 @@ later in this chapter.
 \subsection{The Composite Configuration Space}
 
 The configuration of a quasistatic manipulation environment
-with multiple moveable objects can be represented as a
+with multiple movable objects can be represented as a
 \emph{composite configuration space},
 \marginnote{The composite configuration space is also called
 the \emph{joint configuration space}.}
@@ -300,7 +300,7 @@ shown individually at the right
 of Figure~\ref{fig:family:composite-volumes}:
 \begin{itemize}
 \item First, in blue, is a volume which representing configurations
-   in which the moveable object collides with the static environment.
+   in which the movable object collides with the static environment.
    Note that the obstacle is invariant to the configuration of the robot.
 \item Second, in green, is a volume in which the robot collides with
    the static environment.
@@ -324,7 +324,7 @@ to constraint manifolds.
 \subsection{Transit and Transfer Manifolds}
 The source of these constraint manifolds within the composite
 configuration space is the fact that in prehensile manipulation tasks,
-the moveable object cannot move on its own.
+the movable object cannot move on its own.
 In fact,
 any solution task alternates between two types of constraints:
 \emph{transit} manifolds,
@@ -334,7 +334,7 @@ and \emph{transfer} manifolds,
 in which the configuration of the object moves as a function of
 the robot's configuration (i.e. during a grasp).
 (This dichotomy can be extended to multiple robots or
-moveable objects.)
+movable objects.)
 For an in-depth treatment of the structure of these manifolds
 in manipulation tasks,
 we refer the reader to \citep{simeon2004manipulation}.
@@ -386,7 +386,7 @@ along with the projected solution path.
 
 The first and third subfigures correspond to transit subproblems,
 in which motion through the composite space is constrained so that
-the moveable object's configuration remains constant.
+the movable object's configuration remains constant.
 The second subfigure corresponds to a transfer subproblem,
 in which the motion of the object directly follows from the
 motion of the robot.

@@ -19,7 +19,7 @@ finding such paths for articulated robotics in
 complex semi-structured environments
 is no easy feat,
 and finding such paths quickly and efficiently
-is of upmost importance.
+is of utmost importance.
 
 This chapter includes a brief introduction to
 the motion planning problem.
@@ -216,7 +216,7 @@ that rely principally on discretizations of the configuration space.
 \subsection{Building Graphs in C-Space}
 \label{subsec:roadmaps:building-graphs}
 
-\paragraph{Testing Validity of Configurations}
+\paragraph{Testing Validity of Configurations.}
 How can we establish the validity of a configuration $q$?
 This question is especially delicate when the geometry is complex
 and the configuration-space obstacles cannot be represented explicitly.
@@ -236,7 +236,7 @@ entails computing the forward kinematics of the robot at the
 query configuration,
 and conducting a collision check in the workspace.
 
-\paragraph{Testing Validity of Paths}
+\paragraph{Testing Validity of Paths.}
 How can we establish the validity of a path $\xi$
 according to (\ref{eqn:roadmaps:path-validity})?
 There are many approaches that can be applied,
@@ -397,7 +397,7 @@ they are often only applicable to simple kinematics.
 Many approaches do treat the configuration space implicitly
 (i.e. using indicator functions for validity checking as described
 in Section~\ref{subsec:roadmaps:building-graphs}).
-The most common algorithms simulteneously grow and validate trees,
+The most common algorithms simultaneously grow and validate trees,
 either unidirectionally from the $v_{\ms{start}}$ or bidirectionally
 from both start and goal configurations.
 At each iteration,
