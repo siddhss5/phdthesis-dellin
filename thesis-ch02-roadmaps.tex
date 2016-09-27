@@ -190,12 +190,13 @@ For example,
 the kinodynamic planning problem includes the derivatives of the
 configuration variables,
 and a solution to the kinodynamic problem is called a trajectory.
-Various algorithms exist \citep{lavallekuffner1999rrt}.
+%Various algorithms exist \citep{lavallekuffner1999rrt}.
 The objective used in optimal variants of the kinodynamic problem
-often include components which depend on the accelerations or torques
+often include terms which depend on the accelerations or control
+inputs (e.g. torques)
 required to execute the trajectory.
 
-Constrained motion planning constitutes an additional generalization.
+Constrained motion planning constitutes a different generalization.
 A holonomic constraint on the configuration space,
 for example,
 induces a subset (often a manifold) of the configuration space
@@ -511,6 +512,12 @@ which reproduce a regular lattice over the configuration space
 When the vertices comprising the lattice are rectangular
 (also called a Sukharev point set \citep{sukharev1971extremum}),
 search-based planning is also called ``grid search.''
+Such search methods can exploit a vertex heurstic,
+and many heuristics have been proposed for articulated motion planning
+-- the most common of which compute a decomposition over the
+lower-dimensional workspace to guide the search.
+Some methods \citep{plaku2010syclop} exploit synergies between these
+different levels of planning to achieve more efficient planning.
 
 \paragraph{Lazy Validity Checking.}
 Because obstacle-insensitive approaches decouple graph construction
