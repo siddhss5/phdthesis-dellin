@@ -135,7 +135,7 @@ shown in Figure~\ref{fig:roadmaps:cost-model-feasible}.
          \end{array} \right.$
       };
    \end{tikzpicture}
-   \caption{Edge cost model
+   \caption{Path cost model
       for the (feasible) motion planning problem.}
    \label{fig:roadmaps:cost-model-feasible}
 \end{marginfigure}
@@ -158,7 +158,7 @@ if one exists.
          $x_{\ms{int}}[\xi] = L_2[\xi]$
       };
    \end{tikzpicture}
-   \caption{Example dynamical cost function for the optimal
+   \caption{Example dynamical path cost function for the optimal
       motion planning problem.
       Here, the arc length of $\xi$ using the $L_2$ norm cost is used.}
    \label{fig:roadmaps:cost-model-path}
@@ -192,8 +192,7 @@ configuration variables,
 and a solution to the kinodynamic problem is called a trajectory.
 %Various algorithms exist \citep{lavallekuffner1999rrt}.
 The objective used in optimal variants of the kinodynamic problem
-often include terms which depend on the accelerations or control
-inputs (e.g. torques)
+often include terms which depend on the control inputs (e.g. torques)
 required to execute the trajectory.
 
 Constrained motion planning constitutes a different generalization.
@@ -517,7 +516,7 @@ and many heuristics have been proposed for articulated motion planning
 -- the most common of which compute a decomposition over the
 lower-dimensional workspace to guide the search.
 Some methods \citep{plaku2010syclop} exploit synergies between these
-different levels of planning to achieve more efficient planning.
+different levels of planning to achieve improved efficiency.
 
 \paragraph{Lazy Validity Checking.}
 Because obstacle-insensitive approaches decouple graph construction
@@ -543,7 +542,7 @@ or report failure if no path was found.
 This property is known as resolution completeness
 \citep{cheng2004rescomplete}.
 
-Many instance of prior work endeavor to progressively
+Many instances of prior work endeavor to progressively
 densify their discretization until a suitable solution is found.
 Early examples of this approach include
 hierarchical cell decompositions \citep{faverjon1984octree}
@@ -551,8 +550,8 @@ and workspace and C-space bitmap pyramids for search over potential fields
 \citep{barraquand1991distributedrepresentation}.
 More recent asymptotically optimal motion planners such as
 Lazy PRM* \citep{hauser2015lazy}.
-and BIT* \citep{gammell2015bitstar} take a similar approach to
-roadmap search,
+and BIT* \citep{gammell2015bitstar} take a similar approach
+to progressive densification,
 which we also adopt as described in Chapter~\ref{chap:utility}
 (see Figure~\ref{fig:roadmaps:roadmap-stack}).
 
@@ -579,8 +578,9 @@ over all planning queries.
 Other properties of the discretization that are constant between
 similar planning instances can also be shared
 as described in Chapter~\ref{chap:family}.
+This also allows these approaches to be more easily parallelized.
 For these reasons,
-this thesis build on top of obstacle-insensitive roadmaps.
+this thesis focusses on obstacle-insensitive roadmap methods.
 
 \section{Roadmap Classes}
 \label{sec:roadmaps:roadmap-classes}
@@ -627,7 +627,7 @@ non-deterministic sequence for each motion planning query
 is that the constructed graph is different for each query.
 This makes it impractical to pre-compute and amortize nearest
 neighbor queries across problem instances,
-as well as to pre-compute edge states as described in
+as well as to pre-compute and cache edge states as described in
 Chapter~\ref{chap:family}.
 
 Further,
@@ -639,10 +639,10 @@ Not only can the dispersion of a set of randomly sampled points
 only be established in expectation,
 but it is demonstrably larger than the dispersion of other
 well-known point sequences,
-such as the Halton or Hammersley set,
+such as the Halton or Hammersley sets,
 or the Sukharev grid.
 For an in-depth analysis of different point sets for roadmap
-planning, see Janson \citep{janson2015deterministicsampling}.
+planning, see Janson et. al. \citep{janson2015deterministicsampling}.
 
 \begin{figure}
    \centering
@@ -693,13 +693,12 @@ an edge connection radius $r_{\ms{log}}$:
 for some tuning parameter $\eta > 1$.
 Point sets with tighter dispersion bounds,
 such as the Halton sequence,
-can exploit a smaller connection radius $r_{\ms{loglog}}$:
+can exploit a smaller connection radius $r_{\ms{loglog}}$,
+as described in detail in \citep{janson2015deterministicsampling}:
 \begin{equation}
    r_{\ms{loglog}}(n) = \gamma_{\mathcal{C}} \, \eta
       \left( \frac{\log(\log(n))}{n} \right)^{1/d}.
 \end{equation}
-For details we refer the reader
-to \citep{janson2015deterministicsampling}.
 
 \begin{margintable}
    \centering
@@ -727,8 +726,7 @@ to \citep{janson2015deterministicsampling}.
 \paragraph{Roadmaps for Articulated Robots.}
 We apply roadmap methods to the three robot platforms
 from Chapter~\ref{chap:intro} in this thesis.
-Unless otherwise noted,
-we build roadmaps directly in the joint space of the robot.
+We build roadmaps directly in the configuration space of the robot.
 See Table~\ref{table:roadmap-params} for the roadmap parameters
 that we use.
 
