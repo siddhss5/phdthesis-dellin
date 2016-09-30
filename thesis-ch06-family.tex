@@ -763,6 +763,18 @@ knowledge of subset membership for each subset $S \in \mathcal{F}$.
 in (\ref{eqn:family:beliefs})
 as U, F, and T respectively.)
 
+\begin{marginfigure}
+   \centering
+   \includegraphics{build/family-belief-graph-example}
+   \caption{Example family belief graph
+      for a family of two subsets, $S_1$ and $S_2$.
+      From the initial belief $b_{\ms{init}} = (\mbox{U},\mbox{U})$,
+      each transition $(S,r)$ represents invoking
+      indicator $\mathbf{1}_S$ with returned binary result $r$.
+      }
+   \label{fig:family:belief-graph-example}
+\end{marginfigure}
+
 \paragraph{Composing a Family Belief Graph.}
 Consider the initial belief state of a configuration
 $b_{\ms{init}} = \left( \mbox{U}, \mbox{U}, \dots \right)$
@@ -783,18 +795,6 @@ where $V_{\mathcal{F}} = \mathcal{B}$
 and each edge $e_{\mathcal{F}} \in E_{\mathcal{F}}$ represents $(S,r)$,
 the result of invoking an available indicator function $\mathbf{1}_{S}$
 and having it return the binary result $r$.
-
-\begin{marginfigure}
-   \centering
-   \includegraphics{build/family-belief-graph-example}
-   \caption{Example family belief graph
-      for a family of two subsets, $S_1$ and $S_2$.
-      From the initial belief $b_{\ms{init}} = (\mbox{U},\mbox{U})$,
-      each transition $(S,r)$ represents invoking
-      indicator $\mathbf{1}_S$ with returned binary result $r$.
-      }
-   \label{fig:family:belief-graph-example}
-\end{marginfigure}
 
 For example,
 consider a family $\mathcal{F}$ consisting of two unrelated subsets,
@@ -1226,6 +1226,7 @@ in Figure~\ref{fig:family:testherb-problem}.
 \begin{table*}
    \centering
    \begin{minipage}[t]{.65\textwidth}
+   \centering
    \begin{tabular}{cll}
       \toprule
       Subset & Geometry 1 & Geometry 2 \\
@@ -1238,6 +1239,7 @@ in Figure~\ref{fig:family:testherb-problem}.
    \end{tabular}
    \end{minipage}
    \begin{minipage}[t]{.30\textwidth}
+   \centering
    \begin{tabular}{cl}
       \toprule
       Subset & Defined as \\
@@ -1248,13 +1250,14 @@ in Figure~\ref{fig:family:testherb-problem}.
       \bottomrule
    \end{tabular}
    \end{minipage}
-   \caption[][0.5cm]{Constituent subsets in the \texttt{herbbin} example
+   \vspace{0.3cm}
+   \caption[][0.3cm]{Constituent subsets in the \texttt{herbbin} example
       problem.}
    \label{table:family:herbbin-subsets}
 \end{table*}
 
 We measured the length of the path returned by each algorithm (rad),
-as well as the total planning time as measured by a wall clock (s).
+as well as the total wall clock planning time (s).
 
 %\begin{figure}
 %   \centering
@@ -1386,6 +1389,7 @@ subset.
 \begin{table*}
    \centering
    \begin{minipage}[t]{.65\textwidth}
+   \centering
    \begin{tabular}{cll}
       \toprule
       Subset & Geometry 1 & Geometry 2 \\
@@ -1404,6 +1408,7 @@ subset.
    \end{tabular}
    \end{minipage}
    \begin{minipage}[t]{.30\textwidth}
+   \centering
    \begin{tabular}{cl}
       \toprule
       Subset & Defined as \\
@@ -1419,13 +1424,14 @@ subset.
       \bottomrule
    \end{tabular}
    \end{minipage}
-   \caption[][0.5cm]{Constituent subsets in the \texttt{workcell} example
+   \vspace{0.3cm}
+   \caption[][0.3cm]{Constituent subsets in the \texttt{workcell} example
       problem.}
    \label{table:family:workcell-subsets}
 \end{table*}
 
 We measured the length of the path returned by each algorithm (rad),
-as well as the total planning time as measured by a wall clock (s).
+as well as the total wall clock planning time (s).
 
 \begin{figure}
    \centering

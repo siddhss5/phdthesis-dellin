@@ -2,7 +2,7 @@
 \label{chap:lazysp}
 
 The roadmap methods described in Chapter~\ref{chap:roadmaps}
-create a discretization of the configuration space by way of
+create a discretization of the configuration space using
 a graph $G = (V,E)$.
 This allows the motion planning problem to be solved by way of
 a pathfinding algorithm on $G$
@@ -67,7 +67,7 @@ to robotic motion planning.
 In particular,
 many important problems can be captured
 as \emph{shortest path problems} (Figure~\ref{fig:sp-intro}),
-wherein a path $p^*$ of minimal length is desired
+wherein a path $p^*$ of minimal length is sought
 between two query vertices through a graph $G$
 with respect to an edge weight function $w$.
 %As such,
@@ -130,8 +130,10 @@ function $w$ dominates algorithm running time.
 In this chapter,
 we investigate the following research question:
 \begin{quote}
+{\normalsize
 How can we minimize the number of edges we need to evaluate
 to answer shortest-path queries?
+}
 \end{quote}
 
 We make three primary contributions.
@@ -168,7 +170,7 @@ the length of the path with respect to $w$ is then:
    \label{eqn:lazysp:len-definition}
 \end{equation}
 Given a single-pair planning query
-$u: (v_{\ms{start}}, v_{\ms{goal}})$
+$u: (v_{\ms{start}}, \, v_{\ms{goal}})$
 inducing a set of satisfying paths $P_u$,
 the \emph{shortest-path problem} is:
 \begin{equation}
@@ -176,7 +178,7 @@ the \emph{shortest-path problem} is:
    \label{eqn:objective}
 \end{equation}
 
-A shortest-path algorithm computes $p^*$
+A shortest-path algorithm computes a satisfying solution $p^*$
 given $(G, u, w)$.
 Many such algorithms have been proposed
 to efficiently accommodate a wide array of underlying problem domains.
@@ -248,8 +250,9 @@ and the algorithm repeats.
 
 %\subsection{Theoretical Properties}
 
-LazySP is complete and optimal
-(proofs in the appendix):
+LazySP is complete and optimal:
+\marginnote{Proof of all theorems are available
+in Appendix~\ref{sec:appendix-proofs}.}
 
 \begin{theorem}[Completeness of LazySP]
 If the graph $G$ is finite,
@@ -331,7 +334,7 @@ focus on cases with $\epsilon = 1$.
 
 The LazySP algorithm exhibits a rough similarity to optimal
 replanning algorithms such as
-D* \citep{stentz1994dstar} \citep{stentz1995focusseddstar}
+D* \citep{stentz1994dstar,stentz1995focusseddstar}
 which plan a sequence of shortest paths for a mobile robot
 as new edge weights are discovered during its traverse.
 D* treats edge changes
@@ -543,7 +546,7 @@ the first time the edge's true weight is requested.
 \textbf{Arbitrary tiebreaking.}
 For some graphs,
 an algorithm may have multiple allowable choices at each iteration
-(e.g. LazySP with multiple candidate shortest paths,
+(e.g. LazySP with multiple shortest candidate paths,
 or A* with multiple vertices in OPEN with lowest $f$-value).
 We will say that algorithm A is equivalent to algorithm B
 if for any choice available to A,
@@ -645,7 +648,8 @@ shortest-path algorithm.
 %if its stored cost $g[v]$ is improved.
 We make use of two invariants that are maintained during the
 progression of A*.
-Proofs are provided in the appendix.
+\marginnote{Proof of all invariants are available
+in Appendix~\ref{sec:appendix-proofs}.}
 \begin{invariant}
 If $v$ is discovered by A* and $v'$ is undiscovered,
 with $v'$ a successor of $v$,
@@ -744,8 +748,9 @@ map surjectively to the same set of unexpanded frontier vertices $V_{\ms{frontie
 as illustrated in Figure~\ref{fig:astar-equiv-mapping}.
 This is described by way of
 Theorems \ref{thm:astar-equiv-from-lazy}
-and \ref{thm:astar-equiv-to-lazy} below
-(proofs in appendix).
+and \ref{thm:astar-equiv-to-lazy} below.
+\marginnote{Proof of all theorems are available
+in Appendix~\ref{sec:appendix-proofs}.}
 
 \begin{theorem}
 If LazySP-Expand and A* have evaluated the same set of edges,
@@ -868,7 +873,9 @@ This adjustment
 does not affect the edges evaluated.
 
 We make use of an invariant that is maintained during the
-progression of Lazy Weighted A* (proof in appendix).
+progression of Lazy Weighted A*.
+\marginnote{Proof of all invariants are available
+in Appendix~\ref{sec:appendix-proofs}.}
 \begin{invariant}
 For all vertex pairs $v$ and $v'$,
 with $v'$ a successor of $v$,
@@ -887,6 +894,8 @@ The equivalence follows similarly to that for A* above.
 Given the same set of edges evaluated,
 the set of allowable next evaluations is identical for each
 algorithm.
+\marginnote{Proof of all theorems are available
+in Appendix~\ref{sec:appendix-proofs}.}
 
 \begin{theorem}
 If LazySP-Forward and LWA* have evaluated the same set of edges,
@@ -1092,7 +1101,8 @@ follows an exponential form:
 In other words,
 we consider all potential paths $P$
 between the start and goal vertices,
-with shorter paths assigned more probability than longer ones
+with shorter paths assigned more exponentially probability
+than longer ones
 (with positive parameter $\beta$).
 We call this the Partition selector
 because this distribution is closely related to calculating
@@ -1138,7 +1148,9 @@ contain edge $e$.
    % --snapshot-afteredges=0 --out-tikz=partall-figure-0.tex
    \subfloat[Initial $p(e)$ scores]{%
       \centering
+      \;
       \includegraphics{build/lazysp-partall/partall-figure-0}
+      \;
       \label{subfig:partition-example-initial}
    }
    % $ rosrun e8_experiments lazysp-partall-figure.py
@@ -1146,9 +1158,12 @@ contain edge $e$.
    % --snapshot-afteredges=5 --out-tikz=partall-figure-5.tex
    \subfloat[Scores after five evaluations]{%
       \centering
+      \;
       \includegraphics{build/lazysp-partall/partall-figure-5}
+      \;
       \label{subfig:partition-example-after5}
    }
+   \vspace{0.2cm}
 
    \caption{Examples of the Partition selector's
       $p(e)$ edge score function.
@@ -1179,9 +1194,8 @@ an algorithm for computing (\ref{eqn:edge-ind-prob}) efficiently is not
 currently known in this case.
 However,
 in the case that $P$ consists of all paths,
-there exists an efficient incremental calculation of
-(\ref{eqn:partitionfn}) via a recursive formulation
-which we detail here.
+there does exist an efficient incremental calculation of
+(\ref{eqn:partitionfn}) via a recursive formulation.
 
 We use the notation $Z_{xy} = Z(P_{xy})$,
 with $P_{xy}$ the set of paths from $x$ to $y$.
@@ -1493,7 +1507,9 @@ For the Partition selector, we used $\beta = 3$.
       1000 and 900 problem instances, respectively.
       The means and standard errors in (d) are for
       the average across the three constituent problems
-      for each of the 50 sampled roadmaps.}
+      for each of the 50 sampled roadmaps.
+      A more detailed table of results is available
+      in Appendix~\ref{sec:appendix-proofs}.}
    \label{fig:results}
 \end{figure}
 
